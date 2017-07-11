@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hyperledger Catastrophe Bond PoC</title>
+  <title>Hyperledger NSD</title>
 
   <link type="image/x-icon" rel="shortcut icon" href="images/favicon.png">
 
@@ -31,12 +31,14 @@
           <i class="material-icons">menu</i>
         </a>
 
-        <a class="logo" href="#">
+        <a class="logo pull-right" href="#">
           <img class="hide-on-med-and-down" src="images/logo.png" alt="Catastrophe Bond">
           <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
         </a>
 
-        <ul class="menu hide-on-med-and-down" ng-controller="DemoController as ctl">
+        <div class="title hide-on-med-and-down pull-left">Title</div>
+
+        <ul class="menu hide-on-med-and-down" ng-controller="DemoController as ctl" ng-cloak>
           <li ng-show="ctl.getUser().role === 'issuer'">
             <a ui-sref="demo.issuerContractList" ui-sref-active="menu-active">Contracts</a>
           </li>
@@ -65,7 +67,6 @@
           </li>
         </ul>
 
-        <div class="title hide-on-med-and-down">Catastrophe Bond</div>
       </div>
     </nav>
   </header>
@@ -103,12 +104,12 @@
   </main>
   <div class="foot3">
     <div class="f-cont col s6 m6 l3">
-      <p>Hyperledger Catastrophe Bond PoC</p>
+      <p>Hyperledger NSD</p>
     </div>
     <div class="f-cont valign-wrapper f-foot col s12 m12 l12">
       <div class="left-align valign col s6 m6 l6">
         <p class="copy">
-          ©Copyright 2016 - All Rights Reserved
+          ©Copyright 2017 - All Rights Reserved
         </p>
       </div>
     </div>

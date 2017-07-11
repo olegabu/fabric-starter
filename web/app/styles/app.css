@@ -13,11 +13,12 @@
 }
 
 .nav-wrapper .logo {
-  float: left;
+  line-height: initial;
 }
 
 .nav-wrapper .logo img {
-  height: 64px;
+  margin-top: 8px;
+  height: 50px;
   vertical-align: top;
 }
 
@@ -26,11 +27,9 @@
 }
 
 .nav-wrapper .title {
-  float: right;
-  font-family: "BaronFont";
   font-size: xx-large;
-  vertical-align: middle;
-  padding-top: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .foot3 .f-cont {
@@ -45,6 +44,12 @@ html body .wrapper main {
 
 .container {
   padding: 2% 0;
+}
+
+/* fix header */
+h3{
+  margin-top: 0;
+  padding-top: 1.46rem;
 }
 
 @media screen and (max-width: 1024px) {
