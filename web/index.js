@@ -8,7 +8,7 @@ var app = require('express')();
 var server = require('http').Server(app);
 // var io = require('socket.io')(server);
 
-MyEndpoint.trackBlockChanges(server);
+// MyEndpoint.trackBlockChanges(server);
 
 server.listen(port, function () {
   console.log('Server started on port %s', port);
