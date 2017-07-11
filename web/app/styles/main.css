@@ -2493,7 +2493,7 @@ ul li {
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)
 }
 
-.z-depth-1-half,.btn:hover,.btn-large:hover,.btn-floating:hover {
+.z-depth-1-half,.btn:hover:not([disabled]),.btn-large:hover:not([disabled]),.btn-floating:hover:not([disabled]) {
     box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15)
 }
 
@@ -17710,7 +17710,7 @@ html body.dark-scheme .btn.default-background:hover,html body.dark-scheme .defau
     background-color: #424242
 }
 
-html body.dark-scheme .btn:hover,html body.dark-scheme .btn-large:hover,html body.dark-scheme .btn:focus,html body.dark-scheme .btn-large:focus {
+html body.dark-scheme .btn:hover:not([disabled]),html body.dark-scheme .btn-large:hover:not([disabled]),html body.dark-scheme .btn:focus,html body.dark-scheme .btn-large:focus {
     background-color: #424242
 }
 
