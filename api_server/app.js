@@ -56,6 +56,7 @@ app.use(expressJWT({
 	path: ['/users']
 }));
 app.use(bearerToken());
+
 app.use(function(req, res, next) {
 	if (req.originalUrl.indexOf('/users') >= 0) {
 		return next();
@@ -402,7 +403,7 @@ app.get('/chaincodes', function(req, res) {
 			'================ GET INSTANTIATED CHAINCODES ======================');
 	}
 
-	query.getInstalledChaincodes(peer, installType, req.username, req.orgname)
+	query.getInstalledChaincodes(peer, installType, req.username, req.orgname||req.query.orgname)
 	.then(function(message) {
 		res.send(message);
 	});
