@@ -27,9 +27,9 @@ function UserService($log, $rootScope, cfg, ApiService) {
    * @param {{username:string, orgName:string}} user
    */
   UserService.signUp = function(user) {
-    return ApiService.signUp(user.username, user.orgName)
+    return ApiService.user.signUp(user.username, user.orgName)
       .then(function(/** @type {TokenInfo} */data){
-        $rootScope._token = data.token;
+        $rootScope._tokenInfo = data;
         return data;
       });
   };
@@ -37,4 +37,6 @@ function UserService($log, $rootScope, cfg, ApiService) {
 
 }
 
-angular.module('userService', []).service('UserService', UserService);
+angular.module('nsd.service.user', ['nsd.service.api'])
+  .service('UserService', UserService);
+// angular.module('userService', []).service('UserService', UserService);

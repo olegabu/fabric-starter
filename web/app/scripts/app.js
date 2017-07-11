@@ -1,8 +1,15 @@
 /**
  *
  */
-angular.module('nsd.controller', []);
-angular.module('nsd.service', []);
+angular.module('nsd.controller', [
+  'nsd.controller.login',
+  'nsd.controller.channels'
+]);
+
+angular.module('nsd.service', [
+  'nsd.service.api',
+  'nsd.service.user'
+]);
 
 
 angular.module('nsd.app',
@@ -11,7 +18,7 @@ angular.module('nsd.app',
    'ui.materialize',
    'ui.router.title',
    'timeService',
-   'userService',
+   // 'userService',
    'peerService',
    'demoController',
    'bondListController',
@@ -38,6 +45,12 @@ angular.module('nsd.app',
     url: 'login',
     templateUrl: 'partials/login.html',
     controller: 'LoginController',
+    controllerAs: 'ctl'
+  })
+  .state('app.channels', {
+    url: 'channels',
+    templateUrl: 'partials/channels.html',
+    controller: 'ChannelsController',
     controllerAs: 'ctl'
   })
 
