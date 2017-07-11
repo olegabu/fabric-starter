@@ -1,0 +1,69 @@
+<div class="theme-settings white-text default-background" id="theme-settings">
+    <button class="btn-floating waves-effect waves-light" id="open-theme-settings">
+        <i class="zmdi zmdi-settings"></i>
+    </button>
+    <button class="close-settings btn btn-small waves-effect white" id="close-theme-settings">
+        <i class="zmdi zmdi-close"></i>
+    </button>
+    <div class="row">
+        <h5>Theme settings</h5>
+        <form>
+            <div class="row">
+                <label class="white-text"><strong>Floating Header</strong></label>
+                <div class="switch">
+                    <label class="white-text">
+                        Off <input type="checkbox" id="header-toggle"> <span class="lever"></span> On
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <label class="white-text"><strong>Layout Mode</strong></label>
+                <div class="center-align margin-top-10">
+                    <input type="radio" class="with-gap" checked="checked" name="layout-mode" id="full-width-layout">
+                    <label for="full-width-layout" class="white-text">full width</label>
+                    <input type="radio" class="with-gap" name="layout-mode" id="boxed-layout">
+                    <label for="boxed-layout" class="white-text">boxed</label>
+                </div>
+            </div>
+            <div class="row">
+                <label class="white-text"><strong>Navigation Style</strong></label>
+                <div class="center-align margin-top-10">
+                    <input type="radio" class="with-gap" checked="checked" name="navigation-style" id="vertical-navigation">
+                    <label for="vertical-navigation" class="white-text">vertical</label>
+                    <input type="radio" class="with-gap" name="navigation-style" id="horizontal-navigation">
+                    <label for="horizontal-navigation" class="white-text">horizontal</label>
+                </div>
+            </div>
+            <div class="row">
+                <label class="white-text"><strong>Color scheme</strong></label><br/>
+                <ul class="colors">
+                    <li class="pink darken-3 waves-effect waves-light" id="pink-scheme"></li>
+                    <li class="blue-scheme waves-effect waves-light" id="blue-scheme"></li>
+                    <li class="cyan-scheme waves-effect waves-light" id="cyan-scheme"></li>
+                    <li class="green-scheme waves-effect waves-light" id="green-scheme"></li>
+                    <li class="purple-scheme waves-effect waves-light" id="purple-scheme"></li>
+                    <li class="yellow-scheme waves-effect waves-light" id="yellow-scheme"></li>
+                    <li class="dark-scheme waves-effect waves-light" id="dark-scheme"></li>
+                </ul>
+            </div>
+            <div class="row">
+                <label class="white-text"><strong>Device Preview</strong></label><br/>
+                <ul class="device-preview">
+                    <li class="waves-effect waves-light" id="desktop-device"><i class="zmdi zmdi-desktop-windows zmdi-hc-2x"></i></li>
+                    <li class="waves-effect waves-light" id="smart-landscape-large"><i class="zmdi zmdi-smartphone-landscape zmdi-hc-2x"></i></li>
+                    <li class="waves-effect waves-light" id="smart-portrait-large"><i class="zmdi zmdi-smartphone zmdi-hc-2x"></i></li>
+                    <li class="waves-effect waves-light" id="smart-landscape-small"><i class="zmdi zmdi-smartphone-landscape zmdi-hc-lg"></i></li>
+                    <li class="waves-effect waves-light" id="smart-portrait-small"><i class="zmdi zmdi-smartphone zmdi-hc-lg"></i></li>
+                </ul>
+            </div>
+            <div class="row">
+                <label class="white-text"><strong>Reading mode</strong></label>
+                <div class="switch">
+                    <label class="white-text">
+                        LTR<input type="checkbox" id="reading-direction-toggle"><span class="lever"></span>RTL
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

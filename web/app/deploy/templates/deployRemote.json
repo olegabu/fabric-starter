@@ -1,0 +1,17 @@
+{
+  "jsonrpc": "2.0",
+  "method": "deploy",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "path": "github.com/olegabu/catbond/chaincode"
+    },
+    "ctorMsg": {
+      "function": "init",
+      "args": []
+    },
+    "secureContext": "issuer0",
+    "attributes": ["role"]
+  },
+  "id": 0
+}

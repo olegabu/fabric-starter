@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hyperledger Catastrophe Bond PoC</title>
+
+  <link type="image/x-icon" rel="shortcut icon" href="images/favicon.png">
+
+  <!-- Page styles -->
+
+  <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css">
+  <link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+  <!-- build:css styles/app.min.css -->
+  <link type="text/css" rel="stylesheet" href="styles/material-design-iconic-font.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/main.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/app.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/MyBlockchain.css"/>
+  <!-- endbuild -->
+
+</head>
+
+<body class="dark-scheme horizontal-navigation">
+<div class="wrapper vertical-sidebar">
+  <header id="header">
+    <nav>
+      <div class="nav-wrapper center">
+        <a href="#" sidenav data-activates="nav-mobile" class="button-collapse top-nav full waves-effect waves-light hide-on-large-only">
+          <i class="material-icons">menu</i>
+        </a>
+
+        <a class="logo" href="#">
+          <img class="hide-on-med-and-down" src="images/logo.png" alt="Catastrophe Bond">
+          <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
+        </a>
+
+        <ul class="menu hide-on-med-and-down" ng-controller="DemoController as ctl">
+          <li ng-show="ctl.getUser().role === 'issuer'">
+            <a ui-sref="demo.issuerContractList" ui-sref-active="menu-active">Contracts</a>
+          </li>
+          <li ng-show="ctl.getUser().role === 'issuer'">
+            <a ui-sref="demo.bondList" ui-sref-active="menu-active">Bonds</a>
+          </li>
+          <li ng-show="ctl.getUser().role === 'investor'">
+            <a ui-sref="demo.investorContractList" ui-sref-active="menu-active">Contracts</a>
+          </li>
+          <li ng-show="ctl.getUser().role === 'investor'">
+            <a ui-sref="demo.market" ui-sref-active="menu-active">Market</a>
+          </li>
+          <li ng-show="ctl.getUser().role === 'bank'">
+            <a ui-sref="demo.offline" ui-sref-active="menu-active">Offline payments</a>
+          </li>
+          <li>
+            <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
+              {{ctl.getUser().id}}
+              <i class="zmdi zmdi-caret-down drop-down-icon"></i>
+            </a>
+            <ul id="dropdown7" class="dropdown-content">
+              <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
+                <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="title hide-on-med-and-down">Catastrophe Bond</div>
+      </div>
+    </nav>
+  </header>
+  <aside class="sidebar-left" side-bar="" ng-controller="DemoController as ctl">
+    <ul class="side-nav fixed clearfix left" id="nav-mobile">
+      <li ng-show="ctl.getUser().role === 'issuer'">
+        <a ui-sref="demo.issuerContractList" ui-sref-active="menu-active">Contracts</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'issuer'">
+        <a ui-sref="demo.bondList" ui-sref-active="menu-active">Bonds</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'investor'">
+        <a ui-sref="demo.investorContractList" ui-sref-active="menu-active">Contracts</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'investor'">
+        <a ui-sref="demo.market" ui-sref-active="menu-active">Market</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'bank'">
+        <a ui-sref="demo.offline" ui-sref-active="menu-active">Offline payments</a>
+      </li>
+      <h5 class="center">Current user</h5>
+      <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
+        <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
+      </li>
+    </ul>
+  </aside>
+  <main id="content">
+    <div id="page-content">
+      <div ui-view>
+        <div class="loading">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="foot3">
+    <div class="f-cont col s6 m6 l3">
+      <p>Hyperledger Catastrophe Bond PoC</p>
+    </div>
+    <div class="f-cont valign-wrapper f-foot col s12 m12 l12">
+      <div class="left-align valign col s6 m6 l6">
+        <p class="copy">
+          ©Copyright 2016 - All Rights Reserved
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  cdn with fallback -->
+<script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
+<script>window._ || document.write('<script src="bower_components/lodash/lodash.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+<script>window.angular || document.write('<script src="bower_components/angular/angular.min.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+<script>window.angular || document.write('<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
+<script>window.angular || document.write('<script src="bower_components/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"><\/script>')</script>
+
+
+<!-- build:vendor scripts/vendor.min.js -->
+<script type="text/javascript" src="scripts/angular-local-storage.min.js"></script>
+<script type="text/javascript" src="scripts/materialize.js"></script>
+<script type="text/javascript" src="scripts/angular-materialize.js"></script>
+<script type="text/javascript" src="scripts/mara.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-ui-router-title/angular-ui-router-title.js"></script>
+<!-- endbuild -->
+
+<!-- build:js scripts/app.min.js -->
+<script src="scripts/config.js"></script>
+<script src="scripts/time-service.js"></script>
+<script src="scripts/user-service.js"></script>
+<script src="scripts/peer-service.js"></script>
+<!--<script src="scripts/peer-service-mock.js"></script>-->
+<script src="scripts/demo-controller.js"></script>
+<script src="scripts/bond-list-controller.js"></script>
+<script src="scripts/issuer-contract-list-controller.js"></script>
+<script src="scripts/investor-contract-list-controller.js"></script>
+<script src="scripts/market-controller.js"></script>
+<script src="scripts/offline-controller.js"></script>
+<script src="lib/MyBlockchain.js"></script>
+<script src="scripts/app.js"></script>
+<!-- endbuild -->
+
+</body>
+</html>
