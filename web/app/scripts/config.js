@@ -1,4 +1,5 @@
 window.disableThemeSettings = true;
+
 angular.module('config', [])
 .constant('cfg', {
 

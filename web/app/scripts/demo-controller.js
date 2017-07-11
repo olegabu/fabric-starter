@@ -3,8 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function DemoController($log, $state, 
-    cfg, TimeService, UserService, PeerService, $rootScope) {
+function DemoController($log, $state, cfg, TimeService, UserService, PeerService, $rootScope) {
 
   var ctl = this;
 
@@ -21,11 +20,11 @@ function DemoController($log, $state,
   };
 
   ctl.getUser = UserService.getUser;
-  
+
   ctl.user = UserService.getUser();
 
   ctl.users = UserService.getUsers();
-  
+
   ctl.setUser = function() {
     UserService.setUser(ctl.user);
 

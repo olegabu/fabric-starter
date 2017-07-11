@@ -1,24 +1,46 @@
-angular.module('app', ['ui.router',
-                       'ui.bootstrap',
-                       'ui.materialize',
-                       'ui.router.title',
-                       'timeService',
-                       'userService',
-                       'peerService',
-                       'demoController',
-                       'bondListController',
-                       'issuerContractListController',
-                       'investorContractListController',
-                       'marketController',
-                       'offlineController',
-                       'config',
-                       'MyBlockchain'])
+/**
+ *
+ */
+angular.module('nsd.controller', []);
+angular.module('nsd.service', []);
 
+
+angular.module('nsd.app',
+  ['ui.router',
+   'ui.bootstrap',
+   'ui.materialize',
+   'ui.router.title',
+   'timeService',
+   'userService',
+   'peerService',
+   'demoController',
+   'bondListController',
+   'issuerContractListController',
+   'investorContractListController',
+   'marketController',
+   'offlineController',
+   'config',
+   'MyBlockchain',
+
+   'nsd.controller',
+   'nsd.service'
+])
 .config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise('/');
 
   $stateProvider
+  .state('app', {
+    url: '/',
+    templateUrl: 'partials/app.html',
+  })
+  .state('app.login', {
+    url: 'login',
+    templateUrl: 'partials/login.html',
+    controller: 'LoginController',
+    controllerAs: 'ctl'
+  })
+
   .state('demo', {
     url: '/',
     templateUrl: 'partials/demo.html',

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="app">
+<html lang="en" ng-app="nsd.app">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,7 +36,7 @@
           <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
         </a>
 
-        <div class="title hide-on-med-and-down pull-left">Title</div>
+        <div class="title hide-on-med-and-down pull-left">NSD</div>
 
         <ul class="menu hide-on-med-and-down" ng-controller="DemoController as ctl" ng-cloak>
           <li ng-show="ctl.getUser().role === 'issuer'">
@@ -156,7 +156,10 @@
 <script src="scripts/investor-contract-list-controller.js"></script>
 <script src="scripts/market-controller.js"></script>
 <script src="scripts/offline-controller.js"></script>
+
 <script src="scripts/app.js"></script>
+<script src="scripts/login-controller.js"></script>
+<script src="scripts/api-service.js"></script>
 <!-- endbuild -->
 
 </body>

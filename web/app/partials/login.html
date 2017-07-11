@@ -1,0 +1,22 @@
+
+<h1>Login</h1>
+<p>Register and enroll new users in Organization</p>
+
+<form name="login_form" class="form-horizontal" novalidate>
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="Username" ng-model="user.username" required/>
+  </div>
+
+
+  <div class="form-group">
+    <label>Organization</label>
+    <select ng-model="user.orgName" material-select watch ng-options="org for org in ['org1', 'org2']" required></select>
+  </div>
+
+
+  <div class="form-group">
+    <button class="btn btn-primary" type="button" ng-click="ctl.signUp(user)" ng-disabled="login_form.$invalid">Sign up</button>
+  </div>
+
+</form>
