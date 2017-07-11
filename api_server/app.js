@@ -40,8 +40,12 @@ var port = process.env.PORT || config.port;
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SET CONFIGURATONS ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-app.options('*', cors());
-app.use(cors());
+function corsCb(req, cb){
+	cb(null, {origin: req.headers.origin, credentials:true});
+}
+app.options('*', cors(corsCb));
+app.use(cors(corsCb));
+
 //support parsing of application/json type post data
 app.use(bodyParser.json());
 //support parsing of application/x-www-form-urlencoded post data
