@@ -1,7 +1,7 @@
 var express = require('express');
 var MyEndpoint = require('./lib/MyEndpoint.js');
 
-var port =  process.env.GULP_PORT || 80;
+var port = process.env.GULP_PORT || process.env.PORT || 8080;
 
 
 var app = require('express')();
@@ -17,4 +17,4 @@ server.listen(port, function () {
 
 // listen protobuf socket
 
-app.use( express.static('app', { index: 'app.html'}) );
+app.use( express.static('app', { index: 'index.html'}) );
