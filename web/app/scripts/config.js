@@ -1,7 +1,12 @@
 window.disableThemeSettings = true;
 angular.module('config', [])
-.constant('cfg', 
-    {
+.constant('cfg', {
+
+  api:'http://localhost:4000',
+
+
+
+  // old
   endpoint: 'http://vp1.altoros.com:7050/chaincode',
   secureContext: 'user_type1_deadbeef',
   chaincodeID: "395026cb60bdb363672abfe16b56c3d165a438f1063ec5d3a9a067daec776c7b762fd3ed3f5c2a6ce5fb5468873a293b44026119f89dce8a3ea42648c8c59dcd",
