@@ -3,14 +3,14 @@
  */
 angular.module('nsd.controller', [
   'nsd.controller.login',
-  'nsd.controller.channels'
+  'nsd.controller.channels',
 ]);
 
 angular.module('nsd.service', [
   'nsd.service.api',
-  'nsd.service.user'
+  'nsd.service.user',
+  'nsd.service.channel'
 ]);
-
 
 angular.module('nsd.app',
   ['ui.router',
@@ -28,6 +28,8 @@ angular.module('nsd.app',
    'offlineController',
    'config',
    'MyBlockchain',
+
+   'LocalStorageModule',
 
    'nsd.controller',
    'nsd.service'
@@ -53,6 +55,8 @@ angular.module('nsd.app',
     controller: 'ChannelsController',
     controllerAs: 'ctl'
   })
+
+
 
   .state('demo', {
     url: '/',
@@ -102,5 +106,31 @@ angular.module('nsd.app',
       $title: function() { return 'Offline'; }
     }
   });
+
+})
+.run(function(UserService){
+  UserService.restoreAuthorization();
+})
+
+.config(function($httpProvider) {
+  $httpProvider.interceptors.push('bearerAuthIntercepter');
+})
+
+/**
+ * inject 'X-Requested-With' header
+ * inject 'Authorization: Bearer' token
+ */
+.factory('bearerAuthIntercepter', function($rootScope){
+    return {
+        request: function(config) {
+            config.headers['X-Requested-With'] = 'XMLHttpRequest'; // make ajax request visible among the others
+            config.withCredentials = true;
+
+            if($rootScope._tokenInfo){
+              config.headers['Authorization'] = 'Bearer '+$rootScope._tokenInfo.token;
+            }
+            return config;
+        }
+    };
 
 });

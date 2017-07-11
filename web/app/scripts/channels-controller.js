@@ -3,7 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function ChannelsController($log, ChannelService) {
+function ChannelsController(ChannelService) {
 
   var ctl = this;
 

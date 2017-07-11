@@ -57,8 +57,8 @@ function ApiService($log, $http, cfg) {
    * Queries the names of all the channels that a peer has joined.
    */
   ApiService.channels.list = function(){
-    return $http.get(cfg.api+'/channels')
-      .then(function(response){ return response.data; });
+    return $http.get(cfg.api+'/channels', {params:{peer:'peer1'}})
+      .then(function(response){ return response.data.channels; });
   };
 
 }

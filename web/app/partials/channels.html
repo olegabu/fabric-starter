@@ -1,1 +1,6 @@
-<h1>Channels {{ctl.channels.length}}</h1>
+<h1>Channels</h1>
+
+<ul>
+  <li ng-repeat="ch in ctl.channels">{{::ch.channel_id}}</li>
+</ul>
+<p>Total: {{ctl.channels.length||0}}</p>

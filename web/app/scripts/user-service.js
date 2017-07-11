@@ -3,19 +3,19 @@
  * @classdesc
  * @ngInject
  */
-function UserService($log, $rootScope, cfg, ApiService) {
+function UserService($log, $rootScope, cfg, ApiService, localStorageService) {
 
   // jshint shadow: true
   var UserService = this;
 
-  var user = cfg.users[0];
+  var _user = cfg.users[0];
 
-  UserService.setUser = function(u) {
-    user = u;
+  UserService.setUser = function(user) {
+    _user = user;
   };
 
   UserService.getUser = function() {
-    return user;
+    return _user;
   };
 
   UserService.getUsers = function() {
@@ -30,11 +30,21 @@ function UserService($log, $rootScope, cfg, ApiService) {
     return ApiService.user.signUp(user.username, user.orgName)
       .then(function(/** @type {TokenInfo} */data){
         $rootScope._tokenInfo = data;
+        UserService.saveAuthorization(data);
         return data;
       });
   };
 
 
+  UserService.saveAuthorization = function(user){
+    localStorageService.set('user', user);
+  };
+
+  UserService.restoreAuthorization = function(){
+    var tokenInfo = localStorageService.get('user');
+    $log.info('UserService.restoreAuthorization', tokenInfo);
+    $rootScope._tokenInfo = tokenInfo;
+  };
 }
 
 angular.module('nsd.service.user', ['nsd.service.api'])
