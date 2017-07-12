@@ -23,6 +23,10 @@ var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Query');
 
+
+/**
+ *
+ */
 var queryChaincode = function(peer, channelName, chaincodeName, args, fcn, username, org) {
 	var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
@@ -64,6 +68,11 @@ var queryChaincode = function(peer, channelName, chaincodeName, args, fcn, usern
 			err;
 	});
 };
+
+
+/**
+ *
+ */
 var getBlockByNumber = function(peer, blockNumber, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
@@ -92,6 +101,11 @@ var getBlockByNumber = function(peer, blockNumber, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
+
+
+/**
+ *
+ */
 var getTransactionByID = function(peer, trxnID, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
@@ -119,12 +133,16 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
+
+
+/**
+ *
+ */
 var getBlockByHash = function(peer, hash, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
-
 	return helper.getRegisteredUsers(username, org).then((member) => {
-		return channel.queryBlockByHash(Buffer.from(hash), target);
+		return channel.queryBlockByHash(Buffer.from(hash, 'base64'), target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
 		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
@@ -146,6 +164,11 @@ var getBlockByHash = function(peer, hash, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
+
+
+/**
+ *
+ */
 var getChainInfo = function(peer, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
@@ -160,10 +183,14 @@ var getChainInfo = function(peer, username, org) {
 		if (blockchainInfo) {
 			// FIXME: Save this for testing 'getBlockByHash'  ?
 			logger.debug('===========================================');
-			logger.debug(blockchainInfo.currentBlockHash);
+			logger.debug(blockchainInfo);
 			logger.debug('===========================================');
 			//logger.debug(blockchainInfo);
-			return blockchainInfo;
+
+			var currentBlockHash  = blockchainInfo.currentBlockHash.toBase64();
+			var previousBlockHash = blockchainInfo.previousBlockHash.toBase64();
+
+			return {currentBlockHash:currentBlockHash, previousBlockHash:previousBlockHash};
 		} else {
 			logger.error('response_payloads is null');
 			return 'response_payloads is null';
@@ -177,6 +204,11 @@ var getChainInfo = function(peer, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
+
+
+/**
+ *
+ */
 //getInstalledChaincodes
 var getInstalledChaincodes = function(peer, type, username, org) {
 	var target = buildTarget(peer, org);
@@ -223,6 +255,9 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 };
 
 
+/**
+ *
+ */
 var getChannels = function(peer, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
@@ -258,6 +293,7 @@ var getChannels = function(peer, username, org) {
 	});
 };
 
+
 function buildTarget(peer, org) {
 	var target = null;
 	if (typeof peer !== 'undefined') {
@@ -267,6 +303,7 @@ function buildTarget(peer, org) {
 
 	return target;
 }
+
 
 exports.queryChaincode = queryChaincode;
 exports.getBlockByNumber = getBlockByNumber;
