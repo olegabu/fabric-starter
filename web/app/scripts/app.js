@@ -30,6 +30,7 @@ angular.module('nsd.app',
    'MyBlockchain',
 
    'LocalStorageModule',
+   'jsonFormatter',
 
    'nsd.controller',
    'nsd.service'

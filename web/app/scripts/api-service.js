@@ -61,6 +61,27 @@ function ApiService($log, $http, cfg) {
       .then(function(response){ return response.data.channels; });
   };
 
+  /**
+   * Queries the names of all the channels that a peer has joined.
+   * @param {string} channelName
+   * @return {Promise<{currentBlockHash:string, previousBlockHash:string}>}
+   */
+  ApiService.channels.get = function(channelName){
+    return $http.get(cfg.api+'/channels/'+channelName, {params:{peer:'peer1'}})
+      .then(function(response){ return response.data.currentBlockHash; });
+  };
+
+  /**
+   * Queries the names of all the channels that a peer has joined.
+   * @param {string} channelName
+   * @param {string} blockHash - base64 block hash
+   * @return {Promise<{currentBlockHash:string, previousBlockHash:string}>}
+   */
+  ApiService.channels.getBlock = function(channelName, blockHash){
+    return $http.get(cfg.api+'/channels/'+channelName+'/blocks', {params:{peer:'peer1', hash:blockHash}})
+      .then(function(response){ return response.data; });
+  };
+
 
 
 

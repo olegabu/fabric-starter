@@ -16,13 +16,23 @@ function ChannelService(cfg, ApiService) {
 
 
   /**
-   * @param {string} user
    */
-  ChannelService.listChaincodes = function(user) {
+  ChannelService.listChaincodes = function() {
     return ApiService.chaincodes.list();
   };
 
 
+
+  /**
+   * @param {string} blockHash
+   */
+  ChannelService.getLastBlock = function(blockHash) {
+    var channelId = 'mychannel';
+    return ApiService.channels.get(channelId)
+      .then(function(currentBlockHash){
+        return ApiService.channels.getBlock(channelId, currentBlockHash);
+      });
+  };
 
 
 }

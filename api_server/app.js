@@ -14,19 +14,20 @@
  *  limitations under the License.
  */
 'use strict';
+var http = require('http');
+var util = require('util');
 var log4js = require('log4js');
 var logger = log4js.getLogger('SampleWebApp');
 var express = require('express');
-var session = require('express-session');
-var cookieParser = require('cookie-parser');
+// var session = require('express-session');
+// var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var http = require('http');
-var util = require('util');
-var app = express();
 var expressJWT = require('express-jwt');
 var jwt = require('jsonwebtoken');
-var bearerToken = require('express-bearer-token');
 var cors = require('cors');
+var bearerToken = require('express-bearer-token');
+var app = express();
+
 var config = require('./config.json');
 var helper = require('./app/helper.js');
 var channels = require('./app/create-channel.js');
@@ -61,6 +62,19 @@ app.use(expressJWT({
 }));
 app.use(bearerToken());
 
+app.use(function(req,res,next){
+	// replace res.send()
+	var originalSend = res.send;
+
+	res.send = function(data){
+		// replace Buffer with Buffer value recursively in the object
+		data = replaceBuffer(data);
+		return originalSend.call(res, data);
+	};
+
+	next();
+});
+
 app.use(function(req, res, next) {
 	if (req.originalUrl.indexOf('/users') >= 0) {
 		return next();
@@ -90,11 +104,13 @@ app.use(function(req, res, next) {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// START SERVER /////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-var server = http.createServer(app).listen(port, function() {});
-logger.info('****************** SERVER STARTED ************************');
-logger.info('**************  http://' + host + ':' + port +
-	'  ******************');
+var server = http.createServer(app).listen(port, function() {
+	logger.info('****************** SERVER STARTED ************************');
+	logger.info('**************  http://' + server.address().address + ':' + server.address().port +	'  ******************');
+	// logger.debug(server.address());
+});
 server.timeout = 240000;
+
 
 function getErrorMessage(field) {
 	var response = {
@@ -428,3 +444,24 @@ app.get('/channels', function(req, res) {
 		res.send(message);
 	});
 });
+
+
+
+
+function isObject(obj) {
+  return obj !== null && typeof obj === 'object';
+}
+
+
+function replaceBuffer(data){
+	if(isObject(data)){
+		if (data instanceof Buffer){
+			data = data.toString('base64');
+		} else {
+			Object.keys(data).forEach(function(propery){
+				data[propery] = replaceBuffer(data[propery]);
+			});
+		}
+	}
+	return data;
+}

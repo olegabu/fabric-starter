@@ -9,6 +9,7 @@ function ChannelsController(ChannelService) {
 
   ctl.channels = [];
   ctl.chaincodes = [];
+  ctl.blockInfo = {};
 
 
   ctl.updateChannels = function(){
@@ -23,11 +24,19 @@ function ChannelsController(ChannelService) {
     });
   };
 
+  ctl.updateLastBlock = function(){
+    return ChannelService.getLastBlock().then(function(blockInfo){
+      ctl.blockInfo = blockInfo;
+    });
+  };
+
 
   ctl.updateChannels()
     .then(function(){
-      ctl.updateChaincodes();
-    });
+      return ctl.updateChaincodes();
+    }).then(function(){
+      return ctl.updateLastBlock();
+    })
 }
 
 angular.module('nsd.controller.channels', ['nsd.service.channel'])
