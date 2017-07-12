@@ -397,7 +397,7 @@ app.get('/channels/:channelName', function(req, res) {
 // Query to fetch all Installed/instantiated chaincodes
 app.get('/chaincodes', function(req, res) {
 	var peer = req.query.peer;
-	var installType = req.query.type;
+	var installType = req.query.type || 'installed';
 	//TODO: add Constnats
 	if (installType === 'installed') {
 		logger.debug(

@@ -200,16 +200,14 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 			} else {
 				logger.debug('<<< Instantiated Chaincodes >>>');
 			}
-			var details = [];
+
 			for (let i = 0; i < response.chaincodes.length; i++) {
 				logger.debug('name: ' + response.chaincodes[i].name + ', version: ' +
 					response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
 				);
-				details.push('name: ' + response.chaincodes[i].name + ', version: ' +
-					response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
-				);
 			}
-			return details;
+
+			return response;
 		} else {
 			logger.error('response is null');
 			return 'response is null';
@@ -223,6 +221,8 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
+
+
 var getChannels = function(peer, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);

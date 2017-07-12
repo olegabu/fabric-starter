@@ -1,6 +1,16 @@
-<h1>Channels</h1>
+<h2>Channels</h2>
 
 <ul>
   <li ng-repeat="ch in ctl.channels">{{::ch.channel_id}}</li>
 </ul>
 <p>Total: {{ctl.channels.length||0}}</p>
+
+
+
+<h2>Chaincodes</h2>
+
+<ul>
+  <li ng-repeat="ch in ctl.chaincodes">{{::ch.name}}</li>
+</ul>
+<p>Total: {{ctl.chaincodes.length||0}}</p>
+

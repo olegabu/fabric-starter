@@ -9,11 +9,20 @@ function ChannelService(cfg, ApiService) {
   var ChannelService = this;
 
   /**
-   * @param {string} user
    */
   ChannelService.list = function(user) {
     return ApiService.channels.list();
   };
+
+
+  /**
+   * @param {string} user
+   */
+  ChannelService.listChaincodes = function(user) {
+    return ApiService.chaincodes.list();
+  };
+
+
 
 
 }

@@ -335,8 +335,8 @@ var getLogger = function(moduleName) {
 };
 
 var getPeerAddressByName = function(org, peer) {
-	console.log(ORGS);
-	console.log(org, peer);
+	// console.log(ORGS);
+	// console.log(org, peer);
 	var address = ORGS[org][peer].requests;
 	return address.split('grpcs://')[1];
 };
