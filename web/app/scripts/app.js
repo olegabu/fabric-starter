@@ -37,7 +37,7 @@ angular.module('nsd.app',
 ])
 .config(function($stateProvider, $urlRouterProvider) {
 
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/login');
 
   $stateProvider
   .state('app', {

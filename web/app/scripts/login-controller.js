@@ -2,10 +2,14 @@
  * @class LoginController
  * @ngInject
  */
-function LoginController($scope, UserService, $state) {
+function LoginController($scope, UserService, $state, ApiService) {
   var ctl = this;
 
-  // ctl.organisations = ['org1', 'org2'];
+  ctl.org = null;
+
+  ApiService.getConfig().then(function(config){
+    ctl.org = config.org;
+  });
 
   ctl.signUp = function(user){
     return UserService.signUp(user)

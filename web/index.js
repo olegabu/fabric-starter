@@ -1,7 +1,7 @@
 var express = require('express');
-var MyEndpoint = require('./lib/MyEndpoint.js');
+// var MyEndpoint = require('./lib/MyEndpoint.js');
 
-var port = process.env.GULP_PORT || process.env.PORT || 8080;
+var port = process.env.PORT || 8080;
 
 
 var app = require('express')();

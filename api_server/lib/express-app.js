@@ -61,6 +61,15 @@ app.use(bodyParser.urlencoded({
 app.use(expressPromise());
 
 
+// relax cors
+function corsCb(req, cb){
+  cb(null, {origin: req.headers.origin, credentials:true});
+}
+app.options('*', cors(corsCb));
+app.use(cors(corsCb));
+
+
+
 // enable admin party before authorization and cors
 var adminPartyApp = express();
 if(config.admin_party) {
@@ -69,21 +78,16 @@ if(config.admin_party) {
 }
 
 
-// relax cors
-function corsCb(req, cb){
-    cb(null, {origin: req.headers.origin, credentials:true});
-}
-app.options('*', cors(corsCb));
-app.use(cors(corsCb));
-
 
 // set secret variable
 app.set('secret', config.jwt_secret);
+
+var pathExcluded = ['/config'];
 app.use(expressJWT({
     secret: config.jwt_secret
-})/*.unless({
-    path: ['/users']
-})*/);
+}).unless({
+    path: pathExcluded
+}));
 
 // extract token
 // https://www.npmjs.com/package/express-bearer-token
@@ -103,7 +107,7 @@ app.use(function(req,res,next){
 
 // verify token
 app.use(function(req, res, next) {
-    if (req.originalUrl.indexOf('/users') >= 0) {
+    if ( pathExcluded.indexOf(req.originalUrl) >= 0) {
         return next();
     }
 
@@ -299,6 +303,14 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 
 
 ///////////////////////// REGULAR REST ENDPOINTS START HERE ///////////////////////////
+
+// get public config
+app.get('/config', function(req, res) {
+    res.send({
+        channelName:config.channelName,
+        org:config.org
+    });
+});
 
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {

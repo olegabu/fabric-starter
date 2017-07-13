@@ -8,6 +8,12 @@ function ApiService($log, $http, cfg) {
   // jshint shadow: true
   var ApiService = this;
 
+
+  ApiService.getConfig = function(){
+      return $http.get(cfg.api+'/config')
+          .then(function(response){ return response.data; });
+  };
+
   ApiService.user = {};
   /**
    * @typedef {string} jwtString
