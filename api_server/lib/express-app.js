@@ -307,8 +307,8 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 // get public config
 app.get('/config', function(req, res) {
     res.send({
-        channelName:config.channelName,
-        org:config.org
+        channel: config.channelName,
+        org:     config.org
     });
 });
 
@@ -412,6 +412,23 @@ app.get('/channels/:channelName/blocks/:blockId', function(req, res) {
         });
 });
 
+// Query Get Block by Hash
+app.get('/channels/:channelName/blocks', function(req, res) {
+  logger.debug('================ GET BLOCK BY HASH ======================');
+  logger.debug('channelName : ' + req.params.channelName);
+  let hash = req.query.hash;
+  let peer = req.query.peer;
+  if (!hash) {
+    res.error(getErrorMessage('\'hash\''));
+    return;
+  }
+
+  query.getBlockByHash(peer, hash, req.username, req.orgname).then(
+    function(message) {
+      res.send(message);
+    });
+});
+
 
 // Query Get Transaction by Transaction ID
 app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
@@ -433,22 +450,6 @@ app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
 });
 
 
-// Query Get Block by Hash
-app.get('/channels/:channelName/blocks', function(req, res) {
-    logger.debug('================ GET BLOCK BY HASH ======================');
-    logger.debug('channelName : ' + req.params.channelName);
-    let hash = req.query.hash;
-    let peer = req.query.peer;
-    if (!hash) {
-        res.error(getErrorMessage('\'hash\''));
-        return;
-    }
-
-    query.getBlockByHash(peer, hash, req.username, req.orgname).then(
-        function(message) {
-            res.send(message);
-        });
-});
 
 
 //Query for Channel Information

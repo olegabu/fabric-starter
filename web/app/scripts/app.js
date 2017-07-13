@@ -3,7 +3,8 @@
  */
 angular.module('nsd.controller', [
   'nsd.controller.login',
-  'nsd.controller.channels',
+  'nsd.controller.channels',,
+  'nsd.controller.audit',
 ]);
 
 angular.module('nsd.service', [
@@ -54,6 +55,12 @@ angular.module('nsd.app',
     url: 'channels',
     templateUrl: 'partials/channels.html',
     controller: 'ChannelsController',
+    controllerAs: 'ctl'
+  })
+  .state('app.audit', {
+    url: 'audit',
+    templateUrl: 'partials/audit.html',
+    controller: 'AuditController',
     controllerAs: 'ctl'
   })
 

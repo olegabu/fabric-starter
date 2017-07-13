@@ -13,13 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-var path = require('path');
-var fs = require('fs');
-var util = require('util');
-var hfc = require('fabric-client');
-var Peer = require('fabric-client/lib/Peer.js');
-var EventHub = require('fabric-client/lib/EventHub.js');
-var config = require('../config.json');
+"use strict";
 var helper = require('./helper.js');
 var logger = helper.getLogger('Query');
 
@@ -32,7 +26,7 @@ var queryChaincode = function(peer, channelName, chaincodeName, args, fcn, usern
 	var client = helper.getClientForOrg(org);
 	var target = buildTarget(peer, org);
 	return helper.getRegisteredUsers(username, org).then((user) => {
-		tx_id = client.newTransactionID();
+		var tx_id = client.newTransactionID();
 		// send query
 		var request = {
 			chaincodeId: chaincodeName,
@@ -298,7 +292,9 @@ function buildTarget(peer, org) {
 	var target = null;
 	if (typeof peer !== 'undefined') {
 		let targets = helper.newPeers([helper.getPeerAddressByName(org, peer)]);
-		if (targets && targets.length > 0) target = targets[0];
+		if (targets && targets.length > 0) {
+			target = targets[0];
+    }
 	}
 
 	return target;

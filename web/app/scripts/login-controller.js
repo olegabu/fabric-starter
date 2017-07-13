@@ -5,10 +5,10 @@
 function LoginController($scope, UserService, $state, ApiService) {
   var ctl = this;
 
-  ctl.org = null;
+  ctl.config = null;
 
   ApiService.getConfig().then(function(config){
-    ctl.org = config.org;
+    ctl.config = config;
   });
 
   ctl.signUp = function(user){
