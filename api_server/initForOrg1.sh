@@ -9,7 +9,7 @@ curl -s -X POST \
   -H "content-type: application/json" \
   -d '{"channelName":"mychannel","channelConfigPath":"../../artifacts/channel/mychannel.tx"}'
 
-
+sleep 5
 echo
 echo "===== Adding channel members ====="
 echo
@@ -19,6 +19,7 @@ curl -s -X POST \
   -d '{"peers": ["localhost:7051","localhost:7056"]}'
 
 
+sleep 5
 echo
 echo "===== Uploading smart contract ====="
 echo
@@ -32,6 +33,7 @@ curl -s -X POST \
 	"chaincodeVersion":"v0"
   }'
 
+sleep 5
 echo
 echo "===== Instantiate smart contract ====="
 echo
