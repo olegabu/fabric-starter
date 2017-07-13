@@ -1,9 +1,7 @@
 {
-  "node": true,
   "browser": true,
-  "esnext": true,
+  "esversion": 5,
   "bitwise": true,
-  "camelcase": true,
   "curly": true,
   "eqeqeq": true,
   "immed": true,
@@ -15,5 +13,6 @@
   "unused": "vars",
   "strict": false,
   "predef": ["$","jQuery","angular","_","moment","AWS","DynamoDB","Stripe","chance","emailAddresses","md5","toastr","jstz"],
-  "camelcase" : false
+  "camelcase" : false,
+  "sub":true
 }

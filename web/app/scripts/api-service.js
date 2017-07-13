@@ -136,5 +136,5 @@ function ApiService($log, $http, cfg) {
 
 
 
-angular.module('nsd.service.api', [])
+angular.module('nsd.service.api', ['nsd.config'])
   .service('ApiService', ApiService);

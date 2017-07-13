@@ -3,25 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function UserService($log, $rootScope, cfg, ApiService, localStorageService) {
-
-  // jshint shadow: true
-  var UserService = this;
-
-  var _user = cfg.users[0];
-
-  UserService.setUser = function(user) {
-    _user = user;
-  };
-
-  UserService.getUser = function() {
-    return _user;
-  };
-
-  UserService.getUsers = function() {
-    return cfg.users;
-  };
-
+function UserService($log, $rootScope, ApiService, localStorageService) {
 
   /**
    * @param {{username:string, orgName:string}} user
@@ -45,6 +27,8 @@ function UserService($log, $rootScope, cfg, ApiService, localStorageService) {
     $log.info('UserService.restoreAuthorization', tokenInfo);
     $rootScope._tokenInfo = tokenInfo;
   };
+
+  return UserService;
 }
 
 angular.module('nsd.service.user', ['nsd.service.api'])

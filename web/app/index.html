@@ -39,7 +39,8 @@
 
         <div class="title hide-on-med-and-down pull-left">NSD</div>
 
-        <ul class="menu hide-on-med-and-down" ng-controller="DemoController as ctl" ng-cloak>
+        <!--
+        <ul class="menu hide-on-med-and-down" --ng-controller="DemoController as ctl" hidden>
           <li ng-show="ctl.getUser().role === 'issuer'">
             <a ui-sref="demo.issuerContractList" ui-sref-active="menu-active">Contracts</a>
           </li>
@@ -67,11 +68,13 @@
             </ul>
           </li>
         </ul>
+        -->
 
       </div>
     </nav>
   </header>
-  <aside class="sidebar-left" side-bar="" ng-controller="DemoController as ctl">
+  <!--
+  <aside class="sidebar-left" side-bar="" --ng-controller="DemoController as ctl" hidden>
     <ul class="side-nav fixed clearfix left" id="nav-mobile">
       <li ng-show="ctl.getUser().role === 'issuer'">
         <a ui-sref="demo.issuerContractList" ui-sref-active="menu-active">Contracts</a>
@@ -94,6 +97,7 @@
       </li>
     </ul>
   </aside>
+  -->
   <main id="content">
     <div id="page-content">
       <div ui-view>
@@ -148,17 +152,7 @@
 
 <!-- build:js scripts/app.min.js -->
 <script src="scripts/config.js"></script>
-<script src="scripts/time-service.js"></script>
 <script src="scripts/user-service.js"></script>
-<script src="scripts/peer-service.js"></script>
-<!--<script src="scripts/peer-service-mock.js"></script>-->
-<script src="scripts/demo-controller.js"></script>
-<script src="scripts/bond-list-controller.js"></script>
-<script src="scripts/issuer-contract-list-controller.js"></script>
-<script src="scripts/investor-contract-list-controller.js"></script>
-<script src="scripts/market-controller.js"></script>
-<script src="scripts/offline-controller.js"></script>
-
 
 <!-- bootstrap app -->
 <script src="scripts/app.js"></script>
