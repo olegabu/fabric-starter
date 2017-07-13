@@ -102,6 +102,24 @@ function ApiService($log, $http, cfg) {
       .then(function(response){ return response.data.chaincodes; });
   };
 
+
+
+
+  ApiService.sc = {};
+
+  /**
+   * @param {string} fcn
+   * @param {Array} [args]
+   */
+  ApiService.sc.invoke = function(fcn, args){
+    var payload = {
+      fcn:fcn,
+      args:args||[]
+    };
+    return $http.post(cfg.api+'/channels/mychannel/chaincodes/mycc', payload)
+      .then(function(response){ return response.data; });
+  };
+
 }
 
 

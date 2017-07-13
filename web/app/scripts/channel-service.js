@@ -35,6 +35,16 @@ function ChannelService(cfg, ApiService) {
   };
 
 
+
+  /**
+   * @param {string} from
+   * @param {string} to
+   * @param {string} amount
+   */
+  ChannelService.scMove = function(from, to, amount){
+    return ApiService.sc.invoke('move', [from, to, amount]);
+  };
+
 }
 
 angular.module('nsd.service.channel', ['nsd.service.api'])

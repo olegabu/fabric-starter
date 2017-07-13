@@ -15,16 +15,12 @@
  */
 'use strict';
 var path = require('path');
-var fs = require('fs');
 var util = require('util');
-var hfc = require('fabric-client');
-var Peer = require('fabric-client/lib/Peer.js');
-var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
-var EventHub = require('fabric-client/lib/EventHub.js');
+
+var hfc = require('fabric-client');
 hfc.addConfigFile(path.join(__dirname, '../network-config.json'));
-var ORGS = hfc.getConfigSetting('network-config');
 
 var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args, username, org) {
 	logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
@@ -97,13 +93,10 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 						eh.disconnect();
 
 						if (code !== 'VALID') {
-							logger.error(
-								'The balance transfer transaction was invalid, code = ' + code);
+							logger.error('The balance transfer transaction was invalid, code = ' + code);
 							reject();
 						} else {
-							logger.info(
-								'The balance transfer transaction has been committed on peer ' +
-								eh._ep._endpoint.addr);
+							logger.info('The balance transfer transaction has been committed on peer ' + eh._ep._endpoint.addr);
 							resolve();
 						}
 					});
@@ -117,15 +110,11 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 				logger.debug(' event promise all complete and testing complete');
 				return results[0]; // the first returned value is from the 'sendPromise' which is from the 'sendTransaction()' call
 			}).catch((err) => {
-				logger.error(
-					'Failed to send transaction and get notifications within the timeout period.'
-				);
+				logger.error('Failed to send transaction and get notifications within the timeout period.', err);
 				return 'Failed to send transaction and get notifications within the timeout period.';
 			});
 		} else {
-			logger.error(
-				'Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...'
-			);
+			logger.error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
 			return 'Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...';
 		}
 	}, (err) => {

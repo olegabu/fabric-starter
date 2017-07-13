@@ -9,7 +9,8 @@
   "newcap": true,
   "noarg": true,
   "undef": true,
-  "unused": false,
+  "unused": true,
   "strict": true,
+  "sub":true,
   "camelcase" : false
 }

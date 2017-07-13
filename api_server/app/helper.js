@@ -22,8 +22,7 @@ var path = require('path');
 var util = require('util');
 var fs = require('fs-extra');
 var User = require('fabric-client/lib/User.js');
-var crypto = require('crypto');
-var copService = require('fabric-ca-client');
+var CopService = require('fabric-ca-client');
 var config = require('../config.json');
 
 var hfc = require('fabric-client');
@@ -53,9 +52,10 @@ for (let key in ORGS) {
 		setupPeers(channel, key, client);
 
 		let caUrl = ORGS[key].ca;
-		caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+		caClients[key] = new CopService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
 	}
 }
+
 
 function setupPeers(channel, org, client) {
 	for (let key in ORGS[org]) {
@@ -275,7 +275,7 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 				}, (err) => {
 					logger.error(util.format('%s enroll failed: %s', username, err.stack ? err.stack : err));
 					return '' + err;
-				});;
+				});
 			}
 		});
 	}).then((user) => {

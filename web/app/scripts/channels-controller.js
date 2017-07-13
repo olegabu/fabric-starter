@@ -30,6 +30,10 @@ function ChannelsController(ChannelService) {
     });
   };
 
+  ctl.scMove = function(){
+    ChannelService.scMove('a', 'b', '10');
+  };
+
 
   ctl.updateChannels()
     .then(function(){

@@ -315,7 +315,6 @@ app.get('/config', function(req, res) {
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
     logger.debug('==================== INVOKE ON CHAINCODE ==================');
-    var peers = req.body.peers;
     var chaincodeName = req.params.chaincodeName;
     var channelName = req.params.channelName;
     var fcn = req.body.fcn;
@@ -324,10 +323,6 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     logger.debug('chaincodeName : ' + chaincodeName);
     logger.debug('fcn  : ' + fcn);
     logger.debug('args  : ' + args);
-    if (!peers || peers.length == 0) {
-        res.error(getErrorMessage('\'peers\''));
-        return;
-    }
     if (!chaincodeName) {
         res.error(getErrorMessage('\'chaincodeName\''));
         return;
@@ -345,10 +340,9 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
         return;
     }
 
-    invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+  res.promise(
+    invoke.invokeChaincode(config.peers, channelName, chaincodeName, fcn, args, USERNAME, ORG)
+  );
 });
 
 
