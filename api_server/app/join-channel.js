@@ -13,14 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+"use strict";
 var util = require('util');
 var path = require('path');
 var fs = require('fs');
 
-var Peer = require('fabric-client/lib/Peer.js');
-var EventHub = require('fabric-client/lib/EventHub.js');
 var tx_id = null;
-var nonce = null;
 var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Join-Channel');
@@ -28,29 +26,29 @@ var logger = helper.getLogger('Join-Channel');
 var ORGS = helper.ORGS;
 var allEventhubs = [];
 
+// on process exit, always disconnect the event hub
+var closeConnections = function(isSuccess) {
+    if (isSuccess) {
+        logger.debug('\n============ Join Channel is SUCCESS ============\n');
+    } else {
+        logger.debug('\n!!!!!!!! ERROR: Join Channel FAILED !!!!!!!!\n');
+    }
+    logger.debug('');
+    for (var key in allEventhubs) {
+        var eventhub = allEventhubs[key];
+        if (eventhub && eventhub.isconnected()) {
+            //logger.debug('Disconnecting the event hub');
+            eventhub.disconnect();
+        }
+    }
+};
+
 //
 //Attempt to send a request to the orderer with the sendCreateChain method
 //
 var joinChannel = function(channelName, peers, username, org) {
-	// on process exit, always disconnect the event hub
-	var closeConnections = function(isSuccess) {
-		if (isSuccess) {
-			logger.debug('\n============ Join Channel is SUCCESS ============\n');
-		} else {
-			logger.debug('\n!!!!!!!! ERROR: Join Channel FAILED !!!!!!!!\n');
-		}
-		logger.debug('');
-		for (var key in allEventhubs) {
-			var eventhub = allEventhubs[key];
-			if (eventhub && eventhub.isconnected()) {
-				//logger.debug('Disconnecting the event hub');
-				eventhub.disconnect();
-			}
-		}
-	};
 	//logger.debug('\n============ Join Channel ============\n')
-	logger.info(util.format(
-		'Calling peers in organization "%s" to join the channel', org));
+	logger.info(util.format('Calling peers in organization "%s" to join the channel', org));
 
 	var client = helper.getClientForOrg(org);
 	var channel = helper.getChannelForOrg(org);
@@ -93,11 +91,16 @@ var joinChannel = function(channelName, peers, username, org) {
 		var eventPromises = [];
 		eventhubs.forEach((eh) => {
 			let txPromise = new Promise((resolve, reject) => {
-				let handle = setTimeout(reject, parseInt(config.eventWaitTime));
+
+				let handle = setTimeout(function(){
+				    reject('Timeout');
+                }, parseInt(config.eventWaitTime));
+
+
 				eh.registerBlockEvent((block) => {
 					clearTimeout(handle);
 					// in real-world situations, a peer may have more than one channels so
-					// we must check that this block came from the channel we asked the peer to join
+					// TODO: we must check that this block came from the channel we asked the peer to join
 					if (block.data.data.length === 1) {
 						// Config block must only contain one transaction
 						var channel_header = block.data.data[0].payload.header.channel_header;
@@ -108,17 +111,14 @@ var joinChannel = function(channelName, peers, username, org) {
 							reject();
 						}
 					}
-				});
+				}, function(err){
+                    reject(err);
+                });
 			});
 			eventPromises.push(txPromise);
 		});
 		let sendPromise = channel.joinChannel(request);
 		return Promise.all([sendPromise].concat(eventPromises));
-	}, (err) => {
-		logger.error('Failed to enroll user \'' + username + '\' due to error: ' +
-			err.stack ? err.stack : err);
-		throw new Error('Failed to enroll user \'' + username +
-			'\' due to error: ' + err.stack ? err.stack : err);
 	}).then((results) => {
 		logger.debug(util.format('Join Channel R E S P O N S E : %j', results));
 		if (results[0] && results[0][0] && results[0][0].response && results[0][0]
@@ -127,6 +127,7 @@ var joinChannel = function(channelName, peers, username, org) {
 				'Successfully joined peers in organization %s to the channel \'%s\'',
 				org, channelName));
 			closeConnections(true);
+
 			let response = {
 				success: true,
 				message: util.format(
@@ -139,7 +140,8 @@ var joinChannel = function(channelName, peers, username, org) {
 			closeConnections();
 			throw new Error('Failed to join channel');
 		}
-	}, (err) => {
+	}).catch((err) => {
+        err = err || {};
 		logger.error('Failed to join channel due to error: ' + err.stack ? err.stack :
 			err);
 		closeConnections();

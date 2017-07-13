@@ -1,10 +1,4 @@
 {
-    "host":"localhost",
-    "port":"4000",
-    "jwt_expiretime": "36000",
-    "jwt_secret":"thisismysecret",
-
-    "admin_party":true,
     "channelName":"mychannel",
     "GOPATH":"../../artifacts",
     "keyValueStore":"/tmp/fabric-client-kvs",
@@ -16,5 +10,19 @@
          "secret":"adminpw"
       }
     ],
+
+
+
+    "host":"localhost",
+    "port":"4000",
+    "jwt_expiretime": "36000",
+    "jwt_secret":"thisismysecret",
+
+    "admin_party":true,
+
+    "user":{
+      "username":"admin",
+      "secret":"adminpw"
+    },
     "org":"org1"
 }

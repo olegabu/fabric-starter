@@ -13,12 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+"use strict";
 var util = require('util');
 var fs = require('fs');
 var path = require('path');
-var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Create-Channel');
+
+
 //Attempt to send a request to the orderer with the sendCreateChain method
 var createChannel = function(channelName, channelConfigPath, username, orgName) {
 	logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
@@ -47,9 +49,6 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 
 		// send to orderer
 		return client.createChannel(request);
-	}, (err) => {
-		logger.error('Failed to enroll user \''+username+'\'. Error: ' + err);
-		throw new Error('Failed to enroll user \''+username+'\'' + err);
 	}).then((response) => {
 		logger.debug(' response ::%j', response);
 		if (response && response.status === 'SUCCESS') {
@@ -64,7 +63,7 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 				'\' !!!!!!!!!\n\n');
 			throw new Error('Failed to create the channel \'' + channelName + '\'');
 		}
-	}, (err) => {
+	}).catch((err) => {
 		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack :
 			err);
 		throw new Error('Failed to initialize the channel: ' + err.stack ? err.stack : err);

@@ -19,15 +19,30 @@ var expressPromise = require('./express-promise');
 var app = express();
 
 var config = require('../config.json');
+var networkConfig = require('../network-config.json')['network-config'];
 var helper = require('../app/helper.js');
-var channels = require('../app/create-channel.js');
-var join = require('../app/join-channel.js');
+var createChannel = require('../app/create-channel.js');
+var joinChannel = require('../app/join-channel.js');
 var install = require('../app/install-chaincode.js');
 var instantiate = require('../app/instantiate-chaincode.js');
 var invoke = require('../app/invoke-transaction.js');
 var query = require('../app/query.js');
 
+//
+const USERNAME = config.user.username;
+const ORG = config.org;
+const PEERS = Object.keys(networkConfig[ORG])
+    .filter(k=>k.startsWith('peer'))
+    .reduce((r, k)=>{
+        r[k] = networkConfig[ORG][k];
+        return r;
+    }, {});
 
+
+logger.info('**************    API SERVER     ******************');
+logger.info('Username  : ' + USERNAME);
+logger.info('Org name  : ' + ORG);
+logger.info('Peers: ', Object.keys(PEERS));
 
 
 module.exports = app;
@@ -123,27 +138,21 @@ function getErrorMessage(field) {
 // (admin party) Register and enroll user
 adminPartyApp.post('/users', function(req, res) {
     var username = req.body.username;
-    var orgName = req.body.orgName;
 
     logger.debug('End point : /users');
     logger.debug('User name : ' + username);
-    logger.debug('Org name  : ' + orgName);
 
     if (!username) {
         res.error(getErrorMessage('\'username\''));
         return;
     }
-    if (!orgName) {
-        res.error(getErrorMessage('\'orgName\''));
-        return;
-    }
     var token = jwt.sign({
         exp: Math.floor(Date.now() / 1000) + parseInt(config.jwt_expiretime),
         username: username,
-        orgName: orgName
+        orgName: ORG
     }, app.get('secret'));
 
-    helper.getRegisteredUsers(username, orgName, true).then(function(response) {
+    helper.getRegisteredUsers(username, ORG, true).then(function(response) {
         if (response && typeof response !== 'string') {
             response.token = token;
             res.json(response);
@@ -160,8 +169,10 @@ adminPartyApp.post('/channels', function(req, res) {
     logger.debug('End point : /channels');
     var channelName = req.body.channelName;
     var channelConfigPath = req.body.channelConfigPath;
+
     logger.debug('Channel name : ' + channelName);
-    logger.debug('channelConfigPath : ' + channelConfigPath); //../artifacts/channel/mychannel.tx
+    logger.debug('channelConfigPath : ' + channelConfigPath);
+
     if (!channelName) {
         res.error(getErrorMessage('\'channelName\''));
         return;
@@ -171,10 +182,12 @@ adminPartyApp.post('/channels', function(req, res) {
         return;
     }
 
-    channels.createChannel(channelName, channelConfigPath, req.username, req.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+    res.promise(
+        createChannel.createChannel(channelName, channelConfigPath, USERNAME, ORG)
+            .then(function(message) {
+                return message;
+            })
+    );
 });
 
 
@@ -185,6 +198,8 @@ adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
     var peers = req.body.peers;
     logger.debug('channelName : ' + channelName);
     logger.debug('peers : ' + peers);
+
+
     if (!channelName) {
         res.error(getErrorMessage('\'channelName\''));
         return;
@@ -194,20 +209,24 @@ adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
         return;
     }
 
-    join.joinChannel(channelName, peers, req.username, req.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+    res.promise(
+        joinChannel.joinChannel(channelName, peers, USERNAME, ORG)
+            .then(function(message) {
+                return message;
+            })
+    );
 });
 
 
 // (admin party) Install chaincode on target peers
 adminPartyApp.post('/chaincodes', function(req, res) {
     logger.debug('==================== INSTALL CHAINCODE ==================');
+
     var peers = req.body.peers;
     var chaincodeName = req.body.chaincodeName;
     var chaincodePath = req.body.chaincodePath;
     var chaincodeVersion = req.body.chaincodeVersion;
+
     logger.debug('peers : ' + peers); // target peers list
     logger.debug('chaincodeName : ' + chaincodeName);
     logger.debug('chaincodePath  : ' + chaincodePath);
@@ -229,7 +248,7 @@ adminPartyApp.post('/chaincodes', function(req, res) {
         return;
     }
 
-    install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, req.username, req.orgname)
+    install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, USERNAME, ORG)
         .then(function(message) {
             res.send(message);
         });
@@ -244,11 +263,13 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
     var channelName = req.params.channelName;
     var functionName = req.body.functionName;
     var args = req.body.args;
+
     logger.debug('channelName  : ' + channelName);
     logger.debug('chaincodeName : ' + chaincodeName);
     logger.debug('chaincodeVersion  : ' + chaincodeVersion);
     logger.debug('functionName  : ' + functionName);
     logger.debug('args  : ' + args);
+
     if (!chaincodeName) {
         res.error(getErrorMessage('\'chaincodeName\''));
         return;
@@ -270,12 +291,14 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
         return;
     }
 
-    instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.username, req.orgname)
+    instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, USERNAME, ORG)
         .then(function(message) {
             res.send(message);
         });
 });
 
+
+///////////////////////// REGULAR REST ENDPOINTS START HERE ///////////////////////////
 
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
