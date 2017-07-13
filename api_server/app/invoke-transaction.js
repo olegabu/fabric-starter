@@ -62,7 +62,7 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 			} else {
 				logger.error('transaction proposal was bad');
 			}
-			all_good = all_good & one_good;
+			all_good = all_good & one_good; // jshint ignore:line
 		}
 		if (all_good) {
 			logger.debug(util.format(
@@ -85,7 +85,7 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 				let eh = eventhubs[key];
 				eh.connect();
 
-				let txPromise = new Promise((resolve, reject) => {
+				let txPromise = new Promise((resolve, reject) => { // jshint ignore:line
 					let handle = setTimeout(() => {
 						eh.disconnect();
 						reject();
@@ -109,7 +109,9 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 					});
 				});
 				eventPromises.push(txPromise);
-			};
+			}
+
+
 			var sendPromise = channel.sendTransaction(request);
 			return Promise.all([sendPromise].concat(eventPromises)).then((results) => {
 				logger.debug(' event promise all complete and testing complete');

@@ -9,7 +9,7 @@
   "newcap": true,
   "noarg": true,
   "undef": true,
-  "unused": "vars",
+  "unused": false,
   "strict": true,
   "camelcase" : false
 }

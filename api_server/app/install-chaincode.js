@@ -54,7 +54,7 @@ var installChaincode = function(peers, chaincodeName, chaincodePath,
 			} else {
 				logger.error('install proposal was bad');
 			}
-			all_good = all_good & one_good;
+			all_good = all_good & one_good; // jshint ignore:line
 		}
 		if (all_good) {
 			logger.info(util.format(
