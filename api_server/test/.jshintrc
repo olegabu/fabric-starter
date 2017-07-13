@@ -1,0 +1,5 @@
+{
+//  "inherit": "../.jshintrc",
+  "mocha":true,
+  "strict":false
+}
