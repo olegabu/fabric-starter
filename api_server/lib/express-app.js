@@ -15,6 +15,7 @@ var expressJWT = require('express-jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var bearerToken = require('express-bearer-token');
+var expressPromise = require('./express-promise');
 var app = express();
 
 var config = require('../config.json');
@@ -99,12 +100,14 @@ app.use(function(req, res, next) {
 });
 
 
+// custom middleware: use res.promise() to send promise response
+app.use(expressPromise());
+
+
+
+
 function getErrorMessage(field) {
-    var response = {
-        success: false,
-        message: field + ' field is missing or Invalid in the request'
-    };
-    return response;
+    return field + ' field is missing or Invalid in the request';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,11 +121,11 @@ app.post('/users', function(req, res) {
     logger.debug('User name : ' + username);
     logger.debug('Org name  : ' + orgName);
     if (!username) {
-        res.json(getErrorMessage('\'username\''));
+        res.error(getErrorMessage('\'username\''));
         return;
     }
     if (!orgName) {
-        res.json(getErrorMessage('\'orgName\''));
+        res.error(getErrorMessage('\'orgName\''));
         return;
     }
     var token = jwt.sign({
@@ -153,11 +156,11 @@ app.post('/channels', function(req, res) {
     logger.debug('Channel name : ' + channelName);
     logger.debug('channelConfigPath : ' + channelConfigPath); //../artifacts/channel/mychannel.tx
     if (!channelName) {
-        res.json(getErrorMessage('\'channelName\''));
+        res.error(getErrorMessage('\'channelName\''));
         return;
     }
     if (!channelConfigPath) {
-        res.json(getErrorMessage('\'channelConfigPath\''));
+        res.error(getErrorMessage('\'channelConfigPath\''));
         return;
     }
 
@@ -176,11 +179,11 @@ app.post('/channels/:channelName/peers', function(req, res) {
     logger.debug('channelName : ' + channelName);
     logger.debug('peers : ' + peers);
     if (!channelName) {
-        res.json(getErrorMessage('\'channelName\''));
+        res.error(getErrorMessage('\'channelName\''));
         return;
     }
     if (!peers || peers.length == 0) {
-        res.json(getErrorMessage('\'peers\''));
+        res.error(getErrorMessage('\'peers\''));
         return;
     }
 
@@ -203,19 +206,19 @@ app.post('/chaincodes', function(req, res) {
     logger.debug('chaincodePath  : ' + chaincodePath);
     logger.debug('chaincodeVersion  : ' + chaincodeVersion);
     if (!peers || peers.length == 0) {
-        res.json(getErrorMessage('\'peers\''));
+        res.error(getErrorMessage('\'peers\''));
         return;
     }
     if (!chaincodeName) {
-        res.json(getErrorMessage('\'chaincodeName\''));
+        res.error(getErrorMessage('\'chaincodeName\''));
         return;
     }
     if (!chaincodePath) {
-        res.json(getErrorMessage('\'chaincodePath\''));
+        res.error(getErrorMessage('\'chaincodePath\''));
         return;
     }
     if (!chaincodeVersion) {
-        res.json(getErrorMessage('\'chaincodeVersion\''));
+        res.error(getErrorMessage('\'chaincodeVersion\''));
         return;
     }
 
@@ -240,23 +243,23 @@ app.post('/channels/:channelName/chaincodes', function(req, res) {
     logger.debug('functionName  : ' + functionName);
     logger.debug('args  : ' + args);
     if (!chaincodeName) {
-        res.json(getErrorMessage('\'chaincodeName\''));
+        res.error(getErrorMessage('\'chaincodeName\''));
         return;
     }
     if (!chaincodeVersion) {
-        res.json(getErrorMessage('\'chaincodeVersion\''));
+        res.error(getErrorMessage('\'chaincodeVersion\''));
         return;
     }
     if (!channelName) {
-        res.json(getErrorMessage('\'channelName\''));
+        res.error(getErrorMessage('\'channelName\''));
         return;
     }
     if (!functionName) {
-        res.json(getErrorMessage('\'functionName\''));
+        res.error(getErrorMessage('\'functionName\''));
         return;
     }
     if (!args) {
-        res.json(getErrorMessage('\'args\''));
+        res.error(getErrorMessage('\'args\''));
         return;
     }
     instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.username, req.orgname)
@@ -279,23 +282,23 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     logger.debug('fcn  : ' + fcn);
     logger.debug('args  : ' + args);
     if (!peers || peers.length == 0) {
-        res.json(getErrorMessage('\'peers\''));
+        res.error(getErrorMessage('\'peers\''));
         return;
     }
     if (!chaincodeName) {
-        res.json(getErrorMessage('\'chaincodeName\''));
+        res.error(getErrorMessage('\'chaincodeName\''));
         return;
     }
     if (!channelName) {
-        res.json(getErrorMessage('\'channelName\''));
+        res.error(getErrorMessage('\'channelName\''));
         return;
     }
     if (!fcn) {
-        res.json(getErrorMessage('\'fcn\''));
+        res.error(getErrorMessage('\'fcn\''));
         return;
     }
     if (!args) {
-        res.json(getErrorMessage('\'args\''));
+        res.error(getErrorMessage('\'args\''));
         return;
     }
 
@@ -321,19 +324,19 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
     logger.debug('args : ' + args);
 
     if (!chaincodeName) {
-        res.json(getErrorMessage('\'chaincodeName\''));
+        res.error(getErrorMessage('\'chaincodeName\''));
         return;
     }
     if (!channelName) {
-        res.json(getErrorMessage('\'channelName\''));
+        res.error(getErrorMessage('\'channelName\''));
         return;
     }
     if (!fcn) {
-        res.json(getErrorMessage('\'fcn\''));
+        res.error(getErrorMessage('\'fcn\''));
         return;
     }
     if (!args) {
-        res.json(getErrorMessage('\'args\''));
+        res.error(getErrorMessage('\'args\''));
         return;
     }
     args = args.replace(/'/g, '"');
@@ -356,7 +359,7 @@ app.get('/channels/:channelName/blocks/:blockId', function(req, res) {
     logger.debug('BlockID : ' + blockId);
     logger.debug('Peer : ' + peer);
     if (!blockId) {
-        res.json(getErrorMessage('\'blockId\''));
+        res.error(getErrorMessage('\'blockId\''));
         return;
     }
 
@@ -376,7 +379,7 @@ app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
     let trxnId = req.params.trxnId;
     let peer = req.query.peer;
     if (!trxnId) {
-        res.json(getErrorMessage('\'trxnId\''));
+        res.error(getErrorMessage('\'trxnId\''));
         return;
     }
 
@@ -394,7 +397,7 @@ app.get('/channels/:channelName/blocks', function(req, res) {
     let hash = req.query.hash;
     let peer = req.query.peer;
     if (!hash) {
-        res.json(getErrorMessage('\'hash\''));
+        res.error(getErrorMessage('\'hash\''));
         return;
     }
 
@@ -445,7 +448,7 @@ app.get('/channels', function(req, res) {
     logger.debug('peer: ' + req.query.peer);
     var peer = req.query.peer;
     if (!peer) {
-        res.json(getErrorMessage('\'peer\''));
+        res.error(getErrorMessage('\'peer\''));
         return;
     }
 
@@ -454,6 +457,13 @@ app.get('/channels', function(req, res) {
             message) {
             res.send(message);
         });
+});
+
+
+
+// at last - report any error =)
+app.use(function(err, req, res, next) {
+    res.error(err);
 });
 
 
