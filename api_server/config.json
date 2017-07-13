@@ -4,6 +4,7 @@
     "jwt_expiretime": "36000",
     "jwt_secret":"thisismysecret",
 
+    "admin_party":true,
     "channelName":"mychannel",
     "GOPATH":"../../artifacts",
     "keyValueStore":"/tmp/fabric-client-kvs",

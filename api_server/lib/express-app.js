@@ -28,11 +28,31 @@ var invoke = require('../app/invoke-transaction.js');
 var query = require('../app/query.js');
 
 
+
+
 module.exports = app;
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SET CONFIGURATONS ////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+//support parsing of application/json type post data
+app.use(bodyParser.json());
+//support parsing of application/x-www-form-urlencoded post data
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+// custom middleware: use res.promise() to send promise response
+app.use(expressPromise());
+
+
+// enable admin party before authorization and cors
+var adminPartyApp = express();
+if(config.admin_party) {
+    logger.info('**************    ADMIN PARTY ENABLED     ******************');
+    app.use(adminPartyApp);
+}
+
 
 // relax cors
 function corsCb(req, cb){
@@ -41,20 +61,14 @@ function corsCb(req, cb){
 app.options('*', cors(corsCb));
 app.use(cors(corsCb));
 
-//support parsing of application/json type post data
-app.use(bodyParser.json());
-//support parsing of application/x-www-form-urlencoded post data
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
 
 // set secret variable
 app.set('secret', config.jwt_secret);
 app.use(expressJWT({
     secret: config.jwt_secret
-}).unless({
+})/*.unless({
     path: ['/users']
-}));
+})*/);
 
 // extract token
 // https://www.npmjs.com/package/express-bearer-token
@@ -81,12 +95,9 @@ app.use(function(req, res, next) {
     var token = req.token;
     jwt.verify(token, app.get('secret'), function(err, decoded) {
         if (err) {
-            res.send({
-                success: false,
-                message: 'Failed to authenticate token. Make sure to include the ' +
+            res.error('Failed to authenticate token. Make sure to include the ' +
                 'token returned from /users call in the authorization header ' +
-                ' as a Bearer token'
-            });
+                ' as a Bearer token');
             return;
         } else {
             // add the decoded user name and org name to the request object
@@ -100,11 +111,6 @@ app.use(function(req, res, next) {
 });
 
 
-// custom middleware: use res.promise() to send promise response
-app.use(expressPromise());
-
-
-
 
 function getErrorMessage(field) {
     return field + ' field is missing or Invalid in the request';
@@ -113,13 +119,16 @@ function getErrorMessage(field) {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////// REST ENDPOINTS START HERE ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-// Register and enroll user
-app.post('/users', function(req, res) {
+
+// (admin party) Register and enroll user
+adminPartyApp.post('/users', function(req, res) {
     var username = req.body.username;
     var orgName = req.body.orgName;
+
     logger.debug('End point : /users');
     logger.debug('User name : ' + username);
     logger.debug('Org name  : ' + orgName);
+
     if (!username) {
         res.error(getErrorMessage('\'username\''));
         return;
@@ -133,22 +142,20 @@ app.post('/users', function(req, res) {
         username: username,
         orgName: orgName
     }, app.get('secret'));
+
     helper.getRegisteredUsers(username, orgName, true).then(function(response) {
         if (response && typeof response !== 'string') {
             response.token = token;
             res.json(response);
         } else {
-            res.json({
-                success: false,
-                message: response
-            });
+            res.error(response);
         }
     });
 });
 
 
-// Create Channel
-app.post('/channels', function(req, res) {
+// (admin party) Create Channel
+adminPartyApp.post('/channels', function(req, res) {
     logger.info('<<<<<<<<<<<<<<<<< C R E A T E  C H A N N E L >>>>>>>>>>>>>>>>>');
     logger.debug('End point : /channels');
     var channelName = req.body.channelName;
@@ -171,8 +178,8 @@ app.post('/channels', function(req, res) {
 });
 
 
-// Join Channel
-app.post('/channels/:channelName/peers', function(req, res) {
+// (admin party) Join Channel
+adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
     logger.info('<<<<<<<<<<<<<<<<< J O I N  C H A N N E L >>>>>>>>>>>>>>>>>');
     var channelName = req.params.channelName;
     var peers = req.body.peers;
@@ -194,8 +201,8 @@ app.post('/channels/:channelName/peers', function(req, res) {
 });
 
 
-// Install chaincode on target peers
-app.post('/chaincodes', function(req, res) {
+// (admin party) Install chaincode on target peers
+adminPartyApp.post('/chaincodes', function(req, res) {
     logger.debug('==================== INSTALL CHAINCODE ==================');
     var peers = req.body.peers;
     var chaincodeName = req.body.chaincodeName;
@@ -229,8 +236,8 @@ app.post('/chaincodes', function(req, res) {
 });
 
 
-// Instantiate chaincode on target peers
-app.post('/channels/:channelName/chaincodes', function(req, res) {
+// (admin party) Instantiate chaincode on target peers
+adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
     logger.debug('==================== INSTANTIATE CHAINCODE ==================');
     var chaincodeName = req.body.chaincodeName;
     var chaincodeVersion = req.body.chaincodeVersion;
@@ -262,6 +269,7 @@ app.post('/channels/:channelName/chaincodes', function(req, res) {
         res.error(getErrorMessage('\'args\''));
         return;
     }
+
     instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.username, req.orgname)
         .then(function(message) {
             res.send(message);
