@@ -24,7 +24,7 @@ var nonce = null;
 var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Join-Channel');
-//helper.hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
+//helper.hfc.addConfigFile(path.join(__dirname, '../network-config.json'));
 var ORGS = helper.ORGS;
 var allEventhubs = [];
 
