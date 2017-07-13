@@ -34,7 +34,9 @@ function ChannelService(cfg, ApiService) {
       });
   };
 
-
+  ChannelService.getTransactionById = function(txId){
+    return ApiService.transaction.getById(txId)    ;
+  };
 
   /**
    * @param {string} from

@@ -120,6 +120,18 @@ function ApiService($log, $http, cfg) {
       .then(function(response){ return response.data; });
   };
 
+
+
+  ApiService.transaction = {};
+
+  /**
+   * @param {string} txId
+   */
+  ApiService.transaction.getById = function(txId){
+    return $http.get(cfg.api+'/channels/mychannel/transactions/'+txId)
+      .then(function(response){ return response.data; });
+  };
+
 }
 
 

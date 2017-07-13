@@ -10,37 +10,50 @@ function ChannelsController(ChannelService) {
   ctl.channels = [];
   ctl.chaincodes = [];
   ctl.blockInfo = {};
+  ctl.transaction = {};
 
 
-  ctl.updateChannels = function(){
+  ctl.getChannels = function(){
     return ChannelService.list().then(function(dataList){
       ctl.channels = dataList;
     });
   };
 
-  ctl.updateChaincodes = function(){
+  ctl.getChaincodes = function(){
     return ChannelService.listChaincodes().then(function(dataList){
       ctl.chaincodes = dataList;
     });
   };
 
-  ctl.updateLastBlock = function(){
+  ctl.getLastBlock = function(){
     return ChannelService.getLastBlock().then(function(blockInfo){
       ctl.blockInfo = blockInfo;
     });
   };
+
+
+  ctl.getTransaction = function(){
+    var txId = ctl.blockInfo.data.data[0].payload.header.channel_header.tx_id;
+    return ChannelService.getTransactionById(txId).then(function(transaction){
+      ctl.transaction = transaction;
+    });
+  };
+
+
 
   ctl.scMove = function(){
     ChannelService.scMove('a', 'b', '10');
   };
 
 
-  ctl.updateChannels()
+  ctl.getChannels()
     .then(function(){
-      return ctl.updateChaincodes();
+      return ctl.getChaincodes();
     }).then(function(){
-      return ctl.updateLastBlock();
-    })
+      return ctl.getLastBlock();
+    }).then(function(){
+      return ctl.getTransaction();
+    });
 }
 
 angular.module('nsd.controller.channels', ['nsd.service.channel'])
