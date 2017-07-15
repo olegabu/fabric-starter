@@ -19,5 +19,13 @@
 <json-formatter open="1" json="ctl.blockInfo"></json-formatter>
 
 
+
+<certificate title="Transaction creator" data="ctl.transaction.transactionEnvelope.payload.data.actions[0].header.creator.IdBytes"></certificate>
+
+<div ng-repeat="e in ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.endorsements">
+  <certificate title="Endorser" data="e.endorser.IdBytes"></certificate>
+  <!-- <json-formatter open="1" json="e.endorser"></json-formatter> -->
+</div>
+
 <h2>Last transaction</h2>
 <json-formatter open="1" json="ctl.transaction"></json-formatter>

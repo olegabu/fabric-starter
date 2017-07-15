@@ -27,7 +27,8 @@ angular.module('nsd.app',[
    'nsd.controller',
    'nsd.service',
 
-   'nsd.directive.form'
+   'nsd.directive.form',
+   'nsd.directive.certificate'
 ])
 .config(function($stateProvider, $urlRouterProvider) {
 
