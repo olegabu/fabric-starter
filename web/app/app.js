@@ -23,7 +23,7 @@ angular.module('nsd.app',[
    'LocalStorageModule',
    'jsonFormatter',
 
-   'nsd.config',
+   'nsd.config.env',
    'nsd.controller',
    'nsd.service'
 ])
@@ -45,7 +45,7 @@ angular.module('nsd.app',[
       templateUrl: 'app.html',
       resolve: {
         // $title: function() { return 'Home'; }
-        _config: _resolveConfig
+        _config: function(ConfigLoader){ return ConfigLoader.load(); }
       }
     })
     .state('app.login', {
@@ -81,32 +81,6 @@ angular.module('nsd.app',[
       }
     });
 
-
-    /** @type {Promise<FabricConfig>} */
-    var _configPromise;
-    /**
-     * load config from remote endpoint
-     * @ngInject
-     */
-    function _resolveConfig(ApiService, $rootScope){
-      if( !_configPromise ){
-        _configPromise = ApiService.getConfig()
-          .then(function(config){
-            $rootScope._config = config;
-            return config;
-          })
-          .catch(function(e){
-            $rootScope._config = false;
-            console.error('Config not loaded:', e);
-
-            // TODO: make nice alert window =)
-            e = e || {};
-            var message = e.message || e.statustext || (e.status == -1 ? 'No response' : null) || 'Unknown error';
-            alert('Error connecting to API server: ' + message);
-          });
-      }
-      return _configPromise;
-    }
 })
 .run(function(UserService, ApiService, $rootScope, $state, $log){
   // goDefault();
@@ -197,4 +171,52 @@ angular.module('nsd.app',[
         }
     };
 
-});
+})
+
+
+
+
+
+/**
+ * load config from remote endpoint
+ * @ngInject
+ */
+.service('ConfigLoader', function(ApiService, $rootScope){
+
+    /** @type {Promise<FabricConfig>} */
+    var _configPromise;
+
+    function _resolveConfig(){
+      if( !_configPromise ){
+        _configPromise = ApiService.getConfig()
+          .then(function(config){
+            $rootScope._config = config;
+            return config;
+          })
+          .catch(function(e){
+            $rootScope._config = false;
+            console.error('Config not loaded:', e);
+
+            // TODO: make nice alert window =)
+            e = e || {};
+            var message = e.message || e.statustext || (e.status == -1 ? 'No response' : null) || 'Unknown error';
+            alert('Error connecting to API server: ' + message);
+          });
+      }
+      return _configPromise;
+    }
+
+
+    return {
+      load:_resolveConfig
+    };
+})
+
+/**
+ * @ngInject
+ */
+.run(function(ConfigLoader){
+  ConfigLoader.load();
+})
+
+

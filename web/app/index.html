@@ -38,7 +38,7 @@
           <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
         </a>
 
-        <div class="title hide-on-med-and-down pull-left">NSD</div>
+        <div class="title hide-on-med-and-down pull-left">{{::_config.org}}</div>
 
         <ul class="menu hide-on-med-and-down" ng-cloak>
           <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
@@ -167,7 +167,7 @@
 <script src="pages/query-controller.js"></script>
 
 <!-- services -->
-<script src="services/config.js"></script>
+<script src="services/env-service.js"></script>
 <script src="services/user-service.js"></script>
 <script src="services/channel-service.js"></script>
 <script src="services/api-service.js"></script>
