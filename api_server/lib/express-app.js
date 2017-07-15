@@ -18,7 +18,9 @@ var bearerToken = require('express-bearer-token');
 var expressPromise = require('./express-promise');
 var app = express();
 
-var config = require('../config.json');
+var utils = require('./utils');
+
+// network-config.json has special format, so we can't change it now
 var networkConfig = require('../network-config.json')['network-config'];
 var helper = require('../app/helper.js');
 var createChannel = require('../app/create-channel.js');
@@ -29,8 +31,11 @@ var invoke = require('../app/invoke-transaction.js');
 var query = require('../app/query.js');
 
 //
+var config = require('../config.json');
+
+const ORG = process.env.ORG || config.org;
+
 const USERNAME = config.user.username;
-const ORG = config.org;
 const PEERS = Object.keys(networkConfig[ORG])
     .filter(k=>k.startsWith('peer'))
     .reduce((r, k)=>{
@@ -48,18 +53,15 @@ logger.info('Peers: ', Object.keys(PEERS));
 module.exports = app;
 
 ///////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// SET CONFIGURATONS ////////////////////////////
+//////////////////////////////// SET CONFIGURATIONS ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 //support parsing of application/json type post data
 app.use(bodyParser.json());
 //support parsing of application/x-www-form-urlencoded post data
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
+app.use(bodyParser.urlencoded({ extended: false }));
 // custom middleware: use res.promise() to send promise response
 app.use(expressPromise());
-
 
 // relax cors
 function corsCb(req, cb){
@@ -70,13 +72,12 @@ app.use(cors(corsCb));
 
 
 
-// enable admin party before authorization and cors
+// enable admin party before authorization
 var adminPartyApp = express();
 if(config.admin_party) {
     logger.info('**************    ADMIN PARTY ENABLED     ******************');
     app.use(adminPartyApp);
 }
-
 
 
 // set secret variable
@@ -99,7 +100,8 @@ app.use(function(req,res,next){
     var originalSend = res.send;
 
     res.send = function(data){
-        data = replaceBuffer(data);
+        data = utils.replaceBuffer(data);
+        data = utils.replaceLong(data);
         return originalSend.call(res, data);
     };
     next();
@@ -208,7 +210,7 @@ adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
         res.error(getErrorMessage('\'channelName\''));
         return;
     }
-    if (!peers || peers.length == 0) {
+    if (!peers || peers.length === 0) {
         res.error(getErrorMessage('\'peers\''));
         return;
     }
@@ -235,7 +237,7 @@ adminPartyApp.post('/chaincodes', function(req, res) {
     logger.debug('chaincodeName : ' + chaincodeName);
     logger.debug('chaincodePath  : ' + chaincodePath);
     logger.debug('chaincodeVersion  : ' + chaincodeVersion);
-    if (!peers || peers.length == 0) {
+    if (!peers || peers.length === 0) {
         res.error(getErrorMessage('\'peers\''));
         return;
     }
@@ -307,10 +309,11 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 // get public config
 app.get('/config', function(req, res) {
     res.send({
-        channel: config.channelName,
-        org:     config.org
+        org: ORG
     });
 });
+
+
 
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
@@ -500,32 +503,7 @@ app.get('/channels', function(req, res) {
 
 
 // at last - report any error =)
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res, next) { // jshint ignore:line
     res.error(err);
 });
 
-
-/**
- * @param {*} obj
- * @returns {boolean} true when obj is an object
- */
-function isObject(obj) {
-    return obj !== null && typeof obj === 'object';
-}
-
-/**
- * @param {*} data
- * @returns {*} data with 'Buffer' replaced with base64 encoded buffer value
- */
-function replaceBuffer(data){
-    if(isObject(data)){
-        if (data instanceof Buffer){
-            data = data.toString('base64');
-        } else {
-            Object.keys(data).forEach(function(propery){
-                data[propery] = replaceBuffer(data[propery]);
-            });
-        }
-    }
-    return data;
-}

@@ -4,4 +4,4 @@
 Environment
 -----------
 
-`CONFIG_FILE` - config file location
+`ORG` - organization id

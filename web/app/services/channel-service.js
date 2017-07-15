@@ -39,6 +39,7 @@ function ChannelService(ApiService) {
   };
 
   /**
+   * sample invoke operation
    * @param {string} from
    * @param {string} to
    * @param {string} amount

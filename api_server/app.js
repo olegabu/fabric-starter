@@ -21,6 +21,7 @@ var logger = log4js.getLogger('Http');
 var app = require('./lib/express-app');
 
 var config = require('./config.json');
+
 // var host = process.env.HOST || config.host;
 var port = process.env.PORT || config.port;
 

@@ -17700,6 +17700,11 @@ html body.dark-scheme .btn,html body.dark-scheme .btn-large {
     background-color: #1a1a1a
 }
 
+html body.dark-scheme .btn-flat {
+    background-color: #EEE;
+}
+
+
 html body.dark-scheme .btn.custom-btn,html body.dark-scheme .custom-btn.btn-large {
     background-color: transparent
 }
@@ -17712,8 +17717,15 @@ html body.dark-scheme .btn.default-background:hover,html body.dark-scheme .defau
     background-color: #424242
 }
 
-html body.dark-scheme .btn:hover:not([disabled]),html body.dark-scheme .btn-large:hover:not([disabled]),html body.dark-scheme .btn:focus,html body.dark-scheme .btn-large:focus {
+html body.dark-scheme .btn:hover:not([disabled]),
+html body.dark-scheme .btn-large:hover:not([disabled]),
+html body.dark-scheme .btn:focus,
+html body.dark-scheme .btn-large:focus {
     background-color: #424242
+}
+html body.dark-scheme .btn-flat:focus:not([disabled]),
+html body.dark-scheme .btn-flat:hover:not([disabled]) {
+    background-color: #EEE;
 }
 
 html body.dark-scheme input:not([type]):focus:not([readonly]):not(.valid):not(.invalid),html body.dark-scheme input[type=text]:focus:not([readonly]):not(.valid):not(.invalid),html body.dark-scheme input[type=password]:focus:not([readonly]),html body.dark-scheme input[type=email]:focus:not([readonly]),html body.dark-scheme input[type=url]:focus:not([readonly]),html body.dark-scheme input[type=time]:focus:not([readonly]),html body.dark-scheme input[type=date]:focus:not([readonly]),html body.dark-scheme input[type=datetime]:focus:not([readonly]),html body.dark-scheme input[type=datetime-local]:focus:not([readonly]),html body.dark-scheme input[type=tel]:focus:not([readonly]),html body.dark-scheme input[type=number]:focus:not([readonly]),html body.dark-scheme input[type=search]:focus:not([readonly]),html body.dark-scheme textarea.materialize-textarea:focus:not([readonly]) {

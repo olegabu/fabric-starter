@@ -5,12 +5,11 @@
  * @class QueryController
  * @ngInject
  */
-function QueryController($scope, ChannelService) {
+function QueryController($scope, ChannelService, $log) {
   var ctl = this;
 
   ctl.channels = [];
   ctl.chaincodes = [];
-  ctl.args = "[]";
 
   ctl.scMove = function(){
     ChannelService.scMove('a', 'b', '10');
@@ -31,14 +30,14 @@ function QueryController($scope, ChannelService) {
   };
 
 
-  ctl.validate = function(val){
+  ctl.invoke = function(channel, cc, fcn, args){
     try{
-      JSON.parse(val);
-      return true;
+      args = JSON.parse(args);
     }catch(e){
-      return false;
+      $log.warn(e);
     }
 
+    return ChannelService.invoke(channel.channel_id, cc.name, fcn, args);
   }
 
   //
