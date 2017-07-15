@@ -101,3 +101,23 @@ nav .menu-active {
 td, th, .clock, .endpoint {
   font-size: large;
 }
+
+.transparent{
+  opacity: 0;
+}
+
+div[data-error]{
+  position: relative;
+
+  transition: .2s opacity ease-out, .2s color ease-out;
+}
+div[data-error]:after{
+  content: attr(data-error);
+  color: #F44336;
+  font-size: 12px;
+
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+}

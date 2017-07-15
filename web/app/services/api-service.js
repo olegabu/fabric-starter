@@ -9,12 +9,25 @@ function ApiService($log, $http, env) {
   var ApiService = this;
   var cfg = env;
 
-
+  /**
+   *
+   */
   ApiService.getConfig = function(){
       return $http.get(cfg.api+'/config')
           .then(function(response){ return response.data; });
   };
 
+
+
+
+
+
+
+
+
+  /**
+   * User module
+   */
   ApiService.user = {};
   /**
    * @typedef {string} jwtString
@@ -59,6 +72,9 @@ function ApiService($log, $http, env) {
 
 
 
+  /**
+   * Channel module
+   */
   ApiService.channels = {};
   /**
    * Queries the names of all the channels that a peer has joined.
@@ -94,6 +110,12 @@ function ApiService($log, $http, env) {
 
 
 
+
+
+
+  /**
+   * Chaincode module
+   */
   ApiService.chaincodes = {};
   /**
    * Queries the names of all the channels that a peer has joined.
@@ -106,23 +128,42 @@ function ApiService($log, $http, env) {
 
 
 
+
+
+
+
+
+  /**
+   * Smart Contract module
+   */
   ApiService.sc = {};
 
   /**
+   * @param {string} channelId
+   * @param {string} contractId
    * @param {string} fcn
    * @param {Array} [args]
    */
-  ApiService.sc.invoke = function(fcn, args){
+  ApiService.sc.invoke = function(channelId, contractId, fcn, args){
     var payload = {
       fcn:fcn,
       args:args||[]
     };
-    return $http.post(cfg.api+'/channels/mychannel/chaincodes/mycc', payload)
+    return $http.post(cfg.api+'/channels/'+channelId+'/chaincodes/'+contractId, payload)
       .then(function(response){ return response.data; });
   };
 
 
 
+
+
+
+
+
+
+  /**
+   * Transaction module
+   */
   ApiService.transaction = {};
 
   /**

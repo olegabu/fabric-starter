@@ -35,7 +35,7 @@ function ChannelService(ApiService) {
   };
 
   ChannelService.getTransactionById = function(txId){
-    return ApiService.transaction.getById(txId)    ;
+    return ApiService.transaction.getById(txId);
   };
 
   /**
@@ -44,7 +44,17 @@ function ChannelService(ApiService) {
    * @param {string} amount
    */
   ChannelService.scMove = function(from, to, amount){
-    return ApiService.sc.invoke('move', [from, to, amount]);
+    return ApiService.sc.invoke('mychannel', 'mycc', 'move', [from, to, amount]);
+  };
+
+  /**
+   * @param {string} channelId
+   * @param {string} contractId
+   * @param {string} fcn
+   * @param {Array} [args]
+   */
+  ChannelService.invoke = function(channelId, contractId, fcn, args){
+    return ApiService.sc.invoke(channelId, contractId, fcn, args);
   };
 
 }
