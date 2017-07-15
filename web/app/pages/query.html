@@ -30,10 +30,16 @@
     <div data-error="Invalid json" ng-class="{transparent:!form.ccarguments.$error.json}"></div>
   </div>
 
-  <a href="#"></a>
-
 </form>
+
 <button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, fcn, args)" ng-disabled="form.$invalid">Invoke</button>
-
-
 <button class="btn btn-flat" type="button" ng-click="fcn='move'; args='[&quot;a&quot;, &quot;b&quot;,&quot;10&quot;]'">Fill with sample values</button>
+
+
+<div ng-show="ctl.transaction">
+  <h2>Last transaction</h2>
+  <cc-view json="ctl.transaction"></cc-view>
+  <json-formatter open="2" json="ctl.transaction"></json-formatter>
+</div>
+
+<div style="height: 200px"></div>

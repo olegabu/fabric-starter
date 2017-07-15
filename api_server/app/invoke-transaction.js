@@ -16,12 +16,16 @@
 'use strict';
 var path = require('path');
 var util = require('util');
+var myutil = require('../lib/utils');
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 
 var hfc = require('fabric-client');
 hfc.addConfigFile(path.join(__dirname, '../network-config.json'));
 
+
+
+// Invoke transaction on chaincode on target peers
 var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args, username, org) {
 	logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
 	var client = helper.getClientForOrg(org);
@@ -31,7 +35,7 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 
 	return helper.getRegisteredUsers(username, org).then((user) => {
 		tx_id = client.newTransactionID();
-		logger.debug(util.format('Sending transaction "%j"', tx_id));
+		logger.debug(util.format('Sending transaction "%j"', myutil.replaceBuffer(tx_id) ));
 		// send proposal to endorser
 		var request = {
 			targets: targets,
@@ -45,7 +49,11 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 	}, (err) => {
 		logger.error('Failed to enroll user \'' + username + '\'. ' + err);
 		throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
-	}).then((results) => {
+	})
+
+
+
+  .then((results) => {
 		var proposalResponses = results[0];
 		var proposal = results[1];
 		var all_good = true;
@@ -63,13 +71,17 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 		if (all_good) {
 			logger.debug(util.format(
 				'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s", metadata - "%s", endorsement signature: %s',
-				proposalResponses[0].response.status, proposalResponses[0].response.message,
-				proposalResponses[0].response.payload, proposalResponses[0].endorsement
-				.signature));
+				proposalResponses[0].response.status,
+        proposalResponses[0].response.message,
+				proposalResponses[0].response.payload,
+        proposalResponses[0].endorsement.signature.toString('base64')));
+
 			var request = {
 				proposalResponses: proposalResponses,
 				proposal: proposal
 			};
+
+
 			// set the transaction listener and set a timeout of 30sec
 			// if the transaction did not get committed within the timeout period,
 			// fail the test

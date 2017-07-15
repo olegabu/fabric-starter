@@ -344,7 +344,10 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     }
 
   res.promise(
-    invoke.invokeChaincode(config.peers, channelName, chaincodeName, fcn, args, USERNAME, ORG)
+    invoke.invokeChaincode(config.peers, channelName, chaincodeName, fcn, args, req.username, ORG)
+      .then(function(transactionId){
+        return {transaction:transactionId};
+      })
   );
 });
 

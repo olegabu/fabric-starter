@@ -10,10 +10,7 @@ function QueryController($scope, ChannelService, $log) {
 
   ctl.channels = [];
   ctl.chaincodes = [];
-
-  ctl.scMove = function(){
-    ChannelService.scMove('a', 'b', '10');
-  };
+  ctl.transaction = null;
 
 
   ctl.getChannels = function(){
@@ -24,10 +21,12 @@ function QueryController($scope, ChannelService, $log) {
 
   ctl.getChaincodes = function(){
     $scope.selectedChannel;
+    // TODO:
     return ChannelService.listChaincodes().then(function(dataList){
       ctl.chaincodes = dataList;
     });
   };
+
 
 
   ctl.invoke = function(channel, cc, fcn, args){
@@ -37,7 +36,14 @@ function QueryController($scope, ChannelService, $log) {
       $log.warn(e);
     }
 
-    return ChannelService.invoke(channel.channel_id, cc.name, fcn, args);
+    ctl.transaction = null;
+    return ChannelService.invoke(channel.channel_id, cc.name, fcn, args)
+      .then(function(data){
+        return ChannelService.getTransactionById(data.transaction);
+      })
+      .then(function(transaction){
+        ctl.transaction = transaction;
+      });
   }
 
   //
