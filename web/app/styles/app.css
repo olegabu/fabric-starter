@@ -1,3 +1,7 @@
+.error{
+  color: #F44336;
+}
+
 .loading {
   font-size: 30vmin;
   text-align: center;

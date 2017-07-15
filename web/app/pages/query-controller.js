@@ -11,6 +11,7 @@ function QueryController($scope, ChannelService, $log) {
   ctl.channels = [];
   ctl.chaincodes = [];
   ctl.transaction = null;
+  ctl.invokeInProgress = false;
 
 
   ctl.getChannels = function(){
@@ -37,12 +38,21 @@ function QueryController($scope, ChannelService, $log) {
     }
 
     ctl.transaction = null;
+    ctl.error = null;
+    ctl.invokeInProgress = true;
+
     return ChannelService.invoke(channel.channel_id, cc.name, fcn, args)
       .then(function(data){
         return ChannelService.getTransactionById(data.transaction);
       })
       .then(function(transaction){
         ctl.transaction = transaction;
+      })
+      .catch(function(response){
+        ctl.error = response.data || response;
+      })
+      .finally(function(){
+        ctl.invokeInProgress = false;
       });
   }
 

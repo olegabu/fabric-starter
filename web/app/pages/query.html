@@ -32,14 +32,27 @@
 
 </form>
 
-<button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, fcn, args)" ng-disabled="form.$invalid">Invoke</button>
-<button class="btn btn-flat" type="button" ng-click="fcn='move'; args='[&quot;a&quot;, &quot;b&quot;,&quot;10&quot;]'">Fill with sample values</button>
+<div ng-hide="ctl.invokeInProgress">
+  <button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, fcn, args)" ng-disabled="form.$invalid">Invoke</button>
+  <button class="btn btn-flat" type="button" ng-click="fcn='move'; args='[&quot;a&quot;, &quot;b&quot;,&quot;10&quot;]'">Fill with sample values</button>
+</div>
 
+<div class="progress" ng-show="ctl.invokeInProgress">
+    <div class="indeterminate"></div>
+</div>
 
+<!-- error (if any) -->
+<div class="error" ng-show="ctl.error">
+  <h2>Error</h2>
+  <json-formatter open="2" json="ctl.error"></json-formatter>
+</div>
+
+<!-- transaction view -->
 <div ng-show="ctl.transaction">
   <h2>Last transaction</h2>
-  <cc-view json="ctl.transaction"></cc-view>
+  <!-- <cc-view json="ctl.transaction"></cc-view> -->
   <json-formatter open="2" json="ctl.transaction"></json-formatter>
 </div>
+
 
 <div style="height: 200px"></div>
