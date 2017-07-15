@@ -40,12 +40,6 @@ function InfoController(ChannelService) {
   };
 
 
-
-  ctl.scMove = function(){
-    ChannelService.scMove('a', 'b', '10');
-  };
-
-
   ctl.getChannels()
     .then(function(){
       return ctl.getChaincodes();

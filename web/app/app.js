@@ -5,7 +5,7 @@ angular.module('nsd.controller', [
   'nsd.controller.main',
   'nsd.controller.login',
   'nsd.controller.info',
-  'nsd.controller.audit',
+  'nsd.controller.query',
 ]);
 
 angular.module('nsd.service', [
@@ -46,6 +46,20 @@ angular.module('nsd.app',[
         visible: false
       }
     })
+
+    .state('app.query', {
+      url: 'query',
+      templateUrl: 'pages/query.html',
+      controller: 'QueryController',
+      controllerAs: 'ctl',
+      data:{
+        name: 'Query/Invoke'
+      }
+  //  resolve: {
+  //     $title: function() { return 'Home'; }
+  //   }
+    })
+
     .state('app.info', {
       url: 'info',
       templateUrl: 'pages/info.html',
@@ -54,18 +68,6 @@ angular.module('nsd.app',[
       data:{
         name: 'Info'
       }
-    })
-    .state('app.audit', {
-      url: 'audit',
-      templateUrl: 'pages/audit.html',
-      controller: 'AuditController',
-      controllerAs: 'ctl',
-      data:{
-        name: 'Audit'
-      }
-  //  resolve: {
-  //     $title: function() { return 'Home'; }
-  //   }
     })
 
 })
