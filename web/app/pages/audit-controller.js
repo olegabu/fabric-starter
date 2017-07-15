@@ -5,7 +5,7 @@
  * @class AuditController
  * @ngInject
  */
-function AuditController($scope, UserService, $state, ApiService) {
+function AuditController($scope, UserService, $state) {
   var ctl = this;
 
   ctl.org = null;

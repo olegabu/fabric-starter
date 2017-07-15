@@ -1,9 +1,9 @@
 /**
- * @class ChannelsController
+ * @class InfoController
  * @classdesc
  * @ngInject
  */
-function ChannelsController(ChannelService) {
+function InfoController(ChannelService) {
 
   var ctl = this;
 
@@ -56,5 +56,5 @@ function ChannelsController(ChannelService) {
     });
 }
 
-angular.module('nsd.controller.channels', ['nsd.service.channel'])
-.controller('ChannelsController', ChannelsController);
+angular.module('nsd.controller.info', ['nsd.service.channel'])
+.controller('InfoController', InfoController);

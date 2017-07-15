@@ -4,7 +4,7 @@
 angular.module('nsd.controller', [
   'nsd.controller.main',
   'nsd.controller.login',
-  'nsd.controller.channels',
+  'nsd.controller.info',
   'nsd.controller.audit',
 ]);
 
@@ -14,8 +14,8 @@ angular.module('nsd.service', [
   'nsd.service.channel'
 ]);
 
-angular.module('nsd.app',
-  ['ui.router',
+angular.module('nsd.app',[
+   'ui.router',
    'ui.bootstrap',
    'ui.materialize',
    'ui.router.title',
@@ -46,13 +46,13 @@ angular.module('nsd.app',
         visible: false
       }
     })
-    .state('app.channels', {
-      url: 'channels',
-      templateUrl: 'pages/channels.html',
-      controller: 'ChannelsController',
+    .state('app.info', {
+      url: 'info',
+      templateUrl: 'pages/info.html',
+      controller: 'InfoController',
       controllerAs: 'ctl',
       data:{
-        name: 'Channels'
+        name: 'Info'
       }
     })
     .state('app.audit', {
