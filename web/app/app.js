@@ -27,9 +27,9 @@ angular.module('nsd.app',[
    'nsd.controller',
    'nsd.service'
 ])
-.config(function($stateProvider/*, $urlRouterProvider*/) {
+.config(function($stateProvider, $urlRouterProvider) {
 
-  // $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/query');
 
   /*
    Custom state options are:
@@ -45,7 +45,7 @@ angular.module('nsd.app',[
       templateUrl: 'app.html',
       resolve: {
         // $title: function() { return 'Home'; }
-        _config: _loadConfig
+        _config: _resolveConfig
       }
     })
     .state('app.login', {
@@ -66,7 +66,7 @@ angular.module('nsd.app',[
       data:{
         name: 'Query/Invoke',
         guest:false,
-        default:true
+        // default:true
       }
     })
 
@@ -88,30 +88,35 @@ angular.module('nsd.app',[
      * load config from remote endpoint
      * @ngInject
      */
-    function _loadConfig(ApiService, $rootScope){
+    function _resolveConfig(ApiService, $rootScope){
       if( !_configPromise ){
         _configPromise = ApiService.getConfig()
-            .then(function(config){
-              $rootScope._config = config;
-              return config;
-            })
-            .catch(function(e){
-              $rootScope._config = false;
-              console.error('Config not loaded:', e);
-            });
+          .then(function(config){
+            $rootScope._config = config;
+            return config;
+          })
+          .catch(function(e){
+            $rootScope._config = false;
+            console.error('Config not loaded:', e);
+
+            // TODO: make nice alert window =)
+            e = e || {};
+            var message = e.message || e.statustext || (e.status == -1 ? 'No response' : null) || 'Unknown error';
+            alert('Error connecting to API server: ' + message);
+          });
       }
       return _configPromise;
     }
 })
 .run(function(UserService, ApiService, $rootScope, $state, $log){
-  goDefault();
+  // goDefault();
 
 
   var loginState = 'app.login';
 
   // https://github.com/angular-ui/ui-router/wiki#state-change-events
   $rootScope.$on('$stateChangeStart',  function(event, toState, toParams, fromState, fromParams, options){
-    // console.log('$stateChangeStart', toState, fromState);
+    console.log('$stateChangeStart', toState, fromState);
 
     var isGuestAllowed = toState.data && toState.data.guest !== false;
     var isLoginState = toState.name == loginState;
@@ -142,14 +147,14 @@ angular.module('nsd.app',[
   /**
    *
    */
-  function goDefault(){
-    var defaultState = getDefaultState();
-    if(defaultState){
-      $state.go(defaultState.name);
-    } else {
-      $log.warn('No default state');
-    }
-  }
+  // function goDefault(){
+  //   var defaultState = getDefaultState();
+  //   if(defaultState){
+  //     $state.go(defaultState.name);
+  //   } else {
+  //     $log.warn('No default state');
+  //   }
+  // }
 
 
   /**

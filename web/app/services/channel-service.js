@@ -3,7 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function ChannelService(cfg, ApiService) {
+function ChannelService(ApiService) {
 
   // jshint shadow: true
   var ChannelService = this;
