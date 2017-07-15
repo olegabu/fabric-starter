@@ -18,19 +18,41 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
   };
 
 
+  UserService.isAuthorized = function(){
+    return !!$rootScope._tokenInfo;
+  }
+
+
   UserService.saveAuthorization = function(user){
     localStorageService.set('user', user);
   };
 
   UserService.restoreAuthorization = function(){
     var tokenInfo = localStorageService.get('user');
-    $log.info('UserService.restoreAuthorization', tokenInfo);
+    // if(!tokenInfo || isTokenExpired(tokenInfo.token)){
+    //   tokenInfo = null;
+    // }
+    $log.info('UserService.restoreAuthorization', !!tokenInfo);
     $rootScope._tokenInfo = tokenInfo;
   };
+
+
+  // TODO: we need to take care of client timezone before using it
+  function isTokenExpired(token){
+      token = token || "";
+      var tokenDataEncoded = token.split('.')[1];
+      var tokenData = {};
+      try{
+        tokenData = JSON.parse(atob(tokenDataEncoded));
+      }catch(e){
+        $log.warn(e);
+        tokenData = {};
+      }
+      return Date.now() - (tokenData.exp||0)*1000 >= 0;
+  }
 
   return UserService;
 }
 
 angular.module('nsd.service.user', ['nsd.service.api'])
   .service('UserService', UserService);
-// angular.module('userService', []).service('UserService', UserService);

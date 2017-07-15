@@ -27,10 +27,17 @@ angular.module('nsd.app',[
    'nsd.controller',
    'nsd.service'
 ])
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider/*, $urlRouterProvider*/) {
 
-  $urlRouterProvider.otherwise('/login');
+  // $urlRouterProvider.otherwise('/login');
 
+  /*
+   Custom state options are:
+      visible:boolean - 'false' is hide element from menu. setting abstract:true also hide it
+      name:string     - menu name
+      guest:false     - prevent unauthorized access to item
+
+  */
   $stateProvider
     .state('app', {
       url: '/',
@@ -53,7 +60,9 @@ angular.module('nsd.app',[
       controller: 'QueryController',
       controllerAs: 'ctl',
       data:{
-        name: 'Query/Invoke'
+        name: 'Query/Invoke',
+        guest:false,
+        default:true
       }
   //  resolve: {
   //     $title: function() { return 'Home'; }
@@ -66,13 +75,74 @@ angular.module('nsd.app',[
       controller: 'InfoController',
       controllerAs: 'ctl',
       data:{
-        name: 'Info'
+        name: 'Info',
+        guest:false
       }
     })
 
 })
-.run(function(UserService){
+.run(function(UserService, $rootScope, $state, $log){
   UserService.restoreAuthorization();
+  goDefault();
+
+  var loginState = 'app.login';
+
+  // https://github.com/angular-ui/ui-router/wiki#state-change-events
+  $rootScope.$on('$stateChangeStart',  function(event, toState, toParams, fromState, fromParams, options){
+    // console.log('$stateChangeStart', toState, fromState);
+
+    var isGuestAllowed = toState.data && toState.data.guest !== false;
+    var isLoginState = toState.name == loginState;
+
+
+    if ( isLoginState && !isGuestAllowed){
+      $log.warn('login state cannot be authorized-only');
+    }
+
+    if ( !isGuestAllowed && !isLoginState && !UserService.isAuthorized() ){
+      event.preventDefault();
+      // transitionTo() promise will be rejected with a 'transition prevented' error
+
+      if(fromState.name == ""){
+        // just enter the page
+        goLogin();
+      }
+    }
+  });
+
+  /**
+   *
+   */
+  function goLogin(){
+    $state.go(loginState);
+  }
+
+  /**
+   *
+   */
+  function goDefault(){
+    var defaultState = getDefaultState();
+    if(defaultState){
+      $state.go(defaultState.name);
+    } else {
+      $log.warn('No default state');
+    }
+  }
+
+
+  /**
+   * @return {State}
+   */
+  function getDefaultState(){
+    var states = $state.get()||[];
+    for (var i = states.length - 1; i >= 0; i--) {
+      if( states[i].data && states[i].data.default===true){
+        return states[i];
+      }
+    }
+    return null;
+  }
+
 })
 
 .config(function($httpProvider) {
