@@ -54,5 +54,9 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
   return UserService;
 }
 
-angular.module('nsd.service.user', ['nsd.service.api'])
-  .service('UserService', UserService);
+angular.module('nsd.service.user', ['nsd.service.api', 'LocalStorageModule'])
+  .service('UserService', UserService)
+
+  .run(function(UserService){
+    UserService.restoreAuthorization();
+  });

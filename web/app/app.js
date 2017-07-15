@@ -33,9 +33,9 @@ angular.module('nsd.app',[
 
   /*
    Custom state options are:
-      visible:boolean - 'false' is hide element from menu. setting abstract:true also hide it
-      name:string     - menu name
-      guest:false     - prevent unauthorized access to item
+      visible:boolean  (default:true) - 'false' is hide element from menu. setting abstract:true also hide it
+      guest:boolean    (default:true) - when 'false' - prevents unauthorized access to the item
+      name:string (default:<stateId>) - menu name
 
   */
   $stateProvider
@@ -43,6 +43,10 @@ angular.module('nsd.app',[
       url: '/',
       abstract:true,
       templateUrl: 'app.html',
+      resolve: {
+        // $title: function() { return 'Home'; }
+        _config: _loadConfig
+      }
     })
     .state('app.login', {
       url: 'login',
@@ -64,9 +68,6 @@ angular.module('nsd.app',[
         guest:false,
         default:true
       }
-  //  resolve: {
-  //     $title: function() { return 'Home'; }
-  //   }
     })
 
     .state('app.info', {
@@ -78,12 +79,33 @@ angular.module('nsd.app',[
         name: 'Info',
         guest:false
       }
-    })
+    });
 
+
+    /** @type {Promise<FabricConfig>} */
+    var _configPromise;
+    /**
+     * load config from remote endpoint
+     * @ngInject
+     */
+    function _loadConfig(ApiService, $rootScope){
+      if( !_configPromise ){
+        _configPromise = ApiService.getConfig()
+            .then(function(config){
+              $rootScope._config = config;
+              return config;
+            })
+            .catch(function(e){
+              $rootScope._config = false;
+              console.error('Config not loaded:', e);
+            });
+      }
+      return _configPromise;
+    }
 })
-.run(function(UserService, $rootScope, $state, $log){
-  UserService.restoreAuthorization();
+.run(function(UserService, ApiService, $rootScope, $state, $log){
   goDefault();
+
 
   var loginState = 'app.login';
 
@@ -145,6 +167,10 @@ angular.module('nsd.app',[
 
 })
 
+
+/**
+ *
+ */
 .config(function($httpProvider) {
   $httpProvider.interceptors.push('bearerAuthIntercepter');
 })

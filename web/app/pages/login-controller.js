@@ -7,9 +7,9 @@ function LoginController($scope, UserService, $state, ApiService) {
 
   ctl.config = null;
 
-  ApiService.getConfig().then(function(config){
-    ctl.config = config;
-  });
+  // ApiService.getConfig().then(function(config){
+  //   ctl.config = config;
+  // });
 
   ctl.signUp = function(user){
     return UserService.signUp(user)

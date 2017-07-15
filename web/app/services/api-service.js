@@ -3,10 +3,11 @@
  * @classdesc
  * @ngInject
  */
-function ApiService($log, $http, cfg) {
+function ApiService($log, $http, env) {
 
   // jshint shadow: true
   var ApiService = this;
+  var cfg = env;
 
 
   ApiService.getConfig = function(){

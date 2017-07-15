@@ -24,94 +24,98 @@
 </head>
 
 <body class="dark-scheme horizontal-navigation" ng-controller="MainController as ctrl">
-  <div class="wrapper vertical-sidebar">
-    <header id="header">
-      <nav>
-        <div class="nav-wrapper center">
-          <a href="#" sidenav data-activates="nav-mobile" class="button-collapse top-nav full waves-effect waves-light hide-on-large-only">
-            <i class="material-icons">menu</i>
-          </a>
+<div class="wrapper vertical-sidebar">
 
-          <a class="logo pull-right" href="#">
-            <img class="hide-on-med-and-down" src="images/logo.png" alt="Catastrophe Bond">
-            <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
-          </a>
+  <header id="header">
+    <nav>
+      <div class="nav-wrapper center">
+        <a href="#" sidenav data-activates="nav-mobile" class="button-collapse top-nav full waves-effect waves-light hide-on-large-only">
+          <i class="material-icons">menu</i>
+        </a>
 
-          <div class="title hide-on-med-and-down pull-left">NSD</div>
+        <a class="logo pull-right" href="#">
+          <img class="hide-on-med-and-down" src="images/logo.png" alt="Catastrophe Bond">
+          <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
+        </a>
 
-          <ul class="menu hide-on-med-and-down" ng-cloak>
-            <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
-              <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
-            </li>
+        <div class="title hide-on-med-and-down pull-left">NSD</div>
 
-            <li hidden>
-              <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
-                user
-                <i class="zmdi zmdi-caret-down drop-down-icon"></i>
-              </a>
-              <ul id="dropdown7" class="dropdown-content">
-                <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
-                  <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
+        <ul class="menu hide-on-med-and-down" ng-cloak>
+          <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
+            <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
+          </li>
 
-        </div>
-      </nav>
-    </header>
+          <li hidden>
+            <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
+              user
+              <i class="zmdi zmdi-caret-down drop-down-icon"></i>
+            </a>
+            <ul id="dropdown7" class="dropdown-content">
+              <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
+                <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
 
-    <aside class="sidebar-left" side-bar="">
-      <ul class="side-nav fixed clearfix left" id="nav-mobile">
-        <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
-          <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
-        </li>
+      </div>
+    </nav>
+  </header>
 
-        <li ng-show="ctl.getUser().role === 'issuer'">
-          <a ui-sref="demo.bondList" ui-sref-active="menu-active">Bonds</a>
-        </li>
-        <li ng-show="ctl.getUser().role === 'investor'">
-          <a ui-sref="demo.investorContractList" ui-sref-active="menu-active">Contracts</a>
-        </li>
-        <li ng-show="ctl.getUser().role === 'investor'">
-          <a ui-sref="demo.market" ui-sref-active="menu-active">Market</a>
-        </li>
-        <li ng-show="ctl.getUser().role === 'bank'">
-          <a ui-sref="demo.offline" ui-sref-active="menu-active">Offline payments</a>
-        </li>
-        <h5 class="center">Current user</h5>
-        <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
-          <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
-        </li>
-      </ul>
-    </aside>
+  <aside class="sidebar-left" side-bar="">
+    <ul class="side-nav fixed clearfix left" id="nav-mobile">
+      <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
+        <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
+      </li>
+
+      <li ng-show="ctl.getUser().role === 'issuer'">
+        <a ui-sref="demo.bondList" ui-sref-active="menu-active">Bonds</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'investor'">
+        <a ui-sref="demo.investorContractList" ui-sref-active="menu-active">Contracts</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'investor'">
+        <a ui-sref="demo.market" ui-sref-active="menu-active">Market</a>
+      </li>
+      <li ng-show="ctl.getUser().role === 'bank'">
+        <a ui-sref="demo.offline" ui-sref-active="menu-active">Offline payments</a>
+      </li>
+      <h5 class="center">Current user</h5>
+      <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
+        <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
+      </li>
+    </ul>
+  </aside>
 
 
-    <main id="content">
-      <div id="page-content">
-        <!-- content here -->
-        <div ui-view>
-          <div class="loading">
-            <i class="fa fa-spinner fa-spin"></i>
-          </div>
+  <main id="content">
+    <div id="page-content">
+      <!-- content here -->
+      <div ui-view>
+        <div class="loading">
+          <i class="fa fa-spinner fa-spin"></i>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <div class="foot3">
-      <div class="f-cont col s6 m6 l3">
-        <p>Hyperledger Fabric API Web client by Altoros</p>
-      </div>
-      <div class="f-cont valign-wrapper f-foot col s12 m12 l12">
-        <div class="left-align valign col s6 m6 l6">
-          <p class="copy">
-            &copy;Copyright 2017 - All Rights Reserved
-          </p>
-        </div>
+  <div class="foot3">
+    <div class="f-cont col s6 m6 l3">
+      <p>Hyperledger Fabric API Web client by Altoros</p>
+    </div>
+    <div class="f-cont valign-wrapper f-foot col s12 m12 l12">
+      <div class="left-align valign col s6 m6 l6">
+        <p class="copy">
+          &copy;Copyright 2017 - All Rights Reserved
+        </p>
       </div>
     </div>
   </div>
 
+</div>
+
+<!-- environment script -->
+<script src="env.js"></script>
 
 <!--  cdn with fallback -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

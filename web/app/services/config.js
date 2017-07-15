@@ -1,7 +1,7 @@
 window.disableThemeSettings = true;
 
 angular.module('nsd.config', [])
-.constant('cfg', {
-  api: 'http://localhost:4000'
 
-});
+// Register environment in AngularJS as constant
+// '__env' should be defined in env.js
+.constant('env', window.__env);
