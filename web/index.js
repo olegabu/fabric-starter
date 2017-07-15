@@ -5,7 +5,7 @@ var expressEnv = require('./lib/express-env-middleware');
 var port = process.env.PORT || 8080;
 
 var clientEnv = {
-  api: process.env.LEDGER_API || '//localhost:4000'
+  api: process.env.FABRIC_API || '//localhost:4000'
 }
 
 
