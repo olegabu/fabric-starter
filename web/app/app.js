@@ -2,6 +2,7 @@
  *
  */
 angular.module('nsd.controller', [
+  'nsd.controller.main',
   'nsd.controller.login',
   'nsd.controller.channels',
   'nsd.controller.audit',
@@ -31,39 +32,41 @@ angular.module('nsd.app',
   $urlRouterProvider.otherwise('/login');
 
   $stateProvider
-  .state('app', {
-    url: '/',
-    templateUrl: 'partials/app.html',
-  })
-  .state('app.login', {
-    url: 'login',
-    templateUrl: 'partials/login.html',
-    controller: 'LoginController',
-    controllerAs: 'ctl'
-  })
-  .state('app.channels', {
-    url: 'channels',
-    templateUrl: 'partials/channels.html',
-    controller: 'ChannelsController',
-    controllerAs: 'ctl'
-  })
-  .state('app.audit', {
-    url: 'audit',
-    templateUrl: 'partials/audit.html',
-    controller: 'AuditController',
-    controllerAs: 'ctl'
-  })
-
-
-  //
-  // .state('demo', {
-  //   url: '/',
-  //   templateUrl: 'partials/demo.html',
-  //   controller: 'DemoController as ctl',
-  //   resolve: {
+    .state('app', {
+      url: '/',
+      abstract:true,
+      templateUrl: 'app.html',
+    })
+    .state('app.login', {
+      url: 'login',
+      templateUrl: 'pages/login.html',
+      controller: 'LoginController',
+      controllerAs: 'ctl',
+      data:{
+        visible: false
+      }
+    })
+    .state('app.channels', {
+      url: 'channels',
+      templateUrl: 'pages/channels.html',
+      controller: 'ChannelsController',
+      controllerAs: 'ctl',
+      data:{
+        name: 'Channels'
+      }
+    })
+    .state('app.audit', {
+      url: 'audit',
+      templateUrl: 'pages/audit.html',
+      controller: 'AuditController',
+      controllerAs: 'ctl',
+      data:{
+        name: 'Audit'
+      }
+  //  resolve: {
   //     $title: function() { return 'Home'; }
   //   }
-  // })
+    })
 
 })
 .run(function(UserService){
