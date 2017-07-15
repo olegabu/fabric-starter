@@ -7,10 +7,13 @@ function MainController($scope, UserService, $state, ApiService) {
 
   ctrl.$state = $state;
 
-  ctrl.visibleMenu = function(state){
+  ctrl.visibleMenuItem = function(state){
     return !(state.abstract || state.data && state.data.visible===false);
   }
 
+  ctrl.authorized = function(){
+    return UserService.isAuthorized();
+  }
   return ctrl;
 }
 

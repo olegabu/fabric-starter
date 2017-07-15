@@ -34,14 +34,14 @@
         </a>
 
         <a class="logo pull-right" href="#">
-          <img class="hide-on-med-and-down" src="images/logo.png" alt="Catastrophe Bond">
-          <img class="hide-on-large-only" src="images/logo-small.png" alt="Catastrophe Bond">
+          <img class="hide-on-med-and-down" src="images/logo.png" alt="Altoros logo">
+          <img class="hide-on-large-only" src="images/logo-small.png" alt="Altoros logo small">
         </a>
 
         <div class="title hide-on-med-and-down pull-left">{{::_config.org}}</div>
 
-        <ul class="menu hide-on-med-and-down" ng-cloak>
-          <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
+        <ul class="menu hide-on-med-and-down" ng-cloak ng-show="ctrl.authorized()">
+          <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
             <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
           </li>
 
@@ -64,26 +64,14 @@
 
   <aside class="sidebar-left" side-bar="">
     <ul class="side-nav fixed clearfix left" id="nav-mobile">
-      <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenu">
-        <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
-      </li>
-
-      <li ng-show="ctl.getUser().role === 'issuer'">
-        <a ui-sref="demo.bondList" ui-sref-active="menu-active">Bonds</a>
-      </li>
-      <li ng-show="ctl.getUser().role === 'investor'">
-        <a ui-sref="demo.investorContractList" ui-sref-active="menu-active">Contracts</a>
-      </li>
-      <li ng-show="ctl.getUser().role === 'investor'">
-        <a ui-sref="demo.market" ui-sref-active="menu-active">Market</a>
-      </li>
-      <li ng-show="ctl.getUser().role === 'bank'">
-        <a ui-sref="demo.offline" ui-sref-active="menu-active">Offline payments</a>
-      </li>
-      <h5 class="center">Current user</h5>
-      <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
-        <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
-      </li>
+      <div ng-show="ctrl.authorized()">
+        <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
+          <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
+        </li>
+      </div>
+      <div ng-hide="ctrl.authorized()">
+        <h5>Unauthorized</h5>
+      </div>
     </ul>
   </aside>
 

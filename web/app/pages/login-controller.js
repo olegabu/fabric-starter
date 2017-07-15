@@ -14,7 +14,7 @@ function LoginController($scope, UserService, $state, ApiService) {
   ctl.signUp = function(user){
     return UserService.signUp(user)
     .then(function(){
-      $state.go('app.channels');
+      $state.go('app.query');
     });
   };
 
