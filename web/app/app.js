@@ -224,6 +224,16 @@ angular.module('nsd.app',[
     }
 
 
+    /**
+     * add getOrgs() to netConfig
+     * add getPeers(orgId:string) to netConfig
+
+     * add id to org info
+
+     * add id to peer info
+     * add org to peer info
+     * add host to peer info
+     */
     function _extendConfig(){
       var netConfig = _config.network;
       netConfig.getOrgs = function(){
@@ -250,6 +260,9 @@ angular.module('nsd.app',[
       };
     }
 
+    /**
+     *
+     */
     function getHost(address){
       //                             1111       222222
       var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];

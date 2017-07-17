@@ -44,8 +44,14 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
     $log.info('UserService.restoreAuthorization', !!tokenInfo);
 
     if(tokenInfo){
+      // {"exp":1500343472,"username":"test22","orgName":"org2","iat":1500307472}
       tokenInfo.tokenData = parseTokenData(tokenInfo.token);
       // TODO: check expire time
+
+      if( (tokenInfo.tokenData.exp||0)*1000 <= Date.now() ){
+        // token expired
+        tokenInfo = null;
+      }
     }
     $rootScope._tokenInfo = tokenInfo;
   };
