@@ -1,5 +1,17 @@
-<h2>Channels</h2>
 
+<h2>Peers</h2>
+
+<div ng-repeat="(oid, org) in ctl.getOrgs()">
+  <blockquote>
+    {{::org.name}}
+  </blockquote>
+  <ul>
+    <li ng-repeat="(pid, peer) in ctl.getPeers(oid)">{{::peer['server-hostname']}}</li>
+  </ul>
+</div>
+
+
+<h2>Channels</h2>
 <ul>
   <li ng-repeat="ch in ctl.channels">{{::ch.channel_id}}</li>
 </ul>

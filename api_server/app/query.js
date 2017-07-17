@@ -104,7 +104,7 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
 
-	return helper.getRegisteredUsers(username, org).then((member) => {
+	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryTransaction(trxnID, target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
@@ -112,7 +112,7 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 			err.stack : err;
 	}).then((response_payloads) => {
 		if (response_payloads) {
-			logger.debug(response_payloads);
+			// logger.debug(response_payloads);
 			return response_payloads;
 		} else {
 			logger.error('response_payloads is null');

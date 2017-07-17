@@ -3,7 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function InfoController(ChannelService) {
+function InfoController(ChannelService, ConfigLoader) {
 
   var ctl = this;
 
@@ -11,6 +11,26 @@ function InfoController(ChannelService) {
   ctl.chaincodes = [];
   ctl.blockInfo = {};
   ctl.transaction = {};
+
+  ctl.networkConfig = (ConfigLoader.get()||{}).network;
+
+  ctl.getOrgs = function(){
+    var keys = Object.keys(ctl.networkConfig).filter(function(key){ return key.startsWith('org')});
+
+    return keys.reduce(function(res, key){
+      res[key] = ctl.networkConfig[key];
+      return res;
+    }, {});
+  };
+
+  ctl.getPeers = function(orgId){
+    var keys = Object.keys(ctl.networkConfig[orgId]).filter(function(key){ return key.startsWith('peer')});
+
+    return keys.reduce(function(res, key){
+      res[key] = ctl.networkConfig[orgId][key];
+      return res;
+    }, {});
+  };
 
 
   ctl.getChannels = function(){

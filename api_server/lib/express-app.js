@@ -311,7 +311,8 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 // get public config
 app.get('/config', function(req, res) {
     res.send({
-        org: ORG
+        org: ORG,
+        network: networkConfig
     });
 });
 

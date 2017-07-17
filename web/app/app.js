@@ -208,12 +208,14 @@ angular.module('nsd.app',[
 
     /** @type {Promise<FabricConfig>} */
     var _configPromise;
+    var _config = null;
 
     function _resolveConfig(){
       if( !_configPromise ){
         _configPromise = ApiService.getConfig()
           .then(function(config){
             $rootScope._config = config;
+            _config = config;
             return config;
           });
       }
@@ -221,7 +223,8 @@ angular.module('nsd.app',[
     }
 
     return {
-      load:_resolveConfig
+      load:_resolveConfig,
+      get:function(){ return _config; }
     };
 })
 
