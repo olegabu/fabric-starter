@@ -2,6 +2,28 @@
 
 A sample Node.js app to demonstrate **__fabric-client__** & **__fabric-ca-client__** Node.js SDK APIs
 
+### Start
+
+```
+ # start ledger (console 1)
+ cd ledger
+ docker-compose up
+
+ # start api server (console 2)
+ cd api_server
+ npm install 
+ npm start
+
+ # start ui server (console 3)
+ cd web
+ npm install 
+ npm start
+
+```
+
+Open `http://localhost:8080` 
+
+
 ### Prerequisites and setup:
 
 * [Docker](https://www.docker.com/products/overview) - v1.12 or higher
