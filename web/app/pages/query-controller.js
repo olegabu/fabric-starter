@@ -21,6 +21,10 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
     var peers = netConfig.getPeers(org.id);
     allPeers.push.apply(allPeers, peers);
   });
+  // allPeers = JSON.parse(JSON.stringify(allPeers));
+  // allPeers.unshift({
+  //   "server-hostname": "Select peers"
+  // });
 
 
   ctl.getPeers = function(){
@@ -44,7 +48,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
 
 
 
-  ctl.invoke = function(channel, cc, fcn, args){
+  ctl.invoke = function(channel, cc, peers, fcn, args){
     try{
       args = JSON.parse(args);
     }catch(e){
@@ -55,7 +59,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
     ctl.error = null;
     ctl.invokeInProgress = true;
 
-    return ChannelService.invoke(channel.channel_id, cc.name, fcn, args)
+    return ChannelService.invoke(channel.channel_id, cc.name, peers, fcn, args)
       .then(function(data){
         return ChannelService.getTransactionById(data.transaction);
       })

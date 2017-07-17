@@ -34,20 +34,11 @@ var query = require('../app/query.js');
 var config = require('../config.json');
 
 const ORG = process.env.ORG || config.org;
-
 const USERNAME = config.user.username;
-const PEERS = Object.keys(networkConfig[ORG])
-    .filter(k=>k.startsWith('peer'))
-    .reduce((r, k)=>{
-        r[k] = networkConfig[ORG][k];
-        return r;
-    }, {});
-
 
 logger.info('**************    API SERVER     ******************');
-logger.info('Username  : ' + USERNAME);
+logger.info('Admin     : ' + USERNAME);
 logger.info('Org name  : ' + ORG);
-logger.info('Peers: ', Object.keys(PEERS));
 
 
 module.exports = app;
@@ -323,12 +314,24 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     logger.debug('==================== INVOKE ON CHAINCODE ==================');
     var chaincodeName = req.params.chaincodeName;
     var channelName = req.params.channelName;
+    var peersId = req.body.peers || [];
+    var peers = peersId.map(peerId=>{
+      var parts = peerId.split('/');
+      return networkConfig[parts[0]][parts[1]];
+    }).map(peer=>getHost(peer.requests));
+
     var fcn = req.body.fcn;
     var args = req.body.args;
     logger.debug('channelName  : ' + channelName);
     logger.debug('chaincodeName : ' + chaincodeName);
+    logger.debug('peersId  : ', peersId);
+    logger.debug('peers  : ', peers);
     logger.debug('fcn  : ' + fcn);
     logger.debug('args  : ' + args);
+    if (!peers || peers.length === 0) {
+      res.json(getErrorMessage('\'peers\''));
+      return;
+    }
     if (!chaincodeName) {
         res.error(getErrorMessage('\'chaincodeName\''));
         return;
@@ -347,7 +350,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     }
 
   res.promise(
-    invoke.invokeChaincode(config.peers, channelName, chaincodeName, fcn, args, req.username, ORG)
+    invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, ORG)
       .then(function(transactionId){
         return {transaction:transactionId};
       })
@@ -513,3 +516,10 @@ app.use(function(err, req, res, next) { // jshint ignore:line
     res.error(err);
 });
 
+
+
+function getHost(address){
+  //                             1111       222222
+  var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
+  return m[2];
+}

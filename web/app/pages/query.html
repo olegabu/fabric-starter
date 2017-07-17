@@ -5,17 +5,21 @@
 
   <div class="form-group">
     <label>Channel</label>
-    <select ng-model="selectedChannel" material-select watch ng-options="o.channel_id for o in ctl.channels" placeholder="Channel ID" required></select>
+    <select ng-model="selectedChannel" material-select watch ng-options="o.channel_id for o in ctl.channels" placeholder="Channel ID" required>
+    </select>
   </div>
 
   <div class="form-group">
     <label>Smart contract</label>
-    <select ng-model="selectedCc" material-select watch ng-options="o.name+' ('+o.version+')' for o in ctl.chaincodes" placeholder="Contract ID" required></select>
+    <select ng-model="selectedCc" material-select watch ng-options="o.name+' ('+o.version+')' for o in ctl.chaincodes" placeholder="Contract ID" required>
+    </select>
   </div>
 
   <div class="form-group">
     <label>Peers</label>
-    <select ng-model="selectedPeers" multiple material-select watch ng-options="o.id as '('+o.org+') '+o['server-hostname'] for o in ctl.getPeers()" placeholder="Contract ID" required></select>
+    <select ng-model="selectedPeers" multiple material-select watch ng-options="o.org+'/'+o.id as '('+o.org+') '+o['server-hostname'] for o in ctl.getPeers()" placeholder="Peers" required>
+      <option value="" disabled selected>Choose your option</option>
+    </select>
   </div>
 
   <div class="form-group">
@@ -38,7 +42,7 @@
 </form>
 
 <div ng-hide="ctl.invokeInProgress">
-  <button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, fcn, args)" ng-disabled="form.$invalid">Invoke</button>
+  <button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, selectedPeers, fcn, args)" ng-disabled="form.$invalid">Invoke</button>
   <button class="btn btn-flat" type="button" ng-click="fcn='move'; args='[&quot;a&quot;, &quot;b&quot;,&quot;10&quot;]'">Fill with sample values</button>
 </div>
 

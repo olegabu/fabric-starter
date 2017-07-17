@@ -141,11 +141,13 @@ function ApiService($log, $http, env) {
   /**
    * @param {string} channelId
    * @param {string} contractId
+   * @param {Array<string>} peers - peersId
    * @param {string} fcn
    * @param {Array} [args]
    */
-  ApiService.sc.invoke = function(channelId, contractId, fcn, args){
+  ApiService.sc.invoke = function(channelId, contractId, peers, fcn, args){
     var payload = {
+      peers:peers,
       fcn:fcn,
       args:args||[]
     };

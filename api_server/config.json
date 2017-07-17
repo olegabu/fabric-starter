@@ -24,7 +24,5 @@
       "username":"admin",
       "secret":"adminpw"
     },
-    "org":"org1",
-
-    "peers":["localhost:7051","localhost:7056"]
+    "org":"org1"
 }

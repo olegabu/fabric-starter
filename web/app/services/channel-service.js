@@ -51,11 +51,12 @@ function ChannelService(ApiService) {
   /**
    * @param {string} channelId
    * @param {string} contractId
+   * @param {Array<string>} peers - peersId
    * @param {string} fcn
    * @param {Array} [args]
    */
-  ChannelService.invoke = function(channelId, contractId, fcn, args){
-    return ApiService.sc.invoke(channelId, contractId, fcn, args);
+  ChannelService.invoke = function(channelId, contractId, peers, fcn, args){
+    return ApiService.sc.invoke(channelId, contractId, peers, fcn, args);
   };
 
 }

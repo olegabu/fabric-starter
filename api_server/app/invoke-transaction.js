@@ -49,22 +49,21 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 	})
 
   .then((results) => {
-		var proposalResponses = results[0];
+		var proposalResponses = results[0] || [];
 		var proposal = results[1];
-		var all_good = true;
-		for (var i in proposalResponses) {
-			let one_good = false;
-			if (proposalResponses && proposalResponses[0].response &&
-				proposalResponses[0].response.status === 200) {
-				one_good = true;
+		var lastError = null;
+		for (var i=0, n=proposalResponses.length; i<n; i++){
+			var response = proposalResponses[i] || {};
+			var prResponseStatus = response.response ? response.response.status : -1;
+			if (prResponseStatus === 200) {
 				logger.info('transaction proposal was good');
 			} else {
-				logger.error('transaction proposal was bad');
+				logger.error('transaction proposal was bad', response);
+        lastError = response.message || 'transaction proposal was bad';
 			}
-			all_good = all_good & one_good; // jshint ignore:line
 		}
-		if (!all_good) {
-      throw new Error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
+		if (lastError) {
+      throw new Error(lastError||'Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
     }
 
     logger.debug(util.format(
