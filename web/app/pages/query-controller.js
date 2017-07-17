@@ -5,13 +5,27 @@
  * @class QueryController
  * @ngInject
  */
-function QueryController($scope, ChannelService, $log) {
+function QueryController($scope, ChannelService, ConfigLoader, $log) {
   var ctl = this;
 
   ctl.channels = [];
   ctl.chaincodes = [];
   ctl.transaction = null;
   ctl.invokeInProgress = false;
+
+  // init
+  var netConfig = ConfigLoader.get().network;
+  var orgs = netConfig.getOrgs();
+  var allPeers = []
+  orgs.forEach(function(org){
+    var peers = netConfig.getPeers(org.id);
+    allPeers.push.apply(allPeers, peers);
+  });
+
+
+  ctl.getPeers = function(){
+    return allPeers;
+  }
 
 
   ctl.getChannels = function(){

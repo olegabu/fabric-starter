@@ -15,21 +15,11 @@ function InfoController(ChannelService, ConfigLoader) {
   ctl.networkConfig = (ConfigLoader.get()||{}).network;
 
   ctl.getOrgs = function(){
-    var keys = Object.keys(ctl.networkConfig).filter(function(key){ return key.startsWith('org')});
-
-    return keys.reduce(function(res, key){
-      res[key] = ctl.networkConfig[key];
-      return res;
-    }, {});
+    return ctl.networkConfig.getOrgs();
   };
 
   ctl.getPeers = function(orgId){
-    var keys = Object.keys(ctl.networkConfig[orgId]).filter(function(key){ return key.startsWith('peer')});
-
-    return keys.reduce(function(res, key){
-      res[key] = ctl.networkConfig[orgId][key];
-      return res;
-    }, {});
+    return ctl.networkConfig.getPeers(orgId);
   };
 
 

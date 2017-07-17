@@ -216,10 +216,44 @@ angular.module('nsd.app',[
           .then(function(config){
             $rootScope._config = config;
             _config = config;
+            _extendConfig();
             return config;
           });
       }
       return _configPromise;
+    }
+
+
+    function _extendConfig(){
+      var netConfig = _config.network;
+      netConfig.getOrgs = function(){
+        var keys = Object.keys(netConfig).filter(function(key){ return key.startsWith('org')});
+
+        keys.forEach(function(key){
+          netConfig[key].id = key;
+        });
+
+        return keys.map(function(key){ return netConfig[key]; });
+      };
+
+      netConfig.getPeers = function(orgId){
+        var orgConfig = _config.network[orgId]||{};
+        var keys = Object.keys(orgConfig).filter(function(key){ return key.startsWith('peer')});
+
+        keys.forEach(function(key){
+          orgConfig[key].id = key;
+          orgConfig[key].host = getHost(orgConfig[key].requests);
+          orgConfig[key].org = orgId;
+        });
+
+        return keys.map(function(key){ return orgConfig[key]; });
+      };
+    }
+
+    function getHost(address){
+      //                                        111111
+      var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
+      return m[1];
     }
 
     return {
