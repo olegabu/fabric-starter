@@ -14,6 +14,20 @@ function MainController($scope, UserService, $state, ApiService) {
   ctrl.authorized = function(){
     return UserService.isAuthorized();
   }
+
+  ctrl.getUser = function(){
+    return UserService.getUser();
+  }
+
+  ctrl.logout = function(){
+    UserService.logout();
+
+    // force re-check access rules
+    // $state.go($state.current, $state.params, { notify: true });
+    $state.go('app.login');
+  }
+
+
   return ctrl;
 }
 

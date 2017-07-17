@@ -10,11 +10,16 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
    */
   UserService.signUp = function(user) {
     return ApiService.user.signUp(user.username, user.orgName)
-      .then(function(/** @type {TokenInfo} */data){
-        $rootScope._tokenInfo = data;
-        UserService.saveAuthorization(data);
-        return data;
+      .then(function(/** @type {TokenInfo} */tokenInfo){
+        $rootScope._tokenInfo = tokenInfo;
+        UserService.saveAuthorization(tokenInfo);
+        return tokenInfo;
       });
+  };
+
+
+  UserService.logout = function() {
+    UserService.saveAuthorization(null);
   };
 
 
@@ -22,33 +27,43 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
     return !!$rootScope._tokenInfo;
   }
 
+  UserService.getUser = function(){
+    return $rootScope._tokenInfo;
+  }
+
 
   UserService.saveAuthorization = function(user){
+    if(user){
+      user.tokenData = parseTokenData(user.token);
+    }
     localStorageService.set('user', user);
   };
 
   UserService.restoreAuthorization = function(){
     var tokenInfo = localStorageService.get('user');
-    // if(!tokenInfo || isTokenExpired(tokenInfo.token)){
-    //   tokenInfo = null;
-    // }
     $log.info('UserService.restoreAuthorization', !!tokenInfo);
+
+    if(tokenInfo){
+      tokenInfo.tokenData = parseTokenData(tokenInfo.token);
+      // TODO: check expire time
+    }
     $rootScope._tokenInfo = tokenInfo;
   };
 
 
-  // TODO: we need to take care of client timezone before using it
-  function isTokenExpired(token){
+  /**
+   *
+   */
+  function parseTokenData(token){
       token = token || "";
       var tokenDataEncoded = token.split('.')[1];
-      var tokenData = {};
+      var tokenData = null;
       try{
         tokenData = JSON.parse(atob(tokenDataEncoded));
       }catch(e){
         $log.warn(e);
-        tokenData = {};
       }
-      return Date.now() - (tokenData.exp||0)*1000 >= 0;
+      return tokenData;
   }
 
   return UserService;

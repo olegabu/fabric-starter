@@ -52,14 +52,14 @@
             <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
           </li>
 
-          <li hidden>
+          <li>
             <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
-              user
+              {{ctrl.getUser().tokenData.username}}
               <i class="zmdi zmdi-caret-down drop-down-icon"></i>
             </a>
             <ul id="dropdown7" class="dropdown-content">
-              <li ng-repeat="u in ctl.users" ng-class="{active: ctl.getUser().id == u.id}">
-                <a href="#" ng-click="ctl.user = u; ctl.setUser()">{{u.id}}</a>
+              <li>
+                <a href="#" ng-click="ctrl.logout()">Logout</a>
               </li>
             </ul>
           </li>
@@ -75,9 +75,16 @@
         <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
           <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
         </li>
+
+        <h5 class="center">Logged in</h5>
+        <h6 class="center">{{ctrl.getUser().tokenData.username}}</h6>
+        <li>
+          <a href="#" ng-click="ctrl.logout()">Logout</a>
+        </li>
+
       </div>
       <div ng-hide="ctrl.authorized()">
-        <h5>Unauthorized</h5>
+        <h5 class="center">Unauthorized</h5>
       </div>
     </ul>
   </aside>
