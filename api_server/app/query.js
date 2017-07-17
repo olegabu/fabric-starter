@@ -176,9 +176,9 @@ var getChainInfo = function(peer, username, org) {
 	}).then((blockchainInfo) => {
 		if (blockchainInfo) {
 			// FIXME: Save this for testing 'getBlockByHash'  ?
-			logger.debug('===========================================');
-			logger.debug(blockchainInfo);
-			logger.debug('===========================================');
+			// logger.debug('===========================================');
+			// logger.debug(blockchainInfo);
+			// logger.debug('===========================================');
 			//logger.debug(blockchainInfo);
 
 			var currentBlockHash  = blockchainInfo.currentBlockHash.toBase64();

@@ -158,14 +158,16 @@ adminPartyApp.post('/users', function(req, res) {
         orgName: ORG
     }, app.get('secret'));
 
-    helper.getRegisteredUsers(username, ORG, true).then(function(response) {
-        if (response && typeof response !== 'string') {
-            response.token = token;
-            res.json(response);
-        } else {
-            res.error(response);
-        }
-    });
+    res.promise(
+        helper.getRegisteredUsers(username, ORG, true).then(function(response) {
+            if (response && typeof response !== 'string') {
+                response.token = token;
+                return response;
+            } else {
+                res.error(response);
+            }
+        })
+    );
 });
 
 

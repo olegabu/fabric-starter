@@ -1,3 +1,5 @@
+
+var http = require('http');
 var express = require('express');
 var expressEnv = require('./lib/express-env-middleware');
 // var MyEndpoint = require('./lib/MyEndpoint.js');
@@ -9,20 +11,19 @@ var clientEnv = {
 }
 
 
-var app = require('express')();
+///////////////////////// app here ///////////////////////////
+var app = express();
 
-console.log('Config will be exposed to client as env.js: ', clientEnv);
+console.log('The following config will be exposed to client as env.js: ', clientEnv);
 app.get('/env.js', expressEnv(clientEnv));
-var server = require('http').Server(app);
+app.use( express.static('app', { index: 'index.html'}) );
 // var io = require('socket.io')(server);
 
 // MyEndpoint.trackBlockChanges(server);
 
+
+///////////////////////// app here ///////////////////////////
+var server = http.Server(app);
 server.listen(port, function () {
   console.log('Server started on port %s', port);
 });
-
-
-// listen protobuf socket
-
-app.use( express.static('app', { index: 'index.html'}) );

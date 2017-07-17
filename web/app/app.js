@@ -171,8 +171,28 @@ angular.module('nsd.app',[
               config.headers['Authorization'] = 'Bearer '+$rootScope._tokenInfo.token;
             }
             return config;
+        },
+
+
+        requestError:function(rejection){
+          globalErrorHandler(rejection);
+          throw rejection;
+        },
+        responseError:function(rejection){
+          globalErrorHandler(rejection);
+          throw rejection;
         }
     };
+
+
+    function globalErrorHandler(e){
+      e = e || {};
+      e.data = e.data || {};
+
+      var statusMsg = e.status ? 'Error' + (e.status != -1?' '+e.status:'') + ': ' + (e.statusText||(e.status==-1?"Connection refused":null)||"Unknown") : null;
+      var reason = e.data.message || e.reason || e.message || statusMsg || e || 'Unknown error';
+      Materialize.toast(reason, 4000, 'mytoast red') // 4000 is the duration of the toast
+    }
 
 })
 
@@ -195,20 +215,10 @@ angular.module('nsd.app',[
           .then(function(config){
             $rootScope._config = config;
             return config;
-          })
-          .catch(function(e){
-            $rootScope._config = false;
-            console.error('Config not loaded:', e);
-
-            // TODO: make nice alert window =)
-            e = e || {};
-            var message = e.message || e.statustext || (e.status == -1 ? 'No response' : null) || 'Unknown error';
-            alert('Error connecting to API server: ' + message);
           });
       }
       return _configPromise;
     }
-
 
     return {
       load:_resolveConfig
