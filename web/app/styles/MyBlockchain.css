@@ -32,7 +32,9 @@ blockchain-log .block {
     text-align: center;
     font-size: 12px;
     font-weight: 700;
-    transition: background-color .5s ease
+    transition: background-color .5s ease;
+
+    user-select: none;
 }
 
 blockchain-log .block:last-child{

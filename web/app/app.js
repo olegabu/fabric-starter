@@ -29,7 +29,8 @@ angular.module('nsd.app',[
    'nsd.service',
 
    'nsd.directive.form',
-   'nsd.directive.certificate'
+   'nsd.directive.certificate',
+   'nsd.directive.blockchain'
 ])
 .config(function($stateProvider, $urlRouterProvider) {
 
