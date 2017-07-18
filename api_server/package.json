@@ -28,6 +28,7 @@
     "fabric-client": ">=1.0.0-rc1 <1.0.0-rc1.10",
     "fs-extra": "^2.0.0",
     "jsonwebtoken": "^7.3.0",
-    "log4js": "^0.6.38"
+    "log4js": "^0.6.38",
+    "socket.io": "^2.0.3"
   }
 }

@@ -124,10 +124,6 @@ app.use(function(req, res, next) {
 
 
 
-function getErrorMessage(field) {
-    return field + ' field is missing or Invalid in the request';
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////// REST ENDPOINTS START HERE ///////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -516,6 +512,10 @@ app.use(function(err, req, res, next) { // jshint ignore:line
     res.error(err);
 });
 
+
+function getErrorMessage(field) {
+  return field + ' field is missing or Invalid in the request';
+}
 
 
 function getHost(address){

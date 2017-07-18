@@ -11,7 +11,8 @@ angular.module('nsd.controller', [
 angular.module('nsd.service', [
   'nsd.service.api',
   'nsd.service.user',
-  'nsd.service.channel'
+  'nsd.service.channel',
+  'nsd.service.socket'
 ]);
 
 angular.module('nsd.app',[
@@ -93,7 +94,7 @@ angular.module('nsd.app',[
 
   // https://github.com/angular-ui/ui-router/wiki#state-change-events
   $rootScope.$on('$stateChangeStart',  function(event, toState, toParams, fromState, fromParams, options){
-    console.log('$stateChangeStart', toState, fromState);
+    // console.log('$stateChangeStart', toState, fromState);
 
     var isGuestAllowed = toState.data && toState.data.guest !== false;
     var isLoginState = toState.name == loginState;

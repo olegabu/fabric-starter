@@ -17,6 +17,8 @@
 var http = require('http');
 var log4js = require('log4js');
 var logger = log4js.getLogger('Http');
+var expressSocket = require('./lib/socket-helper');
+var socketApp = require('./lib/socket-app');
 
 var app = require('./lib/express-app');
 
@@ -26,9 +28,15 @@ var config = require('./config.json');
 var port = process.env.PORT || config.port;
 
 
-//////////////////////////////// START SERVER /////////////////////////////////
-var server = http.createServer(app).listen(port, function() {
+//////////////////////////////// INIT SERVER /////////////////////////////////
+var server = http.createServer(app);
+
+var socket = expressSocket.bindSocket(server, { origins: '*:*'});
+socketApp.init(socket);
+
+server.listen(port, function() {
 	logger.info('****************** SERVER STARTED ************************');
 	logger.info('**************  http://' + server.address().address + ':' + server.address().port +	'  ******************');
 });
 server.timeout = 240000;
+
