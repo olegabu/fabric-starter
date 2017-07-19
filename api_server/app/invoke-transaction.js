@@ -16,7 +16,7 @@
 'use strict';
 var path = require('path');
 var util = require('util');
-var myutil = require('../lib/utils');
+var tools = require('../lib/tools.js');
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 
@@ -35,7 +35,7 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 
 	return helper.getRegisteredUsers(username, org).then((user) => {
 		tx_id = client.newTransactionID();
-		logger.debug(util.format('Sending transaction "%j"', myutil.replaceBuffer(tx_id) ));
+		logger.debug(util.format('Sending transaction "%j"', tools.replaceBuffer(tx_id) ));
 		// send proposal to endorser
 		var request = {
 			targets: targets,

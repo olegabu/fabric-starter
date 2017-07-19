@@ -15,23 +15,23 @@ var expressJWT = require('express-jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var bearerToken = require('express-bearer-token');
-var expressPromise = require('./express-promise');
+var expressPromise = require('./lib/express-promise');
 var app = express();
 
-var utils = require('./utils');
+var tools = require('./lib/tools');
 
 // network-config.json has special format, so we can't change it now
-var networkConfig = require('../network-config.json')['network-config'];
-var helper = require('../app/helper.js');
-var createChannel = require('../app/create-channel.js');
-var joinChannel = require('../app/join-channel.js');
-var install = require('../app/install-chaincode.js');
-var instantiate = require('../app/instantiate-chaincode.js');
-var invoke = require('../app/invoke-transaction.js');
-var query = require('../app/query.js');
+var networkConfig = require('./network-config.json')['network-config'];
+var helper = require('./app/helper.js');
+var createChannel = require('./app/create-channel.js');
+var joinChannel = require('./app/join-channel.js');
+var install = require('./app/install-chaincode.js');
+var instantiate = require('./app/instantiate-chaincode.js');
+var invoke = require('./app/invoke-transaction.js');
+var query = require('./app/query.js');
 
 //
-var config = require('../config.json');
+var config = require('./config.json');
 
 const ORG = process.env.ORG || config.org;
 const USERNAME = config.user.username;
@@ -91,8 +91,8 @@ app.use(function(req,res,next){
     var originalSend = res.send;
 
     res.send = function(data){
-        data = utils.replaceBuffer(data);
-        data = utils.replaceLong(data);
+        data = tools.replaceBuffer(data);
+        data = tools.replaceLong(data);
         return originalSend.call(res, data);
     };
     next();

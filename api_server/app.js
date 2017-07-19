@@ -18,12 +18,13 @@ var http = require('http');
 var log4js = require('log4js');
 var logger = log4js.getLogger('Http');
 var SocketServer = require('socket.io');
-var socketApp = require('./lib/socket-app');
+var socketApp = require('./socket-app');
+var app = require('./express-app');
 
-var app = require('./lib/express-app');
-
+// config
 var config = require('./config.json');
 const ORG = process.env.ORG || config.org;
+const USERNAME = config.user.username;
 // var host = process.env.HOST || config.host;
 const port = process.env.PORT || config.port;
 
