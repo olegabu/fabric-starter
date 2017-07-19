@@ -36,9 +36,16 @@ function init(io, options){
   });
 
   // emit block appearance
+  var lastBlock = null;
   peerListener.listenPeers(peersAddress, USERNAME, ORG, function(block){
     // emit globally
+    lastBlock = block;
     io.emit('chainblock', block);
+  });
+  io.on('connection', function(socket){
+    if(lastBlock){
+      io.emit('chainblock', lastBlock);
+    }
   });
 
 
