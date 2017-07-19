@@ -6,7 +6,8 @@
 module.exports = {
   replaceBuffer:replaceBuffer,
   replaceLong:replaceLong,
-  isObject:isObject
+  isObject:isObject,
+  // getHost:getHost
 };
 
 
@@ -45,3 +46,15 @@ function replaceLong(data){
   // TODO: replaceLong not implemented
   return data;
 }
+
+
+
+/**
+ * @param {string} address
+ * @return {string}
+ */
+// function getHost(address){
+//   //                             1111       222222
+//   var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
+//   return m[2];
+// }

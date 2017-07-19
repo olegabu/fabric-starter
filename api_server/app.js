@@ -17,22 +17,26 @@
 var http = require('http');
 var log4js = require('log4js');
 var logger = log4js.getLogger('Http');
-var expressSocket = require('./lib/socket-helper');
+var SocketServer = require('socket.io');
 var socketApp = require('./lib/socket-app');
 
 var app = require('./lib/express-app');
 
 var config = require('./config.json');
-
+const ORG = process.env.ORG || config.org;
 // var host = process.env.HOST || config.host;
-var port = process.env.PORT || config.port;
+const port = process.env.PORT || config.port;
+
+var socketOptions = { origins: '*:*'};
+
+
 
 
 //////////////////////////////// INIT SERVER /////////////////////////////////
 var server = http.createServer(app);
 
-var socket = expressSocket.bindSocket(server, { origins: '*:*'});
-socketApp.init(socket);
+var io = new SocketServer(server, socketOptions);
+socketApp.init(io, {org:ORG});
 
 server.listen(port, function() {
 	logger.info('****************** SERVER STARTED ************************');
