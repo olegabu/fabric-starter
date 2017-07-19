@@ -37,7 +37,8 @@ function init(io, options){
 
   // emit block appearance
   var lastBlock = null;
-  peerListener.listenPeers(peersAddress, USERNAME, ORG, function(block){
+  //TODO: listen all peers, remove duplicates
+  peerListener.listenPeers([peersAddress[0]], USERNAME, ORG, function(block){
     // emit globally
     lastBlock = block;
     io.emit('chainblock', block);

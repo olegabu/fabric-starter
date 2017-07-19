@@ -22,7 +22,6 @@ angular.module('nsd.directive.blockchain', ['nsd.service.socket'])
                     +'<p> Confidentiality Level:  {{ctl.blockInfo.confidentialityLevel}}</p>'
                   +'</div>'
 
-
                   // +'<div class="block" style="opacity: 1; left: 36px;">016</div>'
                   // +'<div class="block" style="opacity: 1; left: 72px;">017</div>'
                   // +'<div class="block" style="opacity: 1; left: 108px;">018</div>'
@@ -66,20 +65,18 @@ angular.module('nsd.directive.blockchain', ['nsd.service.socket'])
        */
       function addChainblocks(chainblock){
         var width = $(document).width();
-        var tx = chainblock && chainblock.block && chainblock.block.transactions || [];
 
-        $element.find('#bc-wrapper-block').append( tx.map(function(item){
-          var $el = _blockHtml(item).css({left: '+='+width }).animate({ left: '-='+width } );
-          blockCount++;
-          return $el;
-        }));
+        var blockElement = _blockHtml(chainblock).css({left: '+='+width }).animate({ left: '-='+width } );
+        blockCount++;
+        $element.find('#bc-wrapper-block').append(blockElement);
       }
 
-      function _blockHtml(tx){
-        return $('<div class="block">'+tx.txid.substr(0,3)+'</div>')
+      function _blockHtml(block){
+        var tx = block && block.header && block.header.data_hash;
+        return $('<div class="block">'+tx.substr(0,3)+'</div>')
                   .css({left: (blockCount * blockWidth)})
                   .click(_onBlockClick)
-                  .hover(getBlockHoverIn(tx), onBlockHoverOut);
+                  .hover(getBlockHoverIn(block), onBlockHoverOut);
       }
 
 
