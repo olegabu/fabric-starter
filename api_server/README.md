@@ -1,7 +1,24 @@
 
+Hyperledger Fabric API
+======================
 
 
 Environment
 -----------
 
-`ORG` - organization id
+* `PORT` - api/web interface port. Default value is `4000`  
+* `ORG` - organization id.
+
+
+Launch
+------
+Api web-interface become available on `http://localhost:4000/ui` after launching:
+
+```
+  npm install
+  ORG=org1 npm start
+  # or: ORG=org2 npm start
+```
+
+
+

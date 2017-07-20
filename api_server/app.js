@@ -17,20 +17,30 @@
 var http = require('http');
 var log4js = require('log4js');
 var logger = log4js.getLogger('Http');
+var express = require('express');
 var SocketServer = require('socket.io');
 var socketApp = require('./socket-app');
-var app = require('./express-app');
 
 // config
 var config = require('./config.json');
 const ORG = process.env.ORG || config.org;
 const USERNAME = config.user.username;
 // var host = process.env.HOST || config.host;
-const port = process.env.PORT || config.port;
+const PORT = process.env.PORT || 4000;
+
+var clientEnv = {
+  api: process.env.FABRIC_API || ''
+}
+
+var app = express();
+var webApp = require('./web/express-app')(clientEnv);
+var apiApp = require('./express-app')(); // TODO: this app still uses process.env. get rid of it
+
 
 var socketOptions = { origins: '*:*'};
 
-
+app.use('/ui', webApp);
+app.use(apiApp);
 
 
 //////////////////////////////// INIT SERVER /////////////////////////////////
@@ -39,7 +49,7 @@ var server = http.createServer(app);
 var io = new SocketServer(server, socketOptions);
 socketApp.init(io, {org:ORG});
 
-server.listen(port, function() {
+server.listen(PORT, function() {
 	logger.info('****************** SERVER STARTED ************************');
 	logger.info('**************  http://' + server.address().address + ':' + server.address().port +	'  ******************');
 });

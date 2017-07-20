@@ -13,7 +13,7 @@
     "npm": ">=3.10.10"
   },
   "scripts": {
-    "start": "PORT=4000 node app"
+    "start": "node app"
   },
   "license": "Apache-2.0",
   "dependencies": {

@@ -1,0 +1,13 @@
+{
+  "name": "fabric-api-web",
+  "version": "0.2.0",
+  "description": "Hyperledger Fabric API Web client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

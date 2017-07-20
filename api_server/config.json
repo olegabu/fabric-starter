@@ -13,8 +13,6 @@
 
 
 
-    "host":"localhost",
-    "port":"4000",
     "jwt_expiretime": "36000",
     "jwt_secret":"thisismysecret",
 

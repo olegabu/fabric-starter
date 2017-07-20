@@ -2,6 +2,7 @@
 Hyperledger Fabric API Web client
 =================================
 
+This is a web client for Hyperledger Fabric API server. It can be used separately.
 
 
 Environment
