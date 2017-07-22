@@ -5,23 +5,32 @@ A sample Node.js app to demonstrate **__fabric-client__** & **__fabric-ca-client
 ### Start
 
 ```
- # start ledger (console 1)
+ # start fabric network of one orderer, two orgs with each with 2 peers and a ca
+ # 2 cli instances will deploy chaincodes 
  cd ledger
  docker-compose up
 
- # start api server (console 2)
- cd api_server
+ # start api server for org1 (console 2)
+ cd server
  npm install 
  npm start
 
- # start ui server (console 3)
- cd web
+ # start ui server for org1 (console 3)
+ cd server/web
  npm install 
  npm start
+
+ # start api server for org2 (optional; console 4)
+ cd server
+ ORG=org2 PORT=4001 node app
+
+ # start ui server for org2 (optional; console 5)
+ cd server/web
+ FABRIC_API=//localhost:4001 PORT=8081 node index
 
 ```
 
-Open `http://localhost:8080` 
+Open [http://localhost:8080](http://localhost:8080) for org1 and [http://localhost:8081](http://localhost:8081) for org2. 
 
 
 ### Prerequisites and setup:
