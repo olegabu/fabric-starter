@@ -1,0 +1,18 @@
+{
+  "browser": true,
+  "esversion": 5,
+  "bitwise": true,
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "indent": 2,
+  "newcap": true,
+  "noarg": true,
+  "quotmark": "single",
+  "undef": true,
+  "unused": "vars",
+  "strict": false,
+  "predef": ["$","jQuery","angular","_","moment","AWS","DynamoDB","Stripe","chance","emailAddresses","md5","toastr","jstz"],
+  "camelcase" : false,
+  "sub":true
+}

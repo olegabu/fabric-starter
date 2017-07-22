@@ -1,0 +1,127 @@
+.error{
+  color: #F44336;
+}
+
+.loading {
+  font-size: 30vmin;
+  text-align: center;
+}
+
+.top-nav {
+  margin-left: 0;
+}
+
+.nav-wrapper {
+  line-height: 64px;
+  padding: 0 30px;
+}
+
+.nav-wrapper .logo {
+  line-height: initial;
+}
+
+.nav-wrapper .logo img {
+  margin-top: 8px;
+  height: 50px;
+  vertical-align: top;
+}
+
+.nav-wrapper .menu {
+  display: inline-block;
+}
+
+.nav-wrapper .title {
+  font-size: xx-large;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.foot3 .f-cont {
+  margin: 0;
+  padding: 0;
+}
+
+html body .wrapper main {
+  padding-bottom: 152px;
+  margin-bottom: -152px;
+}
+
+.container {
+  padding: 2% 0;
+}
+
+/* fix header */
+h3{
+  margin-top: 0;
+  padding-top: 1.46rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .nav-wrapper .logo {
+    float: right;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  html body .wrapper main {
+    padding-bottom: 145px;
+    margin-bottom: -145px;
+  }
+
+  .endpoint {
+    word-break: break-all;
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  html body .wrapper main {
+    padding-bottom: 137px;
+    margin-bottom: -137px;
+  }
+
+  .nav-wrapper .logo img {
+    height: 40px;
+  }
+}
+
+.wrapper.vertical-sidebar .side-nav li.active, .wrapper.vertical-sidebar .side-nav li .menu-active {
+  background-color: #d6d6d6;
+}
+
+.header-right {
+  max-width: 400px;
+}
+
+nav .menu-active {
+  font-weight: bold;
+  background-color: rgba(0,0,0,0.1);
+}
+
+[ng-click] {
+  cursor: pointer;
+}
+
+td, th, .clock, .endpoint {
+  font-size: large;
+}
+
+.transparent{
+  opacity: 0;
+}
+
+div[data-error]{
+  position: relative;
+
+  transition: .2s opacity ease-out, .2s color ease-out;
+}
+div[data-error]:after{
+  content: attr(data-error);
+  color: #F44336;
+  font-size: 12px;
+
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+}
