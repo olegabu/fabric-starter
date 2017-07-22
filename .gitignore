@@ -5,3 +5,5 @@ artifacts/channel/mychannel.block
 fabric-rest-api.iml
 fabric-rest-api.ipr
 fabric-rest-api.iws
+.gradle
+build
