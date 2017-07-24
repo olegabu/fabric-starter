@@ -43,8 +43,8 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
     volumes:
       - /var/run/:/host/var/run/
-      - ../artifacts/channel:/etc/hyperledger/channel
+      - ../artifacts:/etc/hyperledger/artifacts
       - ../artifacts/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls:/etc/hyperledger/crypto/orderer/tls
       - ../chaincode/java:/opt/chaincode
       - ../chaincode/go:/opt/gopath/src
-    working_dir: /etc/hyperledger/channel
+    working_dir: /etc/hyperledger/artifacts

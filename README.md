@@ -1,12 +1,53 @@
-## Balance transfer
+## API server for Hyperledger Fabric 1.0
 
-A sample Node.js app to demonstrate **__fabric-client__** & **__fabric-ca-client__** Node.js SDK APIs
+A Node.js app that uses **__fabric-client__** & **__fabric-ca-client__** 
+[Node.js SDK](https://github.com/hyperledger/fabric-sdk-node) APIs to interface with peers of 
+[Hyperledger Fabric](https://github.com/hyperledger/fabric) network. Based on the sample app 
+[balance transfer](https://github.com/hyperledger/fabric-samples/tree/release/balance-transfer).
 
-### Start
+A REST API endpoint is open for a web application or other systems to transact on the blockchain. A web application 
+is served from an http endpoint to test the API and display transaction and blockchain info. The API server is meant to
+be run by each member organization; it connects to the organization's CA to get certs for the end users and uses these
+certs to authenticate to blockchain peers as users of the organization; the web application allows the end user to 
+enroll with the CA to transact as a member of the organization running the API server. Please note that connection to 
+the API server and the test web app is not password protected. 
+ 
+A sample network of two organizations and a solo orderer can be started by a 
+[docker-compose script](ledger/docker-compose.yaml) that you can customize with your own domain and organization names.
+
+### Prerequisites:
+
+* [Docker](https://www.docker.com/products/overview) - v1.12 or higher
+* [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
+* [Git client](https://git-scm.com/downloads) - needed for clone commands
+* **Node.js** v6.9.0 - 6.10.0 ( __Node v7+ is not supported__ )
+
+*Optional*: if you'd like to deploy java chaincode you'll need a build of Fabric 1.0 with java enabled. 
+Download and install docker images instead of the ones available in the release:
 
 ```
- # start fabric network of one orderer, two orgs with each with 2 peers and a ca
- # 2 cli instances will deploy chaincodes 
+curl -O https://s3.amazonaws.com/synswap/install/fabric-images.tgz
+docker load -i fabric-images.tgz
+```
+
+### Setup
+
+[network.sh](network.sh) script will create docker-compose.yaml, configtx.yaml and cryptogen.yaml files with your custom
+  org names; will run cryptogen to generate crypto material and configtxgen for the orderer genesis block and config
+  transactions.
+  
+  The network can be started from the generated docker-compose.yaml; it is run by these docker instances:
+  * 2 CAs
+  * A SOLO orderer
+  * 4 peers (2 peers per Org)
+  
+  Once the network is running you can start the API and web app servers. 
+
+```
+ # generate customized yaml files and generate crypto and channel artifacts 
+ ./network.sh
+ 
+ # start the network
  cd ledger
  docker-compose up
 
@@ -20,254 +61,31 @@ A sample Node.js app to demonstrate **__fabric-client__** & **__fabric-ca-client
  npm install 
  npm start
 
- # start api server for org2 (optional; console 4)
+ # start api server for org2 (optional console 4)
  cd server
  ORG=org2 PORT=4001 node app
 
- # start ui server for org2 (optional; console 5)
+ # start ui server for org2 (optional console 5)
  cd server/web
  FABRIC_API=//localhost:4001 PORT=8081 node index
 
 ```
 
-Open [http://localhost:8080](http://localhost:8080) for org1 and [http://localhost:8081](http://localhost:8081) for org2. 
-
-
-### Prerequisites and setup:
-
-* [Docker](https://www.docker.com/products/overview) - v1.12 or higher
-* [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
-* [Git client](https://git-scm.com/downloads) - needed for clone commands
-* **Node.js** v6.9.0 - 6.10.0 ( __Node v7+ is not supported__ )
-* Download docker images
-
-```
-cd fabric-sdk-node/examples/balance-transfer/
-docker-compose -f artifacts/docker-compose.yaml pull
-```
-
-Once you have completed the above setup, you will have provisioned a local network with the following docker container configuration:
-
-* 2 CAs
-* A SOLO orderer
-* 4 peers (2 peers per Org)
-
-#### Artifacts
-* Crypto material has been generated using the **cryptogen** tool from Hyperledger Fabric and mounted to all peers, the orderering node and CA containers. More details regarding the cryptogen tool are available [here](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html#crypto-generator).
-* An Orderer genesis block (genesis.block) and channel configuration transaction (mychannel.tx) has been pre generated using the **configtxgen** tool from Hyperledger Fabric and placed within the artifacts folder. More details regarding the configtxgen tool are available [here](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html#configuration-transaction-generator).
-
-## Running the sample program
-
-There are two options available for running the balance-transfer sample
-
-### Option 1:
-
-##### Terminal Window 1
-
-* Launch the network using docker-compose
-
-```
-docker-compose -f artifacts/docker-compose.yaml up
-```
-##### Terminal Window 2
-
-* Execute the REST APIs from the section [Sample REST APIs Requests](https://github.com/hyperledger/fabric-sdk-node/tree/master/examples/balance-transfer#running-the-sample-program)
-
-
-### Option 2:
-
-##### Terminal Window 1
-
-```
-cd fabric-sdk-node/examples/balance-transfer
-
-./runApp.sh
-
-```
-
-* This lauches the required network on your local machine
-* Installs the fabric-client and fabric-ca-client node modules
-* And, starts the node app on PORT 4000
-
-##### Terminal Window 2
-
-
-In order for the following shell script to properly parse the JSON, you must install ``jq``:
-
-instructions [https://stedolan.github.io/jq/](https://stedolan.github.io/jq/)
-
-With the application started in terminal 1, next, test the APIs by executing the script - **testAPIs.sh**:
-```
-cd fabric-sdk-node/examples/balance-transfer
-
-./testAPIs.sh
-
-```
-
-## Sample REST APIs Requests
-
-### Login Request
-
-* Register and enroll new users in Organization - **Org1**:
-
-`curl -s -X POST http://localhost:4000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=Jim&orgName=org1'`
-
-**OUTPUT:**
-
-```
-{
-  "success": true,
-  "secret": "RaxhMgevgJcm",
-  "message": "Jim enrolled Successfully",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI"
-}
-```
-
-The response contains the success/failure status, an **enrollment Secret** and a **JSON Web Token (JWT)** that is a required string in the Request Headers for subsequent requests.
-
-### Create Channel request
-
-```
-curl -s -X POST \
-  http://localhost:4000/channels \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json" \
-  -d '{
-	"channelName":"mychannel",
-	"channelConfigPath":"../artifacts/channel/mychannel.tx"
-}'
-```
-
-Please note that the Header **authorization** must contain the JWT returned from the `POST /users` call
-
-### Join Channel request
-
-```
-curl -s -X POST \
-  http://localhost:4000/channels/mychannel/peers \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json" \
-  -d '{
-	"peers": ["localhost:7051","localhost:7056"]
-}'
-```
-### Install chaincode
-
-```
-curl -s -X POST \
-  http://localhost:4000/chaincodes \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json" \
-  -d '{
-	"peers": ["localhost:7051","localhost:7056"],
-	"chaincodeName":"mycc",
-	"chaincodePath":"github.com/example_cc",
-	"chaincodeVersion":"v0"
-}'
-```
-
-### Instantiate chaincode
-
-```
-curl -s -X POST \
-  http://localhost:4000/channels/mychannel/chaincodes \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json" \
-  -d '{
-	"peers": ["localhost:7051"],
-	"chaincodeName":"mycc",
-	"chaincodeVersion":"v0",
-	"functionName":"init",
-	"args":["a","100","b","200"]
-}'
-```
-
-### Invoke request
-
-```
-curl -s -X POST \
-  http://localhost:4000/channels/mychannel/chaincodes/mycc \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json" \
-  -d '{
-	"peers": ["localhost:7051", "localhost:7056"],
-	"fcn":"move",
-	"args":["a","b","10"]
-}'
-```
-**NOTE:** Ensure that you save the Transaction ID from the response in order to pass this string in the subsequent query transactions.
-
-### Chaincode Query
-
-```
-curl -s -X GET \
-  "http://localhost:4000/channels/mychannel/chaincodes/mycc?peer=peer1&fcn=query&args=%5B%22a%22%5D" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
-
-### Query Block by BlockNumber
-
-```
-curl -s -X GET \
-  "http://localhost:4000/channels/mychannel/blocks/1?peer=peer1" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
-
-### Query Transaction by TransactionID
-
-```
-curl -s -X GET http://localhost:4000/channels/mychannel/transactions/TRX_ID?peer=peer1 \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
-**NOTE**: Here the TRX_ID can be from any previous invoke transaction
-
-
-### Query ChainInfo
-
-```
-curl -s -X GET \
-  "http://localhost:4000/channels/mychannel?peer=peer1" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
-
-### Query Installed chaincodes
-
-```
-curl -s -X GET \
-  "http://localhost:4000/chaincodes?peer=peer1&type=installed" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
-
-### Query Instantiated chaincodes
-
-```
-curl -s -X GET \
-  "http://localhost:4000/chaincodes?peer=peer1&type=instantiated" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
-
-### Query Channels
-
-```
-curl -s -X GET \
-  "http://localhost:4000/channels?peer=peer1" \
-  -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTQ4NjU1OTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Im9yZzEiLCJpYXQiOjE0OTQ4NjE5OTF9.yWaJhFDuTvMQRaZIqg20Is5t-JJ_1BP58yrNLOKxtNI" \
-  -H "content-type: application/json"
-```
+Open [http://localhost:8080](http://localhost:8080) for org1 and 
+[http://localhost:8081](http://localhost:8081) for org2.
+ 
+ You can interact with the API server directly with an http client of your choice to submit  
+ [sample requests](https://github.com/hyperledger/fabric-samples/tree/release/balance-transfer#sample-rest-apis-requests).
 
 ### Network configuration considerations
 
-You have the ability to change configuration parameters by editing the network-config.json file.
+You have the ability to change configuration parameters by editing [network-config.json](server/network-config.json).
 
-#### IP Address** and PORT information
+#### IP Address and PORT information
 
-If you choose to customize your docker-compose yaml file by hardcoding IP Addresses and PORT information for your peers and orderer, then you MUST also add the identical values into the network-config.json file. The paths shown below will need to be adjusted to match your docker-compose yaml file.
+If you choose to customize your docker-compose yaml file by hardcoding IP Addresses and PORT information for your peers 
+and orderer, then you MUST also add the identical values into the network-config.json file. 
+The paths shown below will need to be adjusted to match your docker-compose yaml file.
 
 ```
 		"orderer": {
@@ -310,6 +128,3 @@ To retrieve the IP Address for one of your network entities, issue the following
 ```
 # this will return the IP Address for peer0
 docker inspect peer0 | grep IPAddress
-```
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

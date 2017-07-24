@@ -11,7 +11,7 @@ OrdererOrgs:
   # Orderer
   # ---------------------------------------------------------------------------
   - Name: Orderer
-    Domain: example.com
+    Domain: DOMAIN
 
     # ---------------------------------------------------------------------------
     # "Specs" - See PeerOrgs below for complete description
@@ -23,11 +23,8 @@ OrdererOrgs:
 # "PeerOrgs" - Definition of organizations managing peer nodes
 # ---------------------------------------------------------------------------
 PeerOrgs:
-  # ---------------------------------------------------------------------------
-  # Org1
-  # ---------------------------------------------------------------------------
-  - Name: Org1
-    Domain: org1.example.com
+  - Name: ORG
+    Domain: ORG.DOMAIN
 
     # ---------------------------------------------------------------------------
     # "CA"
@@ -36,7 +33,7 @@ PeerOrgs:
     # organization.  This entry is a Spec.  See "Specs" section below for details.
     # ---------------------------------------------------------------------------
     CA:
-       Hostname: ca # implicitly ca.org1.example.com
+       Hostname: ca # implicitly ca.ORG.example.com
 
     # ---------------------------------------------------------------------------
     # "Specs"
@@ -62,7 +59,7 @@ PeerOrgs:
     # ---------------------------------------------------------------------------
     # Specs:
     #   - Hostname: foo # implicitly "foo.org1.example.com"
-    #     CommonName: foo27.org5.example.com # overrides Hostname-based FQDN set above
+    #     CommonName: foo27.org5.DOMAIN # overrides Hostname-based FQDN set above
     #     SANS:
     #       - "bar.{{.Domain}}"
     #       - "altfoo.{{.Domain}}"
@@ -94,20 +91,5 @@ PeerOrgs:
     # ---------------------------------------------------------------------------
     # Count: The number of user accounts _in addition_ to Admin
     # ---------------------------------------------------------------------------
-    Users:
-      Count: 1
-
-  # ---------------------------------------------------------------------------
-  # Org2: See "Org1" for full specification
-  # ---------------------------------------------------------------------------
-  - Name: Org2
-    Domain: org2.example.com
-    CA:
-       Hostname: ca # implicitly ca.org1.example.com
-
-    Template:
-      Count: 2
-      SANS:
-        - "localhost"
     Users:
       Count: 1

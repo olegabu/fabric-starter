@@ -1,0 +1,180 @@
+#
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+version: '2'
+
+services:
+
+  ca.ORG1.DOMAIN:
+    container_name: ca.ORG1.DOMAIN
+    image: hyperledger/fabric-ca:x86_64-1.0.0
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG1.DOMAIN-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG1.DOMAIN-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/ca/:/etc/hyperledger/fabric-ca-server-config
+
+  ca.ORG2.DOMAIN:
+    container_name: ca.ORG2.DOMAIN
+    image: hyperledger/fabric-ca:x86_64-1.0.0
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG2.DOMAIN-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG2.DOMAIN-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/ca/:/etc/hyperledger/fabric-ca-server-config
+
+  orderer.DOMAIN:
+    container_name: orderer.DOMAIN
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peerORG1/tls/ca.crt, /etc/hyperledger/crypto/peerORG2/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ../artifacts/channel:/etc/hyperledger/configtx
+        - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/:/etc/hyperledger/crypto/orderer
+        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/peers/peer0.ORG1.DOMAIN/:/etc/hyperledger/crypto/peerORG1
+        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/peers/peer0.ORG2.DOMAIN/:/etc/hyperledger/crypto/peerORG2
+
+  peer0.ORG1.DOMAIN:
+    container_name: peer0.ORG1.DOMAIN
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.ORG1.DOMAIN
+      - CORE_PEER_LOCALMSPID=ORG1MSP
+      - CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/peers/peer0.ORG1.DOMAIN/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer.DOMAIN
+
+  peer1.ORG1.DOMAIN:
+    container_name: peer1.ORG1.DOMAIN
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.ORG1.DOMAIN
+      - CORE_PEER_LOCALMSPID=ORG1MSP
+      - CORE_PEER_ADDRESS=peer1.ORG1.DOMAIN:7051
+    ports:
+      - 7056:7051
+      - 7058:7053
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/peers/peer1.ORG1.DOMAIN/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer.DOMAIN
+
+  peer0.ORG2.DOMAIN:
+    container_name: peer0.ORG2.DOMAIN
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.ORG2.DOMAIN
+      - CORE_PEER_LOCALMSPID=ORG2MSP
+      - CORE_PEER_ADDRESS=peer0.ORG2.DOMAIN:7051
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/peers/peer0.ORG2.DOMAIN/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer.DOMAIN
+
+  peer1.ORG2.DOMAIN:
+    container_name: peer1.ORG2.DOMAIN
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.ORG2.DOMAIN
+      - CORE_PEER_LOCALMSPID=ORG2MSP
+      - CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051
+    ports:
+      - 8056:7051
+      - 8058:7053
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/peers/peer1.ORG2.DOMAIN/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - orderer.DOMAIN
+
+  cli.ORG1.DOMAIN:
+    container_name: cli.ORG1.DOMAIN
+    extends:
+      file: base.yaml
+      service: cli-base
+    environment:
+      - CORE_PEER_LOCALMSPID=ORG1MSP
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/users/Admin@ORG1.DOMAIN:/etc/hyperledger/crypto/peer
+    command: >
+      bash -c "peer channel create -o orderer.DOMAIN:7050 -c CHANNEL_NAME -f /etc/hyperledger/artifacts/channel/CHANNEL_NAME.tx --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt
+      && sleep 5
+      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer channel join -b CHANNEL_NAME.block
+      && CORE_PEER_ADDRESS=peer1.ORG1.DOMAIN:7051 peer channel join -b CHANNEL_NAME.block
+      && sleep 5
+      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
+      && CORE_PEER_ADDRESS=peer1.ORG1.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
+      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java
+      && CORE_PEER_ADDRESS=peer1.ORG1.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java
+      && sleep 5
+      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode instantiate -n mycc -v 1.0 -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}' -o orderer.DOMAIN:7050 -C CHANNEL_NAME --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt
+      && sleep 5
+      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode instantiate -n javacc -v 1.0 -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}' -o orderer.DOMAIN:7050 -C CHANNEL_NAME --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    depends_on:
+      - peer0.ORG1.DOMAIN
+      - peer1.ORG1.DOMAIN
+
+  cli.ORG2.DOMAIN:
+    container_name: cli.ORG2.DOMAIN
+    extends:
+      file: base.yaml
+      service: cli-base
+    environment:
+      - CORE_PEER_LOCALMSPID=ORG2MSP
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/users/Admin@ORG2.DOMAIN:/etc/hyperledger/crypto/peer
+    command: >
+      bash -c "sleep 10
+      && CORE_PEER_ADDRESS=peer0.ORG2.DOMAIN:7051 peer channel join -b CHANNEL_NAME.block
+      && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer channel join -b CHANNEL_NAME.block
+      && sleep 5
+      && CORE_PEER_ADDRESS=peer0.ORG2.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
+      && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
+      && CORE_PEER_ADDRESS=peer0.ORG2.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java
+      && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java"
+    depends_on:
+      - cli.ORG1.DOMAIN
