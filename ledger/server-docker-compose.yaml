@@ -19,14 +19,14 @@ services:
       - ../artifacts:/usr/src/artifacts
     command: npm start
 
-#  api.org2.example.com:
-#    build: ../server
-#    image: altoros/fabric-rest
-#    container_name: api.org2.example.com
-#    ports:
-#      - "4002:8080"
-#    environment:
-#      - ORG=org2
-#    volumes:
-#      - ../artifacts:/usr/src/artifacts
-#    command: npm start
+ api.org2.example.com:
+   build: ../server
+   image: altoros/fabric-rest
+   container_name: api.org2.example.com
+   ports:
+     - "4002:8080"
+   environment:
+     - ORG=org2
+   volumes:
+     - ../artifacts:/usr/src/artifacts
+   command: npm start
