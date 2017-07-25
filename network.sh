@@ -3,7 +3,6 @@
 DOMAIN=example.com
 ORG1=org1
 ORG2=org2
-ORG=org1
 CHANNEL_NAME=mychannel
 
 # Delete any images that were generated as a part of this setup
@@ -17,6 +16,8 @@ function removeUnwantedImages() {
     docker rmi -f $DOCKER_IMAGE_IDS
   fi
 }
+
+sed -e "s/\$DOMAIN/$DOMAIN/g" -e "s/\$ORG1/$ORG1/g" -e "s/\$ORG2/$ORG2/g" artifacts/network-config-template.json > artifacts/network-config.json
 
 sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
 sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$ORG1/g" artifacts/cryptogentemplate.yaml > artifacts/"cryptogen-$ORG1.yaml"
