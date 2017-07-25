@@ -1,10 +1,8 @@
 'use strict';
-var path = require('path');
 var util = require('util');
 var helper = require('./helper.js');
 var logger = helper.getLogger('peer-listener');
 
-var hfc = require('./hfc');
 
 
 /**
@@ -17,24 +15,33 @@ var eventhubs = null;
  * channelName?
  */
 function listenPeers(peersUrls, username, org, onBlockFn){
+  // return;
 
-  return helper.getRegisteredUsers(username, org).then((user) => {
+  return helper.getRegisteredUsers(username, org).then((/*user*/) => {
     logger.debug(util.format('\n(((((((((((( listen for transactions on organization %s )))))))))))\n', org));
 
     // set the transaction listener
     eventhubs = helper.newEventHubs(peersUrls, org);
-    for (let key in eventhubs) {
-      let eh = eventhubs[key];
+    for (let i=0, n=eventhubs.length; i<n; i++) {
+      let eh = eventhubs[i];
       eh.connect();
 
-      eh._myListenerId = eh.registerBlockEvent(function(block){
-        logger.debug(util.format('(((((((((((( Got block event )))))))))))'));
-        logger.debug('Got block event', block);
-        onBlockFn && onBlockFn(block);
-      }, function(e){
-        // onError
-        logger.warn('Got block eror', e);
-      });
+      eh._myListenerId = eh.registerBlockEvent(_onBlock, _onBlockError);
+    }
+
+
+    function _onBlock(block){
+      logger.debug(util.format('(((((((((((( Got block event )))))))))))'));
+      logger.debug('Got block event', block);
+      if(onBlockFn) {
+        onBlockFn(block);
+      }
+    }
+
+    function _onBlockError(e){
+      // onError
+      // logger.warn('Got block error', e);
+      throw e;
     }
   });
 }
@@ -43,8 +50,8 @@ function listenPeers(peersUrls, username, org, onBlockFn){
  *
  */
 function disconnect(){
-    for (let key in eventhubs) {
-      let eh = eventhubs[key];
+    for (let i=0, n=eventhubs.length; i<n; i++) {
+      let eh = eventhubs[i];
       eh.unregisterBlockEvent(eh._myListenerId);
       eh.disconnect();
     }

@@ -22,8 +22,7 @@ var SocketServer = require('socket.io');
 var socketApp = require('./socket-app');
 
 // config
-var config = require('./config.json');
-const ORG = process.env.ORG || config.org;
+const ORG = process.env.ORG;
 // const USERNAME = config.user.username;
 // var host = process.env.HOST || config.host;
 const PORT = process.env.PORT || 4000;

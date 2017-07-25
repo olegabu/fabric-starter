@@ -15,6 +15,10 @@ logger.info('Use network config: %s', config);
 
 ///////
 var hfc = require('fabric-client');
+hfc.setLogger(logger);
 hfc.addConfigFile(config);
+
+// you can always get config:
+// var ORGS = hfc.getConfigSetting('network-config');
 
 module.exports = hfc;

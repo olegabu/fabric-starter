@@ -26,7 +26,6 @@ var CopService = require('fabric-ca-client');
 var config = require('../config.json');
 
 var hfc = require('./hfc');
-hfc.setLogger(logger);
 var ORGS = hfc.getConfigSetting('network-config');
 
 var clients = {};
@@ -151,7 +150,7 @@ function newRemotes(urls, forPeers, userOrg) {
 		}
 
 		if (!found) {
-			logger.error(util.format('Failed to find a peer matching the url %s', peerUrl));
+      logger.error(util.format('Failed to find a peer matching the url %s', peerUrl));
 		}
 	}
 
