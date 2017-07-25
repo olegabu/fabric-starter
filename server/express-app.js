@@ -21,7 +21,9 @@ var app = express();
 var tools = require('./lib/tools');
 
 // network-config.json has special format, so we can't change it now
-var networkConfig = require('./network-config.json')['network-config'];
+var hfc = require('./app/hfc');
+var networkConfig = hfc.getConfigSetting('network-config');
+
 var helper = require('./app/helper.js');
 var createChannel = require('./app/create-channel.js');
 var joinChannel = require('./app/join-channel.js');

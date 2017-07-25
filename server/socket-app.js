@@ -5,7 +5,9 @@
 var log4js = require('log4js');
 var logger = log4js.getLogger('Socket');
 var peerListener = require('./app/peer-listener.js');
-var networkConfig = require('./network-config.json')['network-config'];
+
+var hfc = require('./app/hfc');
+var networkConfig = hfc.getConfigSetting('network-config');
 
 // config
 var config = require('./config.json');

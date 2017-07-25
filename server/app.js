@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 4000;
 
 var clientEnv = {
   api: process.env.FABRIC_API || ''
-}
+};
 
 var app = express();
 var webApp = require('./web/express-app')(clientEnv);

@@ -21,6 +21,8 @@ var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('install-chaincode');
 var tx_id = null;
+
+
 //function installChaincode(org) {
 var installChaincode = function(peers, chaincodeName, chaincodePath,
 	chaincodeVersion, username, org) {

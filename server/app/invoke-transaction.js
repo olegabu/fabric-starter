@@ -20,8 +20,7 @@ var tools = require('../lib/tools.js');
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 
-var hfc = require('fabric-client');
-hfc.addConfigFile(path.join(__dirname, '../network-config.json'));
+var hfc = require('./hfc');
 
 
 

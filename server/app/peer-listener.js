@@ -4,12 +4,11 @@ var util = require('util');
 var helper = require('./helper.js');
 var logger = helper.getLogger('peer-listener');
 
-var hfc = require('fabric-client');
-hfc.addConfigFile(path.join(__dirname, '../network-config.json'));
+var hfc = require('./hfc');
 
 
 /**
- * @type {Array{EventHub}>
+ * @type {Array<EventHub>}
  */
 var eventhubs = null;
 
