@@ -54,23 +54,8 @@ docker load -i fabric-images.tgz
  cd ledger
  docker-compose up
 
- # start api server for org1 (console 2)
- cd server
- npm install 
- npm start
-
- # start ui server for org1 (console 3)
- cd server/web
- npm install 
- npm start
-
- # start api server for org2 (optional console 4)
- cd server
- ORG=org2 PORT=4001 node app
-
- # start ui server for org2 (optional console 5)
- cd server/web
- FABRIC_API=//localhost:4001 PORT=8081 node index
+ # start api server for org1 and org2
+ docker-compose -f ledger/server-docker-compose.yaml up
 
 ```
 
