@@ -11,7 +11,7 @@ CHANNEL_NAME=mychannel
 function removeUnwantedImages() {
   DOCKER_IMAGE_IDS=$(docker images | grep "dev\|none\|test-vp\|peer[0-9]-" | awk '{print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
-    echo "---- No images available for deletion ----"
+    echo "No images available for deletion"
   else
     docker rmi -f $DOCKER_IMAGE_IDS
   fi
@@ -27,8 +27,9 @@ docker-compose -f ledger/docker-compose.yaml kill
 docker-compose -f ledger/docker-compose.yaml rm -f
 }
 
-removeUnwantedImages
 removeDockers
+sleep 10
+removeUnwantedImages
 removeArtifacts
 
 sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/CHANNEL_NAME/$CHANNEL_NAME/g" -e "s/CA1_PRIVATE_KEY/${CA1_PRIVATE_KEY}/g" -e "s/CA2_PRIVATE_KEY/${CA2_PRIVATE_KEY}/g" ledger/docker-compose-template.yaml > ledger/docker-compose.yaml
@@ -43,11 +44,11 @@ sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$ORG2/g" artifacts/cryptogentemplate-peer.
 
 mkdir -p artifacts/channel
 
-docker-compose --file ledger/docker-compose.yaml run --rm cli bash -c "cryptogen generate --config=cryptogen-$DOMAIN.yaml"
-docker-compose --file ledger/docker-compose.yaml run --rm cli bash -c "cryptogen generate --config=cryptogen-$ORG1.yaml"
-docker-compose --file ledger/docker-compose.yaml run --rm cli bash -c "cryptogen generate --config=cryptogen-$ORG2.yaml"
-docker-compose --file ledger/docker-compose.yaml run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts cli configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel/genesis.block
-docker-compose --file ledger/docker-compose.yaml run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts cli configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel/"$CHANNEL_NAME".tx -channelID "$CHANNEL_NAME"
+docker-compose --file ledger/docker-compose.yaml run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$DOMAIN.yaml"
+docker-compose --file ledger/docker-compose.yaml run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$ORG1.yaml"
+docker-compose --file ledger/docker-compose.yaml run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$ORG2.yaml"
+docker-compose --file ledger/docker-compose.yaml run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel/genesis.block
+docker-compose --file ledger/docker-compose.yaml run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel/"$CHANNEL_NAME".tx -channelID "$CHANNEL_NAME"
 
 CA1_PRIVATE_KEY=$(basename `ls artifacts/crypto-config/peerOrganizations/"$ORG1.$DOMAIN"/ca/*_sk`)
 CA2_PRIVATE_KEY=$(basename `ls artifacts/crypto-config/peerOrganizations/"$ORG2.$DOMAIN"/ca/*_sk`)
