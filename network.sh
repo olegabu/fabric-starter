@@ -32,6 +32,9 @@ docker-compose --file ledger/base.yaml run --rm -e FABRIC_CFG_PATH=/etc/hyperled
 CA1_PRIVATE_KEY=$(basename `ls artifacts/crypto-config/peerOrganizations/"$ORG1.$DOMAIN"/ca/*_sk`)
 CA2_PRIVATE_KEY=$(basename `ls artifacts/crypto-config/peerOrganizations/"$ORG2.$DOMAIN"/ca/*_sk`)
 
+[[ -z  $CA1_PRIVATE_KEY  ]] && echo "empty CA1 private key" && exit 1
+[[ -z  $CA2_PRIVATE_KEY  ]] && echo "empty CA2 private key" && exit 1
+
 sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/CHANNEL_NAME/$CHANNEL_NAME/g" -e "s/CA1_PRIVATE_KEY/${CA1_PRIVATE_KEY}/g" -e "s/CA2_PRIVATE_KEY/${CA2_PRIVATE_KEY}/g" ledger/docker-compose-template.yaml > ledger/docker-compose.yaml
 
 echo Done! Use \"docker-compose -f ledger/docker-compose.yaml up\" to start

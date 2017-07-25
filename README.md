@@ -47,7 +47,7 @@ docker load -i fabric-images.tgz
   Once the network is running you can start the API and web app servers. 
 
 ```
- # generate customized yaml files and generate crypto and channel artifacts 
+ # generate customized yaml files and generate crypto and channel artifacts (don't run it twice)
  ./network.sh
  
  # start the network
