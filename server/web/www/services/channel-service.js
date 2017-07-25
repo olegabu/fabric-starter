@@ -3,7 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function ChannelService(ApiService) {
+function ChannelService(ApiService, $q) {
 
   // jshint shadow: true
   var ChannelService = this;
@@ -30,6 +30,9 @@ function ChannelService(ApiService) {
     var channelId = 'mychannel';
     return ApiService.channels.get(channelId)
       .then(function(currentBlockHash){
+        if(!currentBlockHash){
+          return $q.resolve(null);
+        }
         return ApiService.channels.getBlock(channelId, currentBlockHash);
       });
   };
