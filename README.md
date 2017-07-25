@@ -48,7 +48,7 @@ docker load -i fabric-images.tgz
 
 ```
  # generate customized yaml files and generate crypto and channel artifacts (don't run it twice)
- ./network.sh
+ sudo ./network.sh
  
  # start the network
  cd ledger

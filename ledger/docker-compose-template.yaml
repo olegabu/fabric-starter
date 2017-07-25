@@ -41,7 +41,7 @@ services:
 
   orderer.DOMAIN:
     container_name: orderer.DOMAIN
-    image: hyperledger/fabric-orderer:x86_64-1.0.0
+    image: hyperledger/fabric-orderer
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -131,11 +131,18 @@ services:
     depends_on:
       - orderer.DOMAIN
 
-  cli.ORG1.DOMAIN:
-    container_name: cli.ORG1.DOMAIN
+  cli.DOMAIN:
+    container_name: cli.DOMAIN
     extends:
       file: base.yaml
       service: cli-base
+    volumes:
+      - ../artifacts/crypto-config/ordererOrganizations/example.com/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
+
+  cli.ORG1.DOMAIN:
+    container_name: cli.ORG1.DOMAIN
+    extends:
+      service: cli.DOMAIN
     environment:
       - CORE_PEER_LOCALMSPID=ORG1MSP
     volumes:
@@ -161,8 +168,7 @@ services:
   cli.ORG2.DOMAIN:
     container_name: cli.ORG2.DOMAIN
     extends:
-      file: base.yaml
-      service: cli-base
+      service: cli.DOMAIN
     environment:
       - CORE_PEER_LOCALMSPID=ORG2MSP
     volumes:

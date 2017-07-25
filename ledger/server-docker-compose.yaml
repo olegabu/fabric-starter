@@ -19,7 +19,7 @@ services:
       - ../artifacts:/usr/src/artifacts
     command: npm start
 
- api.org2.example.com:
+  api.org2.example.com:
    build: ../server
    image: altoros/fabric-rest
    container_name: api.org2.example.com
