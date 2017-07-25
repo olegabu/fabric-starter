@@ -11,6 +11,6 @@ build
 /artifacts/channel/
 /artifacts/cryptogen-*.yaml
 /artifacts/configtx.yaml
-/artifacts/mychannel.block
+/artifacts/*.block
 /artifacts/network-config.json
 /ledger/docker-compose.yaml
