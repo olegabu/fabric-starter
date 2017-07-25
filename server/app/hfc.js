@@ -4,7 +4,7 @@
 const path = require('path');
 
 var log4js = require('log4js');
-var logger = log4js.getLogger('hfc');
+var logger = log4js.getLogger('fabric-client');
 logger.setLevel('DEBUG');
 
 const CONFIG_DEFAULT = path.join(__dirname, '../../artifacts/network-config.json');

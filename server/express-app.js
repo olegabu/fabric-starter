@@ -35,15 +35,19 @@ var query = require('./app/query.js');
 //
 var config = require('./config.json');
 
-const ORG = process.env.ORG || config.org;
+const ORG = process.env.ORG || null;
 const USERNAME = config.user.username;
 
 logger.info('**************    API SERVER     ******************');
 logger.info('Admin     : ' + USERNAME);
 logger.info('Org name  : ' + ORG);
 
+if(!ORG){
+    throw new Error('ORG must be set in environment');
+}
 
-module.exports = function(){ return app };
+
+module.exports = function(){ return app; };
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// SET CONFIGURATIONS ///////////////////////////

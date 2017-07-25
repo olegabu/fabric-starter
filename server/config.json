@@ -3,15 +3,12 @@
     "GOPATH":"../../artifacts",
     "keyValueStore":"/tmp/fabric-client-kvs",
     "eventWaitTime":"30000",
-    "orderer":"grpcs://localhost:7050",
     "users":[
       {
          "username":"admin",
          "secret":"adminpw"
       }
     ],
-
-
 
     "jwt_expiretime": "36000",
     "jwt_secret":"thisismysecret",
@@ -21,6 +18,5 @@
     "user":{
       "username":"admin",
       "secret":"adminpw"
-    },
-    "org":"org1"
+    }
 }

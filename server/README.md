@@ -21,4 +21,9 @@ Api web-interface become available on `http://localhost:4000/ui` after launching
 ```
 
 
+Dev environment
+---------------
+```
+ORG=org1 npm run dev
 
+```

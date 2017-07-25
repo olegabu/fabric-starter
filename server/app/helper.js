@@ -77,7 +77,7 @@ function newOrderer(client) {
 	var caRootsPath = ORGS.orderer.tls_cacerts;
 	let data = fs.readFileSync(path.join(__dirname, caRootsPath));
 	let caroots = Buffer.from(data).toString();
-	return client.newOrderer(config.orderer, {
+	return client.newOrderer(ORGS.orderer.url, {
 		'pem': caroots,
 		'ssl-target-name-override': ORGS.orderer['server-hostname']
 	});
