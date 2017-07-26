@@ -37,16 +37,41 @@ function replaceBuffer(data){
   return data;
 }
 
+
 /**
  * Replace protobuf 'Long' type with a string
  * @param {*} data
  * @returns {*} data with 'Long' represented as string
  */
 function replaceLong(data){
-  // TODO: replaceLong not implemented
+  if(isObject(data)){
+
+    var isLong = typeof data.low !== "undefined"
+      && typeof data.high !== "undefined"
+      && typeof data.unsigned !== "undefined"
+      && Object.keys(data).length == 3;
+
+    if (isLong){
+      // console.log(data);
+      // TODO: deal with data.unsigned and data.hight
+      if(data.high){
+        console.warn('replaceLong: high part is not supported yet');
+        data = 'OVERFLOW:'+data.low;
+      } else if(!data.unsigned){
+        console.warn('replaceLong: signed is not supported yet');
+        data = 'SIGNED:'+data.low;
+      } else {
+        data = (data.high||'')+''+data.low;
+      }
+
+    } else {
+      Object.keys(data).forEach(function(propery){
+        data[propery] = replaceLong(data[propery]);
+      });
+    }
+  }
   return data;
 }
-
 
 
 /**

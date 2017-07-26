@@ -18,6 +18,7 @@ services:
     volumes:
       - ../artifacts:/usr/src/artifacts
       - ../server/app:/usr/src/app/app
+      - ../server/lib:/usr/src/app/lib
       - ../server/web:/usr/src/app/web
     command: npm start
 
