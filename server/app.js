@@ -38,6 +38,7 @@ var apiApp = require('./express-app')(); // TODO: this app still uses process.en
 
 var socketOptions = { origins: '*:*'};
 
+app.get('/', (req, res)=>res.redirect('/ui') );
 app.use('/ui', webApp);
 app.use(apiApp);
 
