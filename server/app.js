@@ -23,8 +23,6 @@ var socketApp = require('./socket-app');
 
 // config
 const ORG = process.env.ORG;
-// const USERNAME = config.user.username;
-// var host = process.env.HOST || config.host;
 const PORT = process.env.PORT || 4000;
 
 var clientEnv = {
@@ -51,7 +49,11 @@ socketApp.init(io, {org:ORG});
 
 server.listen(PORT, function() {
 	logger.info('****************** SERVER STARTED ************************');
-	logger.info('**************  http://' + server.address().address + ':' + server.address().port +	'  ******************');
+	logger.info('**************  http://' + getHost(server.address().address) + ':' + server.address().port +	'  ******************');
 });
 server.timeout = 240000;
+
+function getHost(address){
+  return address=='::'?'localhost':address;
+}
 

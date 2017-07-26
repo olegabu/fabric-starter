@@ -38,6 +38,9 @@ function ChannelService(ApiService, $q) {
   };
 
   ChannelService.getTransactionById = function(txId){
+    if(!txId){
+      return $q.resolve(null);
+    }
     return ApiService.transaction.getById(txId);
   };
 
