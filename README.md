@@ -53,10 +53,6 @@ docker load -i fabric-images.tgz
  # start the network
  cd ledger
  docker-compose up
-
- # start api server for org1 and org2
- docker-compose -f ledger/server-docker-compose.yaml up
-
 ```
 
 Open [http://localhost:4001/ui](http://localhost:4001/ui) for org1 and 

@@ -41,7 +41,7 @@ services:
 
   orderer.DOMAIN:
     container_name: orderer.DOMAIN
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:x86_64-1.0.0
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -138,6 +138,37 @@ services:
       service: cli-base
     volumes:
       - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
+
+
+  # api
+  api.ORG1.DOMAIN:
+    extends:
+      file: base.yaml
+      service: api-base
+    container_name: api.ORG1.DOMAIN
+    ports:
+      - "4001:4001"
+    environment:
+      - ORG=ORG1
+      - PORT=4001
+    depends_on:
+      - peer0.ORG1.DOMAIN
+      - peer1.ORG1.DOMAIN
+
+  api.ORG2.DOMAIN:
+    extends:
+      file: base.yaml
+      service: api-base
+    container_name: api.ORG2.DOMAIN
+    ports:
+      - "4002:4002"
+    environment:
+      - ORG=ORG2
+      - PORT=4002
+    depends_on:
+      - peer0.ORG2.DOMAIN
+      - peer1.ORG2.DOMAIN
+
 
   cli.ORG1.DOMAIN:
     container_name: cli.ORG1.DOMAIN
