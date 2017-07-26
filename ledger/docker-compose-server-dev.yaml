@@ -10,23 +10,15 @@ services:
   api.org1.example.com:
     build: ../server
     image: altoros/fabric-rest
-    container_name: api.org1.example.com
+    container_name: api.org1.example.com-dev
     ports:
-      - "4001:8080"
+      - "8080:8080"
     environment:
       - ORG=org1
     volumes:
       - ../artifacts:/usr/src/artifacts
+      - ../server/app:/usr/src/app/app
+      - ../server/web:/usr/src/app/web
     command: npm start
 
-  api.org2.example.com:
-   build: ../server
-   image: altoros/fabric-rest
-   container_name: api.org2.example.com
-   ports:
-     - "4002:8080"
-   environment:
-     - ORG=org2
-   volumes:
-     - ../artifacts:/usr/src/artifacts
-   command: npm start
+# api server for org2 disabled here

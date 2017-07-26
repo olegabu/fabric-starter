@@ -61,6 +61,15 @@ Open [http://localhost:4001/ui](http://localhost:4001/ui) for org1 and
  You can also interact with the API server directly with an http client of your choice and test with these 
  [sample requests](https://github.com/hyperledger/fabric-samples/tree/release/balance-transfer#sample-rest-apis-requests).
 
+### Run Api in dev mode
+
+Dev mode supports editing the files without rebuilding container (for the most of the files, but not for all of them!). 
+For more details see `ledger/docker-compose-server-dev.yaml` file.
+
+```
+ docker-compose -f ledger/docker-compose-server-dev.yaml up
+```
+
 ### Network configuration considerations
 
 You have the ability to change configuration parameters by editing [network-config.json](server/network-config.json).
