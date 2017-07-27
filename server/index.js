@@ -19,7 +19,7 @@ var log4js = require('log4js');
 var logger = log4js.getLogger('Http');
 var express = require('express');
 var SocketServer = require('socket.io');
-var socketApp = require('./socket-app');
+var socketApp = require('./app/socket-api-app');
 
 // config
 const ORG = process.env.ORG;
@@ -30,8 +30,8 @@ var clientEnv = {
 };
 
 var app = express();
-var webApp = require('./web/express-app')(clientEnv);
-var apiApp = require('./express-app')(); // TODO: this app still uses process.env. get rid of it
+var webApp = require('./app/express-web-app')(clientEnv);
+var apiApp = require('./app/express-api-app')(); // TODO: this app still uses process.env. get rid of it
 
 
 var socketOptions = { origins: '*:*'};
@@ -54,6 +54,6 @@ server.listen(PORT, function() {
 server.timeout = 240000;
 
 function getHost(address){
-  return address=='::'?'localhost':address;
+  return address === '::' ? 'localhost' : address;
 }
 

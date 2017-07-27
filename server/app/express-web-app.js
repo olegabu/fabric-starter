@@ -1,7 +1,7 @@
 
 
 var express = require('express');
-var expressEnv = require('./lib/express-env-middleware');
+var expressEnv = require('../lib/express-env-middleware');
 
 
 module.exports = function(clientEnv){

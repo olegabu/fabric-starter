@@ -4,13 +4,13 @@
 "use strict";
 var log4js = require('log4js');
 var logger = log4js.getLogger('Socket');
-var peerListener = require('./app/peer-listener.js');
+var peerListener = require('../lib-fabric/peer-listener.js');
 
-var hfc = require('./app/hfc');
+var hfc = require('../lib-fabric/hfc');
 var networkConfig = hfc.getConfigSetting('network-config');
 
 // config
-var config = require('./config.json');
+var config = require('../config.json');
 const ORG = process.env.ORG || config.org;
 const USERNAME = config.user.username;
 

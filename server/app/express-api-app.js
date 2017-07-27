@@ -7,33 +7,31 @@ var util = require('util');
 var log4js = require('log4js');
 var logger = log4js.getLogger('WebApp');
 
-var express = require('express');
-// var session = require('express-session');
+var express         = require('express');
+// var session      = require('express-session');
 // var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var expressJWT = require('express-jwt');
+var bodyParser      = require('body-parser');
+var expressJWT      = require('express-jwt');
+var cors            = require('cors');
+var bearerToken     = require('express-bearer-token');
+var expressPromise  = require('../lib/express-promise');
 var jwt = require('jsonwebtoken');
-var cors = require('cors');
-var bearerToken = require('express-bearer-token');
-var expressPromise = require('./lib/express-promise');
-var app = express();
 
-var tools = require('./lib/tools');
+var tools = require('../lib/tools');
 
 // network-config.json has special format, so we can't change it now
-var hfc = require('./app/hfc');
+var hfc = require('../lib-fabric/hfc');
 var networkConfig = hfc.getConfigSetting('network-config');
 
-var helper = require('./app/helper.js');
-var createChannel = require('./app/create-channel.js');
-var joinChannel = require('./app/join-channel.js');
-var install = require('./app/install-chaincode.js');
-var instantiate = require('./app/instantiate-chaincode.js');
-var invoke = require('./app/invoke-transaction.js');
-var query = require('./app/query.js');
+var helper        = require('../lib-fabric/helper.js');
+var createChannel = require('../lib-fabric/create-channel.js');
+var joinChannel   = require('../lib-fabric/join-channel.js');
+var install       = require('../lib-fabric/install-chaincode.js');
+var instantiate   = require('../lib-fabric/instantiate-chaincode.js');
+var invoke        = require('../lib-fabric/invoke-transaction.js');
+var query         = require('../lib-fabric/query.js');
 
-//
-var config = require('./config.json');
+var config = require('../config.json');
 
 const ORG = process.env.ORG || null;
 const USERNAME = config.user.username;
@@ -45,6 +43,9 @@ logger.info('Org name  : ' + ORG);
 if(!ORG){
     throw new Error('ORG must be set in environment');
 }
+
+var app = express(); // root app
+var adminPartyApp = express();
 
 
 module.exports = function(){ return app; };
@@ -69,8 +70,7 @@ app.use(cors(corsCb));
 
 
 
-// enable admin party before authorization
-var adminPartyApp = express();
+// enable admin party before authorization, but after cors
 if(config.admin_party) {
     logger.info('**************    ADMIN PARTY ENABLED     ******************');
     app.use(adminPartyApp);

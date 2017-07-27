@@ -1,5 +1,4 @@
 
-
 var js_template_pre = '(function (window) {  window.__env = ';
 var js_template_post = '; }(this));';
 
@@ -13,7 +12,7 @@ function envConfigMiddleware(envConfig){
   return function(req, res, next){
     res.set({'Content-Type':'text/javascript'}).send(js_code);
   };
-};
+}
 
 
 module.exports = envConfigMiddleware;
