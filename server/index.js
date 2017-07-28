@@ -28,16 +28,22 @@ const PORT = process.env.PORT || 4000;
 var clientEnv = {
   api: process.env.FABRIC_API || ''
 };
+var socketOptions = { origins: '*:*'};
 
+////
 var app = express();
 var webApp = require('./app/express-web-app')(clientEnv);
 var apiApp = require('./app/express-api-app')(); // TODO: this app still uses process.env. get rid of it
 
 
-var socketOptions = { origins: '*:*'};
+
 
 app.get('/', (req, res)=>res.redirect('/ui') );
 app.use('/ui', webApp);
+app.use(function(req, res, next) {
+  logger.debug('[%s] %s  %s', new Date().toISOString(), req.method.toUpperCase(), req.url);
+  next();
+});
 app.use(apiApp);
 
 
