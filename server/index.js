@@ -41,6 +41,7 @@ var apiApp   = require('./app/express-api-app')(); // TODO: this app still uses 
 
 app.get('/', (req, res)=>res.redirect('/web') );
 app.use('/web',   webApp);
+app.get('/favicon.ico', webApp.handle.bind(webApp) );
 app.use('/admin', adminApp);
 app.use(function(req, res, next) {
   logger.debug('[%s] %s  %s', new Date().toISOString(), req.method.toUpperCase(), req.url);
