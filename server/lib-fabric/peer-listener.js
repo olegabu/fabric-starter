@@ -40,8 +40,8 @@ function listenPeers(peersUrls, username, org, onBlockFn){
 
     function _onBlockError(e){
       // onError
-      logger.warn('Got block error', e);
-      // throw e;
+      // logger.warn('Got block error', e);
+      throw e;
     }
   });
 }

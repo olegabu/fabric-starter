@@ -2,6 +2,11 @@
  * Created by maksim on 7/13/17.
  */
 var tools = require('../../lib/tools');
+
+function clone(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+
 var assert = require('assert');
 
 describe('Tools', function(){
@@ -26,3 +31,6 @@ describe('Tools', function(){
   });
 
 });
+
+
+

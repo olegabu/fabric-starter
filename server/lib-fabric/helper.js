@@ -27,6 +27,7 @@ var config = require('../config.json');
 
 var hfc = require('./hfc');
 var ORGS = hfc.getConfigSetting('network-config');
+var CONFIG_DIR = hfc.getConfigSetting('config-dir');
 
 var clients = {};
 var channels = {};
@@ -58,7 +59,7 @@ for (let key in ORGS) {
 function setupPeers(channel, org, client) {
 	for (let key in ORGS[org]) {
 		if (key.indexOf('peer') === 0) {
-			let data = fs.readFileSync(path.join(__dirname, ORGS[org][key]['tls_cacerts']));
+			let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[org][key]['tls_cacerts']));
 			let peer = client.newPeer(
 				ORGS[org][key].requests,
 				{
@@ -74,7 +75,7 @@ function setupPeers(channel, org, client) {
 
 function newOrderer(client) {
 	var caRootsPath = ORGS.orderer.tls_cacerts;
-	let data = fs.readFileSync(path.join(__dirname, caRootsPath));
+	let data = fs.readFileSync(path.join(CONFIG_DIR, caRootsPath));
 	let caroots = Buffer.from(data).toString();
 	return client.newOrderer(ORGS.orderer.url, {
 		'pem': caroots,
@@ -125,7 +126,7 @@ function newRemotes(urls, forPeers, userOrg) {
 						if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
 							// found a peer matching the subject url
 							if (forPeers) {
-								let data = fs.readFileSync(path.join(__dirname, org[prop]['tls_cacerts']));
+								let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
 								targets.push(client.newPeer('grpcs://' + peerUrl, {
 									pem: Buffer.from(data).toString(),
 									'ssl-target-name-override': org[prop]['server-hostname']
@@ -134,7 +135,7 @@ function newRemotes(urls, forPeers, userOrg) {
 								continue outer;
 							} else {
 								let eh = client.newEventHub();
-								let data = fs.readFileSync(path.join(__dirname, org[prop]['tls_cacerts']));
+								let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
 								eh.setPeerAddr(org[prop]['events'], {
 									pem: Buffer.from(data).toString(),
 									'ssl-target-name-override': org[prop]['server-hostname']
@@ -294,9 +295,9 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 
 var getOrgAdmin = function(userOrg) {
 	var admin = ORGS[userOrg].admin;
-	var keyPath = path.join(__dirname, admin.key);
+	var keyPath = path.join(CONFIG_DIR, admin.key);
 	var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
-	var certPath = path.join(__dirname, admin.cert);
+	var certPath = path.join(CONFIG_DIR, admin.cert);
 	var certPEM = readAllFiles(certPath)[0].toString();
 
 	var client = getClientForOrg(userOrg);
@@ -323,7 +324,7 @@ var getOrgAdmin = function(userOrg) {
 };
 
 var setupChaincodeDeploy = function() {
-	process.env.GOPATH = path.join(__dirname, config.GOPATH);
+	process.env.GOPATH = path.join(CONFIG_DIR, config.GOPATH);
 };
 
 var getLogger = function(moduleName) {
@@ -345,6 +346,7 @@ exports.getLogger = getLogger;
 exports.setupChaincodeDeploy = setupChaincodeDeploy;
 exports.getMspID = getMspID;
 exports.ORGS = ORGS;
+exports.CONFIG_DIR = CONFIG_DIR;
 exports.newPeers = newPeers;
 exports.newEventHubs = newEventHubs;
 exports.getPeerAddressByName = getPeerAddressByName;

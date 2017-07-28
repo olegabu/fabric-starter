@@ -1,6 +1,6 @@
 {
     "channelName":"mychannel",
-    "GOPATH":"../../artifacts",
+    "GOPATH":"",
     "keyValueStore":"/tmp/fabric-client-kvs",
     "eventWaitTime":"30000",
     "users":[

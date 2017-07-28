@@ -7,6 +7,7 @@ fabric-rest-api.ipr
 fabric-rest-api.iws
 .gradle
 build
+
 /artifacts/crypto-config/
 /artifacts/channel/
 /artifacts/cryptogen-*.yaml
@@ -14,4 +15,5 @@ build
 /artifacts/*.block
 /artifacts/network-config.json
 /artifacts/network-config-dev.json
+/artifacts-dev
 /ledger/docker-compose.yaml

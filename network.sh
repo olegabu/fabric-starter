@@ -48,8 +48,9 @@ function generateArtifacts() {
     # docker-compose.yaml
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/CHANNEL_NAME/$CHANNEL_NAME/g" $COMPOSE_TEMPLATE > $COMPOSE_FILE
     # network-config.json
-    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" artifacts/network-config-template.json > artifacts/network-config.json
-    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" artifacts/network-config-dev-template.json > artifacts/network-config-dev.json
+    #  fill environments                                                   |       remove comments
+    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" sed -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
+    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" sed -e "s/^\s*\/\/.*$//g" artifacts-dev/network-config-template.json > artifacts-dev/network-config.json
 
     echo "Generating crypto material with cryptogen"
     docker-compose --file $COMPOSE_FILE run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$DOMAIN.yaml"

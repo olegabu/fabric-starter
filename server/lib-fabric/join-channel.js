@@ -23,6 +23,7 @@ var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Join-Channel');
 var ORGS = helper.ORGS;
+var CONFIG_DIR = helper.CONFIG_DIR;
 var allEventhubs = [];
 
 // on process exit, always disconnect the event hub
@@ -72,9 +73,7 @@ var joinChannel = function(channelName, peers, username, org) {
 		for (let key in ORGS[org]) {
 			if (ORGS[org].hasOwnProperty(key)) {
 				if (key.indexOf('peer') === 0) {
-					let data = fs.readFileSync(path.join(__dirname, ORGS[org][key][
-						'tls_cacerts'
-					]));
+					let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[org][key]['tls_cacerts']));
 					let eh = client.newEventHub();
 					eh.setPeerAddr(ORGS[org][key].events, {
 						pem: Buffer.from(data).toString(),

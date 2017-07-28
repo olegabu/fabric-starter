@@ -24,6 +24,7 @@ var helper = require('./helper.js');
 var logger = helper.getLogger('instantiate-chaincode');
 var hfc = require('./hfc');
 var ORGS = hfc.getConfigSetting('network-config');
+var CONFIG_DIR = hfc.getConfigSetting('config-dir');
 var tx_id = null;
 var eh = null;
 
@@ -88,9 +89,7 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
                 var deployId = tx_id.getTransactionID();
 
                 eh = client.newEventHub();
-                let data = fs.readFileSync(path.join(__dirname, ORGS[org]['peer1'][
-                    'tls_cacerts'
-                ]));
+                let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[org]['peer1']['tls_cacerts']));
                 eh.setPeerAddr(ORGS[org]['peer1']['events'], {
                     pem: Buffer.from(data).toString(),
                     'ssl-target-name-override': ORGS[org]['peer1']['server-hostname']
