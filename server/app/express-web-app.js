@@ -15,9 +15,9 @@ module.exports = function(rootFolder, clientEnv){
   app.get('/env.js', expressEnv(clientEnv));
   app.use( express.static(__dirname+'/../' + rootFolder, { index: 'index.html'}) );
 
-  // at last - report any error =)
-  app.use(function(err, req, res, next) { // jshint ignore:line
-    res.error(err);
+  // at last - send 404
+  app.use(function(req, res, next) { // jshint ignore:line
+    res.status(404).end('Not Found');
   });
 
   return app;
