@@ -7,10 +7,25 @@ var log4js = require('log4js');
 var logger = log4js.getLogger('fabric-client');
 logger.setLevel('DEBUG');
 
-const CONFIG_DEFAULT = path.join(__dirname, '../../artifacts/network-config.json');
+const CONFIG_DEFAULT = '../../artifacts/network-config.json';
+// const CRYPTO_CONFIG_DIR_DEFAULT = '../../artifacts/crypto-config';
 
+////
 var config = process.env.CONFIG_FILE || CONFIG_DEFAULT;
-logger.info('Use network config: %s', config);
+if(!path.isAbsolute(config)){
+  config = path.join(__dirname, config);
+}
+logger.info('Use network config file: %s', config);
+
+// TODO: use basepath for 'crypto-config' folder in network-config.json
+// var cryptoConfigDir = process.env.CRYPTO_CONFIG_DIR || CRYPTO_CONFIG_DIR_DEFAULT;
+// if(!path.isAbsolute(cryptoConfigDir)){
+//   cryptoConfigDir = path.join(__dirname, cryptoConfigDir);
+// }
+// logger.info('Use cryptoConfigDir: %s', cryptoConfigDir);
+
+
+
 
 
 ///////
