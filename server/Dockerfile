@@ -1,6 +1,6 @@
 
-FROM maxxx1313/node-7-alpine-gyp
-# = FROM node:7-alpine
+FROM maxxx1313/node-6-alpine-fabric
+# = FROM node:6-alpine
 # +
 # install node-gyp dependancies (for alpine only)
 # RUN apk add --update python make alpine-sdk libc6-compat
