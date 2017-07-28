@@ -13,7 +13,7 @@ LABEL com.altoros.description="Fabric 1.0 rest api"
 WORKDIR /usr/src/app
 
 COPY . .
-RUN npm install
+RUN npm install && npm cache rm
 
 ENV PORT=8080
 EXPOSE 8080
