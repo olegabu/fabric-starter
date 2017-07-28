@@ -13,7 +13,7 @@ const CONFIG_DEFAULT = '../../artifacts/network-config.json';
 ////
 var config = process.env.CONFIG_FILE || CONFIG_DEFAULT;
 if(!path.isAbsolute(config)){
-  config = path.join(__dirname, config);
+  config = path.join(__dirname,'/../', config);
 }
 logger.info('Use network config file: %s', config);
 
