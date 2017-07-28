@@ -2,7 +2,9 @@
  * Created by maksim on 7/13/17.
  */
 'use strict';
+const RELPATH = '/../'; // relative path to server root. Change it during file movement
 var util = require('util');
+var path = require('path');
 
 var log4js = require('log4js');
 var logger = log4js.getLogger('WebApp');
@@ -15,12 +17,10 @@ var expressJWT      = require('express-jwt');
 var cors            = require('cors');
 var bearerToken     = require('express-bearer-token');
 var expressPromise  = require('../lib/express-promise');
-var jwt = require('jsonwebtoken');
 
+var jwt   = require('jsonwebtoken');
 var tools = require('../lib/tools');
-
-// network-config.json has special format, so we can't change it now
-var hfc = require('../lib-fabric/hfc');
+var hfc   = require('../lib-fabric/hfc');
 var networkConfig = hfc.getConfigSetting('network-config');
 
 var helper        = require('../lib-fabric/helper.js');
@@ -35,6 +35,8 @@ var config = require('../config.json');
 
 const ORG = process.env.ORG || null;
 const USERNAME = config.user.username;
+const LEDGER_CONFIG_DIR  = '../artifacts/channel/';
+const GENESIS_BLOCK_FILE = 'genesis.block';
 
 logger.info('**************    API SERVER     ******************');
 logger.info('Admin     : ' + USERNAME);
@@ -80,7 +82,7 @@ if(config.admin_party) {
 // set secret variable
 app.set('secret', config.jwt_secret);
 
-var pathExcluded = ['/config', '/socket.io'];
+var pathExcluded = ['/config', '/socket.io', '/genesis'];
 app.use(expressJWT({
     secret: config.jwt_secret
 }).unless({
@@ -97,10 +99,13 @@ app.use(function(req,res,next){
     var originalSend = res.send;
 
     res.send = function(data){
-        data = tools.replaceBuffer(data);
-        data = tools.replaceLong(data);
+        if(!res._binary) {
+          data = tools.replaceBuffer(data);
+          data = tools.replaceLong(data);
+        }
         return originalSend.call(res, data);
     };
+
     next();
 });
 
@@ -185,9 +190,6 @@ adminPartyApp.post('/channels', function(req, res) {
 
     res.promise(
         createChannel.createChannel(channelName, channelConfigPath, USERNAME, ORG)
-            .then(function(message) {
-                return message;
-            })
     );
 });
 
@@ -212,9 +214,6 @@ adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
 
     res.promise(
         joinChannel.joinChannel(channelName, peers, USERNAME, ORG)
-            .then(function(message) {
-                return message;
-            })
     );
 });
 
@@ -248,7 +247,6 @@ adminPartyApp.post('/chaincodes', function(req, res) {
         res.error(getErrorMessage('\'chaincodeVersion\''));
         return;
     }
-
 
     res.promise(
       install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, USERNAME, ORG)
@@ -414,7 +412,6 @@ app.get('/channels/:channelName/blocks/:blockId', function(req, res) {
         return;
     }
 
-
     res.promise(
       query.getBlockByNumber(peer, blockId, req.username, req.orgname)
     );
@@ -440,9 +437,7 @@ app.get('/channels/:channelName/blocks', function(req, res) {
 
 // Query Get Transaction by Transaction ID
 app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
-    logger.debug(
-        '================ GET TRANSACTION BY TRANSACTION_ID ======================'
-    );
+    logger.debug('================ GET TRANSACTION BY TRANSACTION_ID ======================');
     logger.debug('channelName : ' + req.params.channelName);
     let trxnId = req.params.trxnId;
     let peer = req.query.peer;
@@ -461,15 +456,36 @@ app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
 
 //Query for Channel Information
 app.get('/channels/:channelName', function(req, res) {
-    logger.debug(
-        '================ GET CHANNEL INFORMATION ======================');
-    logger.debug('channelName : ' + req.params.channelName);
-    let peer = req.query.peer;
+  logger.debug('================ GET CHANNEL INFORMATION ======================');
+  logger.debug('channelName : ' + req.params.channelName);
+  let peer = req.query.peer;
 
+  res.promise(
+    query.getChainInfo(peer, req.username, req.orgname)
+  );
+});
 
-    res.promise(
-      query.getChainInfo(peer, req.username, req.orgname)
-    );
+//Query hyperledger genesis block
+app.get('/genesis', function(req, res) {
+  logger.debug('================ GET GENESIS BLOCK ======================');
+
+  res._binary = true;
+  res.promise(
+    tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, GENESIS_BLOCK_FILE))
+  );
+});
+
+//Query channel binary configuration
+app.get('/channels/:channelName/config', function(req, res) {
+  logger.debug('================ GET CHANNEL BINARY CONFIG ======================');
+  logger.debug('channelName : ' + req.params.channelName);
+
+  var channelFile = req.params.channelName + '.tx';
+
+  res._binary = true;
+  res.promise(
+    tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, channelFile))
+  );
 });
 
 
@@ -479,13 +495,10 @@ app.get('/chaincodes', function(req, res) {
     var installType = req.query.type || 'installed';
     //TODO: add Constnats
     if (installType === 'installed') {
-        logger.debug(
-            '================ GET INSTALLED CHAINCODES ======================');
+        logger.debug('================ GET INSTALLED CHAINCODES ======================');
     } else {
-        logger.debug(
-            '================ GET INSTANTIATED CHAINCODES ======================');
+        logger.debug('================ GET INSTANTIATED CHAINCODES ======================');
     }
-
 
     res.promise(
       query.getInstalledChaincodes(peer, installType, req.username, req.orgname||req.query.orgname)
@@ -499,7 +512,7 @@ app.get('/channels', function(req, res) {
     logger.debug('peer: ' + req.query.peer);
     var peer = req.query.peer;
     if (!peer) {
-        res.error(getErrorMessage('\'peer\''));
+        res.error(getErrorMessage("'peer'"));
         return;
     }
 

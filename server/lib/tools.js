@@ -3,11 +3,14 @@
  */
 "use strict";
 
+var fs = require('fs');
+
 module.exports = {
-  replaceBuffer:replaceBuffer,
-  replaceLong:replaceLong,
-  isObject:isObject,
-  getHost:getHost
+  replaceBuffer   : replaceBuffer,
+  replaceLong     : replaceLong,
+  isObject        : isObject,
+  getHost         : getHost,
+  readFilePromise : readFilePromise
 };
 
 
@@ -46,10 +49,11 @@ function replaceBuffer(data){
 function replaceLong(data){
   if(isObject(data)){
 
+    /* jshint -W014 */
     var isLong = typeof data.low !== "undefined"
       && typeof data.high !== "undefined"
       && typeof data.unsigned !== "undefined"
-      && Object.keys(data).length == 3;
+      && Object.keys(data).length === 3;
 
     if (isLong){
       // console.log(data);
@@ -83,4 +87,16 @@ function getHost(url){
   //                             1111       222222
   var m = (url||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
   return m[2];
+}
+
+
+
+function readFilePromise (file) {
+  return new Promise(function(resolve, reject){
+    fs.readFile(file, function (err, data) {
+      return !err
+        ? resolve(data)
+        : reject(err);
+    });
+  });
 }
