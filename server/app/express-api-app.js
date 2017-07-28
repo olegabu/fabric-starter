@@ -249,10 +249,10 @@ adminPartyApp.post('/chaincodes', function(req, res) {
         return;
     }
 
-    install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, USERNAME, ORG)
-        .then(function(message) {
-            res.send(message);
-        });
+
+    res.promise(
+      install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, USERNAME, ORG)
+    );
 });
 
 
@@ -292,10 +292,10 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
         return;
     }
 
-    instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, USERNAME, ORG)
-        .then(function(message) {
-            res.send(message);
-        });
+
+    res.promise(
+      instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, USERNAME, ORG)
+    );
 });
 
 
@@ -351,12 +351,12 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
         return;
     }
 
-  res.promise(
-    invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, ORG)
-      .then(function(transactionId){
-        return {transaction:transactionId};
-      })
-  );
+    res.promise(
+      invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, ORG)
+        .then(function(transactionId){
+          return {transaction:transactionId};
+        })
+    );
 });
 
 
@@ -394,10 +394,10 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
     args = JSON.parse(args);
     logger.debug(args);
 
-    query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+
+    res.promise(
+      query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname)
+    );
 });
 
 
@@ -414,10 +414,10 @@ app.get('/channels/:channelName/blocks/:blockId', function(req, res) {
         return;
     }
 
-    query.getBlockByNumber(peer, blockId, req.username, req.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+
+    res.promise(
+      query.getBlockByNumber(peer, blockId, req.username, req.orgname)
+    );
 });
 
 // Query Get Block by Hash
@@ -431,10 +431,10 @@ app.get('/channels/:channelName/blocks', function(req, res) {
     return;
   }
 
-  query.getBlockByHash(peer, hash, req.username, req.orgname).then(
-    function(message) {
-      res.send(message);
-    });
+
+  res.promise(
+    query.getBlockByHash(peer, hash, req.username, req.orgname)
+  );
 });
 
 
@@ -451,10 +451,9 @@ app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
         return;
     }
 
-    query.getTransactionByID(peer, trxnId, req.username, req.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+    res.promise(
+      query.getTransactionByID(peer, trxnId, req.username, req.orgname)
+    );
 });
 
 
@@ -467,10 +466,10 @@ app.get('/channels/:channelName', function(req, res) {
     logger.debug('channelName : ' + req.params.channelName);
     let peer = req.query.peer;
 
-    query.getChainInfo(peer, req.username, req.orgname).then(
-        function(message) {
-            res.send(message);
-        });
+
+    res.promise(
+      query.getChainInfo(peer, req.username, req.orgname)
+    );
 });
 
 
@@ -487,10 +486,10 @@ app.get('/chaincodes', function(req, res) {
             '================ GET INSTANTIATED CHAINCODES ======================');
     }
 
-    query.getInstalledChaincodes(peer, installType, req.username, req.orgname||req.query.orgname)
-        .then(function(message) {
-            res.send(message);
-        });
+
+    res.promise(
+      query.getInstalledChaincodes(peer, installType, req.username, req.orgname||req.query.orgname)
+    );
 });
 
 
@@ -504,11 +503,9 @@ app.get('/channels', function(req, res) {
         return;
     }
 
-    query.getChannels(peer, req.username, req.orgname)
-        .then(function(
-            message) {
-            res.send(message);
-        });
+    res.promise(
+      query.getChannels(peer, req.username, req.orgname)
+    );
 });
 
 
