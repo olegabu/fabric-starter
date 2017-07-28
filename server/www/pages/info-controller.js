@@ -43,6 +43,7 @@ function InfoController(ChannelService, ConfigLoader) {
 
 
   ctl.getTransaction = function(){
+    if(!ctl.blockInfo) return null;
     var txId = ctl.blockInfo.data.data[0].payload.header.channel_header.tx_id;
     return ChannelService.getTransactionById(txId).then(function(transaction){
       ctl.transaction = transaction;

@@ -1,6 +1,8 @@
-<h2>{{::title||'Certificate'}}</h2>
-<ul>
-  <li ng-repeat="oid in oids">
-    <b>{{::oid.key.oid.d}}</b> {{::oid.value.value}}
-  </li>
-</ul>
+<div ng-show="data">
+  <h2>{{::title||'Certificate'}}</h2>
+  <ul>
+    <li ng-repeat="oid in oids">
+      <b>{{::oid.key.oid.d}}</b> {{::oid.value.value}}
+    </li>
+  </ul>
+</div>
