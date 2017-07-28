@@ -8,7 +8,7 @@ angular.module('nsd.directive.certificate', [])
         data:'=',
         title:"@"
       },
-      templateUrl:'services/certificate.html',
+      templateUrl:'components/certificate.html',
       link: function(scope, elm, attrs, ctrl) {
 
         scope.$watch('data', decode);

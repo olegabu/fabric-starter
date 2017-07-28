@@ -43,6 +43,8 @@
   </div>
   <div id="tab-info" class="col s12">
 
+    <p ng-if="!ctl.transaction.transactionEnvelope"><i>No transaction</i></p>
+
     <certificate title="Transaction creator" data="ctl.transaction.transactionEnvelope.payload.data.actions[0].header.creator.IdBytes"></certificate>
 
     <div ng-repeat="e in ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.endorsements">
