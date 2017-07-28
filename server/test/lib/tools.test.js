@@ -20,4 +20,9 @@ describe('Tools', function(){
 
   });
 
+  it('getHost', function(){
+    assert.equal( tools.getHost('http://localhost:7053/asd'), "localhost:7053");
+    assert.equal( tools.getHost('http://localhost:7053'), "localhost:7053");
+  });
+
 });

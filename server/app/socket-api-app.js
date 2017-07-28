@@ -5,6 +5,7 @@
 var log4js = require('log4js');
 var logger = log4js.getLogger('Socket');
 var peerListener = require('../lib-fabric/peer-listener.js');
+var tools = require('../lib/tools');
 
 var hfc = require('../lib-fabric/hfc');
 var networkConfig = hfc.getConfigSetting('network-config');
@@ -27,7 +28,7 @@ function init(io, options){
   // var ORG = options.org;
   var PEERS = Object.keys(networkConfig[ORG])
                .filter(k=>k.startsWith('peer'));
-  var peersAddress = PEERS.map(p=>getHost(networkConfig[ORG][p].requests));
+  var peersAddress = PEERS.map(p=>tools.getHost(networkConfig[ORG][p].requests));
 
   // log connections
   io.on('connection', function(socket){
@@ -55,13 +56,4 @@ function init(io, options){
   // setInterval(function(){
   //   socket.emit('ping', Date.now() );
   // }, 5000);
-}
-
-/**
- *
- */
-function getHost(address){
-  //                             1111       222222
-  var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
-  return m[2];
 }

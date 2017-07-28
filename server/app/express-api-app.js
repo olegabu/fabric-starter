@@ -320,7 +320,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     var peers = peersId.map(peerId=>{
       var parts = peerId.split('/');
       return networkConfig[parts[0]][parts[1]];
-    }).map(peer=>getHost(peer.requests));
+    }).map(peer=>tools.getHost(peer.requests));
 
     var fcn = req.body.fcn;
     var args = req.body.args;
@@ -518,11 +518,4 @@ app.use(function(err, req, res, next) { // jshint ignore:line
 
 function getErrorMessage(field) {
   return field + ' field is missing or Invalid in the request';
-}
-
-
-function getHost(address){
-  //                             1111       222222
-  var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
-  return m[2];
 }

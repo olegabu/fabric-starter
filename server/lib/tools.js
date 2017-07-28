@@ -7,7 +7,7 @@ module.exports = {
   replaceBuffer:replaceBuffer,
   replaceLong:replaceLong,
   isObject:isObject,
-  // getHost:getHost
+  getHost:getHost
 };
 
 
@@ -75,11 +75,12 @@ function replaceLong(data){
 
 
 /**
- * @param {string} address
+ * Extract host+port from url
+ * @param {string} url
  * @return {string}
  */
-// function getHost(address){
-//   //                             1111       222222
-//   var m = (address||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
-//   return m[2];
-// }
+function getHost(url){
+  //                             1111       222222
+  var m = (url||"").match(/^(\w+:)?\/\/([^\/]+)/) || [];
+  return m[2];
+}
