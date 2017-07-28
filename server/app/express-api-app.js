@@ -80,7 +80,7 @@ if(config.admin_party) {
 // set secret variable
 app.set('secret', config.jwt_secret);
 
-var pathExcluded = ['/config'];
+var pathExcluded = ['/config', '/socket.io'];
 app.use(expressJWT({
     secret: config.jwt_secret
 }).unless({
