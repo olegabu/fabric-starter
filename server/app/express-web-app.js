@@ -11,7 +11,7 @@ module.exports = function(rootFolder, clientEnv){
   var app = express();
   app.use(expressPromise());
 
-  console.log('The following config will be exposed to client as env.js: ', clientEnv);
+  // console.log('The following config will be exposed to client as env.js: ', clientEnv);
   app.get('/env.js', expressEnv(clientEnv));
   app.use( express.static(__dirname+'/../' + rootFolder, { index: 'index.html'}) );
 

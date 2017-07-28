@@ -25,7 +25,12 @@ module.exports = {
 function init(io, options){
   var ORG = options.org;
 
-  var PEERS = Object.keys(networkConfig[ORG]).filter(k=>k.startsWith('peer'));
+  var orgConfig = networkConfig[ORG];
+  if(!orgConfig){
+    throw new Error('No such organisation in config: '+ORG);
+  }
+
+  var PEERS = Object.keys(orgConfig).filter(k=>k.startsWith('peer'));
   var peersAddress = PEERS.map(p=>tools.getHost(networkConfig[ORG][p].requests));
 
   // log connections
