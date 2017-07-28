@@ -5,7 +5,7 @@ var expressEnv = require('../lib/express-env-middleware');
 var expressPromise = require('../lib/express-promise');
 
 
-module.exports = function(clientEnv){
+module.exports = function(rootFolder, clientEnv){
   clientEnv = clientEnv || {};
 
   var app = express();
@@ -13,7 +13,7 @@ module.exports = function(clientEnv){
 
   console.log('The following config will be exposed to client as env.js: ', clientEnv);
   app.get('/env.js', expressEnv(clientEnv));
-  app.use( express.static(__dirname+'/../www', { index: 'index.html'}) );
+  app.use( express.static(__dirname+'/../' + rootFolder, { index: 'index.html'}) );
 
   // at last - report any error =)
   app.use(function(err, req, res, next) { // jshint ignore:line

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" ng-app="nsd.app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fabric API Web Client</title>
+
+  <link type="image/x-icon" rel="icon" href="images/favicon.png"/>
+  <link type="image/x-icon" rel="shortcut icon" href="images/favicon.png">
+
+  <!-- Page styles -->
+  <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css">
+  <style type="text/css">
+    /* fix toasts style */
+    .toast.mytoast{
+      padding: 15px;
+      word-break: break-word;
+    }
+  </style>
+  <link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+  <!-- build:css styles/app.min.css -->
+  <link type="text/css" rel="stylesheet" href="styles/material-design-iconic-font.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/main.css"/>
+  <link type="text/css" rel="stylesheet" href="styles/app.css"/>
+  <!-- endbuild -->
+  <!-- build:css styles/components.min.css -->
+  <link type="text/css" rel="stylesheet" href="lib/json-formatter.min.css"/>
+  <link type="text/css" rel="stylesheet" href="components/blockchain.css"/>
+  <!-- endbuild -->
+
+
+</head>
+
+<body class="dark-scheme horizontal-navigation" ng-controller="MainController as ctrl">
+<div class="wrapper vertical-sidebar">
+
+  <header id="header">
+    <nav>
+      <div class="nav-wrapper center">
+        <a href="#" sidenav data-activates="nav-mobile" class="button-collapse top-nav full waves-effect waves-light hide-on-large-only">
+          <i class="material-icons">menu</i>
+        </a>
+
+        <a class="logo pull-right" href="#">
+          <img class="hide-on-med-and-down" src="images/logo.png" alt="Altoros logo">
+          <img class="hide-on-large-only" src="images/logo-small.png" alt="Altoros logo small">
+        </a>
+
+        <div class="title hide-on-med-and-down pull-left">{{::_config.org}}</div>
+
+        <ul class="menu hide-on-med-and-down" ng-cloak ng-show="ctrl.authorized()">
+          <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
+            <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
+          </li>
+
+          <li>
+            <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
+              {{ctrl.getUser().tokenData.username}}
+              <i class="zmdi zmdi-caret-down drop-down-icon"></i>
+            </a>
+            <ul id="dropdown7" class="dropdown-content">
+              <li>
+                <a href="#" ng-click="ctrl.logout()">Logout</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+  </header>
+
+  <aside class="sidebar-left" side-bar="">
+    <ul class="side-nav fixed clearfix left" id="nav-mobile">
+      <div ng-show="ctrl.authorized()">
+        <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
+          <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
+        </li>
+
+        <h5 class="center">Logged in</h5>
+        <h6 class="center">{{ctrl.getUser().tokenData.username}}</h6>
+        <li>
+          <a href="#" ng-click="ctrl.logout()">Logout</a>
+        </li>
+
+      </div>
+      <div ng-hide="ctrl.authorized()">
+        <h5 class="center">Unauthorized</h5>
+      </div>
+    </ul>
+  </aside>
+
+  <blockchain-log></blockchain-log>
+
+  <main id="content">
+    <div id="page-content">
+      <!-- content here -->
+      <div ui-view>
+        <div class="loading">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="foot3">
+    <div class="f-cont col s6 m6 l3">
+      <p>Hyperledger Fabric API Web client by Altoros</p>
+    </div>
+    <div class="f-cont valign-wrapper f-foot col s12 m12 l12">
+      <div class="left-align valign col s6 m6 l6">
+        <p class="copy">
+          &copy;Copyright 2017 - All Rights Reserved
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- system alert structure -->
+<div id="systemAlert" class="modal">
+  <div class="modal-content">
+    <h4>{{title}}</h4>
+    <p>A bunch of text</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close">Agree</a>
+  </div>
+</div>
+
+<!-- environment script -->
+<script src="env.js"></script>
+
+<script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
+
+<!--  cdn with fallback (TODO: bower is not set for the project) -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
+<script>window._ || document.write('<script src="bower_components/lodash/lodash.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+<script>window.angular || document.write('<script src="bower_components/angular/angular.min.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+<script>window.angular || document.write('<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"><\/script>')</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.min.js"></script>
+<script>window.angular || document.write('<script src="bower_components/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"><\/script>')</script>
+
+
+<!-- build:vendor scripts/vendor.min.js -->
+<script type="text/javascript" src="lib/angular-local-storage.min.js"></script>
+<script type="text/javascript" src="lib/materialize.js"></script>
+<script type="text/javascript" src="lib/angular-materialize.js"></script>
+<script type="text/javascript" src="lib/mara.min.js"></script>
+<script type="text/javascript" src="lib/angular-ui-router-title.js"></script>
+<script type="text/javascript" src="lib/json-formatter.min.js"></script>
+<!-- endbuild -->
+
+<!-- build:js asn1.min.js -->
+<script type="text/javascript" src="lib/asn1/int10.js"></script>
+<script type="text/javascript" src="lib/asn1/oids.js"></script>
+<script type="text/javascript" src="lib/asn1/base64.js"></script>
+<script type="text/javascript" src="lib/asn1/asn1.js"></script>
+<script type="text/javascript" src="lib/asn1/dom.ans1.js"></script>
+<!-- endbuild -->
+
+<!-- build:js app.min.js -->
+<!-- bootstrap app -->
+<script src="utils.js"></script>
+<script src="app.js"></script>
+
+<!-- controllers -->
+<script src="pages/main-controller.js"></script>
+<script src="pages/login-controller.js"></script>
+<script src="pages/info-controller.js"></script>
+<script src="pages/query-controller.js"></script>
+
+<!-- services -->
+<script src="services/env-service.js"></script>
+<script src="services/user-service.js"></script>
+<script src="services/channel-service.js"></script>
+<script src="services/api-service.js"></script>
+<script src="services/socket-service.js"></script>
+
+<script src="components/form-directive.js"></script>
+<script src="components/certificate-directive.js"></script>
+<script src="components/blockchain-directive.js"></script>
+<!-- endbuild -->
+
+</body>
+</html>
