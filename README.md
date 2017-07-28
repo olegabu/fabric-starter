@@ -55,8 +55,8 @@ docker load -i fabric-images.tgz
  docker-compose up
 ```
 
-Open [http://localhost:4001/ui](http://localhost:4001/ui) for org1 and 
-[http://localhost:4002/ui](http://localhost:4002/ui) for org2.
+Open [http://localhost:4001](http://localhost:4001) for org1 and 
+[http://localhost:4002](http://localhost:4002) for org2.
  
  You can also interact with the API server directly with an http client of your choice and test with these 
  [sample requests](https://github.com/hyperledger/fabric-samples/tree/release/balance-transfer#sample-rest-apis-requests).

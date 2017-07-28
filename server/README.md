@@ -12,7 +12,7 @@ Environment
 
 Launch
 ------
-Api web-interface become available on `http://localhost:4000/ui` after launching:
+Api web-interface become available on `http://localhost:4000` after launching:
 
 ```
   npm install
