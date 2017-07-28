@@ -13,4 +13,5 @@ build
 /artifacts/configtx.yaml
 /artifacts/*.block
 /artifacts/network-config.json
+/artifacts/network-config-dev.json
 /ledger/docker-compose.yaml

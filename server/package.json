@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node index",
-    "dev":"CONFIG_FILE=\"$PWD/../artifacts/network-config-dev.json\" npm start",
+    "dev":"CONFIG_FILE=\"../artifacts/network-config-dev.json\" npm start",
     "test":"mocha"
   },
   "license": "Apache-2.0",
