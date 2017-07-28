@@ -12,7 +12,6 @@ var networkConfig = hfc.getConfigSetting('network-config');
 
 // config
 var config = require('../config.json');
-const ORG = process.env.ORG || config.org;
 const USERNAME = config.user.username;
 
 module.exports = {
@@ -24,8 +23,8 @@ module.exports = {
  * @param {object} options
  */
 function init(io, options){
+  var ORG = options.org;
 
-  // var ORG = options.org;
   var PEERS = Object.keys(networkConfig[ORG])
                .filter(k=>k.startsWith('peer'));
   var peersAddress = PEERS.map(p=>tools.getHost(networkConfig[ORG][p].requests));
@@ -48,7 +47,7 @@ function init(io, options){
   });
   io.on('connection', function(socket){
     if(lastBlock){
-      io.emit('chainblock', lastBlock);
+      socket.emit('chainblock', lastBlock);
     }
   });
 
