@@ -26,6 +26,9 @@ function removeArtifacts() {
   echo "Removing generated artifacts"
   rm -rf artifacts/crypto-config
   rm -rf artifacts/channel
+  # remove dev
+  rm -rf artifacts-dev/crypto-config
+  rm -rf artifacts-dev/channel
 }
 
 function removeDockers() {
@@ -71,6 +74,10 @@ function generateArtifacts() {
 
     # docker generates files to mapped volumes as root, change ownership
     chown -R 1000:1000 artifacts/
+
+    #copy to dev
+    cp -R artifacts/channel       artifacts-dev/channel
+    cp -R artifacts/crypto-config artifacts-dev/crypto-config
 }
 
 function networkUp () {
