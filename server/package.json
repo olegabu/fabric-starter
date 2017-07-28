@@ -1,8 +1,8 @@
 {
-  "name": "balance-transfer",
+  "name": "fabric-rest",
   "version": "1.0.0-snapshot",
-  "description": "A balance-transfer example node program to demonstrate using node.js SDK APIs",
-  "main": "app/app.js",
+  "description": "API server for Hyperledger Fabric 1.0",
+  "main": "app/index.js",
   "keywords": [
     "fabric-client sample app",
     "balance-transfer node sample",
