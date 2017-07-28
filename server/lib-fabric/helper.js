@@ -35,7 +35,8 @@ var caClients = {};
 
 // set up the client and channel objects for each org
 for (let key in ORGS) {
-	if (key.indexOf('org') === 0) {
+  // TODO: bookmark issue #9
+	if (key !== 'orderer') {
 		let client = new hfc();
 
 		let cryptoSuite = hfc.newCryptoSuite();
@@ -111,7 +112,8 @@ function newRemotes(urls, forPeers, userOrg) {
 
 		let found = false;
 		for (let key in ORGS) {
-			if (key.indexOf('org') === 0) {
+      // TODO: bookmark issue #9
+			if (key !== 'orderer') {
 				// if looking for event hubs, an app can only connect to
 				// event hubs in its own org
 				if (!forPeers && key !== userOrg) {

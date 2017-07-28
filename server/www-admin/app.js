@@ -239,7 +239,7 @@ angular.module('nsd.app',[
     function _extendConfig(){
       var netConfig = _config.network;
       netConfig.getOrgs = function(){
-        var keys = Object.keys(netConfig).filter(function(key){ return key.startsWith('org')});
+        var keys = Object.keys(netConfig).filter(function(key){ return key != 'orderer'});
 
         keys.forEach(function(key){
           netConfig[key].id = key;
