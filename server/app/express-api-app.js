@@ -307,6 +307,58 @@ app.get('/config', function(req, res) {
     });
 });
 
+//Query hyperledger genesis block
+app.get('/genesis', function(req, res) {
+  logger.debug('================ GET GENESIS BLOCK ======================');
+
+  res._binary = true;
+  res.promise(
+    tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, GENESIS_BLOCK_FILE))
+  );
+});
+
+
+// Query to fetch channels
+app.get('/channels', function(req, res) {
+  logger.debug('================ GET CHANNELS ======================');
+  logger.debug('peer: ' + req.query.peer);
+  var peer = req.query.peer;
+  if (!peer) {
+    res.error(getErrorMessage("'peer'"));
+    return;
+  }
+
+  res.promise(
+    query.getChannels(peer, req.username, req.orgname)
+  );
+});
+
+
+//Query for Channel Information
+app.get('/channels/:channelName', function(req, res) {
+  logger.debug('================ GET CHANNEL INFORMATION ======================');
+  logger.debug('channelName : ' + req.params.channelName);
+  let peer = req.query.peer;
+
+  res.promise(
+    query.getChainInfo(peer, req.username, req.orgname)
+  );
+});
+
+
+//Query channel binary configuration
+app.get('/channels/:channelName/config', function(req, res) {
+  logger.debug('================ GET CHANNEL BINARY CONFIG ======================');
+  logger.debug('channelName : ' + req.params.channelName);
+
+  var channelFile = req.params.channelName + '.tx';
+
+  res._binary = true;
+  res.promise(
+    tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, channelFile))
+  );
+});
+
 
 
 // Invoke transaction on chaincode on target peers
@@ -454,40 +506,6 @@ app.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
 
 
 
-//Query for Channel Information
-app.get('/channels/:channelName', function(req, res) {
-  logger.debug('================ GET CHANNEL INFORMATION ======================');
-  logger.debug('channelName : ' + req.params.channelName);
-  let peer = req.query.peer;
-
-  res.promise(
-    query.getChainInfo(peer, req.username, req.orgname)
-  );
-});
-
-//Query hyperledger genesis block
-app.get('/genesis', function(req, res) {
-  logger.debug('================ GET GENESIS BLOCK ======================');
-
-  res._binary = true;
-  res.promise(
-    tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, GENESIS_BLOCK_FILE))
-  );
-});
-
-//Query channel binary configuration
-app.get('/channels/:channelName/config', function(req, res) {
-  logger.debug('================ GET CHANNEL BINARY CONFIG ======================');
-  logger.debug('channelName : ' + req.params.channelName);
-
-  var channelFile = req.params.channelName + '.tx';
-
-  res._binary = true;
-  res.promise(
-    tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, channelFile))
-  );
-});
-
 
 // Query to fetch all Installed/instantiated chaincodes
 app.get('/chaincodes', function(req, res) {
@@ -502,22 +520,6 @@ app.get('/chaincodes', function(req, res) {
 
     res.promise(
       query.getInstalledChaincodes(peer, installType, req.username, req.orgname||req.query.orgname)
-    );
-});
-
-
-// Query to fetch channels
-app.get('/channels', function(req, res) {
-    logger.debug('================ GET CHANNELS ======================');
-    logger.debug('peer: ' + req.query.peer);
-    var peer = req.query.peer;
-    if (!peer) {
-        res.error(getErrorMessage("'peer'"));
-        return;
-    }
-
-    res.promise(
-      query.getChannels(peer, req.username, req.orgname)
     );
 });
 

@@ -25,8 +25,7 @@ module.exports = {
 function init(io, options){
   var ORG = options.org;
 
-  var PEERS = Object.keys(networkConfig[ORG])
-               .filter(k=>k.startsWith('peer'));
+  var PEERS = Object.keys(networkConfig[ORG]).filter(k=>k.startsWith('peer'));
   var peersAddress = PEERS.map(p=>tools.getHost(networkConfig[ORG][p].requests));
 
   // log connections
