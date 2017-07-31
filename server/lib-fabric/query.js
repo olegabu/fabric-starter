@@ -217,8 +217,7 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 		}
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
+		throw err;
 	}).then((response) => {
 		if (response) {
 			if (type === 'installed') {
@@ -233,18 +232,18 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 				);
 			}
 
+			logger.debug(response);
 			return response;
 		} else {
 			logger.error('response is null');
-			return 'response is null';
+		  throw new Error('Empty response: queryInstalledChaincodes/queryInstantiatedChaincodes');
 		}
 	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
+		throw err;
 	}).catch((err) => {
 		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
+		throw err;
 	});
 };
 

@@ -61,8 +61,7 @@ function setupPeers(channel, org, client) {
 	for (let key in ORGS[org]) {
 		if (key.indexOf('peer') === 0) {
 			let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[org][key]['tls_cacerts']));
-			let peer = client.newPeer(
-				ORGS[org][key].requests,
+			let peer = client.newPeer( ORGS[org][key].requests,
 				{
 					pem: Buffer.from(data).toString(),
 					'ssl-target-name-override': ORGS[org][key]['server-hostname']
@@ -260,8 +259,7 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 					return '' + err;
 					//return 'Failed to register '+username+'. Error: ' + err.stack ? err.stack : err;
 				}).then((message) => {
-					if (message && typeof message === 'string' && message.includes(
-							'Error:')) {
+					if (message && typeof message === 'string' && message.includes('Error:')) {
 						logger.error(username + ' enrollment failed');
 						return message;
 					}
