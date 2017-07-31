@@ -26,8 +26,7 @@ function ChannelService(ApiService, $q) {
   /**
    * @param {string} blockHash
    */
-  ChannelService.getLastBlock = function(blockHash) {
-    var channelId = 'mychannel';
+  ChannelService.getLastBlock = function(channelId, blockHash) {
     return ApiService.channels.get(channelId)
       .then(function(currentBlockHash){
         if(!currentBlockHash){

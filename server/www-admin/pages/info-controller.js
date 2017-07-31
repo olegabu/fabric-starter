@@ -9,7 +9,7 @@ function InfoController(ChannelService, ConfigLoader) {
 
   ctl.channels = [];
   ctl.chaincodes = [];
-  ctl.blockInfo = {};
+  ctl.blockInfo = null;// {};
   ctl.transaction = {};
 
   ctl.networkConfig = (ConfigLoader.get()||{}).network;
@@ -35,8 +35,8 @@ function InfoController(ChannelService, ConfigLoader) {
     });
   };
 
-  ctl.getLastBlock = function(){
-    return ChannelService.getLastBlock().then(function(blockInfo){
+  ctl.getLastBlock = function(channelId){
+    return ChannelService.getLastBlock(channelId).then(function(blockInfo){
       ctl.blockInfo = blockInfo;
     });
   };
@@ -55,7 +55,12 @@ function InfoController(ChannelService, ConfigLoader) {
     .then(function(){
       return ctl.getChaincodes();
     }).then(function(){
-      return ctl.getLastBlock();
+      // TODO: choose channel
+      var channelId = ctl.channels[0] ? ctl.channels[0].name : null; // 'mychannel';
+      if(!channelId){
+        return false;
+      }
+      return ctl.getLastBlock(channelId);
     }).then(function(){
       return ctl.getTransaction();
     });
