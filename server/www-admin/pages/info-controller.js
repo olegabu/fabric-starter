@@ -11,6 +11,7 @@ function InfoController(ChannelService, ConfigLoader) {
   ctl.chaincodes = [];
   ctl.blockInfo = null;// {};
   ctl.transaction = {};
+  ctl.result = {};
 
   ctl.networkConfig = (ConfigLoader.get()||{}).network;
 
@@ -47,6 +48,23 @@ function InfoController(ChannelService, ConfigLoader) {
     var txId = ctl.blockInfo.data.data[0].payload.header.channel_header.tx_id;
     return ChannelService.getTransactionById(txId).then(function(transaction){
       ctl.transaction = transaction;
+
+      try{
+        ctl.result = {};
+        // TODO: loop trough actions
+        var ns_rwset = ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset;
+        ns_rwset = ns_rwset.filter(function(action){return action.namespace != "lscc"}); // filter system chaincode
+        ns_rwset.forEach(function(action){
+          ctl.result[action.namespace] = action.rwset.writes.reduce(function(result, element){
+            result[element.key] = element.is_delete ? null : element.value;
+            return result;
+          }, {});
+
+        });
+      }catch(e){
+        console.info(e);
+        ctl.result = {};        
+      }
     });
   };
 
@@ -56,7 +74,7 @@ function InfoController(ChannelService, ConfigLoader) {
       return ctl.getChaincodes();
     }).then(function(){
       // TODO: choose channel
-      var channelId = ctl.channels[0] ? ctl.channels[0].name : null; // 'mychannel';
+      var channelId = ctl.channels[0] ? ctl.channels[0].channel_id : null; // 'mychannel';
       if(!channelId){
         return false;
       }
