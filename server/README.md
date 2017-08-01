@@ -6,8 +6,10 @@ Hyperledger Fabric API
 Environment
 -----------
 
-* `PORT` - api/web interface port. Default value is `4000`  
-* `ORG` - organization id.
+* `PORT` - api/web interface port (default is `4000`)
+* `ORG` - organization id. No default value, you have to set it explicitly
+* `CONFIG_DIR` - ledger config dir (should have `network-config.json`)
+* `WEB_DIR` - location of web application (default is `www`)
 
 
 Launch

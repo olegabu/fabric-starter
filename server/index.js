@@ -24,6 +24,7 @@ var socketApp     = require('./app/socket-api-app');
 // config
 const ORG      = process.env.ORG;
 const PORT     = process.env.PORT || 4000;
+const WEB_DIR  = process.env.WEB_DIR || 'www';
 
 var clientEnv = {
   api: process.env.FABRIC_API || ''
@@ -33,7 +34,7 @@ var socketOptions = { origins: '*:*'};
 ////
 var app = express();
 var adminApp = require('./app/express-web-app')('www-admin', clientEnv);
-var webApp   = require('./app/express-web-app')('www', clientEnv);
+var webApp   = require('./app/express-web-app')(WEB_DIR, clientEnv);
 var apiApp   = require('./app/express-api-app')(); // TODO: this app still uses process.env. get rid of it
 
 
