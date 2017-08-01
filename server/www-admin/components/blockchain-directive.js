@@ -11,7 +11,8 @@ angular.module('nsd.directive.blockchain', ['nsd.service.socket'])
     // scope: true,
     // scope: { name:'=', id:'=' },
     template: '<div class="bc-wrapper" id="footerWrap" ng-init="ctl.init()">'
-                +'<div id="bc-wrapper-block">'
+                +'<div id="bc-wrapper-block" ng-class="ctl.getStatusClass()">'
+                  +'<i class="material-icons" title="{{ctl.getStatusText()}}">device_hub</i>'
 
                   +'<div id="details" ng-show="!!ctl.blockInfo" >'
                     +'<p class="blckLegend"> Block: {{ctl.blockInfo.txid}}</p>'
@@ -45,12 +46,22 @@ angular.module('nsd.directive.blockchain', ['nsd.service.socket'])
         removeExtraBlocks();
       }, 2000);
 
+      var socket = null;
+
+      var stateClasses = {
+        'error' :        'red-text',
+        'connected' :    'light-blue-text aqua-text',
+        'sidconnected' : '',
+        'connecting' :   'orange-text',
+        'default' :      'red-text',
+      }
+
       /**
        *
        */
       ctl.init = function(){
         // var socket = io('ws://'+location.hostname+':8155/');
-        var socket = SocketService.getSocket();
+        socket = SocketService.getSocket();
 
         console.log('chainblock event registered');
         socket.on('chainblock', function(payload){
@@ -58,6 +69,20 @@ angular.module('nsd.directive.blockchain', ['nsd.service.socket'])
           // $rootScope.$emit('chainblock', payload);
           addChainblocks(payload);
         });
+      };
+
+      /**
+       *
+       */
+      ctl.getStatusClass = function(){
+        return stateClasses[SocketService.getState()] || stateClasses['default'];
+      };
+
+      /**
+       *
+       */
+      ctl.getStatusText = function(){
+        return SocketService.getState();
       };
 
       /**

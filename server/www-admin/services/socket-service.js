@@ -5,12 +5,16 @@
  * @ngInject
  */
 function SocketService(env, $rootScope) {
-
   // jshint shadow: true
   var SocketService = this;
 
-  var socket;
+  var STATE_CONNECTING   = 'connecting';
+  var STATE_CONNECTED    = 'connected';
+  var STATE_DISCONNECTED = 'disconnected';
+  var STATE_ERROR = 'error';
 
+  var socket;
+  SocketService.state = STATE_DISCONNECTED;
   /**
    *
    */
@@ -26,6 +30,19 @@ function SocketService(env, $rootScope) {
       console.log('server hello:', payload);
     });
 
+    socket.on('connect',      function(){              SocketService.state = STATE_CONNECTED;   $rootScope.$apply(); });
+    socket.on('disconnect',   function(reason){        SocketService.state = STATE_DISCONNECTED;$rootScope.$apply(); });
+    socket.on('reconnecting', function(attemptNumber){ SocketService.state = STATE_CONNECTING;  $rootScope.$apply(); });
+    socket.on('reconnect_error', function(error){      SocketService.state = STATE_ERROR;       $rootScope.$apply(); });
+
+
+    // socket.on('ping', function(){
+    //   console.log('socket: ping');
+    // });
+    // socket.on('pong', function(latency){
+    //   console.log('socket: pong', latency);
+    // });
+
     return socket;
   };
 
@@ -35,6 +52,14 @@ function SocketService(env, $rootScope) {
    */
   SocketService.getSocket = function(){
     return socket;
+  }
+
+
+  /**
+   *
+   */
+  SocketService.getState = function(){
+    return SocketService.state;
   }
 
 
