@@ -11,6 +11,7 @@ build
 /artifacts/crypto-config/
 /artifacts/channel/
 /artifacts/cryptogen-*.yaml
+/artifacts/fabric-ca-server-config-*.yaml
 /artifacts/configtx.yaml
 /artifacts/*.block
 /artifacts/network-config.json

@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-DOMAIN=example.com
-ORG1=org1
-ORG2=org2
-CHANNEL_NAME=mychannel
+ DOMAIN=example.com
+ ORG1=org1
+ ORG2=org2
+ CHANNEL_NAME=mychannel
+
+#DOMAIN=nsd.ru
+#ORG1=nsd
+#ORG2=issuer
+#CHANNEL_NAME=nsd-issuer
 
 CLI_TIMEOUT=10000
 COMPOSE_FILE=ledger/docker-compose.yaml
@@ -51,6 +56,9 @@ function generateArtifacts() {
     #  fill environments                                                   |   remove comments
     sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
     sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/^\s*\/\/.*$//g" artifacts-dev/network-config-template.json > artifacts-dev/network-config.json
+    # fabric-ca-server-config.yaml
+    sed -e "s/ORG/$ORG1/g" artifacts/fabric-ca-server-configtemplate.yaml > artifacts/"fabric-ca-server-config-$ORG1.yaml"
+    sed -e "s/ORG/$ORG2/g" artifacts/fabric-ca-server-configtemplate.yaml > artifacts/"fabric-ca-server-config-$ORG2.yaml"
 
     echo "Generating crypto material with cryptogen"
     docker-compose --file $COMPOSE_FILE run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$DOMAIN.yaml"
