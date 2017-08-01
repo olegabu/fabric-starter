@@ -32,9 +32,7 @@ angular.module('nsd.app',[
    'nsd.directive.certificate',
    'nsd.directive.blockchain'
 ])
-.config(function($stateProvider, $urlRouterProvider) {
-
-  $urlRouterProvider.otherwise('/query');
+.config(function($stateProvider) {
 
   /*
    Custom state options are:
@@ -81,15 +79,25 @@ angular.module('nsd.app',[
       controller: 'InfoController',
       controllerAs: 'ctl',
       data:{
+        default: true,
         name: 'Info',
         guest:false
       }
     });
 
 })
-.run(function(UserService, ApiService, $rootScope, $state, $log){
-  // goDefault();
 
+.run(function(UserService, ApiService, $rootScope, $state, $log){
+  var defaultState = getDefaultState();
+  if(!defaultState){
+    $log.warn('No default state set. Please, mark any state as default by setting "data:{ default:true }"');
+  }
+  $rootScope.stateDefault = defaultState;
+
+  // instead of: $urlRouterProvider.otherwise('/query');
+  if($state.current.name == "" && defaultState){
+    $state.go(defaultState.name);
+  }
 
   var loginState = 'app.login';
 
@@ -105,12 +113,11 @@ angular.module('nsd.app',[
       $log.warn('login state cannot be authorized-only');
     }
 
-    if ( !isGuestAllowed && !isLoginState && !UserService.isAuthorized() ){
-      event.preventDefault();
-      // transitionTo() promise will be rejected with a 'transition prevented' error
-
+    // prevent navigation to forbidden pages
+    if ( !UserService.isAuthorized() && !isGuestAllowed && !isLoginState){
+      event.preventDefault(); // transitionTo() promise will be rejected with a 'transition prevented' error
       if(fromState.name == ""){
-        // just enter the page
+        // just enter the page - redirect to login page
         goLogin();
       }
     }
@@ -124,25 +131,12 @@ angular.module('nsd.app',[
   }
 
   /**
-   *
-   */
-  // function goDefault(){
-  //   var defaultState = getDefaultState();
-  //   if(defaultState){
-  //     $state.go(defaultState.name);
-  //   } else {
-  //     $log.warn('No default state');
-  //   }
-  // }
-
-
-  /**
    * @return {State}
    */
   function getDefaultState(){
     var states = $state.get()||[];
     for (var i = states.length - 1; i >= 0; i--) {
-      if( states[i].data && states[i].data.default===true){
+      if( states[i].data && states[i].data.default === true){
         return states[i];
       }
     }
