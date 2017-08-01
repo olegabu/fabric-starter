@@ -22,6 +22,7 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
       - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../artifacts/fabric-ca-server-config-ORG1.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   ca.ORG2.DOMAIN:
     container_name: ca.ORG2.DOMAIN
@@ -38,6 +39,7 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
       - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../artifacts/fabric-ca-server-config-ORG2.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   orderer.DOMAIN:
     container_name: orderer.DOMAIN
