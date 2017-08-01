@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 'use strict';
-var http = require('http');
-var log4js = require('log4js');
-var logger = log4js.getLogger('Http');
+var http    = require('http');
+var log4js  = require('log4js');
+var logger  = log4js.getLogger('Http');
 var express = require('express');
-var SocketServer = require('socket.io');
-var socketApp = require('./app/socket-api-app');
+var SocketServer  = require('socket.io');
+var socketApp     = require('./app/socket-api-app');
 
 // config
-const ORG = process.env.ORG;
-const PORT = process.env.PORT || 4000;
+const ORG      = process.env.ORG;
+const PORT     = process.env.PORT || 4000;
 
 var clientEnv = {
   api: process.env.FABRIC_API || ''
@@ -38,11 +38,11 @@ var apiApp   = require('./app/express-api-app')(); // TODO: this app still uses 
 
 
 
-
-app.get('/', (req, res)=>res.redirect('/web') );
-app.use('/web',   webApp);
+app.get('/',  (req, res)=>res.redirect('/web') );
+app.use('/web',         webApp);
 app.get('/favicon.ico', webApp.handle.bind(webApp) );
-app.use('/admin', adminApp);
+app.use('/admin',       adminApp);
+
 app.use(function(req, res, next) {
   logger.debug('[%s] %s  %s', new Date().toISOString(), req.method.toUpperCase(), req.url);
   next();
@@ -62,6 +62,11 @@ server.listen(PORT, function() {
 });
 server.timeout = 240000;
 
+
+/**
+ * @param {string} address
+ * @returns {string}
+ */
 function getHost(address){
   return address === '::' ? 'localhost' : address;
 }

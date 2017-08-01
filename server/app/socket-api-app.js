@@ -19,7 +19,7 @@ module.exports = {
 };
 
 /**
- * @param {SocketIO} io
+ * @param {Server} io
  * @param {object} options
  */
 function init(io, options){
