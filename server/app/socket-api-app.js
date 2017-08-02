@@ -44,11 +44,14 @@ function init(io, options){
   // emit block appearance
   var lastBlock = null;
   //TODO: listen all peers, remove duplicates
-  peerListener.listenPeers([peersAddress[0]], USERNAME, ORG, function(block){
+  peerListener.init([peersAddress[0]], USERNAME, ORG);
+  peerListener.registerBlockEvent(function(block){
     // emit globally
     lastBlock = block;
     io.emit('chainblock', block);
   });
+  peerListener.listen();
+
   io.on('connection', function(socket){
     if(lastBlock){
       socket.emit('chainblock', lastBlock);

@@ -17,10 +17,12 @@
 var path = require('path');
 var util = require('util');
 var tools = require('../lib/tools.js');
+
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 
 var hfc = require('./hfc');
+var peerListener = require('./peer-listener');
 
 
 
@@ -83,38 +85,43 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
     // if the transaction did not get committed within the timeout period,
     // fail the test
     var transactionID = tx_id.getTransactionID();
-    var eventPromises = [];
 
-    var eventhubs = helper.newEventHubs(peersUrls, org);
-    for (let key in eventhubs) {
-      let eh = eventhubs[key];
-      eh.connect();
+    // var eventPromises = [];
+    //
+    // var eventhubs = helper.newEventHubs('localhost:7051', org);
+    // for (let key in eventhubs) {
+    //   let eh = eventhubs[key];
+    //   eh.connect();
 
       let txPromise = new Promise((resolve, reject) => { // jshint ignore:line
         let handle = setTimeout(() => {
-          eh.disconnect();
+          // eh.disconnect();
           reject();
         }, 30000);
 
-        eh.registerTxEvent(transactionID, (tx, code) => {
+
+        peerListener.registerTxEvent(transactionID, (tx, code) => {
+        // eh.registerTxEvent(transactionID, (tx, code) => {
           clearTimeout(handle);
-          eh.unregisterTxEvent(transactionID);
-          eh.disconnect();
+          peerListener.unregisterTxEvent(transactionID);
+          // eh.unregisterTxEvent(transactionID);
+          // eh.disconnect();
 
           if (code !== 'VALID') {
             logger.error('The balance transfer transaction was invalid, code = ' + code);
             reject();
           } else {
-            logger.info('The balance transfer transaction has been committed on peer ' + eh._ep._endpoint.addr);
+            logger.info('The balance transfer transaction has been committed on peer '/* + eh._ep._endpoint.addr */ );
             resolve();
           }
         });
       });
-      eventPromises.push(txPromise);
-    }
+    //   eventPromises.push(txPromise);
+    // }
 
     var sendPromise = channel.sendTransaction(request);
-    return Promise.all([sendPromise].concat(eventPromises)).then((results) => {
+    return Promise.all([sendPromise, txPromise]).then((results) => {
+    // return Promise.all([sendPromise].concat(eventPromises)).then((results) => {
       logger.debug(' event promise all complete and testing complete');
       return results[0]; // the first returned value is from the 'sendPromise' which is from the 'sendTransaction()' call
     });

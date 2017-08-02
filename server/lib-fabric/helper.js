@@ -128,15 +128,18 @@ function newRemotes(urls, forPeers, userOrg) {
 							// found a peer matching the subject url
 							if (forPeers) {
 								let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
-								targets.push(client.newPeer('grpcs://' + peerUrl, {
+
+								let peer = client.newPeer('grpcs://' + peerUrl, {
 									pem: Buffer.from(data).toString(),
 									'ssl-target-name-override': org[prop]['server-hostname']
-								}));
+								});
+                targets.push(peer);
 
 								continue outer;
 							} else {
+                let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
+
 								let eh = client.newEventHub();
-								let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
 								eh.setPeerAddr(org[prop]['events'], {
 									pem: Buffer.from(data).toString(),
 									'ssl-target-name-override': org[prop]['server-hostname']
