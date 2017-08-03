@@ -28,3 +28,9 @@ services:
     command: peer node start
     volumes:
         - /var/run/:/host/var/run/
+
+  api-base:
+    image: maxxx1313/fabric-rest
+    volumes:
+     - .:/usr/src/artifacts
+    command: npm start
