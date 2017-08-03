@@ -75,8 +75,12 @@ For more details see `ledger/docker-compose-server-dev.yaml` file.
 Preset mode uses predefined certificates and configuration.
 
 ```
- # start ledger and api servers
+ # start pure ledger and api servers
  docker-compose -f artifacts-preset/docker-compose.yaml up
+
+ # create channel and init with example chaincode
+ ./artifacts-preset/init.sh
+
 ```
 
 API server for _org1_ and _org2_ become available on port `4001` and `4002` respectively.
