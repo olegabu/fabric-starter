@@ -41,9 +41,15 @@
 
 </form>
 
+<!-- invoke -->
 <div ng-hide="ctl.invokeInProgress">
   <button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, selectedPeers, fcn, args)" ng-disabled="form.$invalid">Invoke</button>
   <button class="btn btn-flat" type="button" ng-click="fcn='move'; args='[&quot;a&quot;, &quot;b&quot;,&quot;10&quot;]'">Fill with sample invoke</button>
+</div>
+<br>
+<!-- query -->
+<div ng-hide="ctl.invokeInProgress">
+  <button class="btn btn-primary" type="button" ng-click="ctl.query(selectedChannel, selectedCc, selectedPeers[0], fcn, args)" ng-disabled="form.$invalid">Query</button>
   <button class="btn btn-flat" type="button" ng-click="fcn='query'; args='[&quot;a&quot;]'">Fill with sample query</button>
 </div>
 
