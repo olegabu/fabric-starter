@@ -104,9 +104,13 @@ function networkDown () {
   docker-compose -f $COMPOSE_FILE down
   # Don't remove containers, images, etc if restarting
   if [ "$MODE" != "restart" ]; then
-    removeDockers
-    removeUnwantedImages
+    clean
   fi
+}
+
+function clean() {
+  removeDockers
+  removeUnwantedImages
 }
 
 # Print the usage message
@@ -145,9 +149,10 @@ if [ "${MODE}" == "up" ]; then
   networkUp
 elif [ "${MODE}" == "down" ]; then
   networkDown
+elif [ "${MODE}" == "clean" ]; then
+  clean
 elif [ "${MODE}" == "generate" ]; then
-  removeDockers
-  removeUnwantedImages
+  clean
   removeArtifacts
   generateArtifacts
 elif [ "${MODE}" == "restart" ]; then
