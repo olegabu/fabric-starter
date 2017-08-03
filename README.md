@@ -70,6 +70,24 @@ For more details see `ledger/docker-compose-server-dev.yaml` file.
  docker-compose -f ledger/docker-compose-server-dev.yaml up
 ```
 
+### Run preset mode
+
+Preset mode uses predefined certificates and configuration.
+
+```
+ # start pure ledger
+ docker-compose -f artifacts-preset/docker-compose.yaml up
+
+ # start api server for org1
+ cd server
+ ORG=org1 npm run -s preset
+
+ # (optional) start api server for org2
+ cd server
+ ORG=org2 npm run -s preset
+```
+
+
 ### Network configuration considerations
 
 You have the ability to change configuration parameters by editing [network-config.json](server/network-config.json).
