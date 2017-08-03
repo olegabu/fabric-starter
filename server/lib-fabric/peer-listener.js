@@ -61,9 +61,18 @@ function listen(){
     eventhubs = helper.newEventHubs(peers, orgID);
     for (let i=0, n=eventhubs.length; i<n; i++) {
       let eh = eventhubs[i];
+      eh._ep._request_timeout = 5000; // TODO: temp solution
       eh.connect();
 
       eh._myListenerId = eh.registerBlockEvent(_onBlock, _onBlockError);
+
+      eh._connectTimer = setInterval(function(){
+        if(eh._connected){
+          clearInterval(eh._connectTimer);
+          logger.debug(util.format('Connected to ', eh._ep._url));
+        }
+      }, 1000);
+      eh._connectTimer.unref();
     }
 
 
@@ -77,8 +86,12 @@ function listen(){
     function _onBlockError(e){
       // onError
       logger.warn('Got block error', e);
-      // throw e;
       blockEvents.emit('block_error', e);
+
+      // TODO: this is a hotfix
+      if(e.message === 'Unable to connect to the peer event hub') {
+        throw e;
+      }
     }
 
   });
