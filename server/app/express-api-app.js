@@ -47,7 +47,9 @@ if(!ORG){
 }
 
 var app = express(); // root app
+app.use(expressPromise());
 var adminPartyApp = express();
+adminPartyApp.use(expressPromise());
 
 
 module.exports = function(){ return app; };
