@@ -14,8 +14,8 @@
   },
   "scripts": {
     "start": "node index",
-    "dev"   :"CONFIG_DIR=\"../artifacts-dev\" npm -s start",
-    "preset":"CONFIG_DIR=\"../artifacts-preset\" npm -s start",
+    "dev"   :"CONFIG_FILE=\"../artifacts-dev/network-config.json\" npm -s start",
+    "preset":"CONFIG_FILE=\"../artifacts-preset/network-config.json\" npm -s start",
     "test":"mocha"
   },
   "license": "Apache-2.0",

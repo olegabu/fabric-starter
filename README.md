@@ -75,16 +75,24 @@ For more details see `ledger/docker-compose-server-dev.yaml` file.
 Preset mode uses predefined certificates and configuration.
 
 ```
- # start ledger and api servers
+ # start pure ledger and api servers
  docker-compose -f artifacts-preset/docker-compose.yaml up
+
+ # create channel and init with example chaincode
+ ./artifacts-preset/init.sh
+
 ```
 
 API server for _org1_ and _org2_ become available on port `4001` and `4002` respectively.
 
+_NOTE_ that chaincode instantiation are long process and can be result in timeout. It doesn't mean that it's failed. You can see real state in peero logs or by observing `docker ps` result (something like `dev-peer0.org2.example.com-mycc-v0` means instantiated chaincode).
+
+_NOTE_ Chaincode instantiating may not (and actually will not) instantiated on all the peer at once. instead of this, it will be instantiated on a first request to the peer, so you can see from 2 to 4 running chaincode containers. It's ok.  
+
 
 ### Network configuration considerations
 
-You have the ability to change configuration parameters by editing [network-config.json](server/network-config.json).
+You have the ability to change configuration parameters by editing [network-config.json](server/network-config.json). All pathes in the config file should be absolute or relative to the file.
 
 #### IP Address and PORT information
 

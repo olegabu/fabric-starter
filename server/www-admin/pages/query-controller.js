@@ -74,6 +74,31 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
       });
   }
 
+
+  ctl.query = function(channel, cc, peer, fcn, args){
+    try{
+      args = JSON.parse(args);
+    }catch(e){
+      $log.warn(e);
+    }
+
+    ctl.transaction = null;
+    ctl.error = null;
+    ctl.invokeInProgress = true;
+
+    return ChannelService.query(channel.channel_id, cc.name, peer, fcn, args)
+      .then(function(transaction){
+        ctl.transaction = transaction;
+      })
+      .catch(function(response){
+        ctl.error = response.data || response;
+      })
+      .finally(function(){
+        ctl.invokeInProgress = false;
+      });
+  }
+
+
   //
   ctl.getChannels();
   $scope.$watch('selectedChannel', ctl.getChaincodes );

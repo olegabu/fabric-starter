@@ -64,6 +64,17 @@ function ChannelService(ApiService, $q) {
     return ApiService.sc.invoke(channelId, contractId, peers, fcn, args);
   };
 
+  /**
+   * @param {string} channelId
+   * @param {string} contractId
+   * @param {string} peer - peerId
+   * @param {string} fcn
+   * @param {Array} [args]
+   */
+  ChannelService.query = function(channelId, contractId, peer, fcn, args){
+    return ApiService.sc.query(channelId, contractId, peer, fcn, args);
+  };
+
 }
 
 angular.module('nsd.service.channel', ['nsd.service.api'])

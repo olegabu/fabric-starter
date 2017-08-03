@@ -8,7 +8,7 @@ Environment
 
 * `PORT` - api/web interface port (default is `4000`)
 * `ORG` - organization id. No default value, you have to set it explicitly
-* `CONFIG_DIR` - ledger config dir (should have `network-config.json`)
+* `CONFIG_FILE` - ledger config file (default is `../artifacts/network-config.json`)
 * `WEB_DIR` - location of web application (default is `www`)
 
 

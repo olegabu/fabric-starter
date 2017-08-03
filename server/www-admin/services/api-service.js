@@ -157,6 +157,25 @@ function ApiService($log, $http, env) {
 
 
 
+  /**
+   * @param {string} channelId
+   * @param {string} contractId
+   * @param {string} peer - peerId
+   * @param {string} fcn
+   * @param {Array} [args]
+   */
+  ApiService.sc.query = function(channelId, contractId, peer, fcn, args){
+    var params = {
+      peer : peer,
+      fcn  : fcn,
+      args : JSON.stringify(args||null)
+    };
+    return $http.get(cfg.api+'/channels/'+channelId+'/chaincodes/'+contractId, {params:params})
+      .then(function(response){ return response.data; });
+  };
+
+
+
 
 
 

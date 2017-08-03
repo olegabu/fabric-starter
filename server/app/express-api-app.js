@@ -47,7 +47,9 @@ if(!ORG){
 }
 
 var app = express(); // root app
+app.use(expressPromise());
 var adminPartyApp = express();
+adminPartyApp.use(expressPromise());
 
 
 module.exports = function(){ return app; };
@@ -367,10 +369,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     var chaincodeName = req.params.chaincodeName;
     var channelName = req.params.channelName;
     var peersId = req.body.peers || [];
-    var peers = peersId.map(peerId=>{
-      var parts = peerId.split('/');
-      return networkConfig[parts[0]][parts[1]];
-    }).map(peer=>tools.getHost(peer.requests));
+    var peers = peersId.map(getPeerHostByCompositeID);
 
     var fcn = req.body.fcn;
     var args = req.body.args;
@@ -413,15 +412,17 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
 // Query on chaincode on target peers
 app.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
     logger.debug('==================== QUERY BY CHAINCODE ==================');
-    var channelName = req.params.channelName;
+    var channelName   = req.params.channelName;
     var chaincodeName = req.params.chaincodeName;
     let args = req.query.args;
-    let fcn = req.query.fcn;
-    let peer = req.query.peer;
+    let fcn  = req.query.fcn;
+    let peerId = req.query.peer;
+    var peerInfo = getPeerInfoByCompositeID(peerId);
 
     logger.debug('channelName : ' + channelName);
     logger.debug('chaincodeName : ' + chaincodeName);
-    logger.debug('fcn : ' + fcn);
+    logger.debug('peerId : ', peerId);
+    logger.debug('fcn  : ' + fcn);
     logger.debug('args : ' + args);
 
     if (!chaincodeName) {
@@ -437,8 +438,16 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
         return;
     }
     if (!args) {
-        res.error(getErrorMessage('\'args\''));
-        return;
+      res.error(getErrorMessage('\'args\''));
+      return;
+    }
+    if (!peerInfo) {
+      res.error(getErrorMessage('\'peerInfo\''));
+      return;
+    }
+    if (peerInfo.org !== ORG) {
+      res.error("Cannot query foreign peers");
+      return;
     }
     args = args.replace(/'/g, '"');
     args = JSON.parse(args);
@@ -446,7 +455,9 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
 
 
     res.promise(
-      query.queryChaincode(peer, channelName, chaincodeName, args, fcn, req.username, req.orgname)
+      query.queryChaincode(peerInfo.peer, channelName, chaincodeName, args, fcn, USERNAME, ORG).then(function(result){
+        return {result:result};
+      })
     );
 });
 
@@ -533,4 +544,22 @@ app.use(function(err, req, res, next) { // jshint ignore:line
 
 function getErrorMessage(field) {
   return field + ' field is missing or Invalid in the request';
+}
+
+
+/**
+ * Get peer host:port by composite id.
+ * Composite ID is a combination of orgID and peerID, split by '/'. For example: 'org1/peer2'
+ * @param {string} peerID
+ * @returns {string}
+ */
+function getPeerHostByCompositeID(peerID){
+  var parts = peerID.split('/');
+  var peer = networkConfig[parts[0]][parts[1]] || {};
+  return tools.getHost(peer.requests);
+}
+
+function getPeerInfoByCompositeID(peerID){
+  var parts = peerID.split('/');
+  return parts ? {peer: parts[1], org: parts[0]} : null;
 }
