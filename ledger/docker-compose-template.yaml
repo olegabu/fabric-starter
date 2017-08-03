@@ -153,8 +153,7 @@ services:
       - ORG=ORG1
       - PORT=4000
     depends_on:
-      - peer0.ORG1.DOMAIN
-      - peer1.ORG1.DOMAIN
+      - cli.ORG1.DOMAIN
 
   api.ORG2.DOMAIN:
     extends:
@@ -167,8 +166,7 @@ services:
       - ORG=ORG2
       - PORT=4000
     depends_on:
-      - peer0.ORG2.DOMAIN
-      - peer1.ORG2.DOMAIN
+      - cli.ORG2.DOMAIN
 
   cli.ORG1.DOMAIN:
     container_name: cli.ORG1.DOMAIN
@@ -186,12 +184,8 @@ services:
       && sleep 5
       && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
       && CORE_PEER_ADDRESS=peer1.ORG1.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
-      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java
-      && CORE_PEER_ADDRESS=peer1.ORG1.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java
       && sleep 5
-      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode instantiate -n mycc -v 1.0 -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}' -o orderer.DOMAIN:7050 -C CHANNEL_NAME --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt
-      && sleep 5
-      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode instantiate -n javacc -v 1.0 -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}' -o orderer.DOMAIN:7050 -C CHANNEL_NAME --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+      && CORE_PEER_ADDRESS=peer0.ORG1.DOMAIN:7051 peer chaincode instantiate -n mycc -v 1.0 -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}' -o orderer.DOMAIN:7050 -C CHANNEL_NAME --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
     depends_on:
       - peer0.ORG1.DOMAIN
       - peer1.ORG1.DOMAIN
@@ -210,8 +204,6 @@ services:
       && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer channel join -b CHANNEL_NAME.block
       && sleep 5
       && CORE_PEER_ADDRESS=peer0.ORG2.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
-      && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02
-      && CORE_PEER_ADDRESS=peer0.ORG2.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java
-      && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer chaincode install -n javacc -v 1.0 -p /opt/chaincode/chaincode_example02 -l java"
+      && CORE_PEER_ADDRESS=peer1.ORG2.DOMAIN:7051 peer chaincode install -n mycc -v 1.0 -p chaincode_example02"
     depends_on:
       - cli.ORG1.DOMAIN
