@@ -87,17 +87,37 @@ angular.module('nsd.app',[
 
 })
 
-.run(function(UserService, ApiService, $rootScope, $state, $log){
+
+// instead of: $urlRouterProvider.otherwise('/default');
+.run(function($state, $log, $rootScope){
+
   var defaultState = getDefaultState();
   if(!defaultState){
     $log.warn('No default state set. Please, mark any state as default by setting "data:{ default:true }"');
   }
-  $rootScope.stateDefault = defaultState;
+  $rootScope.stateDefault = defaultState; // TODO: remove?
 
-  // instead of: $urlRouterProvider.otherwise('/query');
+  // instead of: $urlRouterProvider.otherwise('/default');
   if($state.current.name == "" && defaultState){
     $state.go(defaultState.name);
   }
+
+  /**
+   * @return {State}
+   */
+  function getDefaultState(){
+    var states = $state.get()||[];
+    for (var i = states.length - 1; i >= 0; i--) {
+      if( states[i].data && states[i].data.default === true){
+        return states[i];
+      }
+    }
+    return null;
+  }
+
+})
+
+.run(function(UserService, ApiService, $rootScope, $state, $log){
 
   var loginState = 'app.login';
 
@@ -129,72 +149,33 @@ angular.module('nsd.app',[
   function goLogin(){
     $state.go(loginState);
   }
-
-  /**
-   * @return {State}
-   */
-  function getDefaultState(){
-    var states = $state.get()||[];
-    for (var i = states.length - 1; i >= 0; i--) {
-      if( states[i].data && states[i].data.default === true){
-        return states[i];
-      }
-    }
-    return null;
-  }
-
 })
 
 
 /**
- *
+ * @ngInject
  */
-.config(function($httpProvider) {
-  $httpProvider.interceptors.push('bearerAuthIntercepter');
+.run(function(ConfigLoader){
+  ConfigLoader.load();
 })
 
-/**
- * inject 'X-Requested-With' header
- * inject 'Authorization: Bearer' token
- */
-.factory('bearerAuthIntercepter', function($rootScope){
-    return {
-        request: function(config) {
-            config.headers['X-Requested-With'] = 'XMLHttpRequest'; // make ajax request visible among the others
-            config.withCredentials = true;
 
-            if($rootScope._tokenInfo){
-              config.headers['Authorization'] = 'Bearer '+$rootScope._tokenInfo.token;
-            }
-            return config;
-        },
-
-
-        requestError:function(rejection){
-          globalErrorHandler(rejection);
-          throw rejection;
-        },
-        responseError:function(rejection){
-          globalErrorHandler(rejection);
-          throw rejection;
-        }
+.factory('$exceptionHandler', function ($window) {
+    $window.onunhandledrejection = function(e) {
+        // console.warn('onunhandledrejection', e);
+        e = e || {};
+        onError(e);
     };
 
-
-    function globalErrorHandler(e){
-      e = e || {};
-      e.data = e.data || {};
-
-      var statusMsg = e.status ? 'Error' + (e.status != -1?' '+e.status:'') + ': ' + (e.statusText||(e.status==-1?"Connection refused":null)||"Unknown") : null;
-      var reason = e.data.message || e.reason || e.message || statusMsg || e || 'Unknown error';
-      Materialize.toast(reason, 4000, 'mytoast red') // 4000 is the duration of the toast
+    function onError(exception){
+        // filter network 403 errors
+        if (exception.status !== 403 ){
+            globalErrorHandler(exception);
+        }
     }
 
+    return onError;
 })
-
-
-
-
 
 /**
  * load config from remote endpoint
@@ -279,3 +260,22 @@ angular.module('nsd.app',[
 })
 
 
+
+
+
+
+/**
+ *
+ */
+function globalErrorHandler(e){
+  console.warn('globalErrorHandler', e);
+  e = e || {};
+  if(typeof e == "string"){
+    e = {message:e};
+  }
+  e.data = e.data || {};
+
+  var statusMsg = e.status ? 'Error' + (e.status != -1?' '+e.status:'') + ': ' + (e.statusText||(e.status==-1?"Connection refused":null)||"Unknown") : null;
+  var reason = e.data.message || e.reason || e.message || statusMsg || e || 'Unknown error';
+  Materialize.toast(reason, 4000, 'mytoast red') // 4000 is the duration of the toast
+}
