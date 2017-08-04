@@ -161,6 +161,44 @@ angular.module('nsd.app',[
 })
 
 
+
+/**
+ *
+ */
+.config(function($httpProvider) {
+  $httpProvider.interceptors.push('bearerAuthIntercepter');
+})
+
+/**
+ * inject 'X-Requested-With' header
+ * inject 'Authorization: Bearer' token
+ */
+.factory('bearerAuthIntercepter', function($rootScope){
+    return {
+        request: function(config) {
+            config.headers['X-Requested-With'] = 'XMLHttpRequest'; // make ajax request visible among the others
+            config.withCredentials = true;
+
+            // $rootScope._tokenInfo is set in UserService
+            if($rootScope._tokenInfo){
+              config.headers['Authorization'] = 'Bearer '+$rootScope._tokenInfo.token;
+            }
+            return config;
+        },
+
+        // throws error, so '$exceptionHandler' service will caught it
+        requestError:function(rejection){
+          throw rejection;
+        },
+        responseError:function(rejection){
+          throw rejection;
+        }
+    };
+
+})
+
+
+
 /**
  * @ngInject
  */
