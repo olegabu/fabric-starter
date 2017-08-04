@@ -5,6 +5,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+ORG1_ENDPOINT='http://localhost:4001'
+ORG2_ENDPOINT='http://localhost:4002'
+
 jq --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 	echo "Please Install 'jq' https://stedolan.github.io/jq/ to execute this script"
@@ -17,7 +20,7 @@ echo
 echo
 echo "POST request Enroll on Org1  ..."
 echo
-ORG1_TOKEN=$(curl -s -X POST http://localhost:4001/users \
+ORG1_TOKEN=$(curl -s -X POST $ORG1_ENDPOINT/users \
     -H "content-type: application/x-www-form-urlencoded" \
     -d 'username=Jim')
 ORG1_TOKEN=$(echo $ORG1_TOKEN | jq ".token" | sed "s/\"//g")
@@ -28,7 +31,7 @@ echo
 
 echo "POST request Enroll on Org2 ..."
 echo
-ORG2_TOKEN=$(curl -s -X POST http://localhost:4002/users \
+ORG2_TOKEN=$(curl -s -X POST $ORG2_ENDPOINT/users \
     -H "content-type: application/x-www-form-urlencoded" \
     -d 'username=Barry')
 ORG2_TOKEN=$(echo $ORG2_TOKEN | jq ".token" | sed "s/\"//g")
@@ -40,7 +43,7 @@ echo
 
 echo "POST request Create channel  ..."
 echo
-curl -s -X POST http://localhost:4001/channels \
+curl -s -X POST $ORG1_ENDPOINT/channels \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json" \
   -d '{
@@ -54,7 +57,7 @@ sleep 2
 echo "POST request Join channel on Org1"
 echo
 curl -s -X POST \
-  http://localhost:4001/channels/mychannel/peers \
+  $ORG1_ENDPOINT/channels/mychannel/peers \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json" \
   -d '{
@@ -66,7 +69,7 @@ echo
 echo "POST request Join channel on Org2"
 echo
 curl -s -X POST \
-  http://localhost:4002/channels/mychannel/peers \
+  $ORG2_ENDPOINT/channels/mychannel/peers \
   -H "authorization: Bearer $ORG2_TOKEN" \
   -H "content-type: application/json" \
   -d '{
@@ -79,7 +82,7 @@ sleep 2
 echo "POST Install chaincode on Org1"
 echo
 curl -s -X POST \
-  http://localhost:4001/chaincodes \
+  $ORG1_ENDPOINT/chaincodes \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json" \
   -d '{
@@ -95,7 +98,7 @@ sleep 2
 echo "POST Install chaincode on Org2"
 echo
 curl -s -X POST \
-  http://localhost:4002/chaincodes \
+  $ORG2_ENDPOINT/chaincodes \
   -H "authorization: Bearer $ORG2_TOKEN" \
   -H "content-type: application/json" \
   -d '{
@@ -111,7 +114,7 @@ sleep 10
 echo "POST instantiate chaincode on peer1 of Org1"
 echo
 curl -s -X POST \
-  http://localhost:4001/channels/mychannel/chaincodes \
+  $ORG1_ENDPOINT/channels/mychannel/chaincodes \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json" \
   -d '{
