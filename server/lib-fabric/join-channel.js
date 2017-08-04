@@ -121,16 +121,12 @@ var joinChannel = function(channelName, peers, username, org) {
 		logger.debug(util.format('Join Channel R E S P O N S E : %j', results));
 		if (results[0] && results[0][0] && results[0][0].response && results[0][0]
 			.response.status == 200) {
-			logger.info(util.format(
-				'Successfully joined peers in organization %s to the channel \'%s\'',
-				org, channelName));
+			logger.info(util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelName));
 			closeConnections(true);
 
 			let response = {
 				success: true,
-				message: util.format(
-					'Successfully joined peers in organization %s to the channel \'%s\'',
-					org, channelName)
+				message: util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelName)
 			};
 			return response;
 		} else {
@@ -140,11 +136,9 @@ var joinChannel = function(channelName, peers, username, org) {
 		}
 	}).catch((err) => {
         err = err || {};
-		logger.error('Failed to join channel due to error: ' + err.stack ? err.stack :
-			err);
+		logger.error('Failed to join channel due to error: ' + err.stack ? err.stack : err);
 		closeConnections();
-		throw new Error('Failed to join channel due to error: ' + err.stack ? err.stack :
-			err);
+		throw new Error('Failed to join channel due to error: ' + err.stack ? err.stack : err);
 	});
 };
 exports.joinChannel = joinChannel;

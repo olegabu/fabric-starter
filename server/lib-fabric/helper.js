@@ -299,8 +299,10 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 var getOrgAdmin = function(userOrg) {
 	var admin = ORGS[userOrg].admin;
 	var keyPath = path.join(CONFIG_DIR, admin.key);
+	// TODO: explicitly set key name
 	var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
 	var certPath = path.join(CONFIG_DIR, admin.cert);
+  // TODO: explicitly set certificate name
 	var certPEM = readAllFiles(certPath)[0].toString();
 
 	var client = getClientForOrg(userOrg);
