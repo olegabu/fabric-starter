@@ -72,6 +72,19 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
       return tokenData;
   }
 
+  /**
+   * @param {state} state
+   * @return boolean
+   */
+  UserService.canAccess = function(state){
+    // check access
+    var isAllowed = state.data && state.data.guest !== false;
+
+    // console.log('UserService.canAccess:', isAllowed, state.name);
+    return isAllowed; //&& UserService.isAuthorized();
+  };
+
+
   return UserService;
 }
 
