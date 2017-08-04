@@ -32,6 +32,13 @@ var orgID = null;
 var initPromise = null;
 
 /**
+ * This flag indicates that at leas one success connection with fabric1.0 was made.
+ * Application tries to reconnect in this case. Otherwise it terminates, and that is an indicator of bad configuration.
+ * @type {boolean}
+ */
+var wasConnectedAtStartup = false;
+
+/**
  * @param {Array<string>} peersUrls
  * @param {string} username - admin username (or ID from network-config?)
  * @param {string} org organisation ID
@@ -55,27 +62,40 @@ function init(peersUrls, username, org){
 function listen(){
   return initPromise.then(function () {
 
-    logger.debug(util.format('\n(((((((((((( listen for transactions on organization %s )))))))))))\n', orgID));
-
     // set the transaction listener
     eventhubs = helper.newEventHubs(peers, orgID);
     for (let i=0, n=eventhubs.length; i<n; i++) {
       let eh = eventhubs[i];
       eh._ep._request_timeout = 5000; // TODO: temp solution
-      eh.connect();
-
       eh._myListenerId = eh.registerBlockEvent(_onBlock, _onBlockError);
+    }
+    _connect();
 
-      eh._connectTimer = setInterval(function(){
-        if(eh._connected){
-          clearInterval(eh._connectTimer);
-          logger.debug(util.format('Connected to ', eh._ep._url));
-        }
-      }, 1000);
-      eh._connectTimer.unref();
+    //
+    function _connect(){
+      logger.info(util.format('connecting to %s', orgID));
+
+      for (let i=0, n=eventhubs.length; i<n; i++) {
+        let eh = eventhubs[i];
+        eh.connect();
+        eh._connectTimer = setInterval(_checkConnection.bind(eh), 1000); // TODO: socket connection check interval
+        eh._connectTimer.unref();
+      }
     }
 
+    //
+    function _checkConnection(){
+      let eh = this; // jshint ignore:line
+      if(eh._connected){
+        clearInterval(eh._connectTimer);
+        eh._connectTimer = null;
+        logger.debug(util.format('\n(((((((((((( listen for transactions on organization %s: %s )))))))))))\n', orgID, eh._ep._url));
+        // logger.debug(util.format('Connected to ', eh._ep._url));
+        wasConnectedAtStartup = true;
+      }
+    }
 
+    //
     function _onBlock(block){
       logger.debug(util.format('(((((((((((( Got block event )))))))))))'));
       logger.debug('Got block event', block.header.data_hash);
@@ -83,14 +103,23 @@ function listen(){
       blockEvents.emit('block_success', block);
     }
 
+    //
     function _onBlockError(e){
       // onError
       logger.warn('Got block error', e);
       blockEvents.emit('block_error', e);
 
-      // TODO: this is a hotfix
-      if(e.message === 'Unable to connect to the peer event hub') {
+      // for (let i=0, n=eventhubs.length; i<n; i++) {
+      //   let eh = eventhubs[i];
+      //   eh.disconnect();
+      // }
+
+      // TODO: 'e.message' is a hotfix
+      if(!wasConnectedAtStartup || e.message === 'Unable to connect to the peer event hub') {
         throw e;
+      } else {
+        // TODO: doesn't work propertly?
+        // setTimeout( _connect, 5000); // TODO: socket reconnect interval
       }
     }
 
@@ -105,6 +134,7 @@ function disconnect(){
     for (let i=0, n=eventhubs.length; i<n; i++) {
       let eh = eventhubs[i];
       eh.unregisterBlockEvent(eh._myListenerId);
+      eh._myListenerId = null;
       eh.disconnect();
     }
 }
