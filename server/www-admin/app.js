@@ -88,35 +88,7 @@ angular.module('nsd.app',[
 })
 
 
-// instead of: $urlRouterProvider.otherwise('/default');
-.run(function($state, $log, $rootScope){
-
-  var defaultState = getDefaultState();
-  if(!defaultState){
-    $log.warn('No default state set. Please, mark any state as default by setting "data:{ default:true }"');
-  }
-  $rootScope.stateDefault = defaultState; // TODO: remove?
-
-  // instead of: $urlRouterProvider.otherwise('/default');
-  if($state.current.name == "" && defaultState){
-    $state.go(defaultState.name);
-  }
-
-  /**
-   * @return {State}
-   */
-  function getDefaultState(){
-    var states = $state.get()||[];
-    for (var i = states.length - 1; i >= 0; i--) {
-      if( states[i].data && states[i].data.default === true){
-        return states[i];
-      }
-    }
-    return null;
-  }
-
-})
-
+// THIS method should be called BEFORE navigateDefault()
 .run(function(UserService, ApiService, $rootScope, $state, $log){
 
   var loginState = 'app.login';
@@ -149,6 +121,35 @@ angular.module('nsd.app',[
   function goLogin(){
     $state.go(loginState);
   }
+})
+
+// instead of: $urlRouterProvider.otherwise('/default');
+.run(function navigateDefault($state, $log, $rootScope){
+
+  var defaultState = getDefaultState();
+  if(!defaultState){
+    $log.warn('No default state set. Please, mark any state as default by setting "data:{ default:true }"');
+  }
+  $rootScope.stateDefault = defaultState; // TODO: remove?
+
+  // instead of: $urlRouterProvider.otherwise('/default');
+  if($state.current.name == "" && defaultState){
+    $state.go(defaultState.name);
+  }
+
+  /**
+   * @return {State}
+   */
+  function getDefaultState(){
+    var states = $state.get()||[];
+    for (var i = states.length - 1; i >= 0; i--) {
+      if( states[i].data && states[i].data.default === true){
+        return states[i];
+      }
+    }
+    return null;
+  }
+
 })
 
 

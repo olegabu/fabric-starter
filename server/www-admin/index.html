@@ -56,7 +56,7 @@
             <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
           </li>
 
-          <li>
+          <li ng-show="ctrl.authorized()">
             <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
               {{ctrl.getUser().tokenData.username}}
               <i class="zmdi zmdi-caret-down drop-down-icon"></i>
