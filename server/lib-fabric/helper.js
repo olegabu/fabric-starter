@@ -33,38 +33,58 @@ var clients = {};
 var channels = {};
 var caClients = {};
 
-// set up the client and channel objects for each org
-for (let key in ORGS) {
-  // TODO: bookmark issue #9
-	if (key !== 'orderer') {
-		let client = new hfc();
+//
 
-		let cryptoSuite = hfc.newCryptoSuite();
-		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
-		client.setCryptoSuite(cryptoSuite);
 
-		let channel = client.newChannel(config.channelName);
-		channel.addOrderer(newOrderer(client));
+/**
+ * set up the client objects for each org
+ * @param {string} orgID
+ * @returns {Client}
+ */
+function setupOrgClient(orgID){
+  if(!ORGS[orgID]){
+    throw new Error('No such organisation: '+orgID);
+  }
 
-		clients[key] = client;
-		channels[key] = channel;
+  let client = new hfc(); // jshint ignore: line
+  let cryptoSuite = hfc.newCryptoSuite();
+  cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[orgID].name)}));
+  client.setCryptoSuite(cryptoSuite);
 
-		setupPeers(channel, key, client);
+  let caUrl = ORGS[orgID].ca;
+  caClients[orgID] = new CopService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
 
-		let caUrl = ORGS[key].ca;
-		caClients[key] = new CopService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
-	}
+  return client;
+}
+
+/**
+ * @param {string} channelID
+ * @param {string} orgID
+ * @returns {Channel}
+ */
+function setupChannel(channelID, orgID){
+  let client = getClientForOrg(orgID);
+  let channel = client.newChannel(channelID);
+  channel.addOrderer( newOrderer(client) );
+
+  setupPeers(channel, orgID, client);
+  return channel;
 }
 
 
-function setupPeers(channel, org, client) {
-	for (let key in ORGS[org]) {
-		if (key.indexOf('peer') === 0) {
-			let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[org][key]['tls_cacerts']));
-			let peer = client.newPeer( ORGS[org][key].requests,
+function setupPeers(channel, orgID, client) {
+  if(!ORGS[orgID]){
+    throw new Error('No such organisation: '+orgID);
+  }
+
+	for (let peerID in ORGS[orgID]) {
+		if (peerID.indexOf('peer') === 0) { // starts with 'peer'
+
+			let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[orgID][peerID]['tls_cacerts']));
+			let peer = client.newPeer( ORGS[orgID][peerID].requests,
 				{
 					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[org][key]['server-hostname']
+					'ssl-target-name-override': ORGS[orgID][peerID]['server-hostname']
 				}
 			);
 
@@ -74,7 +94,7 @@ function setupPeers(channel, org, client) {
 }
 
 function newOrderer(client) {
-	var caRootsPath = ORGS.orderer.tls_cacerts;
+	var caRootsPath = ORGS['orderer'].tls_cacerts;
 	let data = fs.readFileSync(path.join(CONFIG_DIR, caRootsPath));
 	let caroots = Buffer.from(data).toString();
 	return client.newOrderer(ORGS.orderer.url, {
@@ -165,13 +185,31 @@ function newRemotes(urls, forPeers, userOrg) {
 //-------------------------------------//
 // APIs
 //-------------------------------------//
-var getChannelForOrg = function(org) {
-	return channels[org];
-};
+function getChannelForOrg(channelID, orgID) {
 
-var getClientForOrg = function(org) {
-	return clients[org];
-};
+  if(!channelID){
+    throw new Error('channelID undefined');
+  }
+  if(!orgID){
+    throw new Error('orgID undefined');
+  }
+
+  let compositeKey = channelID+'/'+orgID;
+  if(typeof channels[compositeKey] === "undefined"){
+    channels[compositeKey] = setupChannel(channelID, orgID);
+  }
+  return channels[compositeKey];
+}
+
+
+function getClientForOrg(orgID) {
+  if(typeof clients[orgID] === "undefined"){
+    clients[orgID] = setupOrgClient(orgID);
+  }
+  return clients[orgID];
+}
+
+
 
 var newPeers = function(urls) {
 	return newRemotes(urls, true);
@@ -346,7 +384,7 @@ var getPeerAddressByName = function(org, peer) {
 };
 
 exports.getChannelForOrg = getChannelForOrg;
-exports.getClientForOrg = getClientForOrg;
+exports.getClientForOrg  = getClientForOrg;
 exports.getLogger = getLogger;
 exports.setupChaincodeDeploy = setupChaincodeDeploy;
 exports.getMspID = getMspID;

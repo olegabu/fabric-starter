@@ -22,10 +22,10 @@ var logger = helper.getLogger('Create-Channel');
 
 
 //Attempt to send a request to the orderer with the sendCreateChain method
-var createChannel = function(channelName, channelConfigPath, username, orgName) {
-	logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
-	var client = helper.getClientForOrg(orgName);
-	var channel = helper.getChannelForOrg(orgName);
+var createChannel = function(channelID, channelConfigPath, username, orgName) {
+	logger.debug('\n====== Creating Channel \'' + channelID + '\' ======\n');
+	var client  = helper.getClientForOrg(orgName);
+	var channel = helper.getChannelForOrg(channelID, orgName);
 
 	// read in the envelope for the channel config raw bytes
 	var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
@@ -42,8 +42,8 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 		let request = {
 			config: channelConfig,
 			signatures: [signature],
-			name: channelName,
-			orderer: channel.getOrderers()[0],
+			name: channelID,
+			orderer: channel.getOrderers()[0], // TODO: multiple orderers will fail here?
 			txId: client.newTransactionID()
 		};
 
@@ -55,17 +55,15 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 			logger.debug('Successfully created the channel.');
 			let response = {
 				success: true,
-				message: 'Channel \'' + channelName + '\' created Successfully'
+				message: 'Channel \'' + channelID + '\' created Successfully'
 			};
 		  return response;
 		} else {
-			logger.error('\n!!!!!!!!! Failed to create the channel \'' + channelName +
-				'\' !!!!!!!!!\n\n');
-			throw new Error('Failed to create the channel \'' + channelName + '\'');
+			logger.error('\n!!!!!!!!! Failed to create the channel \'' + channelID + '\' !!!!!!!!!\n\n');
+			throw new Error('Failed to create the channel \'' + channelID + '\'');
 		}
 	}).catch((err) => {
-		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack :
-			err);
+		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack : err);
 		throw new Error('Failed to initialize the channel: ' + err.stack ? err.stack : err);
 	});
 };

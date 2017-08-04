@@ -29,3 +29,41 @@ Dev environment
 ORG=org1 npm run dev
 
 ```
+
+
+
+Known issues
+------------
+
+* peer ID should be started with 'peer' word (specified in `network-config.json`).  
+  
+  RIGHT:
+```
+   ...
+        "org1": {
+			...
+			"peer1": { ... },
+			"peer2.example.com": { ... },
+			"peer": { ... },
+		},
+   ...
+```
+
+  WRONG:
+```
+   ...
+        "org1": {
+			...
+			"n1.peer": { ... },
+			"host2.example.com": { ... },
+		},
+   ...
+```
+
+* orderer should be named `"orderer"`. No options, you cannot rename it.
+
+* endpoints `/channels/<channelName>/config` and `/genesis` are not work properly
+
+* chaincode instantiate works with `peer1` exactly. no options here
+
+* admin UI uses `peer1` to get common info

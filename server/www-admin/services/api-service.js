@@ -191,7 +191,7 @@ function ApiService($log, $http, env) {
    * @param {string} txId
    */
   ApiService.transaction.getById = function(txId){
-    return $http.get(cfg.api+'/channels/mychannel/transactions/'+txId)
+    return $http.get(cfg.api+'/channels/mychannel/transactions/'+txId, {params:{peer:'peer1'}})
       .then(function(response){ return response.data; });
   };
 

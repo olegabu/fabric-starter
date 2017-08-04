@@ -46,12 +46,12 @@ var closeConnections = function(isSuccess) {
 //
 //Attempt to send a request to the orderer with the sendCreateChain method
 //
-var joinChannel = function(channelName, peers, username, org) {
+var joinChannel = function(peers, channelID, username, org) {
 	//logger.debug('\n============ Join Channel ============\n')
 	logger.info(util.format('Calling peers in organization "%s" to join the channel', org));
 
-	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org);
+	var client  = helper.getClientForOrg(org);
+	var channel = helper.getChannelForOrg(channelID, org);
 	var eventhubs = [];
 
 	return helper.getOrgAdmin(org).then((/*admin*/) => {
@@ -92,7 +92,7 @@ var joinChannel = function(channelName, peers, username, org) {
 
 				let handle = setTimeout(function(){
 				    reject('Timeout');
-                }, parseInt(config.eventWaitTime));
+				}, parseInt(config.eventWaitTime));
 
 
 				eh.registerBlockEvent((block) => {
@@ -102,16 +102,15 @@ var joinChannel = function(channelName, peers, username, org) {
 					if (block.data.data.length === 1) {
 						// Config block must only contain one transaction
 						var channel_header = block.data.data[0].payload.header.channel_header;
-						if (channel_header.channel_id === channelName) {
+						if (channel_header.channel_id === channelID) {
 							resolve();
-						}
-						else {
+						} else {
 							reject();
 						}
 					}
 				}, function(err){
-                    reject(err);
-                });
+						reject(err);
+				});
 			});
 			eventPromises.push(txPromise);
 		});
@@ -121,12 +120,12 @@ var joinChannel = function(channelName, peers, username, org) {
 		logger.debug(util.format('Join Channel R E S P O N S E : %j', results));
 		if (results[0] && results[0][0] && results[0][0].response && results[0][0].response.status == 200) {
 
-			logger.info(util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelName));
+			logger.info(util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelID));
 			closeConnections(true);
 
 			let response = {
 				success: true,
-				message: util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelName)
+				message: util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelID)
 			};
 			return response;
 		} else {

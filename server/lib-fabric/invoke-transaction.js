@@ -27,10 +27,10 @@ var peerListener = require('./peer-listener');
 
 
 // Invoke transaction on chaincode on target peers
-var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args, username, org) {
+var invokeChaincode = function(peersUrls, channelID, chaincodeName, fcn, args, username, org) {
 	logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
 	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org);
+	var channel = helper.getChannelForOrg(channelID, org);
 	var targets = helper.newPeers(peersUrls);
 	var tx_id = null;
 
@@ -43,7 +43,7 @@ var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args,
 			chaincodeId: chaincodeName,
 			fcn: fcn,
 			args: args,
-			chainId: channelName,
+			chainId: channelID,
 			txId: tx_id
 		};
 		return channel.sendTransactionProposal(request);
