@@ -33,7 +33,7 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 	var channelConfig = client.extractChannelConfig(envelope);
 
 	//Acting as a client in the given organization provided with "orgName" param
-	return helper.getOrgAdmin(orgName).then((admin) => {
+	return helper.getOrgAdmin(orgName).then((/*admin*/) => {
 		logger.debug(util.format('Successfully acquired admin user for the organization "%s"', orgName));
 		// sign the channel config bytes as "endorsement", this is required by
 		// the orderer's channel creation policy

@@ -36,7 +36,7 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
 	var client = helper.getClientForOrg(org);
 
 	return helper.getOrgAdmin(org)
-        .then((user) => {
+        .then((/*user*/) => {
             // read the config block from the orderer for the channel
             // and initialize the verify MSPs based on the participating
             // organizations
@@ -44,7 +44,7 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
         }, (err) => {
             logger.error('Failed to enroll user \'' + username + '\'. ' + err);
             throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
-        }).then((success) => {
+        }).then((/*success*/) => {
             tx_id = client.newTransactionID();
             // send proposal to endorser
             var request = {
@@ -56,8 +56,9 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
             };
             return channel.sendInstantiateProposal(request);
         }, (err) => {
-            logger.error('Failed to initialize the channel');
-            throw new Error('Failed to initialize the channel');
+            logger.error('Failed to initialize the channel', err);
+            err = err || new Error('Failed to initialize the channel');
+            throw err;
         }).then((results) => {
             var proposalResponses = results[0];
             var proposal = results[1];
@@ -150,10 +151,8 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
                 return 'Failed to order the transaction. Error code: ' + response.status;
             }
         }, (err) => {
-            logger.error('Failed to send instantiate due to error: ' + err.stack ? err
-                .stack : err);
-            return 'Failed to send instantiate due to error: ' + err.stack ? err.stack :
-                err;
+            logger.error('Failed to send instantiate due to error: ' + err.stack ? err.stack : err);
+            return 'Failed to send instantiate due to error: ' + err.stack ? err.stack : err;
         });
 };
 exports.instantiateChaincode = instantiateChaincode;

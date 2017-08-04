@@ -14,13 +14,9 @@
  *  limitations under the License.
  */
 'use strict';
-var path = require('path');
-var fs = require('fs');
 var util = require('util');
-var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('install-chaincode');
-var tx_id = null;
 
 
 //function installChaincode(org) {
@@ -29,10 +25,9 @@ var installChaincode = function(peers, chaincodeName, chaincodePath,
 	logger.debug(
 		'\n============ Install chaincode on organizations ============\n');
 	helper.setupChaincodeDeploy();
-	var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
 
-	return helper.getOrgAdmin(org).then((user) => {
+	return helper.getOrgAdmin(org).then((/*user*/) => {
 		var request = {
 			targets: helper.newPeers(peers),
 			chaincodePath: chaincodePath,
@@ -45,7 +40,7 @@ var installChaincode = function(peers, chaincodeName, chaincodePath,
 		throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
 	}).then((results) => {
 		var proposalResponses = results[0];
-		var proposal = results[1];
+		// var proposal = results[1];
 		var all_good = true;
 		for (var i in proposalResponses) {
 			let one_good = false;
@@ -59,23 +54,16 @@ var installChaincode = function(peers, chaincodeName, chaincodePath,
 			all_good = all_good & one_good; // jshint ignore:line
 		}
 		if (all_good) {
-			logger.info(util.format(
-				'Successfully sent install Proposal and received ProposalResponse: Status - %s',
-				proposalResponses[0].response.status));
-			logger.debug('\nSuccessfully Installed chaincode on organization ' + org +
-				'\n');
+			logger.info(util.format('Successfully sent install Proposal and received ProposalResponse: Status - %s', proposalResponses[0].response.status));
+			logger.debug('\nSuccessfully Installed chaincode on organization ' + org + '\n');
 			return 'Successfully Installed chaincode on organization ' + org;
 		} else {
-			logger.error(
-				'Failed to send install Proposal or receive valid response. Response null or status is not 200. exiting...'
-			);
-			return 'Failed to send install Proposal or receive valid response. Response null or status is not 200. exiting...';
+			logger.error('Failed to send install Proposal or receive valid response. Response null or status is not 200. exiting...');
+			throw new Error('Failed to send install Proposal or receive valid response. Response null or status is not 200');
 		}
 	}, (err) => {
-		logger.error('Failed to send install proposal due to error: ' + err.stack ?
-			err.stack : err);
-		throw new Error('Failed to send install proposal due to error: ' + err.stack ?
-			err.stack : err);
+		logger.error('Failed to send install proposal due to error: ' + err.stack ? err.stack : err);
+		throw new Error('Failed to send install proposal due to error: ' + err.stack ? err.stack : err);
 	});
 };
 exports.installChaincode = installChaincode;

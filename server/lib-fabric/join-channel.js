@@ -54,7 +54,7 @@ var joinChannel = function(channelName, peers, username, org) {
 	var channel = helper.getChannelForOrg(org);
 	var eventhubs = [];
 
-	return helper.getOrgAdmin(org).then((admin) => {
+	return helper.getOrgAdmin(org).then((/*admin*/) => {
 		logger.info(util.format('received member object for admin of the organization "%s": ', org));
 		tx_id = client.newTransactionID();
 		let request = {
@@ -119,8 +119,8 @@ var joinChannel = function(channelName, peers, username, org) {
 		return Promise.all([sendPromise].concat(eventPromises));
 	}).then((results) => {
 		logger.debug(util.format('Join Channel R E S P O N S E : %j', results));
-		if (results[0] && results[0][0] && results[0][0].response && results[0][0]
-			.response.status == 200) {
+		if (results[0] && results[0][0] && results[0][0].response && results[0][0].response.status == 200) {
+
 			logger.info(util.format('Successfully joined peers in organization %s to the channel \'%s\'', org, channelName));
 			closeConnections(true);
 
@@ -135,7 +135,7 @@ var joinChannel = function(channelName, peers, username, org) {
 			throw new Error('Failed to join channel');
 		}
 	}).catch((err) => {
-        err = err || {};
+		err = err || {};
 		logger.error('Failed to join channel due to error: ' + err.stack ? err.stack : err);
 		closeConnections();
 		throw new Error('Failed to join channel due to error: ' + err.stack ? err.stack : err);

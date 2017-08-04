@@ -313,7 +313,7 @@ app.get('/config', function(req, res) {
 app.get('/genesis', function(req, res) {
   logger.debug('================ GET GENESIS BLOCK ======================');
 
-  res._binary = true;
+  res._binary = true; // prevents base64 buffer encoding
   res.promise(
     tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, GENESIS_BLOCK_FILE))
   );
@@ -355,7 +355,7 @@ app.get('/channels/:channelName/config', function(req, res) {
 
   var channelFile = req.params.channelName + '.tx';
 
-  res._binary = true;
+  res._binary = true; // prevents base64 buffer encoding
   res.promise(
     tools.readFilePromise(path.join(__dirname, RELPATH, LEDGER_CONFIG_DIR, channelFile))
   );

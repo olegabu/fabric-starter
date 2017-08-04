@@ -67,12 +67,11 @@ var getBlockByNumber = function(peer, blockNumber, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
 
-	return helper.getRegisteredUsers(username, org).then((member) => {
+	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryBlock(parseInt(blockNumber), target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
+		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ? err.stack : err;
 	}).then((response_payloads) => {
 		if (response_payloads) {
 			//logger.debug(response_payloads);
@@ -83,12 +82,11 @@ var getBlockByNumber = function(peer, blockNumber, username, org) {
 			return 'response_payloads is null';
 		}
 	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
+		throw new Error('Failed to send query due to error: ' + err.stack ? err.stack : err);
 	}).catch((err) => {
 		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
+    throw new Error('Failed to query with error:' + err.stack ? err.stack : err);
 	});
 };
 
@@ -104,8 +102,7 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 		return channel.queryTransaction(trxnID, target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
+		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ? err.stack : err;
 	}).then((response_payloads) => {
 		if (response_payloads) {
 			// logger.debug(response_payloads);
@@ -115,12 +112,11 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 			return 'response_payloads is null';
 		}
 	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
+    throw new Error('Failed to send query due to error: ' + err.stack ? err.stack : err);
 	}).catch((err) => {
 		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
+    throw new Error('Failed to query with error:' + err.stack ? err.stack : err);
 	});
 };
 
@@ -131,12 +127,11 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 var getBlockByHash = function(peer, hash, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
-	return helper.getRegisteredUsers(username, org).then((member) => {
+	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryBlockByHash(Buffer.from(hash, 'base64'), target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
+		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ? err.stack : err;
 	}).then((response_payloads) => {
 		if (response_payloads) {
 			logger.debug(response_payloads);
@@ -146,8 +141,7 @@ var getBlockByHash = function(peer, hash, username, org) {
 			return 'response_payloads is null';
 		}
 	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
 		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
 	}).catch((err) => {
 		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
@@ -163,12 +157,11 @@ var getChainInfo = function(peer, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
 
-	return helper.getRegisteredUsers(username, org).then((member) => {
+	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryInfo(target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
+		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ? err.stack : err;
 	}).then((blockchainInfo) => {
 		if (blockchainInfo) {
 			// FIXME: Save this for testing 'getBlockByHash'  ?
@@ -186,12 +179,11 @@ var getChainInfo = function(peer, username, org) {
 			return 'response_payloads is null';
 		}
 	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
+		throw new Error('Failed to send query due to error: ' + err.stack ? err.stack : err);
 	}).catch((err) => {
 		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
+    throw new Error('Failed to query with error:' + err.stack ? err.stack : err);
 	});
 };
 
@@ -205,7 +197,7 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 	var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
 
-	return helper.getOrgAdmin(org).then((member) => {
+	return helper.getOrgAdmin(org).then((/*member*/) => {
 		if (type === 'installed') {
 			return client.queryInstalledChaincodes(target);
 		} else {
@@ -249,10 +241,9 @@ var getInstalledChaincodes = function(peer, type, username, org) {
  */
 var getChannels = function(peer, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
 
-	return helper.getRegisteredUsers(username, org).then((member) => {
+	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		//channel.setPrimaryPeer(targets[0]);
 		return client.queryChannels(target);
 	}, (err) => {
@@ -273,12 +264,11 @@ var getChannels = function(peer, username, org) {
 			return 'response_payloads is null';
 		}
 	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
+		throw new Error('Failed to send query due to error: ' + err.stack ? err.stack : err);
 	}).catch((err) => {
 		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
+    throw new Error('Failed to query with error:' + err.stack ? err.stack : err);
 	});
 };
 
