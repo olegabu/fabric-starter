@@ -201,7 +201,8 @@ adminPartyApp.post('/channels', function(req, res) {
 adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
     logger.info('<<<<<<<<<<<<<<<<< J O I N  C H A N N E L >>>>>>>>>>>>>>>>>');
     var chaincodeName = req.params.channelName;
-    var peers = req.body.peers;
+    var peersId = req.body.peers || [];
+    var peers   = peersId.map(getPeerHostByCompositeID);
     logger.debug('channelName : ' + chaincodeName);
     logger.debug('peers : ' + peers);
 
@@ -224,10 +225,11 @@ adminPartyApp.post('/channels/:channelName/peers', function(req, res) {
 adminPartyApp.post('/chaincodes', function(req, res) {
     logger.debug('==================== INSTALL CHAINCODE ==================');
 
-    var peers = req.body.peers;
     var chaincodeName = req.body.chaincodeName;
     var chaincodePath = req.body.chaincodePath;
     var chaincodeVersion = req.body.chaincodeVersion;
+    var peersId = req.body.peers || [];
+    var peers   = peersId.map(getPeerHostByCompositeID);
 
     logger.debug('peers : ' + peers); // target peers list
     logger.debug('chaincodeName : ' + chaincodeName);

@@ -61,7 +61,7 @@ curl -s -X POST \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json" \
   -d '{
-	"peers": ["peer0.org1.example.com:7051","peer1.org1.example.com:7051"]
+	"peers": ["org1/peer2","org1/peer1"]
 }'
 echo
 echo
@@ -73,7 +73,7 @@ curl -s -X POST \
   -H "authorization: Bearer $ORG2_TOKEN" \
   -H "content-type: application/json" \
   -d '{
-  "peers": ["peer0.org2.example.com:7051","peer1.org2.example.com:7051"]
+  "peers": ["org2/peer2","org2/peer1"]
 }'
 echo
 echo
@@ -86,7 +86,7 @@ curl -s -X POST \
   -H "authorization: Bearer $ORG1_TOKEN" \
   -H "content-type: application/json" \
   -d '{
-  "peers": ["peer0.org1.example.com:7051","peer1.org1.example.com:7051"],
+  "peers": ["org1/peer2","org1/peer1"],
 	"chaincodeName":"mycc",
 	"chaincodePath":"github.com/example_cc",
 	"chaincodeVersion":"v0"
@@ -102,7 +102,7 @@ curl -s -X POST \
   -H "authorization: Bearer $ORG2_TOKEN" \
   -H "content-type: application/json" \
   -d '{
-  "peers": ["peer0.org2.example.com:7051","peer1.org2.example.com:7051"],
+  "peers": ["org2/peer2","org2/peer1"],
 	"chaincodeName":"mycc",
 	"chaincodePath":"github.com/example_cc",
 	"chaincodeVersion":"v0"
