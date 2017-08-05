@@ -8,7 +8,7 @@
 DOMAIN=nsd.ru
 ORG1=nsd
 ORG2=issuer
-CHANNEL_NAME=mychannel
+CHANNEL_NAME="$ORG1-$ORG2"
 
 CHAINCODE_NAME=mycc
 CHAINCODE_PATH=chaincode_example02
