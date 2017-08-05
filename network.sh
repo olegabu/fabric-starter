@@ -8,7 +8,11 @@
 DOMAIN=nsd.ru
 ORG1=nsd
 ORG2=issuer
-CHANNEL_NAME=nsdissuer
+CHANNEL_NAME=mychannel
+
+CHAINCODE_NAME=mycc
+CHAINCODE_PATH=chaincode_example02
+CHAINCODE_INIT='{"Args":["init","a","100","b","200"]}'
 
 CLI_TIMEOUT=10000
 COMPOSE_FILE=ledger/docker-compose.yaml
@@ -93,19 +97,68 @@ function generateArtifacts() {
     chown -R 1000:1000 artifacts/
 }
 
+function createChannel () {
+    info "creating channel $CHANNEL_NAME by $ORG1"
+
+    docker-compose --file ${COMPOSE_FILE} run --rm "cli.$ORG1.$DOMAIN" bash -c "peer channel create -o orderer.$DOMAIN:7050 -c $CHANNEL_NAME -f /etc/hyperledger/artifacts/channel/$CHANNEL_NAME.tx --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+}
+
+function joinChannel() {
+    ORG=$1
+    info "joining channel $CHANNEL_NAME by $ORG"
+
+    docker-compose --file ${COMPOSE_FILE} run --rm "cli.$ORG.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer channel join -b $CHANNEL_NAME.block      && CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer channel join -b $CHANNEL_NAME.block"
+}
+
+function instantiateChaincode () {
+    ORG=$1
+    N=$2
+    I=$3
+    info "instantiating chaincode $N on $CHANNEL_NAME by $ORG with $I"
+
+    docker-compose --file ${COMPOSE_FILE} run --rm "cli.$ORG.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $N -v 1.0 -c '$I' -o orderer.$DOMAIN:7050 -C $CHANNEL_NAME --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+}
+
+function installChaincode() {
+    ORG=$1
+    N=$2
+    P=$3
+    info "installing chaincode $N to peers of $ORG from $P"
+
+    docker-compose --file ${COMPOSE_FILE} run --rm "cli.$ORG.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install -n $N -v 1.0 -p $P      && CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer chaincode install -n $N -v 1.0 -p $P"
+}
+
 function networkUp () {
   # generate artifacts if they don't exist
-#  if [ ! -d "artifacts/crypto-config" ]; then
-#    generateArtifacts
-#  fi
+  if [ ! -d "artifacts/crypto-config" ]; then
+    generateArtifacts
+  fi
+
   TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${COMPOSE_FILE} up -d 2>&1
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Unable to start network"
-    sleep 5
     logs
     exit 1
   fi
+
+  #sleep 5
+  createChannel
+  #sleep 5
+  joinChannel ${ORG1}
+  joinChannel ${ORG2}
+  installChaincode ${ORG1} ${CHAINCODE_NAME} ${CHAINCODE_PATH}
+  installChaincode ${ORG2} ${CHAINCODE_NAME} ${CHAINCODE_PATH}
+  #sleep 5
+  instantiateChaincode ${ORG1} ${CHAINCODE_NAME} ${CHAINCODE_INIT}
   logs
+}
+
+function info() {
+    #figlet $1
+    echo "**************************************************************************************"
+    echo "$1"
+    echo "**************************************************************************************"
+    sleep 2
 }
 
 function logs () {
@@ -173,6 +226,14 @@ elif [ "${MODE}" == "restart" ]; then
   networkUp
 elif [ "${MODE}" == "logs" ]; then
   logs
+elif [ "${MODE}" == "channel" ]; then
+  createChannel
+elif [ "${MODE}" == "join" ]; then
+  joinChannel ${ORG1}
+elif [ "${MODE}" == "install" ]; then
+  installChaincode ${ORG1} ${CHAINCODE_NAME} ${CHAINCODE_PATH}
+elif [ "${MODE}" == "instantiate" ]; then
+  instantiateChaincode ${ORG1} ${CHAINCODE_NAME} ${CHAINCODE_INIT}
 else
   printHelp
   exit 1
