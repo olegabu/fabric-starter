@@ -7,6 +7,8 @@ function InfoController(ChannelService, ConfigLoader) {
 
   var ctl = this;
 
+  var channelID = 'mychannel';
+
   ctl.channels = [];
   ctl.chaincodes = [];
   ctl.blockInfo = null;// {};
@@ -46,7 +48,7 @@ function InfoController(ChannelService, ConfigLoader) {
   ctl.getTransaction = function(){
     if(!ctl.blockInfo) return null;
     var txId = ctl.blockInfo.data.data[0].payload.header.channel_header.tx_id;
-    return ChannelService.getTransactionById(txId).then(function(transaction){
+    return ChannelService.getTransactionById(channelID, txId).then(function(transaction){
       ctl.transaction = transaction;
 
       try{

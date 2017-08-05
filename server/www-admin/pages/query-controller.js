@@ -61,7 +61,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
 
     return ChannelService.invoke(channel.channel_id, cc.name, peers, fcn, args)
       .then(function(data){
-        return ChannelService.getTransactionById(data.transaction);
+        return ChannelService.getTransactionById(channel.channel_id, data.transaction);
       })
       .then(function(transaction){
         ctl.transaction = transaction;
