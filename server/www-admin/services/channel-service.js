@@ -24,9 +24,9 @@ function ChannelService(ApiService, $q) {
 
 
   /**
-   * @param {string} blockHash
+   *
    */
-  ChannelService.getLastBlock = function(channelId, blockHash) {
+  ChannelService.getLastBlock = function(channelId) {
     return ApiService.channels.get(channelId)
       .then(function(currentBlockHash){
         if(!currentBlockHash){
@@ -36,11 +36,11 @@ function ChannelService(ApiService, $q) {
       });
   };
 
-  ChannelService.getTransactionById = function(txId){
+  ChannelService.getTransactionById = function(channelID, txId){
     if(!txId){
       return $q.resolve(null);
     }
-    return ApiService.transaction.getById(txId);
+    return ApiService.transaction.getById(channelID, txId);
   };
 
   /**
