@@ -3,11 +3,9 @@
  * @classdesc
  * @ngInject
  */
-function InfoController(ChannelService, ConfigLoader) {
+function InfoController(ChannelService, ConfigLoader, $scope) {
 
   var ctl = this;
-
-  var channelID = 'mychannel';
 
   ctl.channels = [];
   ctl.chaincodes = [];
@@ -33,19 +31,26 @@ function InfoController(ChannelService, ConfigLoader) {
   };
 
   ctl.getChaincodes = function(){
+    ctl.chaincodes = null;
     return ChannelService.listChaincodes().then(function(dataList){
       ctl.chaincodes = dataList;
     });
   };
 
   ctl.getLastBlock = function(channelId){
+    ctl.blockInfo = null;
+    if(!channelId) return null;
     return ChannelService.getLastBlock(channelId).then(function(blockInfo){
       ctl.blockInfo = blockInfo;
     });
   };
 
 
-  ctl.getTransaction = function(){
+  ctl.getTransaction = function(channelID){
+
+    ctl.transaction = null;
+    ctl.result = null;
+
     if(!ctl.blockInfo) return null;
     var txId = ctl.blockInfo.data.data[0].payload.header.channel_header.tx_id;
     return ChannelService.getTransactionById(channelID, txId).then(function(transaction){
@@ -71,19 +76,18 @@ function InfoController(ChannelService, ConfigLoader) {
   };
 
 
-  ctl.getChannels()
-    .then(function(){
-      return ctl.getChaincodes();
-    }).then(function(){
-      // TODO: choose channel
-      var channelId = ctl.channels[0] ? ctl.channels[0].channel_id : null; // 'mychannel';
-      if(!channelId){
-        return false;
-      }
-      return ctl.getLastBlock(channelId);
-    }).then(function(){
-      return ctl.getTransaction();
-    });
+  $scope.$watch('selectedChannel', function(selectedChannel){
+    var channelId = selectedChannel ? selectedChannel.channel_id : null;
+    return ctl.getChaincodes(/* TODO: selectedChannel */)
+      .then(function(){
+        return ctl.getLastBlock(channelId)
+      })
+      .then(function(){
+        return ctl.getTransaction(channelId);
+      });
+  })
+
+  ctl.getChannels();
 }
 
 angular.module('nsd.controller.info', ['nsd.service.channel'])

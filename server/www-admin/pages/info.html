@@ -17,6 +17,12 @@
 </ul>
 <p>Total: {{ctl.channels.length||0}}</p>
 
+<!-- channel selector -->
+ <div class="form-group">
+  <label>Channel</label>
+  <select ng-model="selectedChannel" material-select watch ng-options="o.channel_id for o in ctl.channels" placeholder="Channel ID" required>
+  </select>
+</div>
 
 
 <h2>Chaincodes</h2>
@@ -26,46 +32,41 @@
 </ul>
 <p>Total: {{ctl.chaincodes.length||0}}</p>
 
+<div ng-show="selectedChannel">
 
-<h2>Last block</h2>
-<json-formatter open="1" json="ctl.blockInfo"></json-formatter>
+  <h2>Last block</h2>
+  <json-formatter open="1" json="ctl.blockInfo"></json-formatter>
 
 
-
-
-<h2>Last transaction</h2>
-<div class="row">
-  <div class="col s12">
-    <ul class="tabs">
-      <li class="tab col s3"><a class="active" href="#tab-info">Info</a></li>
-      <li class="tab col s3"><a href="#tab-json">Json</a></li>
-      <li class="tab col s3"><a href="#tab-result">Result</a></li>
-    </ul>
-  </div>
-  <div id="tab-info" class="col s12">
-
-    <p ng-if="!ctl.transaction.transactionEnvelope"><i>No transaction</i></p>
-
-    <certificate title="Transaction creator" data="ctl.transaction.transactionEnvelope.payload.data.actions[0].header.creator.IdBytes"></certificate>
-
-    <div ng-repeat="e in ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.endorsements">
-      <certificate title="Endorser" data="e.endorser.IdBytes"></certificate>
-      <!-- <json-formatter open="1" json="e.endorser"></json-formatter> -->
+  <h2>Last transaction</h2>
+  <div class="row">
+    <div class="col s12">
+      <ul class="tabs" tabs>
+        <li class="tab col s3"><a class="active" href="#tab-info">Info</a></li>
+        <li class="tab col s3"><a href="#tab-json">Json</a></li>
+        <li class="tab col s3"><a href="#tab-result">Result</a></li>
+      </ul>
     </div>
+    <div id="tab-info" class="col s12">
 
-    <!-- ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[].rwset.writes[](key|value|is_delete) -->
+      <p ng-if="!ctl.transaction.transactionEnvelope"><i>No transaction</i></p>
 
-  </div>
-  <div id="tab-json" class="col s12">
-    <json-formatter open="1" json="ctl.transaction"></json-formatter>
-  </div>
-  <div id="tab-result" class="col s12">    
-    <!-- <json-formatter open="1" json="ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset"></json-formatter> -->
-    <json-formatter open="2" json="ctl.result"></json-formatter>
+      <certificate title="Transaction creator" data="ctl.transaction.transactionEnvelope.payload.data.actions[0].header.creator.IdBytes"></certificate>
+
+      <div ng-repeat="e in ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.endorsements">
+        <certificate title="Endorser" data="e.endorser.IdBytes"></certificate>
+        <!-- <json-formatter open="1" json="e.endorser"></json-formatter> -->
+      </div>
+
+      <!-- ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[].rwset.writes[](key|value|is_delete) -->
+
+    </div>
+    <div id="tab-json" class="col s12">
+      <json-formatter open="1" json="ctl.transaction"></json-formatter>
+    </div>
+    <div id="tab-result" class="col s12">    
+      <!-- <json-formatter open="1" json="ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset"></json-formatter> -->
+      <json-formatter open="2" json="ctl.result"></json-formatter>
+    </div>
   </div>
 </div>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('ul.tabs').tabs();
-  });
-</script>

@@ -95,7 +95,7 @@ angular.module('nsd.app',[
 
   // https://github.com/angular-ui/ui-router/wiki#state-change-events
   $rootScope.$on('$stateChangeStart',  function(event, toState, toParams, fromState, fromParams, options){
-    console.log('$stateChangeStart', event, toState, toParams);
+    // console.log('$stateChangeStart', event, toState, toParams);
 
     // check access
     var isAllowed = UserService.canAccess(toState);
