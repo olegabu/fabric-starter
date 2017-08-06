@@ -1,8 +1,19 @@
 <div ng-show="data">
-  <h2>{{::title||'Certificate'}}</h2>
+  <h2 ng-hide="title=='false'">{{::title||'Certificate'}}</h2>
+  <!-- <small><i>{{certInfo.algorithm.oid.c || certInfo.algorithm.value}}</i></small> -->
+  
+  <h6>Owner</h6>
   <ul>
-    <li ng-repeat="oid in oids">
-      <b>{{::oid.key.oid.d}}</b> {{::oid.value.value}}
+    <li ng-repeat="prop in certInfo.fields">
+      <b>{{::prop.key.oid.d||prop.key.value}}</b> {{::prop.val.value}}
     </li>
   </ul>
+
+  <h6>Signed by</h6>
+  <ul>
+    <li ng-repeat="prop in certInfo.authority">
+      <b>{{::prop.key.oid.d||prop.key.value}}</b> {{::prop.val.value}}
+    </li>
+  </ul>
+
 </div>

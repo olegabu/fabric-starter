@@ -106,7 +106,7 @@ angular.module('nsd.app',[
       isAllowed = true;
     }
 
-    console.log('$stateChangeStart access: authorized - %s, allowed - %s, login - %s', UserService.isAuthorized(), isAllowed, isLoginState);
+    // console.log('$stateChangeStart access: authorized - %s, allowed - %s, login - %s', UserService.isAuthorized(), isAllowed, isLoginState);
     // prevent navigation to forbidden pages
     if ( !UserService.isAuthorized() && !isAllowed && !isLoginState){
       event.preventDefault(); // transitionTo() promise will be rejected with a 'transition prevented' error
