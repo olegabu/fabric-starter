@@ -1,0 +1,37 @@
+{
+  "name": "fabric-rest",
+  "version": "1.0.0-snapshot",
+  "description": "API server for Hyperledger Fabric 1.0",
+  "main": "app/index.js",
+  "keywords": [
+    "fabric-client sample app",
+    "balance-transfer node sample",
+    "v1.0 fabric nodesdk sample"
+  ],
+  "engines": {
+    "node": ">=6.9.5",
+    "npm": ">=3.10.10"
+  },
+  "scripts": {
+    "start": "node index",
+    "dev"   :"CONFIG_FILE=\"../artifacts-dev/network-config.json\" npm -s start",
+    "preset":"CONFIG_FILE=\"../artifacts-preset/network-config-local.json\" npm -s start",
+    "test":"mocha"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.3",
+    "express": "^4.15.2",
+    "express-bearer-token": "^2.1.0",
+    "express-jwt": "^5.1.0",
+    "express-session": "^1.15.2",
+    "fabric-ca-client": ">=1.0.0-rc1 <1.0.0-rc1.10",
+    "fabric-client": ">=1.0.0-rc1 <1.0.0-rc1.10",
+    "fs-extra": "^2.0.0",
+    "jsonwebtoken": "^7.3.0",
+    "log4js": "^0.6.38",
+    "socket.io": "^2.0.3"
+  }
+}
