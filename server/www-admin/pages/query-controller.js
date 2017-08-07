@@ -65,6 +65,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
       })
       .then(function(transaction){
         ctl.transaction = transaction;
+        ctl.result = getTxResult(transaction);
       })
       .catch(function(response){
         ctl.error = response.data || response;
@@ -72,6 +73,31 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
       .finally(function(){
         ctl.invokeInProgress = false;
       });
+  }
+
+  function getTxResult(transaction){
+    var result = null;
+    try{
+      result = {};
+      // TODO: loop trough actions
+      var ns_rwset = transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset;
+      ns_rwset = ns_rwset.filter(function(action){return action.namespace != "lscc"}); // filter system chaincode
+      ns_rwset.forEach(function(action){
+        result[action.namespace] = action.rwset.writes.reduce(function(result, element){
+          result[element.key] = element.is_delete ? null : element.value;
+          return result;
+        }, {});
+
+      });
+    }catch(e){
+      console.info(e);
+      result = null
+    }
+    return result;
+  }
+
+  function getQTxResult(transaction){
+    return transaction;
   }
 
 
@@ -89,6 +115,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
     return ChannelService.query(channel.channel_id, cc.name, peer, fcn, args)
       .then(function(transaction){
         ctl.transaction = transaction;
+        ctl.result = getQTxResult(transaction);
       })
       .catch(function(response){
         ctl.error = response.data || response;
