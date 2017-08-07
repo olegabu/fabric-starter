@@ -32,7 +32,7 @@ angular.module('nsd.directive.certificate', [])
 
           scope.decoded = decoded;
           scope.oids = oids;
-          scope.certInfo = certInfo;
+          scope.certInfo = angular.copy(certInfo);
         }
 
 
@@ -83,7 +83,7 @@ angular.module('nsd.directive.certificate', [])
               return {
                 key : key,
                 val : val,
-                _original:item 
+                _original:item
               }
             }
 
