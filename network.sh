@@ -81,6 +81,10 @@ function generateArtifacts() {
     docker-compose --file ${COMPOSE_FILE} run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$ORG1.yaml"
     docker-compose --file ${COMPOSE_FILE} run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$ORG2.yaml"
 
+    echo "Change cryptomaterial ownership"
+    GID=$(id -g)
+    docker-compose --file ${COMPOSE_FILE} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
+
     echo "Generating orderer genesis block and channel config transaction with configtxgen"
     mkdir -p artifacts/channel
     docker-compose --file ${COMPOSE_FILE} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel/genesis.block
@@ -92,9 +96,6 @@ function generateArtifacts() {
     [[ -z  ${CA1_PRIVATE_KEY}  ]] && echo "empty CA1 private key" && exit 1
     [[ -z  ${CA2_PRIVATE_KEY}  ]] && echo "empty CA2 private key" && exit 1
     sed -i -e "s/CA1_PRIVATE_KEY/${CA1_PRIVATE_KEY}/g" -e "s/CA2_PRIVATE_KEY/${CA2_PRIVATE_KEY}/g" ${COMPOSE_FILE}
-
-    # docker generates files to mapped volumes as root, change ownership
-    chown -R 1000:1000 artifacts/
 }
 
 function createChannel () {
