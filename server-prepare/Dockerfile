@@ -7,7 +7,7 @@ LABEL com.altoros.description="Fabric 1.0 rest api"
 
 # Create app directory
 WORKDIR /usr/src/app
-COPY ../server/package.json .
+COPY . .
 
 # RUN apk --help
 # install node-gyp dependancies (for alpine only)
