@@ -47,5 +47,22 @@
 				"cert": "channel/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
 			}
 		}
+	},
+
+	"account-config":{
+		"org1":{
+			"dep":"JP3946600008",
+			"acc":{
+				"901" :["01", "02"],
+				"903" :["03", "04"]
+			}
+		},
+		"org2":{
+			"dep":"CA9861913023",
+			"acc":{
+				"902" :["05", "06"],
+				"904" :["07", "08"]
+			}
+		}
 	}
 }

@@ -22,6 +22,7 @@ var jwt   = require('jsonwebtoken');
 var tools = require('../lib/tools');
 var hfc   = require('../lib-fabric/hfc');
 var networkConfig = hfc.getConfigSetting('network-config');
+var accountConfig = hfc.getConfigSetting('account-config');
 
 var helper        = require('../lib-fabric/helper.js');
 var createChannel = require('../lib-fabric/create-channel.js');
@@ -303,7 +304,8 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 app.get('/config', function(req, res) {
     res.send({
         org: ORG,
-        network: networkConfig
+        network: networkConfig,
+        account: accountConfig[ORG]
     });
 });
 
