@@ -22,7 +22,6 @@ var jwt   = require('jsonwebtoken');
 var tools = require('../lib/tools');
 var hfc   = require('../lib-fabric/hfc');
 var networkConfig = hfc.getConfigSetting('network-config');
-var accountConfig = hfc.getConfigSetting('account-config');
 
 var helper        = require('../lib-fabric/helper.js');
 var createChannel = require('../lib-fabric/create-channel.js');
@@ -302,11 +301,15 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 
 // get public config
 app.get('/config', function(req, res) {
-    res.send({
-        org: ORG,
-        network: networkConfig,
-        account: accountConfig[ORG]
-    });
+    var configFile = hfc.getConfigSetting('config-file');
+
+    res.promise(
+        tools.readFilePromise(configFile).then(function(fileData){
+            var data = JSON.parse(fileData)
+            data.org = ORG;
+            return data;
+        })
+    );
 });
 
 //Query hyperledger genesis block

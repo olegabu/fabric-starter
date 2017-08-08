@@ -49,22 +49,5 @@
 				"cert": "../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/users/Admin@ORG2.DOMAIN/msp/signcerts"
 			}
 		}
-	},
-
-	"account-config":{
-		"ORG1":{
-			"dep":"JP3946600008",
-			"acc":{
-				"901" :["01", "02"],
-				"903" :["03", "04"]
-			}
-		},
-		"ORG2":{
-			"dep":"CA9861913023",
-			"acc":{
-				"902" :["05", "06"],
-				"904" :["07", "08"]
-			}
-		}
 	}
 }

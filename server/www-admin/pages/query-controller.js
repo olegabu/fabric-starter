@@ -14,11 +14,10 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
   ctl.invokeInProgress = false;
 
   // init
-  var netConfig = ConfigLoader.get().network;
-  var orgs = netConfig.getOrgs();
+  var orgs = ConfigLoader.getOrgs();
   var allPeers = []
   orgs.forEach(function(org){
-    var peers = netConfig.getPeers(org.id);
+    var peers = ConfigLoader.getPeers(org.id);
     allPeers.push.apply(allPeers, peers);
   });
   // allPeers = JSON.parse(JSON.stringify(allPeers));

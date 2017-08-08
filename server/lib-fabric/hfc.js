@@ -21,7 +21,6 @@ if(!path.isAbsolute(configFile)){
 }
 var configDir = path.dirname(configFile);
 
-
 logger.info('Use network config file: %s', configFile);
 fs.accessSync(configFile, fs.constants.R_OK);
 
@@ -29,7 +28,8 @@ fs.accessSync(configFile, fs.constants.R_OK);
 var hfc = require('fabric-client');
 hfc.setLogger(logger);
 hfc.addConfigFile(configFile);
-hfc.setConfigSetting('config-dir', configDir);
+hfc.setConfigSetting('config-dir',  configDir);
+hfc.setConfigSetting('config-file', configFile);
 
 
 // you can always get config:

@@ -13,14 +13,13 @@ function InfoController(ChannelService, ConfigLoader, $scope) {
   ctl.transaction = {};
   ctl.result = {};
 
-  ctl.networkConfig = (ConfigLoader.get()||{}).network;
 
   ctl.getOrgs = function(){
-    return ctl.networkConfig.getOrgs();
+    return ConfigLoader.getOrgs();
   };
 
   ctl.getPeers = function(orgId){
-    return ctl.networkConfig.getPeers(orgId);
+    return ConfigLoader.getPeers(orgId);
   };
 
 

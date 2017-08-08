@@ -73,8 +73,10 @@ var instantiateChaincode = function(channelID, chaincodeName, chaincodeVersion, 
             if (all_good) {
                 logger.info(util.format(
                     'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s", metadata - "%s", endorsement signature: %s',
-                    proposalResponses[0].response.status, proposalResponses[0].response.message,
-                    proposalResponses[0].response.payload, proposalResponses[0].endorsement.signature
+                    proposalResponses[0].response.status,
+                    proposalResponses[0].response.message,
+                    proposalResponses[0].response.payload, // TODO: this made some trash in console
+                    proposalResponses[0].endorsement.signature // TODO: .. as well as this
                 ));
                 var request = {
                     proposalResponses: proposalResponses,

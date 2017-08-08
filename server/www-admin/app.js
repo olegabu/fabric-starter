@@ -247,8 +247,7 @@ angular.module('nsd.app',[
       return _configPromise;
     }
 
-
-    /**
+     /**
      * add getOrgs() to netConfig
      * add getPeers(orgId:string) to netConfig
 
@@ -259,29 +258,46 @@ angular.module('nsd.app',[
      * add host to peer info
      */
     function _extendConfig(){
-      var netConfig = _config.network;
-      netConfig.getOrgs = function(){
-        var keys = Object.keys(netConfig).filter(function(key){ return key != 'orderer'});
+      var netConfig = _config['network-config'];
 
-        keys.forEach(function(key){
-          netConfig[key].id = key;
+      Object.keys(netConfig)
+        .filter(function(key){ return key != 'orderer' })
+        .forEach(function(orgId){
+
+          // add org.id
+          netConfig[orgId].id = orgId;
+
+          var orgConfig = netConfig[orgId] || {};
+
+          // add peers stuff
+          Object.keys(orgConfig)
+            .filter(function(key){ return key.startsWith('peer') })
+            .forEach(function(peerId){
+              orgConfig[peerId].id   = peerId;
+              orgConfig[peerId].host = getHost(orgConfig[peerId].requests);
+              orgConfig[peerId].org  = orgId;
+            });
+
         });
+    }
 
-        return keys.map(function(key){ return netConfig[key]; });
-      };
 
-      netConfig.getPeers = function(orgId){
-        var orgConfig = _config.network[orgId]||{};
-        var keys = Object.keys(orgConfig).filter(function(key){ return key.startsWith('peer')});
 
-        keys.forEach(function(key){
-          orgConfig[key].id = key;
-          orgConfig[key].host = getHost(orgConfig[key].requests);
-          orgConfig[key].org = orgId;
-        });
+    function getPeers(orgId){
+        var netConfig = _config['network-config'];
+        var orgConfig = netConfig[orgId]||{};
 
-        return keys.map(function(key){ return orgConfig[key]; });
-      };
+        return Object.keys(orgConfig)
+          .filter(function(key){ return key.startsWith('peer')})
+          .map(function(key){ return orgConfig[key]; });
+    }
+
+    function getOrgs(){
+      var netConfig = _config['network-config'];
+
+      return Object.keys(netConfig)
+        .filter(function(key){ return key != 'orderer'})
+        .map(function(key){ return netConfig[key]; });
     }
 
     /**
@@ -295,6 +311,9 @@ angular.module('nsd.app',[
 
     return {
       load:_resolveConfig,
+      getOrgs: getOrgs,
+      getPeers: getPeers,
+
       get:function(){ return _config; }
     };
 })

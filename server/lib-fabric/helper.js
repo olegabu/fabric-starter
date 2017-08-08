@@ -282,7 +282,8 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 				return user;
 			} else {
 				let caClient = caClients[userOrg];
-				return getAdminUser(userOrg).then(function(adminUserObj) {
+				return getAdminUser(userOrg)
+				.then(function(adminUserObj) {
 					member = adminUserObj;
 					return caClient.register({
 						enrollmentID: username,
