@@ -22,14 +22,19 @@ if(!path.isAbsolute(configFile)){
 var configDir = path.dirname(configFile);
 
 logger.info('Use network config file: %s', configFile);
-fs.accessSync(configFile, fs.constants.R_OK);
+
+// fs.accessSync(configFile, fs.constants.R_OK);
+var config = JSON.parse(fs.readFileSync(configFile).toString());
+
 
 ///////
 var hfc = require('fabric-client');
 hfc.setLogger(logger);
-hfc.addConfigFile(configFile);
+hfc.addConfigFile(configFile);  // this config needed for lib-fabric
+hfc.setConfigSetting('config', config);  // this config needed for client
 hfc.setConfigSetting('config-dir',  configDir);
 hfc.setConfigSetting('config-file', configFile);
+
 
 
 // you can always get config:

@@ -17,6 +17,7 @@ var expressJWT      = require('express-jwt');
 var cors            = require('cors');
 var bearerToken     = require('express-bearer-token');
 var expressPromise  = require('../lib/express-promise');
+var expressEnv      = require('../lib/express-env-middleware');
 
 var jwt   = require('jsonwebtoken');
 var tools = require('../lib/tools');
@@ -45,6 +46,7 @@ logger.info('Org name  : ' + ORG);
 if(!ORG){
     throw new Error('ORG must be set in environment');
 }
+
 
 var app = express(); // root app
 app.use(expressPromise());
@@ -84,7 +86,7 @@ if(config.admin_party) {
 // set secret variable
 app.set('secret', config.jwt_secret);
 
-var pathExcluded = ['/config', '/socket.io', '/genesis'];
+var pathExcluded = ['/config', '/config.js', '/socket.io', '/genesis'];
 app.use(expressJWT({
     secret: config.jwt_secret
 }).unless({
@@ -300,17 +302,14 @@ adminPartyApp.post('/channels/:channelName/chaincodes', function(req, res) {
 ///////////////////////// REGULAR REST ENDPOINTS START HERE ///////////////////////////
 
 // get public config
-app.get('/config', function(req, res) {
-    var configFile = hfc.getConfigSetting('config-file');
+var clientConfig = hfc.getConfigSetting('config');
+clientConfig.org = ORG;
 
-    res.promise(
-        tools.readFilePromise(configFile).then(function(fileData){
-            var data = JSON.parse(fileData)
-            data.org = ORG;
-            return data;
-        })
-    );
+app.get('/config.js', expressEnv('__config', clientConfig));
+app.get('/config', function(req, res) {
+    res.send(clientConfig);
 });
+
 
 //Query hyperledger genesis block
 app.get('/genesis', function(req, res) {
