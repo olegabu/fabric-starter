@@ -11,11 +11,16 @@
 </div>
 
 
-<h2>Channels</h2>
+<h2>Uploaded Chaincodes ({{ctl.chaincodes.length||0}})</h2>
+<ul>
+  <li ng-repeat="ch in ctl.chaincodes">{{::ch.name}} ({{::ch.version}})</li>
+</ul>
+
+
+<h2>Channels ({{ctl.channels.length||0}})</h2>
 <ul>
   <li ng-repeat="ch in ctl.channels">{{::ch.channel_id}}</li>
 </ul>
-<p>Total: {{ctl.channels.length||0}}</p>
 
 <!-- channel selector -->
  <div class="form-group">
@@ -24,15 +29,13 @@
   </select>
 </div>
 
-
-<h2>Chaincodes</h2>
-
-<ul>
-  <li ng-repeat="ch in ctl.chaincodes">{{::ch.name}}</li>
-</ul>
-<p>Total: {{ctl.chaincodes.length||0}}</p>
-
 <div ng-show="selectedChannel">
+
+
+  <h2>Instatiated Chaincodes ({{ctl.channelChaincodes.length||0}})</h2>
+  <ul>
+    <li ng-repeat="ch in ctl.channelChaincodes">{{::ch.name}} ({{::ch.version}})</li>
+  </ul>
 
   <h2>Last block</h2>
   <json-formatter open="1" json="ctl.blockInfo"></json-formatter>
@@ -64,7 +67,7 @@
     <div id="tab-json" class="col s12">
       <json-formatter open="1" json="ctl.transaction"></json-formatter>
     </div>
-    <div id="tab-result" class="col s12">    
+    <div id="tab-result" class="col s12">
       <!-- <json-formatter open="1" json="ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset"></json-formatter> -->
       <json-formatter open="2" json="ctl.result"></json-formatter>
     </div>

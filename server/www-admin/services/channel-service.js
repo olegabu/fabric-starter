@@ -16,9 +16,17 @@ function ChannelService(ApiService, $q) {
 
 
   /**
+   * list installed chaincodes. it's exist outside of any channel on the peer
    */
   ChannelService.listChaincodes = function() {
     return ApiService.chaincodes.list();
+  };
+
+  /**
+   * list intantiated (ready) chaincodes
+   */
+  ChannelService.listChannelChaincodes = function(channelID) {
+    return ApiService.chaincodes.list({type:'ready', channel:channelID});
   };
 
 

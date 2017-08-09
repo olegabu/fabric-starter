@@ -120,8 +120,10 @@ function ApiService($log, $http, env) {
   /**
    * Queries the names of all the channels that a peer has joined.
    */
-  ApiService.chaincodes.list = function(){
-    return $http.get(cfg.api+'/chaincodes', {params:{peer:'peer1'}})
+  ApiService.chaincodes.list = function(params){
+    params = params || {};
+    params.peer = params.peer || 'peer1';
+    return $http.get(cfg.api+'/chaincodes', {params:params})
       .then(function(response){ return response.data.chaincodes; });
   };
 

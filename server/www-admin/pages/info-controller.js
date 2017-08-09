@@ -36,6 +36,17 @@ function InfoController(ChannelService, ConfigLoader, $scope) {
     });
   };
 
+  ctl.getChannelChaincodes = function(channelID){
+    ctl.channelChaincodes = null;
+    return ChannelService.listChannelChaincodes(channelID).then(function(dataList){
+      ctl.channelChaincodes = dataList;
+    });
+  };
+
+
+
+
+
   ctl.getLastBlock = function(channelId){
     ctl.blockInfo = null;
     if(!channelId) return null;
@@ -83,16 +94,20 @@ function InfoController(ChannelService, ConfigLoader, $scope) {
 
   $scope.$watch('selectedChannel', function(selectedChannel){
     var channelId = selectedChannel ? selectedChannel.channel_id : null;
-    return ctl.getChaincodes(/* TODO: selectedChannel */)
-      .then(function(){
-        return ctl.getLastBlock(channelId)
-      })
-      .then(function(){
-        return ctl.getTransaction(channelId);
-      });
+    if(!channelId) return;
+      return ctl.getLastBlock(channelId)
+        .then(function(){
+          return ctl.getTransaction(channelId);
+        })
+        .then(function(){
+          return ctl.getChannelChaincodes(channelId);
+        });
   })
 
-  ctl.getChannels();
+  ctl.getChannels()
+    .then(function(){
+      return ctl.getChaincodes()
+    });
 }
 
 angular.module('nsd.controller.info', ['nsd.service.channel'])
