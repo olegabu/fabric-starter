@@ -5,7 +5,7 @@
  * @class QueryController
  * @ngInject
  */
-function QueryController($scope, ChannelService, ConfigLoader, $log) {
+function QueryController($scope, ChannelService, ConfigLoader, $log, $q) {
   var ctl = this;
 
   ctl.channels = [];
@@ -38,9 +38,10 @@ function QueryController($scope, ChannelService, ConfigLoader, $log) {
   };
 
   ctl.getChaincodes = function(){
-    $scope.selectedChannel;
-    // TODO:
-    return ChannelService.listChaincodes().then(function(dataList){
+    if(!$scope.selectedChannel){
+      return $q.resolve([]);
+    }
+    return ChannelService.listChannelChaincodes($scope.selectedChannel.channel_id).then(function(dataList){
       ctl.chaincodes = dataList;
     });
   };
