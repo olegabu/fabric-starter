@@ -96,8 +96,8 @@ var invokeChaincode = function(peersUrls, channelID, chaincodeName, fcn, args, u
       let txPromise = new Promise((resolve, reject) => { // jshint ignore:line
         let handle = setTimeout(() => {
           // eh.disconnect();
-          reject();
-        }, 30000);
+          reject('TIMEOUT');
+        }, 30000); // TODO: move to config
 
 
         peerListener.registerTxEvent(transactionID, (tx, code) => {

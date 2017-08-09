@@ -41,11 +41,13 @@ module.exports = function(errorReporter){
  *
  */
 function reportErrorDefault(err, req, res){
+    err = err || {};
     let status = err.status || err.statusCode || 500;
     let message = err.message || err.description || err || 'Unknown error';
     res.status(status).send({ok:false, message:message});
 
     console.error('Request failed: %s %s:', req.method.toUpperCase(), req.url, message );
+    console.error(err);
     if(err.stack){
         console.error(err.stack);
     }
