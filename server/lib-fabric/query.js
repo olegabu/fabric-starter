@@ -283,12 +283,13 @@ var getChannels = function(peer, username, org) {
 				channelNames.push('channel id: ' + response.channels[i].channel_id);
 			}
 			logger.debug(channelNames);
-			return response.channels.map(function(channel){
+			var channels = response.channels.map(function(channel){
 			  return {
           channel_id : channel.channel_id, // deprecated
           name : channel.channel_id
         };
       });
+			return {channels:channels};
 		} else {
 			logger.error('response_payloads is null');
 			return 'response_payloads is null';
