@@ -55,6 +55,27 @@
       .container .text-muted {
         margin: 20px 0;
       }
+      label{
+        cursor: pointer;
+        color: #337ab7;
+        text-decoration: none;
+      }
+      label:hover,
+      label:focus {
+        color: #23527c;
+        text-decoration: underline;
+      }
+
+      .spoiler-toggle{
+        position: absolute;
+        top: -99999px;
+      }
+      [data-spoiler]{
+        display: none;
+      }
+      input[type="checkbox"]:checked + [data-spoiler]{
+        display: initial;
+      }
 
     </style>
   </head>
@@ -75,11 +96,54 @@
         </li>
         <li>Use
           <a href="https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v-read-only" target="_blank">docker volume</a>
-          to mount your app here or just put static files in <code>www</code> folder:
+          to mount your <u>web app</u> here or just put static files in <code>www</code> folder:
           <blockquote>
             <code>docker run -v /path/to/your/app:/usr/src/app/www maxxx1313/fabric-rest</code>
           </blockquote>
         </li>
+
+        <li>Use
+          <a href="https://docs.docker.com/engine/reference/commandline/run/#mount-volume--v-read-only" target="_blank">docker volume</a>
+          to mount your <u>middleware</u> here or just put the files in <code>middleware</code> folder:
+          <blockquote>
+            <code>docker run -v /path/to/your/middleware:/usr/src/app/middleware maxxx1313/fabric-rest</code>
+          </blockquote>
+          <p>
+            The middleware is a function, which should return <a href="http://expressjs.com/en/guide/using-middleware.html" target="_blank">an express middleware</a>.
+          </p>
+          <p>
+            <label for="example1cb">show/hide an example</label>
+          </p>
+
+          <input type="checkbox" name="example1" id="example1cb" class="spoiler-toggle">
+          <div data-spoiler>
+            <h3>Example</h3>
+            <kbd>middleware/sample.js</kbd>
+            <blockquote style="font-size: 95%">
+              <samp>module.exports = function(){
+                <br>&nbsp;&nbsp;return function(req, res, next) {
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;console.log('[%s] %s  %s', new Date().toISOString(), req.method.toUpperCase(), req.url);
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;next();
+                <br>&nbsp;&nbsp;};
+                <br>}
+              </samp>
+            </blockquote>
+
+            <kbd>middleware/map.json</kbd>
+            <blockquote style="font-size: 95%">
+              <samp>{
+                <br>&nbsp;&nbsp;"middleware":[
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;{
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name":"Sample module",
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"file":"./sample.js"
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;}
+                <br>&nbsp;&nbsp;]
+                <br>}
+              </samp>
+            </blockquote>
+          </div>
+        </li>
+
       </ul>
 
 

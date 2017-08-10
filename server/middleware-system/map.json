@@ -1,0 +1,8 @@
+{
+  "middleware":[
+    {
+      "name":"API request Logger",
+      "file":"./logger.js"
+    }
+  ]
+}

@@ -20,6 +20,7 @@ var logger  = log4js.getLogger('Http');
 var express = require('express');
 var SocketServer  = require('socket.io');
 var socketApp     = require('./app/socket-api-app');
+var autoloadMiddleware = require('./lib/express-middleware-autoload');
 
 // config
 const ORG      = process.env.ORG;
@@ -44,10 +45,8 @@ app.use('/web',         webApp);
 app.get('/favicon.ico', webApp.handle.bind(webApp) );
 app.use('/admin',       adminApp);
 
-app.use(function(req, res, next) {
-  logger.debug('[%s] %s  %s', new Date().toISOString(), req.method.toUpperCase(), req.url);
-  next();
-});
+autoloadMiddleware(app, './middleware-system/map.json');
+autoloadMiddleware(app, './middleware/map.json');
 app.use(apiApp);
 
 
