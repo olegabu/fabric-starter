@@ -58,7 +58,12 @@ var queryChaincode = function(peer, channelID, chaincodeName, args, fcn, usernam
 	}).then((response_payloads) => {
 	  // here we got result from all peers if request.targets not set
     // TODO: what we should do with the rest of payloads? compare it?
-    var result = response_payloads[0].toString('utf8');
+    var result = response_payloads[0];
+    if(result instanceof Error){
+      throw result;
+    }
+    // result is Buffer
+    result = result.toString('utf8');
 
     // try to parse it as json
     try{
