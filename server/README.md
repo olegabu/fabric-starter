@@ -10,6 +10,7 @@ Environment
 * `ORG` - organization id. No default value, you have to set it explicitly
 * `CONFIG_FILE` - ledger config file (default is `../artifacts/network-config.json`)
 * `WEB_DIR` - location of web application (default is `www`)
+* `MIDDLEWARE_CONFIG_FILE` - middleware map file (default is `../middleware/map.json`)
 
 
 Launch

@@ -51,19 +51,14 @@ function loadMiddlewares(app, configFile){
     // }
 
     // MOUNT
-
-    if(name){
-      logger.debug('mounting %s => %s', name, file);
-    }else{
-      logger.debug('mounting file %s', file);
-    }
+    logger.debug('mounting:', name||file, name ? '\t=> '+file : '' );
 
     let expressModule = require(file);
     let expressMiddleware = expressModule.apply(expressModule, args);
     if(typeof expressMiddleware == "function"){
       app.use(expressMiddleware);
     }else{
-      logger.debug('not a function: %s', name||file);
+      logger.debug('not a function:', name||file, name ? '\t=> '+file : '' );
     }
   }
 

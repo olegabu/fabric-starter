@@ -26,6 +26,7 @@ var autoloadMiddleware = require('./lib/express-middleware-autoload');
 const ORG      = process.env.ORG;
 const PORT     = process.env.PORT || 4000;
 const WEB_DIR  = process.env.WEB_DIR || 'www';
+const M_C_F    = process.env.MIDDLEWARE_CONFIG_FILE || './middleware/map.json';
 
 var clientEnv = {
   api: process.env.FABRIC_API || ''
@@ -46,7 +47,7 @@ app.get('/favicon.ico', webApp.handle.bind(webApp) );
 app.use('/admin',       adminApp);
 
 autoloadMiddleware(app, './middleware-system/map.json');
-autoloadMiddleware(app, './middleware/map.json');
+autoloadMiddleware(app, M_C_F);
 app.use(apiApp);
 
 
