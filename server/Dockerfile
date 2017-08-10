@@ -1,6 +1,8 @@
 
 FROM maxxx1313/fabric-rest:core
 
+LABEL com.altoros.version="0.6"
+
 # Create app directory
 WORKDIR /usr/src/app
 COPY . .
