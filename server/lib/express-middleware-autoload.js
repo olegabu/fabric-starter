@@ -39,7 +39,7 @@ function loadMiddlewares(app, configFile){
     var name  = moduleInfo.name;
     var mount = moduleInfo.mount;
     var file  = moduleInfo.file;
-    var args  = moduleInfo.args || [];
+    // var args  = moduleInfo.args || [];
 
     // make path relative to config file
     if(!path.isAbsolute(file)){
@@ -54,7 +54,7 @@ function loadMiddlewares(app, configFile){
     logger.debug('mounting:', name||file, name ? '\t=> '+file : '' );
 
     let expressModule = require(file);
-    let expressMiddleware = expressModule.apply(expressModule, args);
+    let expressMiddleware = expressModule.call(expressModule, require);
     if(typeof expressMiddleware == "function"){
       app.use(expressMiddleware);
     }else{

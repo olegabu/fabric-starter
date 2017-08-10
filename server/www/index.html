@@ -120,7 +120,8 @@
             <h3>Example</h3>
             <kbd>middleware/sample.js</kbd>
             <blockquote style="font-size: 95%">
-              <samp>module.exports = function(){
+              <samp>module.exports = function(require){
+                <br>&nbsp;&nbsp;// use 'require' to load server modules
                 <br>&nbsp;&nbsp;return function(req, res, next) {
                 <br>&nbsp;&nbsp;&nbsp;&nbsp;console.log('[%s] %s  %s', new Date().toISOString(), req.method.toUpperCase(), req.url);
                 <br>&nbsp;&nbsp;&nbsp;&nbsp;next();
