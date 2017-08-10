@@ -458,9 +458,6 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {
 
     res.promise(
       query.queryChaincode(peerInfo.peer, channelName, chaincodeName, args, fcn, req.username, ORG)
-        .then(function(result){
-          return {result:result};
-        })
     );
 });
 

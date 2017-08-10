@@ -20,38 +20,53 @@ var logger = helper.getLogger('Query');
 
 
 /**
- *
+ * @param {string} peer - orgPeerID (for example; 'org1/peer1')
+ * @param {string} channelID
+ * @param {string} chaincodeName
+ * @param {string[]} args
+ * @param {string} fcn
+ * @param {string} username
+ * @param {string} org
+ * @returns {Promise}
  */
 var queryChaincode = function(peer, channelID, chaincodeName, args, fcn, username, org) {
 	var channel = helper.getChannelForOrg(channelID, org);
 	var client  = helper.getClientForOrg(org);
+
+  /**
+   * @type {Peer}
+   */
 	var target  = getPeer(peer, org);
 
 	return helper.getRegisteredUsers(username, org).then((/* user */) => {
 		var tx_id = client.newTransactionID();
 		// send query
 		var request = {
-		  // TODO: default - query all peers. it's overhead
-		  // targets: Array<Peer> (optional)
+		  targets: [target],
 			chaincodeId: chaincodeName,
 			txId: tx_id,
 			fcn: fcn,
-			args: args
+			args: args,
+      transientMap: /** @type {map} */ {}
+      // @property {map} transientMap - Optional. <string, byte[]> map that can be used by the chaincode but not
+      // *			                      saved in the ledger, such as cryptographic information for encryption
 		};
-		return channel.queryByChaincode(request, target);
+		return channel.queryByChaincode(request);
 	}, (err) => {
 		logger.info('Failed to get submitter \''+username+'\'');
 		throw err;
 	}).then((response_payloads) => {
 	  // here we got result from all peers if request.targets not set
-    return response_payloads[0].toString('utf8');
+    // TODO: what we should do with the rest of payloads? compare it?
+    var result = response_payloads[0].toString('utf8');
 
-		// if (response_payloads) {
-		// 	for (let i = 0; i < response_payloads.length; i++) {
-		// 		logger.info(args[0]+' now has ' + response_payloads[i].toString('utf8') + ' after the move');
-		// 		return args[0]+' now has ' + response_payloads[i].toString('utf8') + ' after the move';
-		// 	}
-		// }
+    // try to parse it as json
+    try{
+      result = JSON.parse(result);
+    }catch(e){
+      logger.debug("Not a json response. It's ok, not has to be json");
+    }
+    return {result: result};
 	}, (err) => {
 		logger.error('Failed to send query due to error: ' + err.stack ? err.stack : err);
     throw err;
