@@ -50,9 +50,14 @@ function init(io, options){
     lastBlock = block;
     io.emit('chainblock', block);
   });
+  peerListener.eventHub.on('disconnected', function(){ io.emit('status', 'disconnected'); });
+  peerListener.eventHub.on('connecting',   function(){ io.emit('status', 'connecting');   });
+  peerListener.eventHub.on('connected',    function(){ io.emit('status', 'connected');    });
+
   peerListener.listen();
 
   io.on('connection', function(socket){
+    socket.emit('status', peerListener.isConnected() ? 'connected':'disconnected' );
     if(lastBlock){
       socket.emit('chainblock', lastBlock);
     }

@@ -4,21 +4,32 @@ var EventEmitter = require('events');
 var helper = require('./helper.js');
 var logger = helper.getLogger('peer-listener');
 
-
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
 ///////////////////////////////////////////////
 /**
  * @type {EventEmitter}
  */
 const blockEvents = new EventEmitter();
-/**
- * @type {Array<EventHub>}
- */
-var eventhubs = null;
 
 /**
+ * List of peers, available for listening events.
+ * Event listener can change listening peers based on some criteria
  * @type {Array<string>} array of peer url
  */
 var peers = [];
+
+/**
+ * current peer index
+ * @type {number}
+ */
+var index = 0;
+
+/**
+ * Current event hub
+ * @type {EventHub}
+ */
+var eventhub = null;
+
 
 /**
  * @type {string} organisation ID (json key for organisation in  network-config)
@@ -36,7 +47,7 @@ var initPromise = null;
  * Application tries to reconnect in this case. Otherwise it terminates, and that is an indicator of bad configuration.
  * @type {boolean}
  */
-var wasConnectedAtStartup = false;
+var _wasConnectedAtStartup = false;
 
 /**
  * @param {Array<string>} peersUrls
@@ -50,11 +61,23 @@ function init(peersUrls, username, org){
 
   initPromise = helper.getRegisteredUsers(username, org).then((user) => {
     // TODO: print organisation role from certificate?
-    logger.debug(util.format('Authorized as %s@%s\n', user._name, org));
+    logger.debug(util.format('Authorized as %s@%s\n', user._name, orgID));
     return user;
   });
   return initPromise;
 }
+
+/**
+ * @return {string} peer url
+ */
+function rotatePeers(){
+  index++;
+  if(index >= peers.length){
+    index = 0;
+  }
+  return peers[index];
+}
+
 /**
  * listen peer for new blocks
  * channelName?
@@ -62,36 +85,35 @@ function init(peersUrls, username, org){
 function listen(){
   return initPromise.then(function () {
 
-    // set the transaction listener
-    eventhubs = helper.newEventHubs(peers, orgID);
-    for (let i=0, n=eventhubs.length; i<n; i++) {
-      let eh = eventhubs[i];
-      eh._ep._request_timeout = 5000; // TODO: temp solution
-      eh._myListenerId = eh.registerBlockEvent(_onBlock, _onBlockError);
-    }
     _connect();
 
     //
     function _connect(){
-      logger.info(util.format('connecting to %s', orgID));
+      var peer = rotatePeers();
+      logger.info(util.format('connecting to %s', peer));
 
-      for (let i=0, n=eventhubs.length; i<n; i++) {
-        let eh = eventhubs[i];
-        eh.connect();
-        eh._connectTimer = setInterval(_checkConnection.bind(eh), 1000); // TODO: socket connection check interval
-        eh._connectTimer.unref();
-      }
+      // set the transaction listener
+      eventhub = helper.newEventHubs([peer], orgID)[0];
+      eventhub._ep._request_timeout = 5000; // TODO: temp solution, move timeout to config
+      eventhub._myListenerId = eventhub.registerBlockEvent(_onBlock, _onBlockError);
+
+      eventhub.connect();
+      eventhub._connectTimer = setInterval(_checkConnection.bind(eventhub), 1000); // TODO: socket connection check interval
+      eventhub._connectTimer.unref();
+      blockEvents.emit('connecting');
     }
 
     //
     function _checkConnection(){
-      let eh = this; // jshint ignore:line
+      var eh = this; //jshint ignore:line
       if(eh._connected){
         clearInterval(eh._connectTimer);
         eh._connectTimer = null;
-        logger.debug(util.format('\n(((((((((((( listen for transactions on organization %s: %s )))))))))))\n', orgID, eh._ep._url));
-        // logger.debug(util.format('Connected to ', eh._ep._url));
-        wasConnectedAtStartup = true;
+
+        logger.debug('connected');
+        blockEvents.emit('connected');
+        logger.debug(util.format('\n(((((((((((( listen for blocks in organization %s: %s )))))))))))\n', orgID, eh._ep._url));
+        _wasConnectedAtStartup = true;
       }
     }
 
@@ -103,40 +125,40 @@ function listen(){
       blockEvents.emit('block_success', block);
     }
 
-    //
+    // onError
     function _onBlockError(e){
-      // onError
-      logger.warn('Got block error', e);
+      logger.error(util.format('(((((((((((( Got block error )))))))))))'));
+      logger.error(e);
       blockEvents.emit('block_error', e);
 
-      // for (let i=0, n=eventhubs.length; i<n; i++) {
-      //   let eh = eventhubs[i];
-      //   eh.disconnect();
-      // }
-
-      // TODO: 'e.message' is a hotfix
-      if(!wasConnectedAtStartup || e.message === 'Unable to connect to the peer event hub') {
-        throw e;
-      } else {
-        // TODO: doesn't work propertly?
-        // setTimeout( _connect, 5000); // TODO: socket reconnect interval
+      if(!eventhub._connected){
+        logger.debug('disconnected');
+        blockEvents.emit('disconnected');
       }
+
+      if(!eventhub._connected && !_wasConnectedAtStartup){
+        throw e;
+      }
+
+      logger.trace('Set reconnection timer');
+      setTimeout( _connect, 5000); // TODO: socket reconnect interval
     }
 
   });
 }
 
-
 /**
  *
  */
 function disconnect(){
-    for (let i=0, n=eventhubs.length; i<n; i++) {
-      let eh = eventhubs[i];
-      eh.unregisterBlockEvent(eh._myListenerId);
-      eh._myListenerId = null;
-      eh.disconnect();
-    }
+    eventhub.unregisterBlockEvent(eventhub._myListenerId);
+    delete eventhub._myListenerId;
+    eventhub.disconnect();
+}
+
+
+function isConnected(){
+  return eventhub._connected;
 }
 
 
@@ -163,6 +185,15 @@ function registerBlockEvent(onEvent, onError) {
 }
 
 /**
+ * @param onEvent
+ * @param onError
+ */
+function unregisterBlockEvent(onEvent, onError) {
+  onEvent && blockEvents.removeListener('block_success', onEvent);
+  onError && blockEvents.removeListener('block_error', onError);
+}
+
+/**
  * Register a callback function to receive a notification when the transaction
  * by the given id has been committed into a block
  *
@@ -176,13 +207,13 @@ function registerBlockEvent(onEvent, onError) {
  *                             a call to the "disconnect()" method or a connection error.
  */
 function registerTxEvent(txid, onEvent, onError) {
-  eventhubs[0] && eventhubs[0].registerTxEvent(txid, onEvent, onError);
+  eventhub && eventhub.registerTxEvent(txid, onEvent, onError);
   // onEvent && blockEvents.on('tx_success_'+txid, onEvent);
   // onError && blockEvents.on('tx_error_'+txid, onError);
 }
 
 function unregisterTxEvent(txid){
-  eventhubs[0] && eventhubs[0].unregisterTxEvent(txid);
+  eventhub && eventhub.unregisterTxEvent(txid);
   // blockEvents.removeAllListeners('tx_success_'+txid);
   // blockEvents.removeAllListeners('tx_error_'+txid);
 }
@@ -194,7 +225,11 @@ module.exports = {
   listen          : listen,
   disconnect      : disconnect,
 
-  registerBlockEvent  : registerBlockEvent,
-  registerTxEvent     : registerTxEvent,
-  unregisterTxEvent   : unregisterTxEvent,
+  eventHub        : blockEvents,
+  isConnected     : isConnected,
+
+  registerBlockEvent   : registerBlockEvent,
+  unregisterBlockEvent : unregisterBlockEvent,
+  registerTxEvent      : registerTxEvent,
+  unregisterTxEvent    : unregisterTxEvent,
 };
