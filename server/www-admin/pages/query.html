@@ -10,7 +10,7 @@
   </div>
 
   <div class="form-group">
-    <label>Smart contract</label>
+    <label>Chaincode</label>
     <select ng-model="selectedCc" material-select watch ng-options="o.name+' ('+o.version+')' for o in ctl.chaincodes" placeholder="Contract ID" required>
     </select>
   </div>
@@ -18,7 +18,7 @@
   <div class="form-group">
     <label>Peers</label>
     <select ng-model="selectedPeers" multiple material-select watch ng-options="o.org+'/'+o.id as '('+o.org+') '+o['server-hostname'] for o in ctl.getPeers()" placeholder="Peers" required>
-      <option value="" disabled selected>Choose your option</option>
+      <option value="" disabled selected>Select peer(s)</option>
     </select>
   </div>
 
