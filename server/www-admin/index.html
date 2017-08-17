@@ -55,7 +55,9 @@
           <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
             <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
           </li>
-
+          <li>
+            <a href="/" target="_blank">Web</a>
+          </li>
           <li ng-show="ctrl.authorized()">
             <a class="dropdown-button drop-down-profile relative-item" href="#" data-activates="dropdown7" data-beloworigin="true">
               {{ctrl.getUser().tokenData.username}}
@@ -78,6 +80,9 @@
       <div ng-show="ctrl.authorized()">
         <li ng-repeat="state in ctrl.$state.get()|filter:ctrl.visibleMenuItem">
           <a ui-sref="{{::state.name}}" ui-sref-active="menu-active">{{::state.data.name||state.name}}</a>
+        </li>
+        <li>
+          <a href="/" target="_blank">Web</a>
         </li>
 
         <h5 class="center">Logged in</h5>
