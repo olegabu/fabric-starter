@@ -555,7 +555,7 @@ app.get('/chaincodes', function(req, res) {
 
 
     res.promise(
-      query.getInstalledChaincodes(peer, channelName, installType, req.username, ORG)
+      query.getInstalledChaincodes(peer, channelName, installType, USERNAME, ORG)
     );
 });
 
