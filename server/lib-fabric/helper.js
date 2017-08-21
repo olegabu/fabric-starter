@@ -62,6 +62,7 @@ function setupOrgClient(username, orgID){
 
 /**
  * @param {string} channelID
+ * @param {string} username
  * @param {string} orgID
  * @returns {Channel}
  */
@@ -132,28 +133,6 @@ function getKeyStoreForOrg(username, orgID) {
 	return config.keyValueStore +'_' + username + '_' + orgID;
 }
 
-
-
-/**
- * @param urls
- * @param orgID
- * @param isEventListener
- * @returns {Array}
- */
-function newRemotes(urls, orgID, isEventListener) {
-	var targets = [];
-	for (let index in urls) {
-    if(!urls.hasOwnProperty(index)){ continue; }
-		let peerUrl = urls[index];
-
-
-		if (!found) {
-      logger.error(util.format('Failed to find a peer matching the url %s', peerUrl));
-		}
-	}
-
-	return targets;
-}
 
 /**
  * @param {Array<url>} urls

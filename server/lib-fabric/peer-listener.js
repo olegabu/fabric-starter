@@ -64,11 +64,13 @@ function init(peersUrls, username, org){
   _username = username;
   orgID = org;
 
-  initPromise = helper.getRegisteredUsers(username, org).then((user) => {
-    // TODO: print organisation role from certificate?
-    logger.debug(util.format('Authorized as %s@%s\n', user._name, orgID));
-    return user;
-  });
+  initPromise = helper.getRegisteredUsers(username, org)
+    .then((user) => {
+      // TODO: print organisation role from certificate?
+      logger.debug(util.format('Authorized as %s@%s\n', user._name, orgID));
+      return user;
+    });
+  // TODO: add promise catcher
   return initPromise;
 }
 
