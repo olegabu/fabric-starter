@@ -50,8 +50,8 @@ var joinChannel = function(peers, channelID, username, org) {
 	//logger.debug('\n============ Join Channel ============\n')
 	logger.info(util.format('Calling peers in organization "%s" to join the channel', org));
 
-	var client  = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(channelID, org);
+	var client  = helper.getClientForOrg(username, org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
 	var eventhubs = [];
 
 	return helper.getOrgAdmin(org).then((/*admin*/) => {

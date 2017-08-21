@@ -24,8 +24,8 @@ var logger = helper.getLogger('Create-Channel');
 //Attempt to send a request to the orderer with the sendCreateChain method
 var createChannel = function(channelID, channelConfigPath, username, orgName) {
 	logger.debug('\n====== Creating Channel \'' + channelID + '\' ======\n');
-	var client  = helper.getClientForOrg(orgName);
-	var channel = helper.getChannelForOrg(channelID, orgName);
+	var client  = helper.getClientForOrg(username, orgName);
+	var channel = helper.getChannelForOrg(channelID, username, orgName);
 
 	// read in the envelope for the channel config raw bytes
 	var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));

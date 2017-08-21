@@ -22,6 +22,8 @@ var path = require('path');
 var util = require('util');
 var fs = require('fs-extra');
 var User = require('fabric-client/lib/User.js');
+var Peer = require('fabric-client/lib/Peer.js');
+var EventHub = require('fabric-client/lib/EventHub.js');
 var CopService = require('fabric-ca-client');
 var config = require('../config.json');
 
@@ -38,21 +40,22 @@ var caClients = {};
 
 /**
  * set up the client objects for each org
+ * @param {string} username
  * @param {string} orgID
  * @returns {Client}
  */
-function setupOrgClient(orgID){
+function setupOrgClient(username, orgID){
   if(!ORGS[orgID]){
     throw new Error('No such organisation: '+orgID);
   }
 
   let client = new hfc(); // jshint ignore: line
   let cryptoSuite = hfc.newCryptoSuite();
-  cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[orgID].name)}));
+  cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(username, orgID)}));
   client.setCryptoSuite(cryptoSuite);
 
   let caUrl = ORGS[orgID].ca;
-  caClients[orgID] = new CopService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+  caClients[orgID] = new CopService(caUrl, null /*default TLS opts*/, '' /* default CA */, cryptoSuite);
 
   return client;
 }
@@ -62,13 +65,16 @@ function setupOrgClient(orgID){
  * @param {string} orgID
  * @returns {Channel}
  */
-function setupChannel(channelID, orgID){
-  let client = getClientForOrg(orgID);
-  let channel = client.newChannel(channelID);
-  channel.addOrderer( newOrderer(client) );
+function setupChannel(channelID, username, orgID){
+  let client = getClientForOrg(username, orgID);
+  if(!client._channels[channelID]) {
+    let channel = client.newChannel(channelID);
+    channel.addOrderer(newOrderer(client));
 
-  setupPeers(channel, orgID, client);
-  return channel;
+    setupPeers(channel, orgID, client);
+    client._channels[channelID] = channel;
+  }
+  return client._channels[channelID];
 }
 
 
@@ -78,6 +84,8 @@ function setupPeers(channel, orgID, client) {
   }
 
 	for (let peerID in ORGS[orgID]) {
+    if(!ORGS[orgID].hasOwnProperty(peerID)){ continue; }
+
 		if (peerID.indexOf('peer') === 0) { // starts with 'peer'
 
 			let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[orgID][peerID]['tls_cacerts']));
@@ -114,65 +122,30 @@ function readAllFiles(dir) {
 	return certs;
 }
 
-function getOrgName(org) {
-	return ORGS[org].name;
+
+/**
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {string}
+ */
+function getKeyStoreForOrg(username, orgID) {
+	return config.keyValueStore +'_' + username + '_' + orgID;
 }
 
-function getKeyStoreForOrg(org) {
-	return config.keyValueStore + '_' + org;
-}
 
-function newRemotes(urls, forPeers, userOrg) {
+
+/**
+ * @param urls
+ * @param orgID
+ * @param isEventListener
+ * @returns {Array}
+ */
+function newRemotes(urls, orgID, isEventListener) {
 	var targets = [];
-	// find the peer that match the urls
-	outer:
 	for (let index in urls) {
+    if(!urls.hasOwnProperty(index)){ continue; }
 		let peerUrl = urls[index];
 
-		let found = false;
-		for (let key in ORGS) {
-      // TODO: bookmark issue #9
-			if (key !== 'orderer') {
-				// if looking for event hubs, an app can only connect to
-				// event hubs in its own org
-				if (!forPeers && key !== userOrg) {
-					continue;
-				}
-
-				let org = ORGS[key];
-				let client = getClientForOrg(key);
-
-				for (let prop in org) {
-					if (prop.indexOf('peer') === 0) {
-						if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
-							// found a peer matching the subject url
-							if (forPeers) {
-								let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
-
-								let peer = client.newPeer('grpcs://' + peerUrl, {
-									pem: Buffer.from(data).toString(),
-									'ssl-target-name-override': org[prop]['server-hostname']
-								});
-                targets.push(peer);
-
-								continue outer;
-							} else {
-                let data = fs.readFileSync(path.join(CONFIG_DIR, org[prop]['tls_cacerts']));
-
-								let eh = client.newEventHub();
-								eh.setPeerAddr(org[prop]['events'], {
-									pem: Buffer.from(data).toString(),
-									'ssl-target-name-override': org[prop]['server-hostname']
-								});
-								targets.push(eh);
-
-								continue outer;
-							}
-						}
-					}
-				}
-			}
-		}
 
 		if (!found) {
       logger.error(util.format('Failed to find a peer matching the url %s', peerUrl));
@@ -182,57 +155,185 @@ function newRemotes(urls, forPeers, userOrg) {
 	return targets;
 }
 
+/**
+ * @param {Array<url>} urls
+ * @returns {Array}
+ */
+function newPeers(urls) {
+  let targets = [];
+  for (let index in urls) {
+    if(!urls.hasOwnProperty(index)){ continue; }
+    let peerUrl = urls[index];
+
+    try {
+      let peer = newPeer(peerUrl);
+      targets.push(peer);
+    }catch(e) {
+      logger.error(e);
+    }
+  }
+  return targets;
+}
+
+function newEventHubs(urls, username, org) {
+  let targets = [];
+  for (let index in urls) {
+    if(!urls.hasOwnProperty(index)){ continue; }
+    let peerUrl = urls[index];
+
+    try {
+      let eh = newEventHub(peerUrl, username, org);
+      targets.push(eh);
+    }catch(e) {
+      logger.error(e);
+    }
+  }
+  return targets;
+}
+
+
+/**
+ * @param {url} peerUrl
+ * @param {string} [orgID]
+ * @returns {object}
+ * @private
+ */
+function _getPeerInfoByUrl(peerUrl, orgID){
+  for (let key in ORGS) {
+    if (!ORGS.hasOwnProperty(key)) {
+      continue;
+    }
+    if (orgID && key !== orgID) {
+      continue;
+    }
+    // TODO: bookmark issue #9
+    if (key === 'orderer') {
+      continue;
+    }
+
+    let org = ORGS[key];
+    for (let prop in org) {
+      if (!org.hasOwnProperty(prop)) {
+        continue;
+      }
+      if (prop.indexOf('peer') === 0) {
+        if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
+          // found a peer matching the subject url
+          return org[prop];
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * @param {url} peerUrl
+ * @return {Peer}
+ */
+function newPeer(peerUrl) {
+
+  var peerInfo = _getPeerInfoByUrl(peerUrl);
+  if(!peerInfo) {
+    throw new Error('Failed to find a peer matching the url: ' + peerUrl);
+  }
+
+  let tls_data = fs.readFileSync(path.join(CONFIG_DIR, peerInfo['tls_cacerts']));
+  let peer = new Peer('grpcs://' + peerUrl, {
+    pem: Buffer.from(tls_data).toString(),
+    'ssl-target-name-override': peerInfo['server-hostname']
+  });
+  return peer;
+
+
+}
+
+
+/**
+ * @param {url} peerUrl
+ * @param {string} username
+ * @param {string} orgID
+ * @return {EventHub}
+ */
+function newEventHub(peerUrl, username, orgID) {
+
+  var client = getClientForOrg(username, orgID);
+
+  var peerInfo = _getPeerInfoByUrl(peerUrl, orgID);
+  if(!peerInfo) {
+    throw new Error('Failed to find a peer matching the url: ' + peerUrl);
+  }
+  let data = fs.readFileSync(path.join(CONFIG_DIR, peerInfo['tls_cacerts']));
+
+  let eventHub = new EventHub(client);
+  eventHub.setPeerAddr(peerInfo['events'], {
+    pem: Buffer.from(data).toString(),
+    'ssl-target-name-override': peerInfo['server-hostname']
+  });
+  return eventHub;
+}
+
+
+
 //-------------------------------------//
 // APIs
 //-------------------------------------//
-function getChannelForOrg(channelID, orgID) {
+function getChannelForOrg(channelID, username, orgID) {
 
   if(!channelID){
-    throw new Error('channelID undefined');
+    throw new Error('channelID is not set');
+  }
+  if(!username){
+    throw new Error('username is not set');
   }
   if(!orgID){
-    throw new Error('orgID undefined');
+    throw new Error('orgID is not set');
   }
 
-  let compositeKey = channelID+'/'+orgID;
+  let compositeKey = channelID+'/'+orgID+'/'+username;
   if(typeof channels[compositeKey] === "undefined"){
-    channels[compositeKey] = setupChannel(channelID, orgID);
+    channels[compositeKey] = setupChannel(channelID, username, orgID);
   }
   return channels[compositeKey];
 }
 
 
-function getClientForOrg(orgID) {
-  if(typeof clients[orgID] === "undefined"){
-    clients[orgID] = setupOrgClient(orgID);
+function getClientForOrg(username, orgID) {
+  // helps to migrate
+	if(!orgID){
+		throw new Error('pass username to getClientForOrg');
+	}
+	//
+  let compositeKey = orgID + '/' + username;
+  if(typeof clients[compositeKey] === "undefined"){
+    clients[compositeKey] = setupOrgClient(username, orgID);
   }
-  return clients[orgID];
+  return clients[compositeKey];
 }
 
 
-
-var newPeers = function(urls) {
-	return newRemotes(urls, true);
-};
-
-var newEventHubs = function(urls, org) {
-	return newRemotes(urls, false, org);
-};
 
 var getMspID = function(org) {
 	logger.debug('Msp ID : ' + ORGS[org].mspid);
 	return ORGS[org].mspid;
 };
 
-var getAdminUser = function(userOrg) {
-	var users = config.users;
-	var username = users[0].username;
-	var password = users[0].secret;
+function getAdmin(){
+  var users = config.users;
+  var username = users[0].username;
+  var password = users[0].secret;
+  return {username:username, password:password};
+}
+
+var getAdminUser = function(orgID) {
 	var member;
-	var client = getClientForOrg(userOrg);
+	var adminUser = getAdmin();
+  var username = adminUser.username;
+  var password = adminUser.password;
+	var client = getClientForOrg(username, orgID);
 
 	return hfc.newDefaultKeyValueStore({
-		path: getKeyStoreForOrg(getOrgName(userOrg))
+		path: getKeyStoreForOrg(username, orgID)
 	}).then((store) => {
 		client.setStateStore(store);
 		// clearing the user context before switching
@@ -242,7 +343,7 @@ var getAdminUser = function(userOrg) {
 				logger.info('Successfully loaded member from persistence');
 				return user;
 			} else {
-				let caClient = caClients[userOrg];
+				let caClient = caClients[orgID];
 				// need to enroll it with CA server
 				return caClient.enroll({
 					enrollmentID: username,
@@ -251,7 +352,7 @@ var getAdminUser = function(userOrg) {
 					logger.info('Successfully enrolled user \'' + username + '\'');
 					member = new User(username);
 					member.setCryptoSuite(client.getCryptoSuite());
-					return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(userOrg));
+					return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID));
 				}).then(() => {
 					return client.setUserContext(member);
 				}).then(() => {
@@ -266,12 +367,12 @@ var getAdminUser = function(userOrg) {
 	});
 };
 
-var getRegisteredUsers = function(username, userOrg, isJson) {
+var getRegisteredUsers = function(username, orgID, isJson) {
 	var member;
-	var client = getClientForOrg(userOrg);
+	var client = getClientForOrg(username, orgID);
 	var enrollmentSecret = null;
 	return hfc.newDefaultKeyValueStore({
-		path: getKeyStoreForOrg(getOrgName(userOrg))
+		path: getKeyStoreForOrg(username, orgID)
 	}).then((store) => {
 		client.setStateStore(store);
 		// clearing the user context before switching
@@ -281,13 +382,13 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 				logger.info('Successfully loaded member from persistence');
 				return user;
 			} else {
-				let caClient = caClients[userOrg];
-				return getAdminUser(userOrg)
+				let caClient = caClients[orgID];
+				return getAdminUser(orgID)
 				.then(function(adminUserObj) {
 					member = adminUserObj;
 					return caClient.register({
 						enrollmentID: username,
-						affiliation: userOrg + '.department1'
+						affiliation: orgID + '.department1'
 					}, member);
 				}).then((secret) => {
 					enrollmentSecret = secret;
@@ -309,7 +410,7 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 
 					member = new User(username);
 					member._enrollmentSecret = enrollmentSecret;
-					return member.setEnrollment(message.key, message.certificate, getMspID(userOrg));
+					return member.setEnrollment(message.key, message.certificate, getMspID(orgID));
 				}).then(() => {
 					client.setUserContext(member);
 					return member;
@@ -321,12 +422,11 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 		});
 	}).then((user) => {
 		if (isJson && isJson === true) {
-			var response = {
+      return {
 				success: true,
 				secret: user._enrollmentSecret,
 				message: username + ' enrolled Successfully',
 			};
-			return response;
 		}
 		return user;
 	}, (err) => {
@@ -335,8 +435,15 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 	});
 };
 
-var getOrgAdmin = function(userOrg) {
-	var admin = ORGS[userOrg].admin;
+// TODO: refactor it
+var getOrgAdmin = function(orgID) {
+
+  var adminUser = getAdmin();
+  var username = adminUser.username;
+  var ks = getKeyStoreForOrg(username, orgID);
+
+  // admin certificates
+	var admin = ORGS[orgID].admin;
 	var keyPath = path.join(CONFIG_DIR, admin.key);
 	// TODO: explicitly set key name
 	var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
@@ -344,27 +451,26 @@ var getOrgAdmin = function(userOrg) {
   // TODO: explicitly set certificate name
 	var certPEM = readAllFiles(certPath)[0].toString();
 
-	var client = getClientForOrg(userOrg);
+	var client = getClientForOrg(username, orgID);
 	var cryptoSuite = hfc.newCryptoSuite();
-	if (userOrg) {
-		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(getOrgName(userOrg))}));
+	if (orgID) {
+		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: ks}));
 		client.setCryptoSuite(cryptoSuite);
 	}
 
-	return hfc.newDefaultKeyValueStore({
-		path: getKeyStoreForOrg(getOrgName(userOrg))
-	}).then((store) => {
-		client.setStateStore(store);
+	return hfc.newDefaultKeyValueStore({path: ks})
+		.then((store) => {
+			client.setStateStore(store);
 
-		return client.createUser({
-			username: 'peer'+userOrg+'Admin',
-			mspid: getMspID(userOrg),
-			cryptoContent: {
-				privateKeyPEM: keyPEM,
-				signedCertPEM: certPEM
-			}
+			return client.createUser({
+				username: 'peer'+orgID+'Admin',
+				mspid: getMspID(orgID),
+				cryptoContent: {
+					privateKeyPEM: keyPEM,
+					signedCertPEM: certPEM
+				}
+			});
 		});
-	});
 };
 
 var setupChaincodeDeploy = function() {
@@ -393,6 +499,8 @@ exports.ORGS = ORGS;
 exports.CONFIG_DIR = CONFIG_DIR;
 exports.newPeers = newPeers;
 exports.newEventHubs = newEventHubs;
+exports.newPeer = newPeer;
+exports.newEventHub = newEventHub;
 exports.getPeerAddressByName = getPeerAddressByName;
 exports.getRegisteredUsers = getRegisteredUsers;
 exports.getOrgAdmin = getOrgAdmin;

@@ -22,6 +22,7 @@ var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 
 var hfc = require('./hfc');
+// var FabricClient = require('./FabricClient.js');
 var peerListener = require('./peer-listener');
 
 
@@ -32,15 +33,20 @@ function invokeChaincode(peersUrls, channelID, chaincodeName, fcn, args, usernam
     _retryAttempts = 10; // TODO: default attempts count
   }
 
-	logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
-	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(channelID, org);
+	logger.debug(util.format('\n============ invoke transaction as %s@%s ============\n', username, org));
+  // var client = new FabricClient(username, org);
+  // var channel = client.getChannel(channelID);
+  // var targets = FabricClient.newPeers(peersUrls);
+
+	var client = helper.getClientForOrg(username, org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
 	var targets = helper.newPeers(peersUrls);
 	var tx_id = null;
 
+  // return client.login(username, org).then((/*user*/) => {
 	return helper.getRegisteredUsers(username, org).then((/*user*/) => {
 		tx_id = client.newTransactionID();
-		logger.debug(util.format('Sending transaction "%j"', tools.replaceBuffer(tx_id) ));
+		logger.debug('Sending transaction proposal "%j"', tools.replaceBuffer(tx_id));
 		// send proposal to endorser
 		var request = {
 			targets: targets,
@@ -113,6 +119,7 @@ function invokeChaincode(peersUrls, channelID, chaincodeName, fcn, args, usernam
 			});
 		});
 
+    logger.debug('Committing transaction "%j"', tools.replaceBuffer(tx_id));
     var sendPromise = channel.sendTransaction(request);
     return Promise.all([sendPromise, txPromise]).then((results) => {
     // return Promise.all([sendPromise].concat(eventPromises)).then((results) => {

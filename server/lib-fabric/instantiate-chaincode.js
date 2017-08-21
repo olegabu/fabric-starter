@@ -28,8 +28,8 @@ var eh = null;
 var instantiateChaincode = function(channelID, chaincodeName, chaincodeVersion, functionName, args, username, org) {
 	logger.debug('\n============ Instantiate chaincode on organization ' + org + ' ============\n');
 
-	var channel = helper.getChannelForOrg(channelID, org);
-	var client  = helper.getClientForOrg(org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
+	var client  = helper.getClientForOrg(username, org);
 
 	return helper.getOrgAdmin(org)
         .then((/*user*/) => {

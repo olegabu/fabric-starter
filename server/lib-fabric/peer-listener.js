@@ -32,6 +32,10 @@ var eventhub = null;
 
 
 /**
+ * @type {string}
+ */
+var _username = null;
+/**
  * @type {string} organisation ID (json key for organisation in  network-config)
  */
 var orgID = null;
@@ -57,6 +61,7 @@ var _wasConnectedAtStartup = false;
  */
 function init(peersUrls, username, org){
   peers = peersUrls;
+  _username = username;
   orgID = org;
 
   initPromise = helper.getRegisteredUsers(username, org).then((user) => {
@@ -93,7 +98,7 @@ function listen(){
       logger.info(util.format('connecting to %s', peer));
 
       // set the transaction listener
-      eventhub = helper.newEventHubs([peer], orgID)[0];
+      eventhub = helper.newEventHub(peer, _username, orgID);
       eventhub._ep._request_timeout = 5000; // TODO: temp solution, move timeout to config
       eventhub._myListenerId = eventhub.registerBlockEvent(_onBlock, _onBlockError);
 

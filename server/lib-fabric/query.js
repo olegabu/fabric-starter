@@ -30,8 +30,8 @@ var logger = helper.getLogger('Query');
  * @returns {Promise}
  */
 var queryChaincode = function(peer, channelID, chaincodeName, args, fcn, username, org) {
-	var channel = helper.getChannelForOrg(channelID, org);
-	var client  = helper.getClientForOrg(org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
+	var client  = helper.getClientForOrg(username, org);
 
   /**
    * @type {Peer}
@@ -87,7 +87,7 @@ var queryChaincode = function(peer, channelID, chaincodeName, args, fcn, usernam
  */
 var getBlockByNumber = function(peer, channelID, blockNumber, username, org) {
 	var target = getPeer(peer, org);
-	var channel = helper.getChannelForOrg(channelID, org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
 
 	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryBlock(parseInt(blockNumber), target);
@@ -119,7 +119,7 @@ var getBlockByNumber = function(peer, channelID, blockNumber, username, org) {
  */
 var getTransactionByID = function(peer, channelID, trxnID, username, org) {
 	var target = getPeer(peer, org);
-	var channel = helper.getChannelForOrg(channelID, org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
 
 	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryTransaction(trxnID, target);
@@ -150,7 +150,7 @@ var getTransactionByID = function(peer, channelID, trxnID, username, org) {
  */
 var getBlockByHash = function(peer, channelID, hash, username, org) {
 	var target = getPeer(peer, org);
-	var channel = helper.getChannelForOrg(channelID, org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
 
 	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		return channel.queryBlockByHash(Buffer.from(hash, 'base64'), target);
@@ -183,7 +183,7 @@ var getBlockByHash = function(peer, channelID, hash, username, org) {
  * @param {string} org
  */
 var getChannelInfo = function(peer, channelID, username, org) {
-	var channel = helper.getChannelForOrg(channelID, org);
+	var channel = helper.getChannelForOrg(channelID, username, org);
   var target  = getPeer(peer, org);
 
 	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
@@ -226,10 +226,10 @@ var getInstalledChaincodes = function(peer, channelID, type, username, org) {
 
 	return helper.getOrgAdmin(org).then((/*member*/) => {
 		if (type === 'installed') {
-      var client = helper.getClientForOrg(org);
+      var client = helper.getClientForOrg(username, org);
 			return client.queryInstalledChaincodes(target);
 		} else {
-      var channel = helper.getChannelForOrg(channelID, org);
+      var channel = helper.getChannelForOrg(channelID, username, org);
 			return channel.queryInstantiatedChaincodes(target);
 		}
 	}, (err) => {
@@ -244,14 +244,14 @@ var getInstalledChaincodes = function(peer, channelID, type, username, org) {
 			}
 
 			for (let i = 0; i < response.chaincodes.length; i++) {
-        logger.debug(util.format('name: %s, version: %s, path: %s',
+        logger.debug('name: %s, version: %s, path: %s',
           response.chaincodes[i].name,
           response.chaincodes[i].version,
           response.chaincodes[i].path
-        ));
+        );
 			}
 
-			logger.debug(response);
+			// logger.debug(response);
 			return response;
 		} else {
 			logger.error('response is null');
@@ -272,7 +272,7 @@ var getInstalledChaincodes = function(peer, channelID, type, username, org) {
  */
 var getChannels = function(peer, username, org) {
 	var target = getPeer(peer, org);
-	var client = helper.getClientForOrg(org);
+	var client = helper.getClientForOrg(username, org);
 
 	return helper.getRegisteredUsers(username, org).then((/*member*/) => {
 		//channel.setPrimaryPeer(targets[0]);

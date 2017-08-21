@@ -23,7 +23,7 @@ var logger = helper.getLogger('install-chaincode');
 var installChaincode = function(peers, chaincodeName, chaincodePath, chaincodeVersion, username, org) {
 	logger.debug('\n============ Install chaincode on organizations ============\n');
 	helper.setupChaincodeDeploy();
-	var client = helper.getClientForOrg(org);
+	var client = helper.getClientForOrg(username, org);
 
 	return helper.getOrgAdmin(org).then((/*user*/) => {
 		var request = {
