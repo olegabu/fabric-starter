@@ -161,14 +161,22 @@ adminPartyApp.post('/users', function(req, res) {
     }, app.get('secret'));
 
     res.promise(
-        helper.getRegisteredUsers(username, ORG, true).then(function(response) {
+        helper.getRegisteredUsers(username, ORG)
+          .then((user) => {
+            return {
+              success: true,
+              secret: user._enrollmentSecret,
+              message: username + ' enrolled Successfully',
+            };
+          })
+          .then(function(response) {
             if (response && typeof response !== 'string') {
                 response.token = token;
                 return response;
             } else {
                 return Promise.reject(response);
             }
-        })
+          })
     );
 });
 

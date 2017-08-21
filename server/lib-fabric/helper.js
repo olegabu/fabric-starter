@@ -319,7 +319,7 @@ var getAdminUser = function(orgID) {
 		client._userContext = null;
 		return client.getUserContext(username, true).then((user) => {
 			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded member from persistence');
+				logger.info('Successfully loaded admin "%s" from persistence', username);
 				return user;
 			} else {
 				let caClient = caClients[orgID];
@@ -346,7 +346,8 @@ var getAdminUser = function(orgID) {
 	});
 };
 
-var getRegisteredUsers = function(username, orgID, isJson) {
+// TODO when we are not throwing the errors, we technically make all invocations as admin user
+var getRegisteredUsers = function(username, orgID) {
 	var member;
 	var client = getClientForOrg(username, orgID);
 	var enrollmentSecret = null;
@@ -358,7 +359,7 @@ var getRegisteredUsers = function(username, orgID, isJson) {
 		client._userContext = null;
 		return client.getUserContext(username, true).then((user) => {
 			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded member from persistence');
+				logger.info('Successfully loaded member "%s" from persistence', username);
 				return user;
 			} else {
 				let caClient = caClients[orgID];
@@ -399,16 +400,7 @@ var getRegisteredUsers = function(username, orgID, isJson) {
 				});
 			}
 		});
-	}).then((user) => {
-		if (isJson && isJson === true) {
-      return {
-				success: true,
-				secret: user._enrollmentSecret,
-				message: username + ' enrolled Successfully',
-			};
-		}
-		return user;
-	}, (err) => {
+	}).catch(function(err) {
 		logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
 		return '' + err;
 	});
