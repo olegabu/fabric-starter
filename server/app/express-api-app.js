@@ -33,13 +33,14 @@ var invoke        = require('../lib-fabric/invoke-transaction.js');
 var query         = require('../lib-fabric/query.js');
 
 var config = require('../config.json');
+var packageInfo = require('../package.json');
 
 const ORG = process.env.ORG || null;
 const USERNAME = config.user.username;
 const LEDGER_CONFIG_DIR  = '../artifacts/channel/';
 const GENESIS_BLOCK_FILE = 'genesis.block';
 
-logger.info('**************    API SERVER     ******************');
+logger.info('**************    API SERVER %s  ******************', packageInfo.version);
 logger.info('Admin     : ' + USERNAME);
 logger.info('Org name  : ' + ORG);
 
@@ -73,8 +74,6 @@ function corsCb(req, cb){
 }
 app.options('*', cors(corsCb));
 app.use(cors(corsCb));
-
-
 
 // enable admin party before authorization, but after cors
 if(config.admin_party) {
@@ -307,6 +306,7 @@ clientConfig.org = ORG;
 
 app.get('/config.js', expressEnv('__config', clientConfig));
 app.get('/config', function(req, res) {
+    res.setHeader('X-Api-Version', packageInfo.version);
     res.send(clientConfig);
 });
 
