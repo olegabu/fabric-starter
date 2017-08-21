@@ -13,7 +13,7 @@
     "npm": ">=3.10.10"
   },
   "scripts": {
-    "start": "node index",
+    "start": "node $NODE_DEBUG_OPTION index",
     "dev"   :"CONFIG_FILE=\"../artifacts-dev/network-config.json\" npm -s start",
     "preset":"CONFIG_FILE=\"../artifacts-preset/network-config-local.json\" npm -s start",
     "test":"mocha"
