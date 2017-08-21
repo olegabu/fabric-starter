@@ -158,7 +158,7 @@ function disconnect(){
 
 
 function isConnected(){
-  return eventhub._connected;
+  return eventhub && eventhub._connected;
 }
 
 
