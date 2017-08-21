@@ -27,7 +27,11 @@ var peerListener = require('./peer-listener');
 
 
 // Invoke transaction on chaincode on target peers
-var invokeChaincode = function(peersUrls, channelID, chaincodeName, fcn, args, username, org) {
+function invokeChaincode(peersUrls, channelID, chaincodeName, fcn, args, username, org, _retryAttempts) {
+  if(typeof _retryAttempts === "undefined"){
+    _retryAttempts = 10; // TODO: default attempts count
+  }
+
 	logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
 	var client = helper.getClientForOrg(org);
 	var channel = helper.getChannelForOrg(channelID, org);
@@ -86,38 +90,28 @@ var invokeChaincode = function(peersUrls, channelID, chaincodeName, fcn, args, u
     // fail the test
     var transactionID = tx_id.getTransactionID();
 
-    // var eventPromises = [];
-    //
-    // var eventhubs = helper.newEventHubs('localhost:7051', org);
-    // for (let key in eventhubs) {
-    //   let eh = eventhubs[key];
-    //   eh.connect();
-
-      let txPromise = new Promise((resolve, reject) => { // jshint ignore:line
-        let handle = setTimeout(() => {
-          // eh.disconnect();
-          reject(new Error('TIMEOUT'));
-        }, 30000); // TODO: move to config
+		let txPromise = new Promise((resolve, reject) => { // jshint ignore:line
+			let handle = setTimeout(() => {
+				// eh.disconnect();
+				reject(new Error('TIMEOUT'));
+			}, 30000); // TODO: move to config
 
 
-        peerListener.registerTxEvent(transactionID, (tx, code) => {
-        // eh.registerTxEvent(transactionID, (tx, code) => {
-          clearTimeout(handle);
-          peerListener.unregisterTxEvent(transactionID);
-          // eh.unregisterTxEvent(transactionID);
-          // eh.disconnect();
+			peerListener.registerTxEvent(transactionID, (tx, code) => {
+				clearTimeout(handle);
+				peerListener.unregisterTxEvent(transactionID);
 
-          if (code !== 'VALID') {
-            logger.error('The balance transfer transaction was invalid, code = ' + code);
-            reject();
-          } else {
-            logger.info('The balance transfer transaction has been committed on peer '/* + eh._ep._endpoint.addr */ );
-            resolve();
-          }
-        });
-      });
-    //   eventPromises.push(txPromise);
-    // }
+				if (code !== 'VALID') {
+					logger.error('Invoke failed, code = ' + code);
+					var e = new Error('Invoke failed: '+code);
+					e.code = code;
+					reject(e);
+				} else {
+					logger.info('Invoke succeed');
+					resolve(tx);
+				}
+			});
+		});
 
     var sendPromise = channel.sendTransaction(request);
     return Promise.all([sendPromise, txPromise]).then((results) => {
@@ -136,7 +130,21 @@ var invokeChaincode = function(peersUrls, channelID, chaincodeName, fcn, args, u
 			logger.error('Failed to order the transaction. Error code: ' + response.status);
 			throw new Error('Failed to order the transaction. Error code: ' + response.status);
 		}
-	});
-};
+	})
+  .catch(function(e){
+    if(e && e.code === "MVCC_READ_CONFLICT"){
+      logger.info('Invoke retry %s times', _retryAttempts);
+      // orderer race condition.
+      // just retry the transaction
+      if(_retryAttempts>0){
+        _retryAttempts--;
+        return invokeChaincode(peersUrls, channelID, chaincodeName, fcn, args, username, org, _retryAttempts);
+      }
+    }
+    throw e;
+  });
+
+
+}
 
 exports.invokeChaincode = invokeChaincode;
