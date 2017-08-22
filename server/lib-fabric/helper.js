@@ -304,6 +304,10 @@ function getAdmin(){
   return {username:username, password:password};
 }
 
+/**
+ * @param {string} orgID
+ * @returns {Promise.<User>}
+ */
 var getAdminUser = function(orgID) {
 	var member;
 	var adminUser = getAdmin();
@@ -322,13 +326,15 @@ var getAdminUser = function(orgID) {
 				logger.info('Successfully loaded admin "%s" from persistence', username);
 				return user;
 			} else {
+        logger.info('No admin "%s" in persistence', username);
+
 				let caClient = caClients[orgID];
 				// need to enroll it with CA server
 				return caClient.enroll({
 					enrollmentID: username,
 					enrollmentSecret: password
 				}).then((enrollment) => {
-					logger.info('Successfully enrolled user \'' + username + '\'');
+					logger.info('Successfully enrolled admin user "%s"',  username);
 					member = new User(username);
 					member.setCryptoSuite(client.getCryptoSuite());
 					return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID));
@@ -337,8 +343,7 @@ var getAdminUser = function(orgID) {
 				}).then(() => {
 					return member;
 				}).catch((err) => {
-					logger.error('Failed to enroll and persist user. Error: ' + err.stack ?
-						err.stack : err);
+					logger.error('Failed to enroll and persist admin user "%s". Error: ', username, err.stack ? err.stack : err);
 					return null;
 				});
 			}
@@ -347,6 +352,11 @@ var getAdminUser = function(orgID) {
 };
 
 // TODO when we are not throwing the errors, we technically make all invocations as admin user
+/**
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {Promise.<User>}
+ */
 var getRegisteredUsers = function(username, orgID) {
 	var member;
 	var client = getClientForOrg(username, orgID);
@@ -362,6 +372,8 @@ var getRegisteredUsers = function(username, orgID) {
 				logger.info('Successfully loaded member "%s" from persistence', username);
 				return user;
 			} else {
+        logger.info('No member "%s" in persistence', username);
+
 				let caClient = caClients[orgID];
 				return getAdminUser(orgID)
 				.then(function(adminUserObj) {
@@ -372,22 +384,24 @@ var getRegisteredUsers = function(username, orgID) {
 					}, member);
 				}).then((secret) => {
 					enrollmentSecret = secret;
-					logger.debug(username + ' registered successfully');
+          logger.debug('Successfully registered member "%s":',  username, enrollmentSecret);
 					return caClient.enroll({
 						enrollmentID: username,
 						enrollmentSecret: secret
 					});
 				}, (err) => {
-					logger.debug(username + ' failed to register');
-					return '' + err;
+          logger.error('Fail to register member "%s"',  username, err);
+					return '' + err;  // TODO throw an error
 					//return 'Failed to register '+username+'. Error: ' + err.stack ? err.stack : err;
 				}).then((message) => {
 					if (message && typeof message === 'string' && message.includes('Error:')) {
 						logger.error(username + ' enrollment failed');
-						return message;
+            logger.error('Fail to enroll member "%s"',  username, message);
+						return message; // TODO throw an error
 					}
-					logger.debug(username + ' enrolled successfully');
+          logger.info('Successfully enrolled member "%s"',  username);
 
+					//
 					member = new User(username);
 					member._enrollmentSecret = enrollmentSecret;
 					return member.setEnrollment(message.key, message.certificate, getMspID(orgID));
@@ -395,14 +409,14 @@ var getRegisteredUsers = function(username, orgID) {
 					client.setUserContext(member);
 					return member;
 				}, (err) => {
-					logger.error(util.format('%s enroll failed: %s', username, err.stack ? err.stack : err));
-					return '' + err;
+          logger.info('Fail to enroll member "%s"',  username, err);
+					return '' + err; // TODO throw an error
 				});
 			}
 		});
 	}).catch(function(err) {
 		logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
-		return '' + err;
+		return '' + err; // TODO throw an error
 	});
 };
 
