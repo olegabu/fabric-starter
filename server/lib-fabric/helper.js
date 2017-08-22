@@ -345,7 +345,8 @@ var getAdminUser = function loginAdmin(orgID) {
           }).then((user) => {
             return client.setUserContext(user);
           }).catch((err) => {
-            logger.error('Failed to enroll and persist admin user "%s". Error: ', err);
+            logger.error('Failed to enroll and persist admin user "%s". Error: ', err && err.message || err);
+            // doesn't need full stack trace here, because we throw an error
             throw err;
           });
 			}
@@ -416,14 +417,15 @@ var getRegisteredUsers = function login(username, orgID) {
               return client.setUserContext(user);
             })
             .catch((err) => {
-              logger.error('Failed to enroll and persist member user "%s". Error: ', username, err);
+              logger.error('Failed to enroll and persist member user "%s". Error: ', username, err && err.message || err);
+              // doesn't need full stack trace here, because we throw an error
               throw err;
             });
         }
     });
 	})
   .catch(function(err) {
-    logger.error(util.format('Failed to get registered user: %s, error: %s', username, err));
+    logger.error('Failed to get registered user: %s, error:', username, err && err.message || err);
     var errData = _extractEnrolmentError(err.message || err);
     if(errData.code === 0){ // assume code "0" can be on "already registered" error
       // User is already registered, but we cannot find the private key for it.
@@ -431,6 +433,15 @@ var getRegisteredUsers = function login(username, orgID) {
       throw new Error("User key is not found in the storage");
     }
     throw errData;
+  })
+
+    // HOTFIX
+  .catch(function(/*e*/){
+    logger.warn('HOTFIX: use admin credentials instead of user "%s"', username);
+    return getAdminUser(orgID)
+      .then((user) => {
+        return client.setUserContext(user);
+      });
   });
 };
 
