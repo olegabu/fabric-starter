@@ -308,8 +308,7 @@ function getAdmin(){
  * @param {string} orgID
  * @returns {Promise.<User>}
  */
-var getAdminUser = function(orgID) {
-	var member;
+var getAdminUser = function loginAdmin(orgID) {
 	var adminUser = getAdmin();
   var username = adminUser.username;
   var password = adminUser.password;
@@ -331,21 +330,21 @@ var getAdminUser = function(orgID) {
 				let caClient = caClients[orgID];
 				// need to enroll it with CA server
 				return caClient.enroll({
-					enrollmentID: username,
-					enrollmentSecret: password
-				}).then((enrollment) => {
-					logger.info('Successfully enrolled admin user "%s"',  username);
-					member = new User(username);
-					member.setCryptoSuite(client.getCryptoSuite());
-					return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID));
-				}).then(() => {
-					return client.setUserContext(member);
-				}).then(() => {
-					return member;
-				}).catch((err) => {
-					logger.error('Failed to enroll and persist admin user "%s". Error: ', username, err.stack ? err.stack : err);
-					return null;
-				});
+            enrollmentID: username,
+            enrollmentSecret: password
+          }).then((enrollment) => {
+            logger.info('Successfully enrolled admin user "%s"',  username);
+
+            //
+            let member = new User(username);
+            member.setCryptoSuite(client.getCryptoSuite());
+            return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID)).then(()=>member);
+          }).then((user) => {
+            return client.setUserContext(user);
+          }).catch((err) => {
+            logger.error('Failed to enroll and persist admin user "%s". Error: ', username, err.stack ? err.stack : err);
+            throw err;
+          });
 			}
 		});
 	});
@@ -357,67 +356,68 @@ var getAdminUser = function(orgID) {
  * @param {string} orgID
  * @returns {Promise.<User>}
  */
-var getRegisteredUsers = function(username, orgID) {
-	var member;
+var getRegisteredUsers = function login(username, orgID) {
+
 	var client = getClientForOrg(username, orgID);
-	var enrollmentSecret = null;
 	return hfc.newDefaultKeyValueStore({
 		path: getKeyStoreForOrg(username, orgID)
 	}).then((store) => {
 		client.setStateStore(store);
 		// clearing the user context before switching
 		client._userContext = null;
-		return client.getUserContext(username, true).then((user) => {
-			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded member "%s" from persistence', username);
-				return user;
-			} else {
-        logger.info('No member "%s" in persistence', username);
 
-				let caClient = caClients[orgID];
-				return getAdminUser(orgID)
-				.then(function(adminUserObj) {
-					member = adminUserObj;
-					return caClient.register({
-						enrollmentID: username,
-						affiliation: orgID + '.department1'
-					}, member);
-				}).then((secret) => {
-					enrollmentSecret = secret;
-          logger.debug('Successfully registered member "%s":',  username, enrollmentSecret);
-					return caClient.enroll({
-						enrollmentID: username,
-						enrollmentSecret: secret
-					});
-				}, (err) => {
-          logger.error('Fail to register member "%s"',  username, err);
-					return '' + err;  // TODO throw an error
-					//return 'Failed to register '+username+'. Error: ' + err.stack ? err.stack : err;
-				}).then((message) => {
-					if (message && typeof message === 'string' && message.includes('Error:')) {
-						logger.error(username + ' enrollment failed');
-            logger.error('Fail to enroll member "%s"',  username, message);
-						return message; // TODO throw an error
-					}
-          logger.info('Successfully enrolled member "%s"',  username);
+		return client.getUserContext(username, true)
+      .then((user) => {
+        if (user && user.isEnrolled()) {
+          logger.info('Successfully loaded member "%s" from persistence', username);
+          return user;
+        } else {
+          logger.info('No member "%s" in persistence', username);
 
-					//
-					member = new User(username);
-					member._enrollmentSecret = enrollmentSecret;
-					return member.setEnrollment(message.key, message.certificate, getMspID(orgID));
-				}).then(() => {
-					client.setUserContext(member);
-					return member;
-				}, (err) => {
-          logger.info('Fail to enroll member "%s"',  username, err);
-					return '' + err; // TODO throw an error
-				});
-			}
-		});
-	}).catch(function(err) {
-		logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
-		return '' + err; // TODO throw an error
-	});
+          let caClient = caClients[orgID];
+          var enrollmentSecret = null;
+          return getAdminUser(orgID)
+            .then(function(adminUserObj) {
+              return caClient.register({
+                enrollmentID: username,
+                affiliation: orgID + '.department1'
+              }, adminUserObj);
+            }).then((secret) => {
+              enrollmentSecret = secret;
+              logger.debug('Successfully registered member "%s":',  username, enrollmentSecret);
+              return caClient.enroll({
+                enrollmentID: username,
+                enrollmentSecret: secret
+              });
+            }, (err) => {
+              logger.error('Fail to register member "%s"',  username, err);
+              throw err;
+            }).then((message) => {
+              if (message && typeof message === 'string' && message.includes('Error:')) {
+                logger.error('Fail to enroll member "%s"',  username, message);
+                throw new Error(message);
+              }
+              logger.info('Successfully enrolled member "%s"',  username);
+
+              //
+              let member = new User(username);
+              member._enrollmentSecret = enrollmentSecret;
+              return member.setEnrollment(message.key, message.certificate, getMspID(orgID)).then(()=>member);
+            })
+            .then((user) => {
+              return client.setUserContext(user);
+            })
+            .catch((err) => {
+              logger.error('Failed to enroll and persist member user "%s". Error: ', username, err.stack ? err.stack : err);
+              throw err;
+            });
+        }
+    });
+	})
+  .catch(function(err) {
+    logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
+    throw err;
+  });
 };
 
 // TODO: refactor it
