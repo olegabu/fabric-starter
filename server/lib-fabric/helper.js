@@ -130,7 +130,7 @@ function readAllFiles(dir) {
  * @returns {string}
  */
 function getKeyStoreForOrg(username, orgID) {
-	return config.keyValueStore +'_' + username + '_' + orgID;
+	return path.join(config.keyValueStore , username + '_' + orgID);
 }
 
 
