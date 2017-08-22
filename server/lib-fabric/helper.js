@@ -319,6 +319,9 @@ var getAdminUser = function loginAdmin(orgID) {
 	}).then((store) => {
 		client.setStateStore(store);
 		// clearing the user context before switching
+
+    // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
+    // But it needs to be tested
 		client._userContext = null;
 		return client.getUserContext(username, true).then((user) => {
 			if (user && user.isEnrolled()) {
@@ -342,7 +345,7 @@ var getAdminUser = function loginAdmin(orgID) {
           }).then((user) => {
             return client.setUserContext(user);
           }).catch((err) => {
-            logger.error('Failed to enroll and persist admin user "%s". Error: ', username, err.stack ? err.stack : err);
+            logger.error('Failed to enroll and persist admin user "%s". Error: ', err);
             throw err;
           });
 			}
@@ -350,8 +353,14 @@ var getAdminUser = function loginAdmin(orgID) {
 	});
 };
 
-// TODO when we are not throwing the errors, we technically make all invocations as admin user
 /**
+ * Perform login with the user.
+ * It uses private key for the user, which is set in key-value storage {@see getKeyStoreForOrg}
+ * So, if the user exist in the storage, we can pick it up and use.
+ * If not - there is no way to fetch it from CA (because we need user private key, which should be never passed to CA). inthis case
+ *
+ *
+ *
  * @param {string} username
  * @param {string} orgID
  * @returns {Promise.<User>}
@@ -364,6 +373,8 @@ var getRegisteredUsers = function login(username, orgID) {
 	}).then((store) => {
 		client.setStateStore(store);
 		// clearing the user context before switching
+    // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
+    // But it needs to be tested
 		client._userContext = null;
 
 		return client.getUserContext(username, true)
@@ -389,9 +400,6 @@ var getRegisteredUsers = function login(username, orgID) {
                 enrollmentID: username,
                 enrollmentSecret: secret
               });
-            }, (err) => {
-              logger.error('Fail to register member "%s"',  username, err);
-              throw err;
             }).then((message) => {
               if (message && typeof message === 'string' && message.includes('Error:')) {
                 logger.error('Fail to enroll member "%s"',  username, message);
@@ -408,15 +416,21 @@ var getRegisteredUsers = function login(username, orgID) {
               return client.setUserContext(user);
             })
             .catch((err) => {
-              logger.error('Failed to enroll and persist member user "%s". Error: ', username, err.stack ? err.stack : err);
+              logger.error('Failed to enroll and persist member user "%s". Error: ', username, err);
               throw err;
             });
         }
     });
 	})
   .catch(function(err) {
-    logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
-    throw err;
+    logger.error(util.format('Failed to get registered user: %s, error: %s', username, err));
+    var errData = _extractEnrolmentError(err.message || err);
+    if(errData.code === 0){ // assume code "0" can be on "already registered" error
+      // User is already registered, but we cannot find the private key for it.
+      // It seems that we lost access forever
+      throw new Error("User key is not found in the storage");
+    }
+    throw errData;
   });
 };
 
@@ -458,6 +472,31 @@ var getOrgAdmin = function(orgID) {
 		});
 };
 
+
+
+/**
+ * @param {string} errorString
+ * @return {{code:number, message:string}}
+ * @example Error: fabric-ca request register failed with errors [[{"code":0,"message":"Identity 'admin' is already registered"}]]
+ * @private
+ */
+function _extractEnrolmentError(errorString){
+  var m = (''+errorString).match(/\[\[(.*)\]\]/);
+  if(m){
+    var data;
+    try{
+      data = JSON.parse(m[1]);
+    }catch(e){
+      data = {code: null, message : m[1]};
+    }
+    return data;
+  } else{
+    return {code: null, message : errorString};
+  }
+}
+
+
+
 var setupChaincodeDeploy = function() {
 	process.env.GOPATH = path.join(CONFIG_DIR, config.GOPATH);
 };
@@ -489,3 +528,4 @@ exports.newEventHub = newEventHub;
 exports.getPeerAddressByName = getPeerAddressByName;
 exports.getRegisteredUsers = getRegisteredUsers;
 exports.getOrgAdmin = getOrgAdmin;
+exports._extractEnrolmentError = _extractEnrolmentError;
