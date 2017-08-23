@@ -37,6 +37,12 @@ var CONFIG_DIR = hfc.getConfigSetting('config-dir');
  * @type {Object<Promise<Client>>}
  */
 var clients = {};
+
+/**
+ * @type {Object<Promise<Client>>}
+ */
+var caClients = {};
+
 /**
  * @type {Object<CopService>}
  */
@@ -68,24 +74,14 @@ function getCAService(orgID){
  * set up the client objects for each org
  * @param {string} username
  * @param {string} orgID
- * @param {boolean} _initCA
  * @returns {Promise<Client>}
  */
-function _initClientForOrg(username, orgID, _initCA){
-  if(!ORGS[orgID]){
-    throw new Error('No such organisation: '+orgID);
-  }
+function _initClientForOrg(username, orgID){
 
-  let client = new hfc(); // jshint ignore: line
-  let cryptoSuite = hfc.newCryptoSuite();
-  cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(username, orgID)}));
-  client.setCryptoSuite(cryptoSuite);
-
+  var client = _newClient(username, orgID);
   // init client key store and context
   var p;
-  if(_initCA){
-    p = _setClientCAAdminContext(client, orgID);
-  } else if( isAdmin(username) ){
+  if( isAdmin(username) ){
     // p = _setClientAdminContext(client, orgID);
     p = _setClientContextFromFile(client, orgID);
   } else {
@@ -94,6 +90,23 @@ function _initClientForOrg(username, orgID, _initCA){
   return p.then(()=>client);
 }
 
+/**
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {Client}
+ * @private
+ */
+function _newClient(username, orgID){
+  if(!ORGS[orgID]){
+    throw new Error('No such organisation: '+orgID);
+  }
+
+  let client = new hfc(); // jshint ignore: line
+  let cryptoSuite = hfc.newCryptoSuite();
+  cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(username, orgID)}));
+  client.setCryptoSuite(cryptoSuite);
+  return client;
+}
 
 /**
  * @param {string} username
@@ -395,8 +408,14 @@ function getCAClientForOrg(orgID) {
   if(!orgID){
     throw new Error('orgID is not set');
   }
-  var adminUser = getAdminCredentials();
-  return _initClientForOrg(adminUser.username, orgID, true/* means CA */);
+  // caching
+  if(!caClients[orgID]){
+    var adminUser = getAdminCredentials();
+    var client = _newClient(adminUser.username, orgID);
+    caClients[orgID] = _setClientCAAdminContext(client, orgID).then(()=>client);
+  }
+  return caClients[orgID];
+
 }
 /**
  * @param {string} username
