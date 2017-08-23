@@ -18,6 +18,7 @@ var path = require('path'); // jshint ignore:line
 var util = require('util');
 var tools = require('../lib/tools.js');
 
+var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 
@@ -103,7 +104,7 @@ function invokeChaincode(peersUrls, channelID, chaincodeName, fcn, args, usernam
 				let handle = setTimeout(() => {
 					// eh.disconnect();
 					reject(new Error('TIMEOUT'));
-				}, 30000); // TODO: move to config
+				}, parseInt(config.eventWaitTime));
 
 
 				peerListener.registerTxEvent(transactionID, (tx, code) => {

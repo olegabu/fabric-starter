@@ -17,6 +17,7 @@
 var path = require('path');
 var fs = require('fs');
 var util = require('util');
+var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('instantiate-chaincode');
 var hfc = require('./hfc');
@@ -103,7 +104,7 @@ var instantiateChaincode = function(channelID, chaincodeName, chaincodeVersion, 
                 let handle = setTimeout(() => {
                     eh.disconnect();
                     reject();
-                }, 30000); // TODO: chaincode instantiate timeout hardcoded
+                }, parseInt(config.eventWaitTime));
 
                 eh.registerTxEvent(deployId, (tx, code) => {
                     logger.info('The chaincode instantiate transaction has been committed on peer ' + eh._ep._endpoint.addr);
