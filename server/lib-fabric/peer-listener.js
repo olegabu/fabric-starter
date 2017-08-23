@@ -64,7 +64,7 @@ function init(peersUrls, username, org){
   _username = username;
   orgID = org;
 
-  initPromise = helper.getRegisteredUsers(username, org)
+  initPromise = helper.getClientUser(username, org)
     .then((user) => {
       // TODO: print organisation role from certificate?
       logger.debug(util.format('Authorized as %s@%s\n', user._name, orgID));
@@ -97,17 +97,21 @@ function listen(){
     //
     function _connect(){
       var peer = rotatePeers();
-      logger.info(util.format('connecting to %s', peer));
+      logger.info('connecting to %s', peer);
 
       // set the transaction listener
-      eventhub = helper.newEventHub(peer, _username, orgID);
-      eventhub._ep._request_timeout = 5000; // TODO: temp solution, move timeout to config
-      eventhub._myListenerId = eventhub.registerBlockEvent(_onBlock, _onBlockError);
+      return helper.newEventHub(peer, _username, orgID)
+        .then(function(_eventhub){
+          eventhub = _eventhub;
+          eventhub._ep._request_timeout = 5000; // TODO: temp solution, move timeout to config
+          eventhub._myListenerId = eventhub.registerBlockEvent(_onBlock, _onBlockError);
 
-      eventhub.connect();
-      eventhub._connectTimer = setInterval(_checkConnection.bind(eventhub), 1000); // TODO: socket connection check interval
-      eventhub._connectTimer.unref();
-      blockEvents.emit('connecting');
+          eventhub.connect();
+          eventhub._connectTimer = setInterval(_checkConnection.bind(eventhub), 1000); // TODO: socket connection check interval
+          eventhub._connectTimer.unref();
+          blockEvents.emit('connecting');
+          // return eventhub;
+        });
     }
 
     //

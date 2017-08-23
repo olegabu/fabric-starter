@@ -19,49 +19,49 @@ var helper = require('./helper.js');
 var logger = helper.getLogger('install-chaincode');
 
 
-//function installChaincode(org) {
-var installChaincode = function(peers, chaincodeName, chaincodePath, chaincodeVersion, username, org) {
-	logger.debug('\n============ Install chaincode on organizations ============\n');
-	helper.setupChaincodeDeploy();
-	var client = helper.getClientForOrg(username, org);
-
-	return helper.getOrgAdmin(org).then((/*user*/) => {
-		var request = {
-			targets: helper.newPeers(peers),
-			chaincodePath: chaincodePath,
-			chaincodeId: chaincodeName,
-			chaincodeVersion: chaincodeVersion
-		};
-		return client.installChaincode(request);
-	}, (err) => {
-		logger.error('Failed to enroll user \'' + username + '\'. ' + err);
-		throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
-	}).then((results) => {
-		var proposalResponses = results[0];
-		// var proposal = results[1];
-		var all_good = true;
-		for (var i in proposalResponses) {
-			let one_good = false;
-			if (proposalResponses && proposalResponses[0].response &&
-				proposalResponses[0].response.status === 200) {
-				one_good = true;
-				logger.info('install proposal was good');
-			} else {
-				logger.error('install proposal was bad');
+// we must pass here admin user
+function installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, username, org) {
+  logger.debug('\n============ Install chaincode on organizations ============\n');
+  helper.setupChaincodeDeploy();
+  return helper.getClientForOrg(username, org)
+    .then(client=>{
+			var request = {
+				targets: helper.newPeers(peers),
+				chaincodePath: chaincodePath,
+				chaincodeId: chaincodeName,
+				chaincodeVersion: chaincodeVersion
+			};
+			return client.installChaincode(request);
+		}, (err) => {
+			logger.error('Failed to enroll user \'' + username + '\'. ' + err);
+			throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
+		}).then((results) => {
+			var proposalResponses = results[0];
+			// var proposal = results[1];
+			var all_good = true;
+			for (var i in proposalResponses) { // jshint ignore:line
+				let one_good = false;
+				if (proposalResponses && proposalResponses[0].response &&
+					proposalResponses[0].response.status === 200) {
+					one_good = true;
+					logger.info('install proposal was good');
+				} else {
+					logger.error('install proposal was bad');
+				}
+				all_good = all_good & one_good; // jshint ignore:line
 			}
-			all_good = all_good & one_good; // jshint ignore:line
-		}
-		if (all_good) {
-			logger.info(util.format('Successfully sent install Proposal and received ProposalResponse: Status - %s', proposalResponses[0].response.status));
-			logger.debug('\nSuccessfully Installed chaincode on organization ' + org + '\n');
-			return 'Successfully Installed chaincode on organization ' + org;
-		} else {
-			logger.error('Failed to send install Proposal or receive valid response. Response null or status is not 200. exiting...');
-			throw new Error('Failed to send install Proposal or receive valid response. Response null or status is not 200');
-		}
-	}, (err) => {
-		logger.error('Failed to send install proposal due to error: ' + err.stack ? err.stack : err);
-		throw new Error('Failed to send install proposal due to error: ' + err.stack ? err.stack : err);
-	});
-};
+			if (all_good) {
+				logger.info(util.format('Successfully sent install Proposal and received ProposalResponse: Status - %s', proposalResponses[0].response.status));
+				logger.debug('\nSuccessfully Installed chaincode on organization ' + org + '\n');
+				return 'Successfully Installed chaincode on organization ' + org;
+			} else {
+				logger.error('Failed to send install Proposal or receive valid response. Response null or status is not 200. exiting...');
+				throw new Error('Failed to send install Proposal or receive valid response. Response null or status is not 200');
+			}
+		}, (err) => {
+			logger.error('Failed to send install proposal due to error: ' + err.stack ? err.stack : err);
+			throw new Error('Failed to send install proposal due to error: ' + err.stack ? err.stack : err);
+		});
+}
+
 exports.installChaincode = installChaincode;

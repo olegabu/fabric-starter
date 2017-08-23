@@ -9,7 +9,7 @@ const fs    = require('fs');
 var log4js = require('log4js');
 
 var logger = log4js.getLogger('fabric-client');
-logger.setLevel('DEBUG');
+logger.setLevel('INFO');
 
 // const CONFIG_FILE_DEFAULT = '/etc/hyperledger/artifacts/network-config.json';
 const CONFIG_FILE_DEFAULT = '../artifacts/network-config.json';

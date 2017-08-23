@@ -161,7 +161,7 @@ adminPartyApp.post('/users', function(req, res) {
     }, app.get('secret'));
 
     res.promise(
-        helper.getRegisteredUsers(username, ORG)
+        helper.getClientUser(username, ORG)
           .then((user) => {
             return {
               success: true,

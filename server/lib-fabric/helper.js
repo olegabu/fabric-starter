@@ -19,11 +19,13 @@ var logger = log4js.getLogger('Helper');
 logger.setLevel('DEBUG');
 
 var path = require('path');
-var util = require('util');
 var fs = require('fs-extra');
 var User = require('fabric-client/lib/User.js');
 var Peer = require('fabric-client/lib/Peer.js');
 var EventHub = require('fabric-client/lib/EventHub.js');
+var Orderer = require('fabric-client/lib/Orderer.js');
+var Channel = require('fabric-client/lib/Channel.js');
+
 var CopService = require('fabric-ca-client');
 var config = require('../config.json');
 
@@ -31,20 +33,44 @@ var hfc = require('./hfc');
 var ORGS = hfc.getConfigSetting('network-config');
 var CONFIG_DIR = hfc.getConfigSetting('config-dir');
 
+/**
+ * @type {Object<Promise<Client>>}
+ */
 var clients = {};
-var channels = {};
+/**
+ * @type {Object<CopService>}
+ */
 var caClients = {};
 
 //
 
 
 /**
+ * (as admin)
+ * @param {string} orgID
+ * @return {CopService}
+ */
+function getCAClient(orgID){
+  var username = getAdminCredentials().username;
+  var key = username+'/'+orgID;
+  if(!caClients[key]) {
+
+    let caUrl = ORGS[orgID].ca;
+    let cryptoSuite = hfc.newCryptoSuite();
+    cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(username, orgID)}));
+
+    caClients[key] = new CopService(caUrl, null /*default TLS opts*/, '' /* default CA */, cryptoSuite);
+  }
+  return caClients[key];
+}
+
+/**
  * set up the client objects for each org
  * @param {string} username
  * @param {string} orgID
- * @returns {Client}
+ * @returns {Promise<Client>}
  */
-function setupOrgClient(username, orgID){
+function _initClientForOrg(username, orgID){
   if(!ORGS[orgID]){
     throw new Error('No such organisation: '+orgID);
   }
@@ -54,59 +80,103 @@ function setupOrgClient(username, orgID){
   cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(username, orgID)}));
   client.setCryptoSuite(cryptoSuite);
 
-  let caUrl = ORGS[orgID].ca;
-  caClients[orgID] = new CopService(caUrl, null /*default TLS opts*/, '' /* default CA */, cryptoSuite);
+  // init client key store and context
+  var p;
+  if( isAdmin(username) ){
+    // p = _setClientAdminContext(client, orgID);
+    p = _setClientAdminContext2(client, orgID);
+  } else {
+    p = _setClientUserContext(client, username, orgID);
+  }
+  return p.then(()=>client);
+}
 
-  return client;
+
+/**
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {Promise<User>}
+ */
+function getClientUser(username, orgID){
+  return getClientForOrg(username, orgID)
+    .then(client=>client._userContext);
 }
 
 /**
+ * @param {string} orgID
+ * @returns {Promise<User>}
+ */
+function getClientAdmin(orgID){
+  var adminUser = getAdminCredentials();
+  return getClientUser(adminUser.username, orgID);
+}
+
+
+
+/**
+ * @param {Client} client
  * @param {string} channelID
- * @param {string} username
  * @param {string} orgID
  * @returns {Channel}
  */
-function setupChannel(channelID, username, orgID){
-  let client = getClientForOrg(username, orgID);
+function _getClientChannel(client, channelID, orgID){
   if(!client._channels[channelID]) {
-    let channel = client.newChannel(channelID);
-    channel.addOrderer(newOrderer(client));
+    // let channel = client.newChannel(channelID);
+    let channel = new Channel(channelID, client);
+    channel.addOrderer(newOrderer());
 
-    setupPeers(channel, orgID, client);
+    channel.getClient = function(){ return this._clientContext; };
+
+    _setupChannelPeers(channel, orgID);
     client._channels[channelID] = channel;
   }
   return client._channels[channelID];
 }
 
-
-function setupPeers(channel, orgID, client) {
+/**
+ * @param {Channel} channel
+ * @param {string} orgID
+ * @private
+ */
+function _setupChannelPeers(channel, orgID) {
   if(!ORGS[orgID]){
     throw new Error('No such organisation: '+orgID);
   }
-
 	for (let peerID in ORGS[orgID]) {
     if(!ORGS[orgID].hasOwnProperty(peerID)){ continue; }
 
 		if (peerID.indexOf('peer') === 0) { // starts with 'peer'
 
-			let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[orgID][peerID]['tls_cacerts']));
-			let peer = client.newPeer( ORGS[orgID][peerID].requests,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[orgID][peerID]['server-hostname']
-				}
-			);
-
+      let peer = _setupPeer(orgID, peerID);
 			channel.addPeer(peer);
 		}
 	}
 }
 
-function newOrderer(client) {
+/**
+ * similar to {@link newPeer}
+ *
+ * @param {string} orgID
+ * @param {string} peerID
+ * @returns {Peer}
+ */
+function _setupPeer(orgID, peerID){
+  let data = fs.readFileSync(path.join(CONFIG_DIR, ORGS[orgID][peerID]['tls_cacerts']));
+  let peer = new Peer( ORGS[orgID][peerID].requests,
+    {
+      pem: Buffer.from(data).toString(),
+      'ssl-target-name-override': ORGS[orgID][peerID]['server-hostname']
+    }
+  );
+  return peer;
+}
+
+
+function newOrderer() {
 	var caRootsPath = ORGS['orderer'].tls_cacerts;
 	let data = fs.readFileSync(path.join(CONFIG_DIR, caRootsPath));
 	let caroots = Buffer.from(data).toString();
-	return client.newOrderer(ORGS.orderer.url, {
+	return new Orderer(ORGS.orderer.url, {
 		'pem': caroots,
 		'ssl-target-name-override': ORGS.orderer['server-hostname']
 	});
@@ -136,7 +206,7 @@ function getKeyStoreForOrg(username, orgID) {
 
 /**
  * @param {Array<url>} urls
- * @returns {Array}
+ * @returns {Array<Peer>}
  */
 function newPeers(urls) {
   let targets = [];
@@ -154,22 +224,28 @@ function newPeers(urls) {
   return targets;
 }
 
-function newEventHubs(urls, username, org) {
-  let targets = [];
-  for (let index in urls) {
-    if(!urls.hasOwnProperty(index)){ continue; }
-    let peerUrl = urls[index];
-
-    try {
-      let eh = newEventHub(peerUrl, username, org);
-      targets.push(eh);
-    }catch(e) {
-      logger.error(e);
-    }
-  }
-  return targets;
-}
-
+// /**
+//  * @param {Array<url>} urls
+//  * @param {string} username
+//  * @param {string} org
+//  * @returns {Array<EventHub>}
+//  */
+// function newEventHubs(urls, username, org) {
+//   let targets = [];
+//   for (let index in urls) {
+//     if(!urls.hasOwnProperty(index)){ continue; }
+//     let peerUrl = urls[index];
+//
+//     try {
+//       let eh = newEventHub(peerUrl, username, org);
+//       targets.push(eh);
+//     }catch(e) {
+//       logger.error(e);
+//     }
+//   }
+//   return targets;
+// }
+//
 
 /**
  * @param {url} peerUrl
@@ -232,24 +308,26 @@ function newPeer(peerUrl) {
  * @param {url} peerUrl
  * @param {string} username
  * @param {string} orgID
- * @return {EventHub}
+ * @return {Promise<EventHub>}
  */
 function newEventHub(peerUrl, username, orgID) {
 
-  var client = getClientForOrg(username, orgID);
+  return getClientForOrg(username, orgID)
+    .then(client => {
+      var peerInfo = _getPeerInfoByUrl(peerUrl, orgID);
+      if (!peerInfo) {
+        throw new Error('Failed to find a peer matching the url: ' + peerUrl);
+      }
+      let data = fs.readFileSync(path.join(CONFIG_DIR, peerInfo['tls_cacerts']));
 
-  var peerInfo = _getPeerInfoByUrl(peerUrl, orgID);
-  if(!peerInfo) {
-    throw new Error('Failed to find a peer matching the url: ' + peerUrl);
-  }
-  let data = fs.readFileSync(path.join(CONFIG_DIR, peerInfo['tls_cacerts']));
-
-  let eventHub = new EventHub(client);
-  eventHub.setPeerAddr(peerInfo['events'], {
-    pem: Buffer.from(data).toString(),
-    'ssl-target-name-override': peerInfo['server-hostname']
-  });
-  return eventHub;
+      //
+      let eventHub = new EventHub(client);
+      eventHub.setPeerAddr(peerInfo['events'], {
+        pem: Buffer.from(data).toString(),
+        'ssl-target-name-override': peerInfo['server-hostname']
+      });
+      return eventHub;
+    });
 }
 
 
@@ -257,6 +335,14 @@ function newEventHub(peerUrl, username, orgID) {
 //-------------------------------------//
 // APIs
 //-------------------------------------//
+
+/**
+ * acquire CLIENT and the CHANNEL for the client! So, both client and channel can be got this way.
+ * @param {string} channelID
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {Promise<Channel>}
+ */
 function getChannelForOrg(channelID, username, orgID) {
 
   if(!channelID){
@@ -269,116 +355,163 @@ function getChannelForOrg(channelID, username, orgID) {
     throw new Error('orgID is not set');
   }
 
-  let compositeKey = channelID+'/'+orgID+'/'+username;
-  if(typeof channels[compositeKey] === "undefined"){
-    channels[compositeKey] = setupChannel(channelID, username, orgID);
-  }
-  return channels[compositeKey];
+  return getClientForOrg(username, orgID)
+    .then(client=>{
+      return _getClientChannel(client, channelID, orgID);
+    });
 }
 
+// function getChannelAdminForOrg(channelID, orgID) {
+//   var adminUser = getAdminCredentials();
+//   return getChannelForOrg(channelID, adminUser.username, orgID);
+// }
 
+
+/**
+ * get client with user context (WITHOUT CHANNEL, so not really usable
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {Promise<Client>}
+ */
 function getClientForOrg(username, orgID) {
-  // helps to migrate
+  if(!username){
+    throw new Error('username is not set');
+  }
 	if(!orgID){
-		throw new Error('pass username to getClientForOrg');
+    throw new Error('orgID is not set');
 	}
-	//
+  return _getClientForOrg(username, orgID);
+}
+//
+// /**
+//  * @param {string} orgID
+//  * @returns {Promise.<Client>}
+//  */
+// function getAdminClientForOrg(orgID) {
+//   if(!orgID){
+//     throw new Error('orgID is not set');
+//   }
+//   var adminUser = getAdminCredentials();
+//   return _getClientForOrg(adminUser.username, orgID);
+// }
+
+/**
+ * @param {string} username
+ * @param {string} orgID
+ * @returns {Promise.<Client>}
+ * @private
+ */
+function _getClientForOrg(username, orgID) {
   let compositeKey = orgID + '/' + username;
   if(typeof clients[compositeKey] === "undefined"){
-    clients[compositeKey] = setupOrgClient(username, orgID);
+    clients[compositeKey] = _initClientForOrg(username, orgID);
   }
   return clients[compositeKey];
 }
 
 
 
+
+
+
+/**
+ * @param {string} org
+ * @returns {string}
+ */
 var getMspID = function(org) {
 	logger.debug('Msp ID : ' + ORGS[org].mspid);
 	return ORGS[org].mspid;
 };
 
-function getAdmin(){
+/**
+ * @returns {{username:string, password: string}}
+ */
+function getAdminCredentials(){
   var users = config.users;
   var username = users[0].username;
   var password = users[0].secret;
   return {username:username, password:password};
 }
-
-/**
- * @param {string} orgID
- * @returns {Promise.<User>}
- */
-var getAdminUser = function loginAdmin(orgID) {
-	var adminUser = getAdmin();
-  var username = adminUser.username;
-  var password = adminUser.password;
-	var client = getClientForOrg(username, orgID);
-
-	return hfc.newDefaultKeyValueStore({
-		path: getKeyStoreForOrg(username, orgID)
-	}).then((store) => {
-		client.setStateStore(store);
-		// clearing the user context before switching
-
-    // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
-    // But it needs to be tested
-		client._userContext = null;
-		return client.getUserContext(username, true).then((user) => {
-			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded admin "%s" from persistence', username);
-				return user;
-			} else {
-        logger.info('No admin "%s" in persistence', username);
-
-				let caClient = caClients[orgID];
-				// need to enroll it with CA server
-				return caClient.enroll({
-            enrollmentID: username,
-            enrollmentSecret: password
-          }).then((enrollment) => {
-            logger.info('Successfully enrolled admin user "%s"',  username);
-
-            //
-            let member = new User(username);
-            member.setCryptoSuite(client.getCryptoSuite());
-            return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID)).then(()=>member);
-          }).then((user) => {
-            return client.setUserContext(user);
-          }).catch((err) => {
-            logger.error('Failed to enroll and persist admin user "%s". Error: ', err && err.message || err);
-            // doesn't need full stack trace here, because we throw an error
-            throw err;
-          });
-			}
-		});
-	});
-};
+//
+// /**
+//  * @param {Client} client
+//  * @param {string} orgID
+//  * @returns {Promise.<User>}
+//  */
+// function _setClientAdminContext(client, orgID) {
+// 	var adminUser = getAdminCredentials();
+//   var username = adminUser.username;
+//   var password = adminUser.password;
+//
+// 	return hfc.newDefaultKeyValueStore({
+// 		path: getKeyStoreForOrg(username, orgID)
+// 	}).then((store) => {
+// 		client.setStateStore(store);
+// 		// clearing the user context before switching
+//
+//     // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
+//     // But it needs to be tested
+//     // logger.info('RESET USER CONTEXT 4', client._stateStore._dir);
+// 		client._userContext = null;
+// 		return client.getUserContext(username, true)
+//       .then((user) => {
+//         if (user && user.isEnrolled()) {
+//           logger.info('Successfully loaded admin "%s" from persistence', username);
+//           return user;
+//         } else {
+//           logger.info('No admin "%s" in persistence', username);
+//
+//           let caClient = caClients[orgID];
+//           // need to enroll it with CA server
+//           return caClient.enroll({
+//               enrollmentID: username,
+//               enrollmentSecret: password
+//             }).then((enrollment) => {
+//               logger.info('Successfully enrolled admin user "%s"',  username);
+//
+//               //
+//               let member = new User(username);
+//               member.setCryptoSuite(client.getCryptoSuite());
+//               return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID)).then(()=>member);
+//             }).then((user) => {
+//               return client.setUserContext(user);
+//             }).catch((err) => {
+//               logger.error('Failed to enroll and persist admin user "%s". Error: ', err && err.message || err);
+//               // doesn't need full stack trace here, because we throw an error
+//               throw err;
+//             });
+//         }
+//       });
+// 	});
+// }
 
 /**
  * Perform login with the user.
  * It uses private key for the user, which is set in key-value storage {@see getKeyStoreForOrg}
  * So, if the user exist in the storage, we can pick it up and use.
- * If not - there is no way to fetch it from CA (because we need user private key, which should be never passed to CA). inthis case
+ * If not - there is no way to fetch it from CA (because we need user private key, which should be never passed to CA).
+ *
+ * It's actually a LOGIN operation.
+ * We need to TAKE INTO ACCOUNT that "client.getUserContext(username, true)" updates 'client._userContext',
+ *   so, we left all 'client.setUserContext(user)' operations here as well
  *
  *
- *
+ * @param {Client} client
  * @param {string} username
  * @param {string} orgID
  * @returns {Promise.<User>}
  */
-var getRegisteredUsers = function login(username, orgID) {
+function _setClientUserContext(client, username, orgID) {
 
-	var client = getClientForOrg(username, orgID);
 	return hfc.newDefaultKeyValueStore({
 		path: getKeyStoreForOrg(username, orgID)
 	}).then((store) => {
 		client.setStateStore(store);
 		// clearing the user context before switching
     // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
-    // But it needs to be tested
 		client._userContext = null;
 
-		return client.getUserContext(username, true)
+		return client.getUserContext(username, true) // MAY UPDATE _userContext
       .then((user) => {
         if (user && user.isEnrolled()) {
           logger.info('Successfully loaded member "%s" from persistence', username);
@@ -386,9 +519,9 @@ var getRegisteredUsers = function login(username, orgID) {
         } else {
           logger.info('No member "%s" in persistence', username);
 
-          let caClient = caClients[orgID];
+          let caClient = getCAClient(orgID);
           var enrollmentSecret = null;
-          return getAdminUser(orgID)
+          return getClientAdmin(orgID)
             .then(function(adminUserObj) {
               return caClient.register({
                 enrollmentID: username,
@@ -438,56 +571,104 @@ var getRegisteredUsers = function login(username, orgID) {
     // HOTFIX
   .catch(function(/*e*/){
     logger.warn('HOTFIX: use admin credentials instead of user "%s"', username);
-    return getAdminUser(orgID)
+    return _setClientAdminContext2(client, orgID)
       .then((user) => {
         return client.setUserContext(user);
       });
   });
-};
+}
 
-// TODO: refactor it
-var getOrgAdmin = function(orgID) {
 
-  var adminUser = getAdmin();
+/**
+ * @param {string} username
+ * @return {boolean}
+ */
+function isAdmin(username){
+  var adminUser = getAdminCredentials();
+  return adminUser.username === username;
+}
+
+// /**
+//  * @param {string} orgID
+//  * @returns {Promise.<User>}
+//  */
+// function getOrgAdmin(orgID) {
+//
+//   var adminUser = getAdminCredentials();
+//   var username = adminUser.username;
+//
+//   return getClientForOrg(username, orgID)
+//     .then(client=>{
+//
+//       // admin certificates
+//       // TODO: explicitly set files
+//       var adminCerificates = ORGS[orgID].admin;
+//       var keyPath = path.join(CONFIG_DIR, adminCerificates.key);
+//       var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
+//       var certPath = path.join(CONFIG_DIR, adminCerificates.cert);
+//       var certPEM = readAllFiles(certPath)[0].toString();
+//
+//
+//       // also call 'setUserContext()' inside
+//       return client.createUser({
+//         username: 'peer'+orgID+'Admin', // TODO:
+//         mspid: getMspID(orgID),
+//         cryptoContent: {
+//           privateKeyPEM: keyPEM,
+//           signedCertPEM: certPEM
+//         }
+//       });
+//       //   .then((user) => {
+//       //   return client.setUserContext(user);
+//       // })
+//     });
+// }
+
+
+/**
+ * @param {Client} client
+ * @param {string} orgID
+ * @returns {Promise.<User>}
+ */
+function _setClientAdminContext2(client, orgID) {
+
+  var adminUser = getAdminCredentials();
   var username = adminUser.username;
-  var ks = getKeyStoreForOrg(username, orgID);
 
-  // admin certificates
-	var admin = ORGS[orgID].admin;
-	var keyPath = path.join(CONFIG_DIR, admin.key);
-	// TODO: explicitly set key name
-	var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
-	var certPath = path.join(CONFIG_DIR, admin.cert);
-  // TODO: explicitly set certificate name
-	var certPEM = readAllFiles(certPath)[0].toString();
+  return hfc.newDefaultKeyValueStore({
+    path: getKeyStoreForOrg(username, orgID)
+  }).then((store) => {
+      client.setStateStore(store);
 
-	var client = getClientForOrg(username, orgID);
-	var cryptoSuite = hfc.newCryptoSuite();
-	if (orgID) {
-		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: ks}));
-		client.setCryptoSuite(cryptoSuite);
-	}
+      // admin certificates
+      // TODO: explicitly set files
+      var adminCerificates = ORGS[orgID].admin;
+      var keyPath = path.join(CONFIG_DIR, adminCerificates.key);
+      var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
+      var certPath = path.join(CONFIG_DIR, adminCerificates.cert);
+      var certPEM = readAllFiles(certPath)[0].toString();
 
-	return hfc.newDefaultKeyValueStore({path: ks})
-		.then((store) => {
-			client.setStateStore(store);
 
-			return client.createUser({
-				username: 'peer'+orgID+'Admin',
-				mspid: getMspID(orgID),
-				cryptoContent: {
-					privateKeyPEM: keyPEM,
-					signedCertPEM: certPEM
-				}
-			});
-		});
-};
+      // also call 'setUserContext()' inside
+      return client.createUser({
+        username: 'peer'+orgID+'Admin', // TODO:
+        mspid: getMspID(orgID),
+        cryptoContent: {
+          privateKeyPEM: keyPEM,
+          signedCertPEM: certPEM
+        }
+      });
+      //   .then((user) => {
+      //   return client.setUserContext(user);
+      // })
+  });
+}
 
 
 
 /**
  * @param {string} errorString
- * @return {{code:number, message:string}}
+ * @return {{code:number|null, message:string}}
  * @example Error: fabric-ca request register failed with errors [[{"code":0,"message":"Identity 'admin' is already registered"}]]
  * @private
  */
@@ -525,18 +706,25 @@ var getPeerAddressByName = function(org, peer) {
 	return address.split('grpcs://')[1];
 };
 
-exports.getChannelForOrg = getChannelForOrg;
 exports.getClientForOrg  = getClientForOrg;
+// exports.getAdminClientForOrg  = getAdminClientForOrg;
+
+exports.getClientUser = getClientUser;
+// exports.getOrgAdmin = getClientAdmin;
+
+// use channel._clientContext to get a client
+exports.getChannelForOrg = getChannelForOrg;
+// exports.getChannelAdminForOrg = getChannelAdminForOrg;
+
 exports.getLogger = getLogger;
 exports.setupChaincodeDeploy = setupChaincodeDeploy;
 exports.getMspID = getMspID;
 exports.ORGS = ORGS;
 exports.CONFIG_DIR = CONFIG_DIR;
 exports.newPeers = newPeers;
-exports.newEventHubs = newEventHubs;
+// exports.newEventHubs = newEventHubs;
 exports.newPeer = newPeer;
 exports.newEventHub = newEventHub;
+
 exports.getPeerAddressByName = getPeerAddressByName;
-exports.getRegisteredUsers = getRegisteredUsers;
-exports.getOrgAdmin = getOrgAdmin;
 exports._extractEnrolmentError = _extractEnrolmentError;
