@@ -40,7 +40,7 @@ var clients = {};
 /**
  * @type {Object<CopService>}
  */
-var caClients = {};
+var caServices = {};
 
 //
 
@@ -50,27 +50,28 @@ var caClients = {};
  * @param {string} orgID
  * @return {CopService}
  */
-function getCAClient(orgID){
+function getCAService(orgID){
   var username = getAdminCredentials().username;
   var key = username+'/'+orgID;
-  if(!caClients[key]) {
 
+  if(!caServices[key]) {
     let caUrl = ORGS[orgID].ca;
     let cryptoSuite = hfc.newCryptoSuite();
     cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(username, orgID)}));
 
-    caClients[key] = new CopService(caUrl, null /*default TLS opts*/, '' /* default CA */, cryptoSuite);
+    caServices[key] = new CopService(caUrl, null /*default TLS opts*/, '' /* default CA */, cryptoSuite);
   }
-  return caClients[key];
+  return caServices[key];
 }
 
 /**
  * set up the client objects for each org
  * @param {string} username
  * @param {string} orgID
+ * @param {boolean} _initCA
  * @returns {Promise<Client>}
  */
-function _initClientForOrg(username, orgID){
+function _initClientForOrg(username, orgID, _initCA){
   if(!ORGS[orgID]){
     throw new Error('No such organisation: '+orgID);
   }
@@ -82,11 +83,13 @@ function _initClientForOrg(username, orgID){
 
   // init client key store and context
   var p;
-  if( isAdmin(username) ){
+  if(_initCA){
+    p = _setClientCAAdminContext(client, orgID);
+  } else if( isAdmin(username) ){
     // p = _setClientAdminContext(client, orgID);
-    p = _setClientAdminContext2(client, orgID);
+    p = _setClientContextFromFile(client, orgID);
   } else {
-    p = _setClientUserContext(client, username, orgID);
+    p = _setClientContextFromCA(client, username, orgID);
   }
   return p.then(()=>client);
 }
@@ -106,10 +109,11 @@ function getClientUser(username, orgID){
  * @param {string} orgID
  * @returns {Promise<User>}
  */
-function getClientAdmin(orgID){
-  var adminUser = getAdminCredentials();
-  return getClientUser(adminUser.username, orgID);
+function getCAAdminUser(orgID){
+  return getCAClientForOrg(orgID)
+   .then(client=>client._userContext);
 }
+
 
 
 
@@ -377,24 +381,23 @@ function getClientForOrg(username, orgID) {
   if(!username){
     throw new Error('username is not set');
   }
-	if(!orgID){
+  if(!orgID){
     throw new Error('orgID is not set');
-	}
+  }
   return _getClientForOrg(username, orgID);
 }
-//
-// /**
-//  * @param {string} orgID
-//  * @returns {Promise.<Client>}
-//  */
-// function getAdminClientForOrg(orgID) {
-//   if(!orgID){
-//     throw new Error('orgID is not set');
-//   }
-//   var adminUser = getAdminCredentials();
-//   return _getClientForOrg(adminUser.username, orgID);
-// }
 
+/**
+ * @param orgID
+ * @returns {Promise.<Client>}
+ */
+function getCAClientForOrg(orgID) {
+  if(!orgID){
+    throw new Error('orgID is not set');
+  }
+  var adminUser = getAdminCredentials();
+  return _initClientForOrg(adminUser.username, orgID, true/* means CA */);
+}
 /**
  * @param {string} username
  * @param {string} orgID
@@ -425,6 +428,7 @@ var getMspID = function(org) {
 
 /**
  * @returns {{username:string, password: string}}
+ * @param {string} orgID
  */
 function getAdminCredentials(){
   var users = config.users;
@@ -432,58 +436,60 @@ function getAdminCredentials(){
   var password = users[0].secret;
   return {username:username, password:password};
 }
-//
-// /**
-//  * @param {Client} client
-//  * @param {string} orgID
-//  * @returns {Promise.<User>}
-//  */
-// function _setClientAdminContext(client, orgID) {
-// 	var adminUser = getAdminCredentials();
-//   var username = adminUser.username;
-//   var password = adminUser.password;
-//
-// 	return hfc.newDefaultKeyValueStore({
-// 		path: getKeyStoreForOrg(username, orgID)
-// 	}).then((store) => {
-// 		client.setStateStore(store);
-// 		// clearing the user context before switching
-//
-//     // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
-//     // But it needs to be tested
-//     // logger.info('RESET USER CONTEXT 4', client._stateStore._dir);
-// 		client._userContext = null;
-// 		return client.getUserContext(username, true)
-//       .then((user) => {
-//         if (user && user.isEnrolled()) {
-//           logger.info('Successfully loaded admin "%s" from persistence', username);
-//           return user;
-//         } else {
-//           logger.info('No admin "%s" in persistence', username);
-//
-//           let caClient = caClients[orgID];
-//           // need to enroll it with CA server
-//           return caClient.enroll({
-//               enrollmentID: username,
-//               enrollmentSecret: password
-//             }).then((enrollment) => {
-//               logger.info('Successfully enrolled admin user "%s"',  username);
-//
-//               //
-//               let member = new User(username);
-//               member.setCryptoSuite(client.getCryptoSuite());
-//               return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID)).then(()=>member);
-//             }).then((user) => {
-//               return client.setUserContext(user);
-//             }).catch((err) => {
-//               logger.error('Failed to enroll and persist admin user "%s". Error: ', err && err.message || err);
-//               // doesn't need full stack trace here, because we throw an error
-//               throw err;
-//             });
-//         }
-//       });
-// 	});
-// }
+
+
+
+
+/**
+ * @param {Client} client
+ * @param {string} orgID
+ * @returns {Promise.<User>}
+ */
+function _setClientCAAdminContext(client, orgID) {
+	var adminUser = getAdminCredentials();
+  var username = adminUser.username;
+  var password = adminUser.password;
+
+	return hfc.newDefaultKeyValueStore({
+		path: getKeyStoreForOrg(username, orgID)
+	}).then((store) => {
+		client.setStateStore(store);
+		// clearing the user context before switching
+
+    // Actually we don't need to clean it, because we cache client instance with user, so there might be only one user here
+    // But it needs to be tested
+		client._userContext = null;
+		return client.getUserContext(username, true)
+      .then((user) => {
+        if (user && user.isEnrolled()) {
+          logger.info('Successfully loaded admin "%s" from persistence', username);
+          return user;
+        } else {
+          logger.info('No admin "%s" in persistence', username);
+
+          let caService = getCAService(orgID);
+          // need to enroll it with CA server
+          return caService.enroll({
+              enrollmentID: username,
+              enrollmentSecret: password
+            }).then((enrollment) => {
+              logger.info('Successfully enrolled admin user "%s"',  username);
+
+              //
+              let member = new User(username);
+              member.setCryptoSuite(client.getCryptoSuite());
+              return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(orgID)).then(()=>member);
+            }).then((user) => {
+              return client.setUserContext(user);
+            }).catch((err) => {
+              logger.error('Failed to enroll and persist admin user "%s". Error: ', err && err.message || err);
+              // doesn't need full stack trace here, because we throw an error
+              throw err;
+            });
+        }
+      });
+	});
+}
 
 /**
  * Perform login with the user.
@@ -501,7 +507,7 @@ function getAdminCredentials(){
  * @param {string} orgID
  * @returns {Promise.<User>}
  */
-function _setClientUserContext(client, username, orgID) {
+function _setClientContextFromCA(client, username, orgID) {
 
 	return hfc.newDefaultKeyValueStore({
 		path: getKeyStoreForOrg(username, orgID)
@@ -519,18 +525,18 @@ function _setClientUserContext(client, username, orgID) {
         } else {
           logger.info('No member "%s" in persistence', username);
 
-          let caClient = getCAClient(orgID);
+          let caService = getCAService(orgID);
           var enrollmentSecret = null;
-          return getClientAdmin(orgID)
+          return getCAAdminUser(orgID)
             .then(function(adminUserObj) {
-              return caClient.register({
+              return caService.register({
                 enrollmentID: username,
                 affiliation: orgID + '.department1'
               }, adminUserObj);
             }).then((secret) => {
               enrollmentSecret = secret;
               logger.debug('Successfully registered member "%s":',  username, enrollmentSecret);
-              return caClient.enroll({
+              return caService.enroll({
                 enrollmentID: username,
                 enrollmentSecret: secret
               });
@@ -571,7 +577,7 @@ function _setClientUserContext(client, username, orgID) {
     // HOTFIX
   .catch(function(/*e*/){
     logger.warn('HOTFIX: use admin credentials instead of user "%s"', username);
-    return _setClientAdminContext2(client, orgID)
+    return _setClientContextFromFile(client, orgID)
       .then((user) => {
         return client.setUserContext(user);
       });
@@ -580,6 +586,7 @@ function _setClientUserContext(client, username, orgID) {
 
 
 /**
+ * // TODO: replace this function with prefilled certificates (such as User1 which is now exists but not actually used)
  * @param {string} username
  * @return {boolean}
  */
@@ -588,52 +595,15 @@ function isAdmin(username){
   return adminUser.username === username;
 }
 
-// /**
-//  * @param {string} orgID
-//  * @returns {Promise.<User>}
-//  */
-// function getOrgAdmin(orgID) {
-//
-//   var adminUser = getAdminCredentials();
-//   var username = adminUser.username;
-//
-//   return getClientForOrg(username, orgID)
-//     .then(client=>{
-//
-//       // admin certificates
-//       // TODO: explicitly set files
-//       var adminCerificates = ORGS[orgID].admin;
-//       var keyPath = path.join(CONFIG_DIR, adminCerificates.key);
-//       var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
-//       var certPath = path.join(CONFIG_DIR, adminCerificates.cert);
-//       var certPEM = readAllFiles(certPath)[0].toString();
-//
-//
-//       // also call 'setUserContext()' inside
-//       return client.createUser({
-//         username: 'peer'+orgID+'Admin', // TODO:
-//         mspid: getMspID(orgID),
-//         cryptoContent: {
-//           privateKeyPEM: keyPEM,
-//           signedCertPEM: certPEM
-//         }
-//       });
-//       //   .then((user) => {
-//       //   return client.setUserContext(user);
-//       // })
-//     });
-// }
-
 
 /**
  * @param {Client} client
  * @param {string} orgID
  * @returns {Promise.<User>}
  */
-function _setClientAdminContext2(client, orgID) {
+function _setClientContextFromFile(client, /*username, */ orgID) {
 
-  var adminUser = getAdminCredentials();
-  var username = adminUser.username;
+  var username = 'peer'+orgID+'Admin'; // TODO:
 
   return hfc.newDefaultKeyValueStore({
     path: getKeyStoreForOrg(username, orgID)
@@ -651,7 +621,7 @@ function _setClientAdminContext2(client, orgID) {
 
       // also call 'setUserContext()' inside
       return client.createUser({
-        username: 'peer'+orgID+'Admin', // TODO:
+        username: username,
         mspid: getMspID(orgID),
         cryptoContent: {
           privateKeyPEM: keyPEM,
