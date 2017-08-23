@@ -285,9 +285,9 @@ var getChannels = function(peer, username, org) {
 			logger.debug('<<< channels >>>');
 			var channelNames = [];
 			for (let i = 0; i < response.channels.length; i++) {
-				channelNames.push('channel id: ' + response.channels[i].channel_id);
+				channelNames.push(response.channels[i].channel_id);
 			}
-			logger.debug(channelNames);
+			logger.debug(JSON.stringify(channelNames));
 			var channels = response.channels.map(function(channel){
 			  return {
           channel_id : channel.channel_id, // deprecated

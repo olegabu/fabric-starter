@@ -393,8 +393,8 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     var args = req.body.args;
     logger.debug('channelName  : ' + channelName);
     logger.debug('chaincodeName : ' + chaincodeName);
-    logger.debug('peersId  : ', peersId);
-    logger.debug('peers  : ', peers);
+    logger.debug('peersId  : ', JSON.stringify(peersId) );
+    logger.debug('peers  : ', JSON.stringify(peers) );
     logger.debug('fcn  : ' + fcn);
     logger.debug('args  : ' + args);
     if (!peers || peers.length === 0) {
