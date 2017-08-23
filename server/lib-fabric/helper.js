@@ -52,12 +52,12 @@ var caServices = {};
 
 
 /**
- * (as admin)
+ * (as CA admin)
  * @param {string} orgID
  * @return {CopService}
  */
 function getCAService(orgID){
-  var username = getAdminCredentials().username;
+  var username = getCAAdminCredentials().username;
   var key = username+'/'+orgID;
 
   if(!caServices[key]) {
@@ -71,7 +71,14 @@ function getCAService(orgID){
 }
 
 /**
- * set up the client objects for each org
+ * set up the client object (create and set crypto data)
+ *
+ * Setup contains two step:
+ *  1. create client object
+ *  2. set client context = crypto keys (some sort of authorization).
+ *     It will enroll the user if no private key loaded.
+ *     When private key is found, it doesn't actually send any request on this step.
+ *
  * @param {string} username
  * @param {string} orgID
  * @returns {Promise<Client>}
@@ -91,6 +98,9 @@ function _initClientForOrg(username, orgID){
 }
 
 /**
+ * Create new client object (without crypto data).
+ * Configure crypto storage for it
+ *
  * @param {string} username
  * @param {string} orgID
  * @returns {Client}
@@ -188,7 +198,9 @@ function _setupPeer(orgID, peerID){
   return peer;
 }
 
-
+/**
+ * @returns {Orderer}
+ */
 function newOrderer() {
 	var caRootsPath = ORGS['orderer'].tls_cacerts;
 	let data = fs.readFileSync(path.join(CONFIG_DIR, caRootsPath));
@@ -199,6 +211,10 @@ function newOrderer() {
 	});
 }
 
+/**
+ * @param {string} dir
+ * @returns {Array<string>}
+ */
 function readAllFiles(dir) {
 	var files = fs.readdirSync(dir);
 	var certs = [];
@@ -354,7 +370,7 @@ function newEventHub(peerUrl, username, orgID) {
 //-------------------------------------//
 
 /**
- * acquire CLIENT and the CHANNEL for the client! So, both client and channel can be got this way.
+ * Acquire CLIENT and the CHANNEL for the client! So, both client and channel can be got this way.
  * @param {string} channelID
  * @param {string} username
  * @param {string} orgID
@@ -378,11 +394,6 @@ function getChannelForOrg(channelID, username, orgID) {
     });
 }
 
-// function getChannelAdminForOrg(channelID, orgID) {
-//   var adminUser = getAdminCredentials();
-//   return getChannelForOrg(channelID, adminUser.username, orgID);
-// }
-
 
 /**
  * get client with user context (WITHOUT CHANNEL, so not really usable
@@ -401,8 +412,10 @@ function getClientForOrg(username, orgID) {
 }
 
 /**
+ * TODO: get rid of it. We need only CA User
  * @param orgID
  * @returns {Promise.<Client>}
+ * @private
  */
 function getCAClientForOrg(orgID) {
   if(!orgID){
@@ -410,7 +423,7 @@ function getCAClientForOrg(orgID) {
   }
   // caching
   if(!caClients[orgID]){
-    var adminUser = getAdminCredentials();
+    var adminUser = getCAAdminCredentials();
     var client = _newClient(adminUser.username, orgID);
     caClients[orgID] = _setClientCAAdminContext(client, orgID).then(()=>client);
   }
@@ -447,9 +460,9 @@ var getMspID = function(org) {
 
 /**
  * @returns {{username:string, password: string}}
- * @param {string} orgID
+ * @ param {string} orgID
  */
-function getAdminCredentials(){
+function getCAAdminCredentials(){
   var users = config.users;
   var username = users[0].username;
   var password = users[0].secret;
@@ -465,7 +478,7 @@ function getAdminCredentials(){
  * @returns {Promise.<User>}
  */
 function _setClientCAAdminContext(client, orgID) {
-	var adminUser = getAdminCredentials();
+	var adminUser = getCAAdminCredentials();
   var username = adminUser.username;
   var password = adminUser.password;
 
@@ -606,11 +619,14 @@ function _setClientContextFromCA(client, username, orgID) {
 
 /**
  * // TODO: replace this function with prefilled certificates (such as User1 which is now exists but not actually used)
+ * @todo rename to hasCertificateInArtifacts() or something similar to it
+ *
  * @param {string} username
  * @return {boolean}
  */
 function isAdmin(username){
-  var adminUser = getAdminCredentials();
+  // TODO: here we should check whether we has certificate for the user in artifacts
+  var adminUser = getCAAdminCredentials();
   return adminUser.username === username;
 }
 
