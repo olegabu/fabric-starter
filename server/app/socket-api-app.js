@@ -60,9 +60,9 @@ function init(io, options){
 
   io.on('connection', function(socket){
     socket.emit('status', peerListener.isConnected() ? 'connected':'disconnected' );
-    if(lastBlock){
-      socket.emit('chainblock', lastBlock);
-    }
+    // if(lastBlock){
+    //   socket.emit('chainblock', lastBlock);
+    // }
   });
 
 
