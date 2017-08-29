@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 
-# DOMAIN=example.com
-# ORG1=org1
-# ORG2=org2
-# CHANNEL_NAME=mychannel
-
-DOMAIN=nsd.ru
-ORG1=nsd
-ORG2=issuer
-CHANNEL_NAME="$ORG1-$ORG2"
+DOMAIN=example.com
+ORG1=org1
+ORG2=org2
+CHANNEL_NAME=mychannel
 
 CHAINCODE_NAME=mycc
 CHAINCODE_PATH=chaincode_example02
@@ -67,7 +62,7 @@ function generateArtifacts() {
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$ORG1/g" artifacts/cryptogentemplate-peer.yaml > artifacts/"cryptogen-$ORG1.yaml"
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$ORG2/g" artifacts/cryptogentemplate-peer.yaml > artifacts/"cryptogen-$ORG2.yaml"
     # docker-compose.yaml
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/CHANNEL_NAME/$CHANNEL_NAME/g" ${COMPOSE_TEMPLATE} > ${COMPOSE_FILE}
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" ${COMPOSE_TEMPLATE} > ${COMPOSE_FILE}
     # network-config.json
     #  fill environments                                                   |   remove comments
     sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
