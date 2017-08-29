@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 "use strict";
-var util = require('util');
+var util = require('util'); // jshint ignore:line
 var fs = require('fs');
 var path = require('path');
 var helper = require('./helper.js');
@@ -22,47 +22,48 @@ var logger = helper.getLogger('Create-Channel');
 
 
 //Attempt to send a request to the orderer with the sendCreateChain method
-var createChannel = function(channelID, channelConfigPath, username, orgName) {
+var createChannel = function(channelID, channelConfigPath, username, org) {
 	logger.debug('\n====== Creating Channel \'' + channelID + '\' ======\n');
-	var client  = helper.getClientForOrg(orgName);
-	var channel = helper.getChannelForOrg(channelID, orgName);
 
-	// read in the envelope for the channel config raw bytes
-	var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
-	// extract the channel config bytes from the envelope to be signed
-	var channelConfig = client.extractChannelConfig(envelope);
+	return helper.getChannelForOrg(channelID, username, org)
+		.then(channel=>{
+			var client = channel.getClient();
 
-	//Acting as a client in the given organization provided with "orgName" param
-	return helper.getOrgAdmin(orgName).then((/*admin*/) => {
-		logger.debug(util.format('Successfully acquired admin user for the organization "%s"', orgName));
-		// sign the channel config bytes as "endorsement", this is required by
-		// the orderer's channel creation policy
-		let signature = client.signChannelConfig(channelConfig);
+			// read in the envelope for the channel config raw bytes
+			var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
+			// extract the channel config bytes from the envelope to be signed
+			var channelConfig = client.extractChannelConfig(envelope);
 
-		let request = {
-			config: channelConfig,
-			signatures: [signature],
-			name: channelID,
-			orderer: channel.getOrderers()[0], // TODO: multiple orderers will fail here?
-			txId: client.newTransactionID()
-		};
 
-		// send to orderer
-		return client.createChannel(request);
-	}).then((response) => {
-		logger.debug(' response ::%j', response);
-		if (response && response.status === 'SUCCESS') {
-			logger.debug('Successfully created the channel.');
-			let response = {
-				success: true,
-				message: 'Channel \'' + channelID + '\' created Successfully'
+			// sign the channel config bytes as "endorsement", this is required by
+			// the orderer's channel creation policy
+			let signature = client.signChannelConfig(channelConfig);
+
+			let request = {
+				config: channelConfig,
+				signatures: [signature],
+				name: channelID,
+				orderer: channel.getOrderers()[0], // TODO: multiple orderers will fail here?
+				txId: client.newTransactionID()
 			};
-		  return response;
-		} else {
-			logger.error('\n!!!!!!!!! Failed to create the channel \'' + channelID + '\' !!!!!!!!!\n\n');
-			throw new Error('Failed to create the channel \'' + channelID + '\'');
-		}
-	}).catch((err) => {
+
+			// send to orderer
+			return client.createChannel(request);
+		}).then((response) => {
+			logger.debug(' response ::%j', response);
+			if (response && response.status === 'SUCCESS') {
+				logger.debug('Successfully created the channel.');
+				let response = {
+					success: true,
+					message: 'Channel \'' + channelID + '\' created Successfully'
+				};
+				return response;
+			} else {
+				logger.error('\n!!!!!!!!! Failed to create the channel \'' + channelID + '\' !!!!!!!!!\n\n');
+				throw new Error('Failed to create the channel \'' + channelID + '\'');
+			}
+	})
+	.catch((err) => {
 		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack : err);
 		throw new Error('Failed to initialize the channel: ' + err.stack ? err.stack : err);
 	});

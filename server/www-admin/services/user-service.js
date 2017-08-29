@@ -37,6 +37,7 @@ function UserService($log, $rootScope, ApiService, localStorageService) {
       user.tokenData = parseTokenData(user.token);
     }
     localStorageService.set('user', user);
+    $rootScope._tokenInfo = user;
   };
 
   UserService.restoreAuthorization = function(){

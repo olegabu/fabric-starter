@@ -4,7 +4,7 @@
  * @require socket.io
  * @ngInject
  */
-function SocketService(env, $rootScope) {
+function SocketService(env, $rootScope, $log) {
   // jshint shadow: true
   var SocketService = this;
 
@@ -27,7 +27,7 @@ function SocketService(env, $rootScope) {
 
     socket.emit('hello', 'Hi from client');
     socket.on('hello', function(payload){
-      console.log('server hello:', payload);
+      $log.debug('server hello:', payload);
     });
 
     socket.on('connect',      function(){              SocketService.state = STATE_CONNECTED;   $rootScope.$apply(); });
@@ -35,6 +35,11 @@ function SocketService(env, $rootScope) {
     socket.on('reconnecting', function(attemptNumber){ SocketService.state = STATE_CONNECTING;  $rootScope.$apply(); });
     socket.on('reconnect_error', function(error){      SocketService.state = STATE_ERROR;       $rootScope.$apply(); });
 
+    socket.on('status', function(status){
+      $log.debug('server status:', status);
+      SocketService.state = status;
+      $rootScope.$apply();
+    });
 
     // socket.on('ping', function(){
     //   console.log('socket: ping');
@@ -52,7 +57,7 @@ function SocketService(env, $rootScope) {
    */
   SocketService.getSocket = function(){
     return socket;
-  }
+  };
 
 
   /**
@@ -60,7 +65,7 @@ function SocketService(env, $rootScope) {
    */
   SocketService.getState = function(){
     return SocketService.state;
-  }
+  };
 
 
 

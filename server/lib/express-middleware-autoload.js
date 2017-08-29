@@ -1,5 +1,8 @@
+/**
+ * Created by maksim
+ */
 
-
+"use strict";
 const RELPATH = '/../'; // relative path to server root. Change it during file movement
 
 const path  = require('path');
@@ -37,7 +40,7 @@ function loadMiddlewares(app, configFile){
     var moduleInfo = middlewareArr[i];
 
     var name  = moduleInfo.name;
-    var mount = moduleInfo.mount;
+    // var mount = moduleInfo.mount;
     var file  = moduleInfo.file;
     // var args  = moduleInfo.args || [];
 
@@ -55,10 +58,10 @@ function loadMiddlewares(app, configFile){
 
     let expressModule = require(file);
     let expressMiddleware = expressModule.call(expressModule, require);
-    if(typeof expressMiddleware == "function"){
+    if(typeof expressMiddleware === "function"){
       app.use(expressMiddleware);
     }else{
-      logger.debug('not a function:', name||file, name ? '\t=> '+file : '' );
+      logger.debug('not an express middleware:', name||file, name ? '\t=> '+file : '' );
     }
   }
 

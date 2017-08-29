@@ -33,13 +33,14 @@ var invoke        = require('../lib-fabric/invoke-transaction.js');
 var query         = require('../lib-fabric/query.js');
 
 var config = require('../config.json');
+var packageInfo = require('../package.json');
 
 const ORG = process.env.ORG || null;
 const USERNAME = config.user.username;
 const LEDGER_CONFIG_DIR  = '../artifacts/channel/';
 const GENESIS_BLOCK_FILE = 'genesis.block';
 
-logger.info('**************    API SERVER     ******************');
+logger.info('**************    API SERVER %s  ******************', packageInfo.version);
 logger.info('Admin     : ' + USERNAME);
 logger.info('Org name  : ' + ORG);
 
@@ -73,8 +74,6 @@ function corsCb(req, cb){
 }
 app.options('*', cors(corsCb));
 app.use(cors(corsCb));
-
-
 
 // enable admin party before authorization, but after cors
 if(config.admin_party) {
@@ -162,14 +161,22 @@ adminPartyApp.post('/users', function(req, res) {
     }, app.get('secret'));
 
     res.promise(
-        helper.getRegisteredUsers(username, ORG, true).then(function(response) {
+        helper.getClientUser(username, ORG)
+          .then((user) => {
+            return {
+              success: true,
+              secret: user._enrollmentSecret,
+              message: username + ' enrolled Successfully',
+            };
+          })
+          .then(function(response) {
             if (response && typeof response !== 'string') {
                 response.token = token;
                 return response;
             } else {
                 return Promise.reject(response);
             }
-        })
+          })
     );
 });
 
@@ -307,6 +314,7 @@ clientConfig.org = ORG;
 
 app.get('/config.js', expressEnv('__config', clientConfig));
 app.get('/config', function(req, res) {
+    res.setHeader('X-Api-Version', packageInfo.version);
     res.send(clientConfig);
 });
 
@@ -385,8 +393,8 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) 
     var args = req.body.args;
     logger.debug('channelName  : ' + channelName);
     logger.debug('chaincodeName : ' + chaincodeName);
-    logger.debug('peersId  : ', peersId);
-    logger.debug('peers  : ', peers);
+    logger.debug('peersId  : ', JSON.stringify(peersId) );
+    logger.debug('peers  : ', JSON.stringify(peers) );
     logger.debug('fcn  : ' + fcn);
     logger.debug('args  : ' + args);
     if (!peers || peers.length === 0) {
@@ -555,7 +563,7 @@ app.get('/chaincodes', function(req, res) {
 
 
     res.promise(
-      query.getInstalledChaincodes(peer, channelName, installType, req.username, ORG)
+      query.getInstalledChaincodes(peer, channelName, installType, USERNAME, ORG)
     );
 });
 

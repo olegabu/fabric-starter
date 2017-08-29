@@ -7,14 +7,14 @@ const path  = require('path');
 const fs    = require('fs');
 
 var log4js = require('log4js');
+
 var logger = log4js.getLogger('fabric-client');
-logger.setLevel('DEBUG');
+logger.setLevel('INFO');
 
 // const CONFIG_FILE_DEFAULT = '/etc/hyperledger/artifacts/network-config.json';
 const CONFIG_FILE_DEFAULT = '../artifacts/network-config.json';
 
 ////
-// TODO: temporaly disable CONFIG_FILE to make migration simplier
 var configFile = process.env.CONFIG_FILE || CONFIG_FILE_DEFAULT;
 if(!path.isAbsolute(configFile)){
   configFile = path.join(__dirname, RELPATH, configFile);

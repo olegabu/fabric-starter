@@ -53,10 +53,10 @@ angular.module('nsd.directive.blockchain', ['nsd.service.socket'])
       var stateClasses = {
         'error' :        'red-text',
         'connected' :    'light-blue-text aqua-text',
-        'sidconnected' : '',
+        'disconnected' : 'red-text',
         'connecting' :   'orange-text',
-        'default' :      'red-text',
-      }
+        'default' :      '',
+      };
 
       /**
        *

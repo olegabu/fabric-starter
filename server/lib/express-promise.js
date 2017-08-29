@@ -21,6 +21,7 @@ module.exports = function(errorReporter){
            - res.error('alala')  - pass only message.
            */
         res.error = (err, msg)=>{
+          //console.log('res.error', JSON.stringify(err), err, typeof err, err instanceof Error);
           if(err === 401){
             err = {status:401, message: msg || 'Unauthorized'};
           }else if(typeof err === 'number' && typeof msg === 'string'){
@@ -43,7 +44,8 @@ module.exports = function(errorReporter){
 function reportErrorDefault(err, req, res){
     err = err || {};
     let status = err.status || err.statusCode || 500;
-    let message = err.message || err.description || err || 'Unknown error';
+    // FIXME: err can be an object here, so we'll get [Object object] without 'JSON.stringify'
+    let message = err.message || err.description || JSON.stringify(err) || 'Unknown error';
     res.status(status).send({ok:false, message:message});
 
     console.error('Request failed: %s %s:', req.method.toUpperCase(), req.url, message );
