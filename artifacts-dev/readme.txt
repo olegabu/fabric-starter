@@ -1,1 +1,0 @@
-Here we placed network configuration, which can be to run api server without docker
