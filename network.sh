@@ -12,6 +12,7 @@ CHAINCODE_INIT='{"Args":["init","a","100","b","200"]}'
 CLI_TIMEOUT=10000
 COMPOSE_FILE=ledger/docker-compose.yaml
 COMPOSE_TEMPLATE=ledger/docker-compose-template.yaml
+COMPOSE_FILE_DEV=ledger/docker-composedev.yaml
 
 # Delete any images that were generated as a part of this setup
 # specifically the following images are often left behind:
@@ -123,6 +124,36 @@ function installChaincode() {
     docker-compose --file ${COMPOSE_FILE} run --rm "cli.$ORG.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install -n $N -v 1.0 -p $P      && CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer chaincode install -n $N -v 1.0 -p $P"
 }
 
+function devNetworkUp () {
+  docker-compose -f ${COMPOSE_FILE_DEV} up -d 2>&1
+  if [ $? -ne 0 ]; then
+    echo "ERROR !!!! Unable to start network"
+    logs
+    exit 1
+  fi
+}
+
+function devNetworkDown () {
+  docker-compose -f ${COMPOSE_FILE_DEV} down
+}
+
+function devInstallInstantiate () {
+    docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode install -p $CHAINCODE_PATH -n $CHAINCODE_NAME -v 0"
+    docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n $CHAINCODE_NAME -v 0 -C myc -c '{\"Args\":[\"init\",\"a\",\"b\",\"100\",\"200\"]}'"
+}
+
+function devInvoke () {
+ docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode invoke -n $CHAINCODE_NAME -v 0 -C myc -c '{\"Args\":[\"move\",\"a\",\"b\",\"10\"]}'"
+}
+
+function devQuery () {
+ docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode query -n $CHAINCODE_NAME -v 0 -C myc -c '{\"Args\":[\"a\"]}'"
+}
+
+function devLogs () {
+    TIMEOUT=${CLI_TIMEOUT} COMPOSE_HTTP_TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${COMPOSE_FILE_DEV} logs -f
+}
+
 function networkUp () {
   # generate artifacts if they don't exist
   if [ ! -d "artifacts/crypto-config" ]; then
@@ -221,6 +252,18 @@ elif [ "${MODE}" == "restart" ]; then
   networkUp
 elif [ "${MODE}" == "logs" ]; then
   logs
+elif [ "${MODE}" == "devup" ]; then
+  devNetworkUp
+elif [ "${MODE}" == "devinit" ]; then
+  devInstallInstantiate
+elif [ "${MODE}" == "devinvoke" ]; then
+  devInvoke
+elif [ "${MODE}" == "devquery" ]; then
+  devQuery
+elif [ "${MODE}" == "devlogs" ]; then
+  devLogs
+elif [ "${MODE}" == "devdown" ]; then
+  devNetworkDown
 elif [ "${MODE}" == "channel" ]; then
   createChannel
 elif [ "${MODE}" == "join" ]; then
