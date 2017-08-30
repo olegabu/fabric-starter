@@ -23,3 +23,5 @@ build
 /chaincode/go/chaincode_example02/chaincode_example02.iml
 /fabric-starter.ipr
 /fabric-starter.iml
+/chaincode/java/chaincode_example02/src/main/main.iml
+/artifacts/artifacts.iml
