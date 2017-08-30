@@ -137,9 +137,13 @@ function devNetworkDown () {
   docker-compose -f ${COMPOSE_FILE_DEV} down
 }
 
-function devInstallInstantiate () {
-    docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode install -p $CHAINCODE_PATH -n $CHAINCODE_NAME -v 0"
-    docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n $CHAINCODE_NAME -v 0 -C myc -c '{\"Args\":[\"init\",\"a\",\"b\",\"100\",\"200\"]}'"
+function devInstall () {
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode install -p $CHAINCODE_PATH -n $CHAINCODE_NAME -v 0"
+}
+
+# before calling run or debug your chaincode with env CORE_CHAINCODE_LOGGING_LEVEL=debug CORE_PEER_ADDRESS=0.0.0.0:7051 CORE_CHAINCODE_ID_NAME=mycc:0
+function devInstantiate () {
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n $CHAINCODE_NAME -v 0 -C myc -c '$CHAINCODE_INIT'"
 }
 
 function devInvoke () {
@@ -147,7 +151,7 @@ function devInvoke () {
 }
 
 function devQuery () {
- docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode query -n $CHAINCODE_NAME -v 0 -C myc -c '{\"Args\":[\"a\"]}'"
+ docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode query -n $CHAINCODE_NAME -v 0 -C myc -c '{\"Args\":[\"query\",\"a\"]}'"
 }
 
 function devLogs () {
@@ -254,8 +258,10 @@ elif [ "${MODE}" == "logs" ]; then
   logs
 elif [ "${MODE}" == "devup" ]; then
   devNetworkUp
-elif [ "${MODE}" == "devinit" ]; then
-  devInstallInstantiate
+elif [ "${MODE}" == "devinstall" ]; then
+  devInstall
+elif [ "${MODE}" == "devinstantiate" ]; then
+  devInstantiate
 elif [ "${MODE}" == "devinvoke" ]; then
   devInvoke
 elif [ "${MODE}" == "devquery" ]; then

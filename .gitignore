@@ -19,3 +19,7 @@ build
 /artifacts-dev
 /ledger/docker-compose.yaml
 .storage
+/ledger/ledger.iml
+/chaincode/go/chaincode_example02/chaincode_example02.iml
+/fabric-starter.ipr
+/fabric-starter.iml
