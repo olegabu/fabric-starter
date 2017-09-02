@@ -695,6 +695,7 @@ elif [ "${MODE}" == "up-3" ]; then
 
   downloadArtifactsMember ${ORG3} common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
 
+  downloadChannelBlockFile ${ORG3} ${ORG1} common
   joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
 
   joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
