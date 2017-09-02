@@ -38,6 +38,7 @@ services:
       service: cli-base
 #    volumes:
 #      - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
+    CLI_EXTRA_HOSTS
 
   # simple http server to disseminate certificates
   www.DOMAIN:
