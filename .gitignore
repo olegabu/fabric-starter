@@ -15,13 +15,8 @@ build
 /artifacts/configtx.yaml
 /artifacts/*.block
 /artifacts/network-config.json
-/artifacts/network-config-dev.json
-/artifacts-dev
 /ledger/docker-compose.yaml
-.storage
-/ledger/ledger.iml
-/chaincode/go/chaincode_example02/chaincode_example02.iml
 /fabric-starter.ipr
 /fabric-starter.iml
-/chaincode/java/chaincode_example02/src/main/main.iml
-/artifacts/artifacts.iml
+/ledger/docker-compose-*.yaml
+/fabric-starter.iws

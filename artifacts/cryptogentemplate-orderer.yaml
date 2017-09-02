@@ -1,7 +1,5 @@
 #
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
+# Copyright Altoros 2017 All Rights Reserved.
 #
 # ---------------------------------------------------------------------------
 # "OrdererOrgs" - Definition of organizations managing orderer nodes

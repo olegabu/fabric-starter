@@ -55,3 +55,8 @@ services:
     volumes:
      - ../artifacts:/usr/src/artifacts
     command: npm start
+
+  www-base:
+    image: trinitronx/python-simplehttpserver
+    volumes:
+      - ../www/artifacts:/var/www/:ro

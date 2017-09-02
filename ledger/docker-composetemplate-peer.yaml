@@ -1,0 +1,107 @@
+#
+# Copyright Altoros. All Rights Reserved.
+#
+
+version: '2'
+
+services:
+
+  ca.ORG.DOMAIN:
+    container_name: ca.ORG.DOMAIN
+    image: hyperledger/fabric-ca:x86_64-1.0.0
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG.DOMAIN-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA_PRIVATE_KEY
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG.DOMAIN-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA_PRIVATE_KEY
+#    ports:
+#      - CA_PORT:7054
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../artifacts/fabric-ca-server-config-ORG.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+
+  peer0.ORG.DOMAIN:
+    container_name: peer0.ORG.DOMAIN
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.ORG.DOMAIN
+      - CORE_PEER_LOCALMSPID=ORGMSP
+      - CORE_PEER_ADDRESS=peer0.ORG.DOMAIN:7051
+    ports:
+      - PEER0_PORT:7051
+#      - PEER0_EVENT_PORT:7053
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer0.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - ca.ORG.DOMAIN
+    PEER_EXTRA_HOSTS
+
+  peer1.ORG.DOMAIN:
+    container_name: peer1.ORG.DOMAIN
+    extends:
+      file:   base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.ORG.DOMAIN
+      - CORE_PEER_LOCALMSPID=ORGMSP
+      - CORE_PEER_ADDRESS=peer1.ORG.DOMAIN:7051
+    ports:
+      - PEER1_PORT:7051
+#      - PEER1_EVENT_PORT:7053
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer1.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
+    depends_on:
+      - ca.ORG.DOMAIN
+    PEER_EXTRA_HOSTS
+
+  # api server
+  api.ORG.DOMAIN:
+    extends:
+      file: base.yaml
+      service: api-base
+    container_name: api.ORG.DOMAIN
+    ports:
+      - API_PORT:4000
+    environment:
+      - ORG=ORG
+      - PORT=4000
+    depends_on:
+      - peer0.ORG.DOMAIN
+      - peer1.ORG.DOMAIN
+    API_EXTRA_HOSTS
+
+  cli.DOMAIN:
+    container_name: cli.DOMAIN
+    extends:
+      file: base.yaml
+      service: cli-base
+    volumes:
+      - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
+
+  cli.ORG.DOMAIN:
+    container_name: cli.ORG.DOMAIN
+    extends:
+      service: cli.DOMAIN
+    environment:
+      - CORE_PEER_LOCALMSPID=ORGMSP
+    volumes:
+        - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/users/Admin@ORG.DOMAIN:/etc/hyperledger/crypto/peer
+    depends_on:
+      - peer0.ORG.DOMAIN
+      - peer1.ORG.DOMAIN
+      - www.ORG.DOMAIN
+    CLI_EXTRA_HOSTS
+
+  # simple http server to disseminate certificates
+  www.ORG.DOMAIN:
+    extends:
+      file: base.yaml
+      service: www-base
+    container_name: www.ORG.DOMAIN
+    ports:
+      - WWW_PORT:8080

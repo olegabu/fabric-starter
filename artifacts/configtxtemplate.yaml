@@ -1,7 +1,4 @@
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+# Copyright Altoros 2017 All Rights Reserved.
 
 ---
 ################################################################################
@@ -14,7 +11,7 @@
 ################################################################################
 Profiles:
 
-    TwoOrgsOrdererGenesis:
+    OrdererGenesis:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
@@ -24,13 +21,36 @@ Profiles:
                 Organizations:
                     - *ORG1
                     - *ORG2
-    TwoOrgsChannel:
+                    - *ORG3
+    common:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *ORG1
                 - *ORG2
+                - *ORG3
+    ORG2-ORG3:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ORG2
+                - *ORG3
+    ORG1-ORG2:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ORG1
+                - *ORG2
+    ORG1-ORG3:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ORG1
+                - *ORG3
 
 ################################################################################
 #
@@ -73,20 +93,19 @@ Organizations:
               Port: 7051
 
     - &ORG2
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: ORG2MSP
-
-        # ID to load the MSP definition as
         ID: ORG2MSP
-
         MSPDir: crypto-config/peerOrganizations/ORG2.DOMAIN/msp
-
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
             - Host: peer0.ORG2.DOMAIN
+              Port: 7051
+
+    - &ORG3
+        Name: ORG3MSP
+        ID: ORG3MSP
+        MSPDir: crypto-config/peerOrganizations/ORG3.DOMAIN/msp
+        AnchorPeers:
+            - Host: peer0.ORG3.DOMAIN
               Port: 7051
 
 ################################################################################

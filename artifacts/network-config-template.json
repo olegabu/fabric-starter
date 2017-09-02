@@ -48,6 +48,28 @@
 				"key":  "crypto-config/peerOrganizations/ORG2.DOMAIN/users/Admin@ORG2.DOMAIN/msp/keystore",
 				"cert": "crypto-config/peerOrganizations/ORG2.DOMAIN/users/Admin@ORG2.DOMAIN/msp/signcerts"
 			}
+		},
+
+		"ORG3": {
+			"name":  "peerORG3",
+			"mspid": "ORG3MSP",
+			"ca": "https://ca.ORG3.DOMAIN:7054",
+			"peer0": {
+				"requests": "grpcs://peer0.ORG3.DOMAIN:7051",
+				"events":   "grpcs://peer0.ORG3.DOMAIN:7053",
+				"server-hostname": "peer0.ORG3.DOMAIN",
+				"tls_cacerts": "crypto-config/peerOrganizations/ORG3.DOMAIN/peers/peer0.ORG3.DOMAIN/tls/ca.crt"
+			},
+			"peer1": {
+				"requests": "grpcs://peer1.ORG3.DOMAIN:7051",
+				"events":   "grpcs://peer1.ORG3.DOMAIN:7053",
+				"server-hostname": "peer1.ORG3.DOMAIN",
+				"tls_cacerts": "crypto-config/peerOrganizations/ORG3.DOMAIN/peers/peer1.ORG3.DOMAIN/tls/ca.crt"
+			},
+			"admin": {
+				"key":  "crypto-config/peerOrganizations/ORG3.DOMAIN/users/Admin@ORG3.DOMAIN/msp/keystore",
+				"cert": "crypto-config/peerOrganizations/ORG3.DOMAIN/users/Admin@ORG3.DOMAIN/msp/signcerts"
+			}
 		}
 	}
 }

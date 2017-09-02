@@ -15,7 +15,7 @@ The test web application allows the end user to enroll with the CA to transact a
 the API server. Please note that connection to the API server and the test web app is not password protected. 
  
 A sample network of two organizations and a solo orderer can be started by a 
-[docker-compose script](ledger/docker-compose-template.yaml) that you can customize with your own domain and 
+[docker-compose script](ledger/docker-composetemplate.yaml) that you can customize with your own domain and 
 organization names in [network.sh](network.sh) setup script.
 
 ### Prerequisites:
