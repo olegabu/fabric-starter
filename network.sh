@@ -240,8 +240,9 @@ function createChannel () {
     echo "changing ownership of channel block files"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
-    echo "copying channel block file to be served by www.$org.$DOMAIN"
-    cp "$channel_name.block" "www/artifacts"
+    d="artifacts"
+    echo "copying channel block file from ${d} to be served by www.$org.$DOMAIN"
+    cp "{d}/$channel_name.block" "www/${d}"
 }
 
 function joinChannel() {
