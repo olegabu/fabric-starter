@@ -60,11 +60,12 @@ function removeUnwantedImages() {
 }
 
 function removeArtifacts() {
-  echo "Removing generated artifacts"
+  echo "Removing generated and downloaded artifacts"
   rm ledger/docker-compose-*.yaml
   rm -rf artifacts/crypto-config
   rm -rf artifacts/channel
   rm artifacts/*block*
+  rm -rf www/artifacts && mkdir www/artifacts
 }
 
 function removeDockersFromCompose() {
@@ -669,35 +670,39 @@ elif [ "${MODE}" == "up-orderer" ]; then
 elif [ "${MODE}" == "up-1" ]; then
   dockerComposeUp ${ORG1}
   installAll ${ORG1}
-
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
 
   createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_COMMON_NAME} ${CHAINCODE_COMMON_INIT}
 
-#  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
-#  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+
+  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-2" ]; then
   dockerComposeUp ${ORG2}
   installAll ${ORG2}
-
   downloadArtifactsMember ${ORG2} common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
 
   downloadChannelBlockFile ${ORG2} ${ORG1} common
   joinWarmUp ${ORG2} common ${CHAINCODE_COMMON_NAME}
 
-#  joinWarmUp ${ORG2} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME}
-#  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+  downloadChannelBlockFile ${ORG2} ${ORG1} "${ORG1}-${ORG2}"
+  joinWarmUp ${ORG2} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME}
+
+  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-3" ]; then
   dockerComposeUp ${ORG3}
   installAll ${ORG3}
-
   downloadArtifactsMember ${ORG3} common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
 
+  downloadChannelBlockFile ${ORG3} ${ORG1} common
   joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
 
+  downloadChannelBlockFile ${ORG3} ${ORG2} "${ORG2}-${ORG3}"
   joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
+
+  downloadChannelBlockFile ${ORG3} ${ORG1} "${ORG1}-${ORG3}"
   joinWarmUp ${ORG3} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
 
 elif [ "${MODE}" == "logs" ]; then
