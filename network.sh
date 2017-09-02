@@ -220,8 +220,10 @@ function serveOrdererArtifacts() {
     echo "Copying generated network config file from $d to be served by www.$DOMAIN"
     cp "${d}/network-config.json" "www/${d}"
 
+    d="artifacts/channel"
     echo "Copying channel transaction config files from $d to be served by www.$DOMAIN"
-    cp "${d}/channel/*.tx" "www/${d}/"
+    mkdir -p "www/${d}"
+    cp "${d}/"*.tx "www/${d}/"
 
     docker-compose --file ${f} up -d "www.$DOMAIN"
 }
@@ -237,6 +239,9 @@ function createChannel () {
 
     echo "changing ownership of channel block files"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
+
+    echo "copying channel block file to be served by www.$org.$DOMAIN"
+    cp "$channel_name.block" "www"
 }
 
 function joinChannel() {
@@ -402,20 +407,33 @@ function downloadNetworkConfig() {
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
 }
 
-function downloadChannelBlockFiles() {
+function downloadChannelTxFiles() {
     org=$1
     f="ledger/docker-compose-$org.yaml"
 
-    info "downloading channel block files using $f"
+    info "downloading channel config transaction files using $f"
 
     for channel_name in ${@:2}
     do
-      c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
+      c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/artifacts/channel/$channel_name.tx && chown -R $UID:$GID ."
       echo ${c}
       docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
     done
 }
 
+function downloadChannelBlockFile() {
+    org=$1
+    f="ledger/docker-compose-$org.yaml"
+
+    leader=$2
+    channel_name=$3
+
+    info "downloading block file of created channel $channel_name from $leader using $f"
+
+    c="wget ${WGET_OPTS} http://www.$leader.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
+    echo ${c}
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
+}
 
 function downloadArtifactsMember() {
   makeCertDirs
@@ -423,8 +441,8 @@ function downloadArtifactsMember() {
   org=$1
   f="ledger/docker-compose-$org.yaml"
 
+  downloadChannelTxFiles ${@}
   downloadNetworkConfig ${org}
-  downloadChannelBlockFiles ${@}
 
   info "downloading orderer cert file using $f"
 
