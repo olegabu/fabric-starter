@@ -220,8 +220,8 @@ function serveOrdererArtifacts() {
     echo "Copying generated network config file from $d to be served by www.$DOMAIN"
     cp "${d}/network-config.json" "www/${d}"
 
-#    echo "Copying channel block files from $d to be served by www.$DOMAIN"
-#    cp "${d}/*.block" "www/${d}"
+    echo "Copying channel transaction config files from $d to be served by www.$DOMAIN"
+    cp "${d}/channel/*.tx" "www/${d}/"
 
     docker-compose --file ${f} up -d "www.$DOMAIN"
 }
@@ -397,7 +397,7 @@ function downloadNetworkConfig() {
 
     info "downloading network config file using $f"
 
-    c="wget ${WGET_OPTS} http://www.$ORG1.$DOMAIN:$DEFAULT_WWW_PORT/network-config.json && chown -R $UID:$GID ."
+    c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/network-config.json && chown -R $UID:$GID ."
     echo ${c}
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
 }
