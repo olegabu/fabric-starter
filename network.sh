@@ -241,7 +241,7 @@ function createChannel () {
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
     echo "copying channel block file to be served by www.$org.$DOMAIN"
-    cp "$channel_name.block" "www"
+    cp "$channel_name.block" "www/artifacts"
 }
 
 function joinChannel() {
@@ -415,7 +415,7 @@ function downloadChannelTxFiles() {
 
     for channel_name in ${@:2}
     do
-      c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/artifacts/channel/$channel_name.tx && chown -R $UID:$GID ."
+      c="wget ${WGET_OPTS} --directory-prefix channel http://www.$DOMAIN:$DEFAULT_WWW_PORT/channel/$channel_name.tx && chown -R $UID:$GID ."
       echo ${c}
       docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
     done
@@ -428,7 +428,7 @@ function downloadChannelBlockFile() {
     leader=$2
     channel_name=$3
 
-    info "downloading block file of created channel $channel_name from $leader using $f"
+    info "downloading channel block file of created $channel_name from $leader using $f"
 
     c="wget ${WGET_OPTS} http://www.$leader.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
     echo ${c}
