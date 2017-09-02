@@ -4,7 +4,7 @@ STARTTIME=$(date +%s)
 
 # defaults; export these variables before executing this script
 : ${DOMAIN:="example.com"}
-: ${IP_ORDERER:="34.227.26.187"}
+: ${IP_ORDERER:="54.235.3.243"}
 : ${ORG1:="a"}
 : ${ORG2:="b"}
 : ${ORG3:="c"}
