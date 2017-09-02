@@ -34,7 +34,7 @@ DEFAULT_PEER1_EVENT_PORT=7058
 
 DEFAULT_ORDERER_EXTRA_HOSTS="extra_hosts:\\n      - peer0.$ORG1.$DOMAIN:$IP1\\n      - peer0.$ORG2.$DOMAIN:$IP2\\n      - peer0.$ORG3.$DOMAIN:$IP3"
 DEFAULT_PEER_EXTRA_HOSTS="extra_hosts:\\n      - orderer.$DOMAIN:$IP_ORDERER"
-DEFAULT_CLI_EXTRA_HOSTS="extra_hosts:\\n      - www.$DOMAIN:$IP_ORDERER\\n      - www.$ORG1.$DOMAIN:$IP1\\n      - www.$ORG2.$DOMAIN:$IP2\\n      - www.$ORG3.$DOMAIN:$IP3"
+DEFAULT_CLI_EXTRA_HOSTS="extra_hosts:\\n      - orderer.$DOMAIN:$IP_ORDERER\\n      - www.$DOMAIN:$IP_ORDERER\\n      - www.$ORG1.$DOMAIN:$IP1\\n      - www.$ORG2.$DOMAIN:$IP2\\n      - www.$ORG3.$DOMAIN:$IP3"
 DEFAULT_API_EXTRA_HOSTS1="extra_hosts:\\n      - orderer.$DOMAIN:$IP_ORDERER\\n      - peer0.$ORG2.$DOMAIN:$IP2\\n      - peer0.$ORG3.$DOMAIN:$IP3"
 DEFAULT_API_EXTRA_HOSTS2="extra_hosts:\\n      - orderer.$DOMAIN:$IP_ORDERER\\n      - peer0.$ORG1.$DOMAIN:$IP1\\n      - peer0.$ORG3.$DOMAIN:$IP3"
 DEFAULT_API_EXTRA_HOSTS3="extra_hosts:\\n      - orderer.$DOMAIN:$IP_ORDERER\\n      - peer0.$ORG1.$DOMAIN:$IP1\\n      - peer0.$ORG2.$DOMAIN:$IP2"
