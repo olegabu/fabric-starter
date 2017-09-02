@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-STARTTIME=$(date +%s)
+starttime=$(date +%s)
 
 # defaults; export these variables before executing this script
 : ${DOMAIN:="example.com"}
@@ -12,7 +12,6 @@ STARTTIME=$(date +%s)
 : ${IP2:="34.207.72.186"}
 : ${IP3:="54.226.46.207"}
 
-
 WGET_OPTS="--verbose -N"
 CLI_TIMEOUT=10000
 COMPOSE_TEMPLATE=ledger/docker-composetemplate.yaml
@@ -22,6 +21,7 @@ CHAINCODE_COMMON_NAME=reference
 CHAINCODE_BILATERAL_NAME=relationship
 CHAINCODE_COMMON_INIT='{"Args":["init","a","100","b","100"]}'
 CHAINCODE_BILATERAL_INIT='{"Args":["init","a","100","b","100"]}'
+CHAINCODE_WARMUP_QUERY='{"Args":["query"]}'
 
 DEFAULT_ORDERER_PORT=7050
 DEFAULT_WWW_PORT=8080
@@ -41,14 +41,11 @@ DEFAULT_API_EXTRA_HOSTS3="extra_hosts:\\n      - orderer.$DOMAIN:$IP_ORDERER\\n 
 
 GID=$(id -g)
 
-# Delete any images that were generated as a part of this setup
-# specifically the following images are often left behind:
-# TODO list generated image naming patterns
-
 function removeUnwantedContainers() {
   docker ps -a -q -f "name=dev-*"|xargs docker rm -f
 }
 
+# Delete any images that were generated as a part of this setup
 function removeUnwantedImages() {
   DOCKER_IMAGE_IDS=$(docker images | grep "dev\|none\|test-vp\|peer[0-9]-" | awk '{print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
@@ -69,26 +66,26 @@ function removeArtifacts() {
 }
 
 function removeDockersFromCompose() {
-    for O in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3}
+    for o in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3}
     do
-      COMPOSE_FILE="ledger/docker-compose-$O.yaml"
+      f="ledger/docker-compose-$o.yaml"
 
-      if [ -f ${COMPOSE_FILE} ]; then
-        echo "Removing docker containers listed in $COMPOSE_FILE"
-        docker-compose -f ${COMPOSE_FILE} kill
-        docker-compose -f ${COMPOSE_FILE} rm -f
+      if [ -f ${f} ]; then
+        echo "Removing docker containers listed in $f"
+        docker-compose -f ${f} kill
+        docker-compose -f ${f} rm -f
       fi;
     done
 }
 
 function removeDockersWithDomain() {
-  SEARCH="$DOMAIN"
-  DOCKER_IDS=$(docker ps -a | grep ${SEARCH} | awk '{print $1}')
-  if [ -z "$DOCKER_IDS" -o "$DOCKER_IDS" == " " ]; then
-    echo "No docker instances available for deletion with $SEARCH"
+  search="$DOMAIN"
+  docker_ids=$(docker ps -a | grep ${search} | awk '{print $1}')
+  if [ -z "$docker_ids" -o "$docker_ids" == " " ]; then
+    echo "No docker instances available for deletion with $search"
   else
-    echo "Removing docker instances found with $SEARCH: $DOCKER_IDS"
-    docker rm -f ${DOCKER_IDS}
+    echo "Removing docker instances found with $search: $docker_ids"
+    docker rm -f ${docker_ids}
   fi
 }
 
@@ -100,7 +97,6 @@ function generateOrdererDockerCompose() {
 
     cli_extra_hosts=${DEFAULT_CLI_EXTRA_HOSTS}
 
-    # docker-compose.yaml
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/ORDERER_PORT/$DEFAULT_ORDERER_PORT/g" -e "s/WWW_PORT/$DEFAULT_WWW_PORT/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" ${compose_template} > ${f}
 }
 
@@ -109,11 +105,13 @@ function generateOrdererArtifacts() {
 
     f="ledger/docker-compose-$DOMAIN.yaml"
 
-    # configtx and cryptogen
+    # replace in configtx
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
+
+    # replace in cryptogen
     sed -e "s/DOMAIN/$DOMAIN/g" artifacts/cryptogentemplate-orderer.yaml > artifacts/"cryptogen-$DOMAIN.yaml"
-    # network-config.json
-    #  fill environments                                                                           |   remove comments
+
+    # replace in network-config.json
     sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/\ORG3/$ORG3/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
 
     echo "Generating crypto material with cryptogen"
@@ -129,7 +127,7 @@ function generateOrdererArtifacts() {
         docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
     done
 
-    echo "Change artifacts file ownership"
+    echo "Changing artifacts file ownership"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
 }
 
@@ -184,7 +182,7 @@ function generatePeerArtifacts() {
     echo "Generating crypto material with cryptogen"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$org.yaml"
 
-    echo "Change artifacts ownership"
+    echo "Changing artifacts ownership"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
     echo "Adding generated CA private keys filenames to $f"
@@ -197,13 +195,13 @@ function servePeerArtifacts() {
     org=$1
     f="ledger/docker-compose-$org.yaml"
 
-    echo "Copying generated TLS cert files to be served by www.$org.$DOMAIN"
     d="artifacts/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls"
+    echo "Copying generated TLS cert files from $d to be served by www.$org.$DOMAIN"
     mkdir -p "www/${d}"
     cp "${d}/ca.crt" "www/${d}"
 
-    echo "Copying generated MSP cert files to be served by www.$org.$DOMAIN"
     d="artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
+    echo "Copying generated MSP cert files from $d to be served by www.$org.$DOMAIN"
     cp -r "${d}/msp" "www/${d}"
 
     docker-compose --file ${f} up -d "www.$org.$DOMAIN"
@@ -267,7 +265,6 @@ function instantiateChaincode () {
     info "instantiating chaincode $n on $channel_name by $org using $f with $i"
 
     c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode instantiate -n $n -v 1.0 -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
-
     echo ${c}
 
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
@@ -281,12 +278,12 @@ function warmUpChaincode () {
 
     info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\"]}' -C $channel_name"
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c $CHAINCODE_WARMUP_QUERY -C $channel_name"
     i="cli.$org.$DOMAIN"
     echo ${i}
     echo ${c}
+
     docker-compose --file ${f} run --rm ${i} bash -c "${c}"
-#    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\"]}' -C $channel_name"
 }
 
 function installChaincode() {
@@ -333,26 +330,26 @@ function installAll() {
   done
 }
 
-function installInstantiateWarmUp() {
-  org=$1
-  channel_name=$2
-  chaincode_name=$3
-  chaincode_init=$4
+#function installInstantiateWarmUp() {
+#  org=$1
+#  channel_name=$2
+#  chaincode_name=$3
+#  chaincode_init=$4
+#
+#  installChaincode ${org} ${chaincode_name}
+#  instantiateWarmUp ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
+#}
 
-  installChaincode ${org} ${chaincode_name}
-  instantiateWarmUp ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
-}
-
-function instantiateWarmUp() {
-  org=$1
-  channel_name=$2
-  chaincode_name=$3
-  chaincode_init=$4
-
-  instantiateChaincode ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
-  sleep 7
-  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
-}
+#function instantiateWarmUp() {
+#  org=$1
+#  channel_name=$2
+#  chaincode_name=$3
+#  chaincode_init=$4
+#
+#  instantiateChaincode ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
+#  sleep 7
+#  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
+#}
 
 function joinWarmUp() {
   org=$1
@@ -413,7 +410,7 @@ function downloadChannelTxFiles() {
     org=$1
     f="ledger/docker-compose-$org.yaml"
 
-    info "downloading channel config transaction files using $f"
+    info "downloading all channel config transaction files using $f"
 
     for channel_name in ${@:2}
     do
@@ -452,6 +449,7 @@ function downloadArtifactsMember() {
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 
+  #TODO download not from all members but from the orderer
   info "downloading member cert files using $f"
 
   c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
@@ -491,15 +489,15 @@ function devNetworkDown () {
 }
 
 function devInstallInstantiate () {
- docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n book -v 0 -C myc -c '{\"Args\":[\"init\",\"[{\"account\":\"AC0689654902\",\"division\":\"87680000045800005\",\"security\":\"RU000ABC0001\",\"quantity\":\"100\"},{\"account\":\"AC0689654902\",\"division\":\"87680000045800005\",\"security\":\"RU000ABC0002\",\"quantity\":\"42\"}]\"]}'"
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n mycc -v 0 -C myc -c '{\"Args\":[\"init\",\"[\"a\",\"10\",\"b\",\"100\"]}'"
 }
 
 function devInvoke () {
- docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode invoke -n book -v 0 -C myc -c '{\"Args\":[\"move\",\"AC0689654902\",\"87680000045800005\",\"WD0D00654903\",\"58680002816000009\",\"RU000ABC0001\",\"10\",\"a\",\"2017-08-12\",\"2017-08-12\"]}'"
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode invoke -n mycc -v 0 -C myc -c '{\"Args\":[\"move\",\"[\"a\",\"b\",\"10\"]}'"
 }
 
 function devQuery () {
- docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode query -n book -v 0 -C myc -c '{\"Args\":[\"query\"]}'"
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode query -n mycc -v 0 -C myc -c '{\"Args\":[\"query\",\"a\"]}'"
 }
 
 function info() {
@@ -510,13 +508,13 @@ function info() {
 }
 
 function logs () {
-  COMPOSE_FILE="ledger/docker-compose-$1.yaml"
+  f="ledger/docker-compose-$1.yaml"
 
-  TIMEOUT=${CLI_TIMEOUT} COMPOSE_HTTP_TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${COMPOSE_FILE} logs -f
+  TIMEOUT=${CLI_TIMEOUT} COMPOSE_HTTP_TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${f} logs -f
 }
 
 function devLogs () {
-    TIMEOUT=${CLI_TIMEOUT} COMPOSE_HTTP_TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${COMPOSE_FILE_DEV} logs -f
+  TIMEOUT=${CLI_TIMEOUT} COMPOSE_HTTP_TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${COMPOSE_FILE_DEV} logs -f
 }
 
 function clean() {
@@ -619,17 +617,16 @@ if [ "${MODE}" == "up" -a "${ORG}" == "" ]; then
   done
 
   createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_COMMON_NAME} ${CHAINCODE_COMMON_INIT}
-  joinWarmUp ${ORG2} common ${CHAINCODE_COMMON_NAME}
-  joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
-
   createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
-  joinWarmUp ${ORG2} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME}
-
-  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
-  joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
-
   createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+
+  joinWarmUp ${ORG2} common ${CHAINCODE_COMMON_NAME}
+  joinWarmUp ${ORG2} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME}
+  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+
+  joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
   joinWarmUp ${ORG3} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
+  joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
 
 elif [ "${MODE}" == "down" ]; then
   dockerComposeDown ${DOMAIN}
@@ -642,9 +639,9 @@ elif [ "${MODE}" == "clean" ]; then
   clean
 elif [ "${MODE}" == "generate" ]; then
   clean
-  generatePeerArtifacts1
-  generatePeerArtifacts2
-  generatePeerArtifacts3
+  generatePeerArtifacts ${ORG1} 4000 8081 7054 7051 7053 7056 7058
+  generatePeerArtifacts ${ORG2} 4001 8082 8054 8051 8053 8056 8058
+  generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
   generateOrdererDockerCompose
   generateOrdererArtifacts
   generateWait
@@ -655,15 +652,6 @@ elif [ "${MODE}" == "generate-orderer" ]; then
 elif [ "${MODE}" == "generate-peer" ]; then
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
-elif [ "${MODE}" == "generate-1" ]; then
-  generatePeerArtifacts1
-  servePeerArtifacts ${ORG1}
-elif [ "${MODE}" == "generate-2" ]; then
-  generatePeerArtifacts2
-  servePeerArtifacts ${ORG2}
-elif [ "${MODE}" == "generate-3" ]; then
-  generatePeerArtifacts3
-  servePeerArtifacts ${ORG3}
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
@@ -719,7 +707,7 @@ elif [ "${MODE}" == "devlogs" ]; then
   devLogs
 elif [ "${MODE}" == "devdown" ]; then
   devNetworkDown
-elif [ "${MODE}" == "print-args" ]; then
+elif [ "${MODE}" == "printArgs" ]; then
   printArgs
 elif [ "${MODE}" == "iterateChannels" ]; then
   iterateChannels
@@ -728,6 +716,5 @@ else
   exit 1
 fi
 
-# print spent time
-ENDTIME=$(date +%s)
-echo "Finished in $(($ENDTIME - $STARTTIME)) seconds"
+endtime=$(date +%s)
+echo "Finished in $(($endtime - $starttime)) seconds"
