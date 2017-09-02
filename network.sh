@@ -242,7 +242,7 @@ function createChannel () {
 
     d="artifacts"
     echo "copying channel block file from ${d} to be served by www.$org.$DOMAIN"
-    cp "{d}/$channel_name.block" "www/${d}"
+    cp "${d}/$channel_name.block" "www/${d}"
 }
 
 function joinChannel() {
