@@ -546,12 +546,57 @@ function printArgs() {
 }
 
 function iterateChannels() {
-  ORGS="e f b c d a"
+  ORGS="e:198.168.0.5 f:198.168.0.6 b:198.168.0.2 c:198.168.0.3 d:198.168.0.4 a:198.168.0.1"
 
-  orgs=($(for o in ${ORGS}; do echo ${o}; done | sort))
+  orgs=($(for o in ${ORGS}; do echo ${o%:*}; done | sort))
+  ips=($(for o in ${ORGS}; do echo ${o#*:}; done | sort))
 
-  echo "${orgs[0]}" "${orgs[1]}" "${orgs[2]}"
+  declare -A creators joiners
+  size=${#orgs[*]}
 
+  for i in ${!orgs[@]}
+  do
+    creator=${orgs[$i]}
+    joiner=${orgs[$i]}
+    for j in ${!orgs[@]}
+    do
+      if (( j > i )); then
+        creator+=" ${orgs[$i]}-${orgs[$j]}"
+      elif (( j < i )); then
+        joiner+=" ${orgs[$j]}-${orgs[$i]}"
+      fi
+    done
+    if (( i < $((size-1)) )); then
+      creators[${i}]=${creator}
+    fi
+    if (( i > 0 )); then
+      joiners[${i}]=${joiner}
+    fi
+  done
+
+  info orgs
+  for i in ${!orgs[@]}
+  do
+    echo ${orgs[$i]}
+  done
+
+  info ips
+  for i in ${!ips[@]}
+  do
+    echo ${ips[$i]}
+  done
+
+  info creators
+  for i in ${!creators[@]}
+  do
+    echo ${creators[$i]}
+  done
+
+  info joiners
+  for i in ${!joiners[@]}
+  do
+    echo ${joiners[$i]}
+  done
 }
 
 # Print the usage message
