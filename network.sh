@@ -701,9 +701,9 @@ elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
 elif [ "${MODE}" == "up-1" ]; then
+  downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
   installAll ${ORG1}
-  downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
 
   createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_COMMON_NAME} ${CHAINCODE_COMMON_INIT}
 
@@ -712,9 +712,9 @@ elif [ "${MODE}" == "up-1" ]; then
   createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-2" ]; then
+  downloadArtifactsMember ${ORG2} common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG2}
   installAll ${ORG2}
-  downloadArtifactsMember ${ORG2} common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
 
   downloadChannelBlockFile ${ORG2} ${ORG1} common
   joinWarmUp ${ORG2} common ${CHAINCODE_COMMON_NAME}
@@ -725,9 +725,9 @@ elif [ "${MODE}" == "up-2" ]; then
   createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-3" ]; then
+  downloadArtifactsMember ${ORG3} common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG3}
   installAll ${ORG3}
-  downloadArtifactsMember ${ORG3} common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
 
   downloadChannelBlockFile ${ORG3} ${ORG1} common
   joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
