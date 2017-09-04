@@ -20,12 +20,12 @@ They transact with each other on the following channels:
   - `a-c`
   - `b-c`
 
-Both chaincodes are copies of [chaincode_example02](hyperledger/fabric/tree/release/examples/chaincode/go/chaincode_example02).
+Both chaincodes are copies of [chaincode_example02](hyperledger/fabric/examples/chaincode/go/chaincode_example02).
 Replace these sources with your own.
 
 Each organization starts several docker containers:
 
-- **peer0** (ex.: `peer0.a.example.com`) with the anchor [peer](hyperledger/fabric/tree/release/peer) runtime
+- **peer0** (ex.: `peer0.a.example.com`) with the anchor [peer](hyperledger/fabric/peer) runtime
 - **peer1** `peer1.a.example.com` with the secondary peer
 - **ca** `api.a.example.com` with certificate authority server [fabri-ca](hyperledger/fabric-ca)
 - **api** `api.a.example.com` with [fabri-rest](Altoros/fabric-rest) API server
