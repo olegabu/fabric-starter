@@ -2,8 +2,8 @@
 
 Create a network to jump start development of your decentralized application.
 
-The network can be deployed to multiple docker containers on one host for development or to multiple hosts for real 
-world deployment.
+The network can be deployed to multiple docker containers on one host for development or to multiple hosts for testing 
+or production.
 
 Scripts of this starter generate crypto material and config files, start the network and deploy your chaincodes. 
 Developers can use admin web app of 
@@ -11,7 +11,7 @@ Developers can use admin web app of
 to invoke and query chaincodes, explore blocks and transactions.
 
 What's left is to develop your chaincodes and place them into the [chaincode](./chaincode) folder, 
-and your single page web app that you can serve by the API server by placing the sources into the [www](./www) folder. 
+and user interface as a single page web app that you can serve by by placing the sources into the [www](./www) folder. 
 You can take web app code or follow patterns of the 
 [admin app](https://github.com/Altoros/fabric-rest/tree/master/server/www-admin) to enroll users, 
 invoke chaincodes and subscribe to events.
