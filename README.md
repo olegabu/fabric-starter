@@ -27,8 +27,8 @@ Each organization starts several docker containers:
 
 - **peer0** (ex.: `peer0.a.example.com`) with the anchor [peer](https://github.com/hyperledger/fabric/tree/release/peer) runtime
 - **peer1** `peer1.a.example.com` with the secondary peer
-- **ca** `api.a.example.com` with certificate authority server [fabri-ca](https://github.com/hyperledger/fabric-ca)
-- **api** `api.a.example.com` with [fabri-rest](Altoros/fabric-rest) API server
+- **ca** `ca.a.example.com` with certificate authority server [fabri-ca](https://github.com/hyperledger/fabric-ca)
+- **api** `api.a.example.com` with [fabric-rest](https://github.com/Altoros/fabric-rest) API server
 - **www** `www.a.example.com` with a simple http server to serve members' certificate files during artifacts generation and setup
 - **cli** `cli.a.example.com` with tools to run commands during setup
 
@@ -48,7 +48,7 @@ Deploy docker containers of all member organizations to one host, for developmen
 
 All containers refer to each other by their domain names and connect via the host's docker network. The only services 
 that need to be available to the host machine are the `api` so you can connect to admin web apps of each member; 
-thus their ports are mapped to different `4000, 4001, 4002` on the host.
+thus their `4000` ports are mapped to non conflicting `4000, 4001, 4002` ports on the host.
 
 Generate artifacts:
 ```bash
@@ -68,7 +68,7 @@ After all containers are up, browse to each member's admin web app to transact o
 - org2 [http://localhost:4001/admin](http://localhost:4001/admin)
 - org3 [http://localhost:4002/admin](http://localhost:4002/admin)
 
-Tail logs of each member organization's dockers by passing its name as `-o` argument:
+Tail logs of each member's docker containers by passing its name as organization `-o` argument:
 ```bash
 # orderer
 ./network.sh -m logs -m example.com
@@ -88,7 +88,7 @@ Remove dockers:
 
 ## Decentralized deployment
 
-Deploy containers of each member to separate hosts connected via internet.
+Deploy containers of each member to separate hosts connecting via internet.
 
 Note the docker-compose files don't change much from the local deployment and containers still refer to each other by 
 domain names `api.a.example.com`, `peer1.c.example.com` etc. However they can no longer discover each other within a local
@@ -114,7 +114,7 @@ Each member generates artifacts on their respective hosts (can be done in parall
 ```
 
 After certificates are generated each script starts a `www` docker instance to serve them to other members: the orderer
- will download the certs to create the ledger and other peers will use them to secure communication by TLS.  
+ will download the certs to create the ledger and other peers will download to use them to secure communication by TLS.  
 
 Now the orderer can generate genesis block and channel tx files by collecting certs from members. On the orderer's host:
 ```bash
@@ -133,7 +133,7 @@ Also note the starting order of members is important, especially for bilateral c
 for example for channel `a-b` member `a` needs to start first to create the channel and serve the block file, 
 and then `b` starts, downloads the block file and joins the channel. It's a good idea to order organizations in script
 arguments alphabetically, ex.: `ORG1=aorg ORG2=borg ORG3=corg` then the channels are named accordingly 
-`aorg-borg aorg-corg borg-corg` and it's clear who creates, who joins the bilateral channel and who needs to start first.
+`aorg-borg aorg-corg borg-corg` and it's clear who creates, who joins a bilateral channel and who needs to start first.
 
 Each member starts:
 ```bash
@@ -157,7 +157,7 @@ and [cryptogentemplate-peer.yaml](artifacts/cryptogentemplate-peer.yaml) for `cr
 private keys and certificates
 - [configtxtemplate.yaml](artifacts/configtxtemplate.yaml) for `configtx.yaml` with definitions of 
 the consortium and channels to drive [configtx](https://github.com/hyperledger/fabric/tree/release/common/configtx) tool to generate 
-genesis block file to start the orderer and channel config transaction files to create channels
+genesis block file to start the orderer, and channel config transaction files to create channels
 - [network-config-template.json](artifacts/network-config-template.json) for `network-config.json` file used by the 
 API server and web apps to connect to the members' peers and ca servers
 - [docker-composetemplate-orderer.yaml](ledger/docker-composetemplate-orderer.yaml) 
@@ -166,7 +166,7 @@ each member organization to start docker containers
 
 During setup the same script uses `cli` docker containers to create and join channels, install and instantiate chaincodes.
 
-And finally starts members' services via the generated `docker-compose.yaml` files.
+And finally it starts members' services via the generated `docker-compose.yaml` files.
 
 ## Customize and extend
 
@@ -187,14 +187,14 @@ number of organizations and figure out possible permutations of bilateral channe
 
 ## Chaincode development
 
-There are commands for managing chaincodes in `chaincode-dev` mode where a chaincode is not managed within its docker 
+There are commands for working with chaincodes in `chaincode-dev` mode where a chaincode is not managed within its docker 
 container but run separately as a stand alone executable or in a debugger. The peer does not manage the chaincode but 
 connects to it to invoke and query.
 
 The dev network is composed of a minimal set of peer, orderer and cli containers and uses pre-generated artifacts
 checked into the source control. Channel and chaincodes names are `myc` and `mycc` and can be edited in `network.sh`.
 
-Start containers and dev network:
+Start containers for dev network:
 ```bash
 ./network.sh -m devup
 ./network.sh -m devinstall
@@ -224,8 +224,8 @@ Finally:
 
 ## Acknowledgements
 
-This environment makes heavy use of [fabric-rest](https://github.com/Altoros/fabric-rest) API server developed separately and 
+This environment uses a very helpful [fabric-rest](https://github.com/Altoros/fabric-rest) API server developed separately and 
 instantiated from its docker image.
 
-The scripts are extensions of [first-network](https://github.com/hyperledger/fabric-samples/tree/release/first-network) and 
+The scripts are inspired by [first-network](https://github.com/hyperledger/fabric-samples/tree/release/first-network) and 
  [balance-transfer](https://github.com/hyperledger/fabric-samples/tree/release/balance-transfer) of Hyperledger Fabric samples.
