@@ -1,9 +1,24 @@
-# Starter Application and Network for Hyperledger Fabric 1.0
+# Starter Application for Hyperledger Fabric 1.0
 
 Create a network to jump start development of your decentralized application.
 
 The network can be deployed to multiple docker containers on one host for development or to multiple hosts for real 
-world deployment in production or testing environments.
+world deployment.
+
+Scripts of this starter generate crypto material and config files, start the network and deploy your chaincodes. 
+Developers can use admin web app of 
+[REST API server](https://github.com/Altoros/fabric-rest/tree/master/server/www-admin) 
+to invoke and query chaincodes, explore blocks and transactions.
+
+What's left is to develop your chaincodes and place them into the [chaincode](./chaincode) folder, 
+and your single page web app that you can serve by the API server by placing the sources into the [www](./www) folder. 
+You can take web app code or follow patterns of the 
+[admin app](https://github.com/Altoros/fabric-rest/tree/master/server/www-admin) to enroll users, 
+invoke chaincodes and subscribe to events.
+
+Most of the plumbing work is taken care of by this starter.
+
+## Members and Components
 
 Network consortium consists of:
 
@@ -31,16 +46,6 @@ Each organization starts several docker containers:
 - **api** `api.a.example.com` with [fabric-rest](https://github.com/Altoros/fabric-rest) API server
 - **www** `www.a.example.com` with a simple http server to serve members' certificate files during artifacts generation and setup
 - **cli** `cli.a.example.com` with tools to run commands during setup
-
-After initial generation of crypto material and config files, the network is started and chaincodes are deployed. 
-Developers can use admin web app of the API server to invoke and query chaincodes, explore the blocks and transactions.
-
-What's left is to develop your chaincodes and place them into the `chaincode` folder, and your single page web app 
-that you can serve by the API server by placing the sources into the `www` folder. You can take web app code or 
-follow patterns of the [admin app](https://github.com/Altoros/fabric-rest/tree/master/server/www-admin) to enroll users, invoke chaincodes 
-and subscribe to events.
-
-Most of the plumbing work is taken care of by this starter.
 
 ## Local deployment
 
