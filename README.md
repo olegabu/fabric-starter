@@ -20,14 +20,14 @@ They transact with each other on the following channels:
   - `a-c`
   - `b-c`
 
-Both chaincodes are copies of [chaincode_example02](hyperledger/fabric/examples/chaincode/go/chaincode_example02).
+Both chaincodes are copies of [chaincode_example02](https://github.com/hyperledger/fabric/tree/release/examples/chaincode/go/chaincode_example02).
 Replace these sources with your own.
 
 Each organization starts several docker containers:
 
-- **peer0** (ex.: `peer0.a.example.com`) with the anchor [peer](hyperledger/fabric/peer) runtime
+- **peer0** (ex.: `peer0.a.example.com`) with the anchor [peer](https://github.com/hyperledger/fabric/tree/release/peer) runtime
 - **peer1** `peer1.a.example.com` with the secondary peer
-- **ca** `api.a.example.com` with certificate authority server [fabri-ca](hyperledger/fabric-ca)
+- **ca** `api.a.example.com` with certificate authority server [fabri-ca](https://github.com/hyperledger/fabric-ca)
 - **api** `api.a.example.com` with [fabri-rest](Altoros/fabric-rest) API server
 - **www** `www.a.example.com` with a simple http server to serve members' certificate files during artifacts generation and setup
 - **cli** `cli.a.example.com` with tools to run commands during setup
@@ -37,7 +37,7 @@ Developers can use admin web app of the API server to invoke and query chaincode
 
 What's left is to develop your chaincodes and place them into the `chaincode` folder, and your single page web app 
 that you can serve by the API server by placing the sources into the `www` folder. You can take web app code or 
-follow patterns of the [admin app](Altoros/fabric-rest/tree/master/server/www-admin) to enroll users, invoke chaincodes 
+follow patterns of the [admin app](https://github.com/Altoros/fabric-rest/tree/master/server/www-admin) to enroll users, invoke chaincodes 
 and subscribe to events.
 
 Most of the plumbing work is taken care of by this starter.
@@ -153,10 +153,10 @@ The script [network.sh](network.sh) uses substitution of values and names to cre
 
 - [cryptogentemplate-orderer.yaml](artifacts/cryptogentemplate-orderer.yaml) 
 and [cryptogentemplate-peer.yaml](artifacts/cryptogentemplate-peer.yaml) for `cryptogen.yaml` to drive 
-[cryptogen](hyperledger/fabric/tree/release/common/tools/cryptogen) tool to generate members' crypto material: 
+[cryptogen](https://github.com/hyperledger/fabric/tree/release/common/tools/cryptogen) tool to generate members' crypto material: 
 private keys and certificates
 - [configtxtemplate.yaml](artifacts/configtxtemplate.yaml) for `configtx.yaml` with definitions of 
-the consortium and channels to drive [configtx](hyperledger/fabric/tree/release/common/configtx) tool to generate 
+the consortium and channels to drive [configtx](https://github.com/hyperledger/fabric/tree/release/common/configtx) tool to generate 
 genesis block file to start the orderer and channel config transaction files to create channels
 - [network-config-template.json](artifacts/network-config-template.json) for `network-config.json` file used by the 
 API server and web apps to connect to the members' peers and ca servers
@@ -224,8 +224,8 @@ Finally:
 
 ## Acknowledgements
 
-This environment makes heavy use of [fabric-rest](Altoros/fabric-rest) API server developed separately and 
+This environment makes heavy use of [fabric-rest](https://github.com/Altoros/fabric-rest) API server developed separately and 
 instantiated from its docker image.
 
-The scripts are extensions of [first-network](hyperledger/fabric-samples/tree/release/first-network) and 
- [balance-transfer](hyperledger/fabric-samples/tree/release/balance-transfer) of Hyperledger Fabric samples.
+The scripts are extensions of [first-network](https://github.com/hyperledger/fabric-samples/tree/release/first-network) and 
+ [balance-transfer](https://github.com/hyperledger/fabric-samples/tree/release/balance-transfer) of Hyperledger Fabric samples.
