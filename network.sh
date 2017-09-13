@@ -4,13 +4,13 @@ starttime=$(date +%s)
 
 # defaults; export these variables before executing this script
 : ${DOMAIN:="example.com"}
-: ${IP_ORDERER:="54.235.3.243"}
+: ${IP_ORDERER:="54.234.201.67"}
 : ${ORG1:="a"}
 : ${ORG2:="b"}
 : ${ORG3:="c"}
-: ${IP1:="34.227.26.187"}
-: ${IP2:="34.207.72.186"}
-: ${IP3:="54.226.46.207"}
+: ${IP1:="54.234.201.67"}
+: ${IP2:="54.86.191.160"}
+: ${IP3:="54.243.0.168"}
 
 WGET_OPTS="--verbose -N"
 CLI_TIMEOUT=10000
