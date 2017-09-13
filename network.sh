@@ -488,12 +488,16 @@ function devNetworkDown () {
   docker-compose -f ${COMPOSE_FILE_DEV} down
 }
 
-function devInstallInstantiate () {
-  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n mycc -v 0 -C myc -c '{\"Args\":[\"init\",\"[\"a\",\"10\",\"b\",\"100\"]}'"
+function devInstall () {
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode install -p relationship -n mycc -v 0"
+}
+
+function devInstantiate () {
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode instantiate -n mycc -v 0 -C myc -c '{\"Args\":[\"init\",\"a\",\"10\",\"b\",\"100\"]}'"
 }
 
 function devInvoke () {
-  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode invoke -n mycc -v 0 -C myc -c '{\"Args\":[\"move\",\"[\"a\",\"b\",\"10\"]}'"
+  docker-compose -f ${COMPOSE_FILE_DEV} run cli bash -c "peer chaincode invoke -n mycc -v 0 -C myc -c '{\"Args\":[\"move\",\"a\",\"b\",\"10\"]}'"
 }
 
 function devQuery () {
@@ -742,8 +746,10 @@ elif [ "${MODE}" == "logs" ]; then
   logs ${ORG}
 elif [ "${MODE}" == "devup" ]; then
   devNetworkUp
-elif [ "${MODE}" == "devinit" ]; then
-  devInstallInstantiate
+elif [ "${MODE}" == "devinstall" ]; then
+  devInstall
+elif [ "${MODE}" == "devinstantiate" ]; then
+  devInstantiate
 elif [ "${MODE}" == "devinvoke" ]; then
   devInvoke
 elif [ "${MODE}" == "devquery" ]; then
