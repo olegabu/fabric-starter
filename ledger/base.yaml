@@ -57,6 +57,6 @@ services:
     command: npm start
 
   www-base:
-    image: trinitronx/python-simplehttpserver
+    image: nginx
     volumes:
-      - ../www/artifacts:/var/www/:ro
+      - ../www/artifacts:/usr/share/nginx/html:ro

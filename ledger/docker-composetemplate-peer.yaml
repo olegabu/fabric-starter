@@ -104,4 +104,4 @@ services:
       service: www-base
     container_name: www.ORG.DOMAIN
     ports:
-      - WWW_PORT:8080
+      - WWW_PORT:80
