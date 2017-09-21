@@ -34,7 +34,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.ORG.DOMAIN:7051
     ports:
       - PEER0_PORT:7051
-#      - PEER0_EVENT_PORT:7053
+      - PEER0_EVENT_PORT:7053
     volumes:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer0.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
     depends_on:
@@ -52,14 +52,14 @@ services:
       - CORE_PEER_ADDRESS=peer1.ORG.DOMAIN:7051
     ports:
       - PEER1_PORT:7051
-#      - PEER1_EVENT_PORT:7053
+      - PEER1_EVENT_PORT:7053
     volumes:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer1.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
     depends_on:
       - ca.ORG.DOMAIN
     PEER_EXTRA_HOSTS
 
-  # api server
+  # fabric-rest api server
   api.ORG.DOMAIN:
     extends:
       file: base.yaml
