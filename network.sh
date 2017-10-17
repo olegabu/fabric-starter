@@ -63,6 +63,10 @@ function removeArtifacts() {
   rm -rf artifacts/channel
   rm artifacts/*block*
   rm -rf www/artifacts && mkdir www/artifacts
+  rm artifacts/cryptogen-*.yaml
+  rm artifacts/fabric-ca-server-config-*.yaml
+  rm artifacts/network-config.json
+  rm artifacts/configtx.yaml
 }
 
 function removeDockersFromCompose() {
@@ -180,13 +184,13 @@ function generatePeerArtifacts() {
     sed -e "s/ORG/$org/g" artifacts/fabric-ca-server-configtemplate.yaml > artifacts/"fabric-ca-server-config-$org.yaml"
 
     echo "Generating crypto material with cryptogen"
-    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$org.yaml"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$org.yaml"
 
     echo "Changing artifacts ownership"
-    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
     echo "Adding generated CA private keys filenames to $f"
-    ca_private_key=$(basename `ls artifacts/crypto-config/peerOrganizations/"$org.$DOMAIN"/ca/*_sk`)
+    ca_private_key=$(basename `ls -t artifacts/crypto-config/peerOrganizations/"$org.$DOMAIN"/ca/*_sk`)
     [[ -z  ${ca_private_key}  ]] && echo "empty CA private key" && exit 1
     sed -i -e "s/CA_PRIVATE_KEY/${ca_private_key}/g" ${f}
 }
@@ -762,6 +766,8 @@ elif [ "${MODE}" == "printArgs" ]; then
   printArgs
 elif [ "${MODE}" == "iterateChannels" ]; then
   iterateChannels
+elif [ "${MODE}" == "removeArtifacts" ]; then
+  removeArtifacts
 else
   printHelp
   exit 1
