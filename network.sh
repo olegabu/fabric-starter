@@ -119,7 +119,7 @@ function generateOrdererArtifacts() {
     sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/\ORG3/$ORG3/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
 
     echo "Generating crypto material with cryptogen"
-    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$DOMAIN.yaml"
+    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
 
     echo "Generating orderer genesis block with configtxgen"
     mkdir -p artifacts/channel
@@ -184,7 +184,7 @@ function generatePeerArtifacts() {
     sed -e "s/ORG/$org/g" artifacts/fabric-ca-server-configtemplate.yaml > artifacts/"fabric-ca-server-config-$org.yaml"
 
     echo "Generating crypto material with cryptogen"
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "cryptogen generate --config=cryptogen-$org.yaml"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$org.yaml"
 
     echo "Changing artifacts ownership"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "chown -R $UID:$GID ."

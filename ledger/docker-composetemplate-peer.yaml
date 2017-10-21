@@ -8,7 +8,7 @@ services:
 
   ca.ORG.DOMAIN:
     container_name: ca.ORG.DOMAIN
-    image: hyperledger/fabric-ca:x86_64-1.0.0
+    image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG.DOMAIN-cert.pem
@@ -91,10 +91,6 @@ services:
       - CORE_PEER_LOCALMSPID=ORGMSP
     volumes:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/users/Admin@ORG.DOMAIN:/etc/hyperledger/crypto/peer
-    depends_on:
-      - peer0.ORG.DOMAIN
-      - peer1.ORG.DOMAIN
-      - www.ORG.DOMAIN
     CLI_EXTRA_HOSTS
 
   # simple http server to disseminate certificates
