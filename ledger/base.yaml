@@ -32,7 +32,7 @@ services:
       - /var/run/:/host/var/run/
 
   cli-base:
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:x86_64-1.0.3
     tty: true
     environment:
       - GOPATH=/opt/gopath
