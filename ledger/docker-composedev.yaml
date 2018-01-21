@@ -3,7 +3,7 @@ version: '2'
 services:
   orderer:
     container_name: orderer
-    image: hyperledger/fabric-orderer:x86_64-1.0.0
+    image: hyperledger/fabric-orderer:x86_64-1.1.0-preview
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -23,7 +23,7 @@ services:
 
   peer:
     container_name: peer
-    image: hyperledger/fabric-peer:x86_64-1.0.0
+    image: hyperledger/fabric-peer:x86_64-1.1.0-preview
     environment:
       - CORE_PEER_ID=peer
       - CORE_PEER_ADDRESS=peer:7051
@@ -46,7 +46,7 @@ services:
 
   cli:
     container_name: cli
-    image: hyperledger/fabric-tools:x86_64-1.0.0
+    image: hyperledger/fabric-tools:x86_64-1.1.0-preview
     tty: true
     environment:
       - GOPATH=/opt/gopath
