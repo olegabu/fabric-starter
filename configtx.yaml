@@ -1,0 +1,58 @@
+---
+Profiles:
+
+    NewGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+                    - *Org3
+    NewChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org3
+Organizations:
+   - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/example.com/msp
+
+   - &Org1
+       Name: Org1MSP
+       ID: Org1MSP
+       MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+       AnchorPeers:
+           - Host: peer0.org1.example.com
+             Port: 7051
+   - &Org3
+       Name: Org3MSP
+       ID: Org3MSP
+       MSPDir: crypto-config/peerOrganizations/org3.example.com/msp
+       AnchorPeers:
+           - Host: peer0.org3.example.com
+             Port: 7051
+
+
+Orderer: &OrdererDefaults
+    OrdererType: solo
+    Addresses:
+        - orderer.example.com:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Kafka:
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+
+Application: &ApplicationDefaults
+    Organizations:

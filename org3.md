@@ -38,9 +38,15 @@ modified chaincode example with added `migration` method.
 
 ## Granting admin priviledges
 
-Not impolemented yet.
+`file: org3_admin.sh`
 
 The idea is to apply same steps from the first scenario to the system channel.
 This channel grants rights for MSPs to create new channels. It is called
 `testchannelid` by default and is not shown in `peer channel list` output.
+
+Ordered org admin can add members to the system channel.
+
+After running this scenario `org3` has the same rights as `org1` and `org2` -
+for example, it can create new channels, instatiate chaincodes and run
+transactions inside these channels.
 
