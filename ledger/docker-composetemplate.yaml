@@ -9,7 +9,7 @@ services:
 
   ca.ORG1.DOMAIN:
     container_name: ca.ORG1.DOMAIN
-    image: hyperledger/fabric-ca:x86_64-1.0.3
+    image: hyperledger/fabric-ca:x86_64-1.1.0-preview
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG1.DOMAIN-cert.pem
