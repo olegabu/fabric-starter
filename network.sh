@@ -3,24 +3,26 @@
 starttime=$(date +%s)
 
 # defaults; export these variables before executing this script
-: ${DOMAIN:="example.com"}
-: ${IP_ORDERER:="54.234.201.67"}
-: ${ORG1:="a"}
-: ${ORG2:="b"}
-: ${ORG3:="c"}
-: ${IP1:="54.86.191.160"}
-: ${IP2:="54.243.0.168"}
-: ${IP3:="54.211.142.174"}
+: ${DOMAIN:="cbx.com"}
+: ${IP_ORDERER:="184.169.198.84"}
+: ${ORG1:="dell"}
+: ${ORG2:="bank"}
+: ${ORG3:="att"}
+: ${ORG4:="dhl"}
+: ${ORG5:="coc"}
+: ${IP1:="18.219.38.54"}
+: ${IP2:="18.216.140.30"}
+: ${IP3:="18.217.90.136"}
+: ${IP4:="18.216.225.95"}
+: ${IP5:="52.8.120.91"}
 
 WGET_OPTS="--verbose -N"
 CLI_TIMEOUT=10000
 COMPOSE_TEMPLATE=ledger/docker-composetemplate.yaml
 COMPOSE_FILE_DEV=ledger/docker-composedev.yaml
 
-CHAINCODE_COMMON_NAME=reference
-CHAINCODE_BILATERAL_NAME=relationship
-CHAINCODE_COMMON_INIT='{"Args":["init","a","100","b","100"]}'
-CHAINCODE_BILATERAL_INIT='{"Args":["init","a","100","b","100"]}'
+CHAINCODE_NAME=auditpro
+CHAINCODE_INIT='{"Args":["init","a","100","b","100"]}'
 
 DEFAULT_ORDERER_PORT=7050
 DEFAULT_WWW_PORT=8080
@@ -31,12 +33,10 @@ DEFAULT_PEER0_EVENT_PORT=7053
 DEFAULT_PEER1_PORT=7056
 DEFAULT_PEER1_EVENT_PORT=7058
 
-DEFAULT_ORDERER_EXTRA_HOSTS="extra_hosts:[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG2.$DOMAIN:$IP2[newline]      - peer0.$ORG3.$DOMAIN:$IP3"
+DEFAULT_ORDERER_EXTRA_HOSTS="extra_hosts:[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG2.$DOMAIN:$IP2[newline]      - peer0.$ORG4.$DOMAIN:$IP4[newline]      - peer0.$ORG5.$DOMAIN:$IP5[newline]      - peer0.$ORG5.$DOMAIN:$IP5"
 DEFAULT_PEER_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER"
-DEFAULT_CLI_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - www.$DOMAIN:$IP_ORDERER[newline]      - www.$ORG1.$DOMAIN:$IP1[newline]      - www.$ORG2.$DOMAIN:$IP2[newline]      - www.$ORG3.$DOMAIN:$IP3"
-DEFAULT_API_EXTRA_HOSTS1="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - peer0.$ORG2.$DOMAIN:$IP2[newline]      - peer0.$ORG3.$DOMAIN:$IP3"
-DEFAULT_API_EXTRA_HOSTS2="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG3.$DOMAIN:$IP3"
-DEFAULT_API_EXTRA_HOSTS3="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG2.$DOMAIN:$IP2"
+DEFAULT_CLI_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - www.$DOMAIN:$IP_ORDERER[newline]      - www.$ORG1.$DOMAIN:$IP1[newline]      - www.$ORG2.$DOMAIN:$IP2[newline]      - www.$ORG3.$DOMAIN:$IP3[newline]      - www.$ORG4.$DOMAIN:$IP4[newline]      - www.$ORG5.$DOMAIN:$IP5"
+DEFAULT_API_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG2.$DOMAIN:$IP2[newline]      - peer0.$ORG3.$DOMAIN:$IP3[newline]      - peer0.$ORG4.$DOMAIN:$IP4[newline]      - peer0.$ORG5.$DOMAIN:$IP5"
 
 GID=$(id -g)
 
@@ -69,7 +69,7 @@ function removeArtifacts() {
 }
 
 function removeDockersFromCompose() {
-    for o in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3}
+    for o in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
     do
       f="ledger/docker-compose-$o.yaml"
 
@@ -93,29 +93,29 @@ function removeDockersWithDomain() {
 }
 
 function generateOrdererDockerCompose() {
-    echo "Creating orderer docker compose yaml file with $DOMAIN, $ORG1, $ORG2, $ORG3, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
+    echo "Creating orderer docker compose yaml file with $DOMAIN, $ORG1, $ORG2, $ORG3, $ORG4, $ORG5, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
 
     f="ledger/docker-compose-$DOMAIN.yaml"
     compose_template=ledger/docker-composetemplate-orderer.yaml
 
     cli_extra_hosts=${DEFAULT_CLI_EXTRA_HOSTS}
 
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/ORDERER_PORT/$DEFAULT_ORDERER_PORT/g" -e "s/WWW_PORT/$DEFAULT_WWW_PORT/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/ORDERER_PORT/$DEFAULT_ORDERER_PORT/g" -e "s/WWW_PORT/$DEFAULT_WWW_PORT/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" -e "s/ORG4/$ORG4/g" -e "s/ORG5/$ORG5/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
 }
 
 function generateOrdererArtifacts() {
-    echo "Creating orderer yaml files with $DOMAIN, $ORG1, $ORG2, $ORG3, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
+    echo "Creating orderer yaml files with $DOMAIN, $ORG1, $ORG2, $ORG3, $ORG4, $ORG5, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
 
     f="ledger/docker-compose-$DOMAIN.yaml"
 
     # replace in configtx
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" -e "s/ORG4/$ORG4/g" -e "s/ORG5/$ORG5/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
 
     # replace in cryptogen
     sed -e "s/DOMAIN/$DOMAIN/g" artifacts/cryptogentemplate-orderer.yaml > artifacts/"cryptogen-$DOMAIN.yaml"
 
     # replace in network-config.json
-    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/\ORG3/$ORG3/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
+    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/\ORG3/$ORG3/g" -e "s/ORG4/$ORG4/g" -e "s/ORG5/$ORG5/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
 
     echo "Generating crypto material with cryptogen"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
@@ -124,7 +124,7 @@ function generateOrdererArtifacts() {
     mkdir -p artifacts/channel
     docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile OrdererGenesis -outputBlock ./channel/genesis.block
 
-    for channel_name in common "$ORG1-$ORG2" "$ORG1-$ORG3" "$ORG2-$ORG3"
+    for channel_name in common "$ORG1" "$ORG2-$ORG3"
     do
         echo "Generating channel config transaction for $channel_name"
         docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
@@ -143,13 +143,7 @@ function generatePeerArtifacts() {
       # if no port args are passed assume generating for multi host deployment
       peer_extra_hosts=${DEFAULT_PEER_EXTRA_HOSTS}
       cli_extra_hosts=${DEFAULT_CLI_EXTRA_HOSTS}
-      if [ ${org} == ${ORG1} ]; then
-        api_extra_hosts=${DEFAULT_API_EXTRA_HOSTS1}
-      elif [ ${org} == ${ORG2} ]; then
-        api_extra_hosts=${DEFAULT_API_EXTRA_HOSTS2}
-      elif [ ${org} == ${ORG3} ]; then
-        api_extra_hosts=${DEFAULT_API_EXTRA_HOSTS3}
-      fi
+      api_extra_hosts=${DEFAULT_API_EXTRA_HOSTS}
     fi
 
     api_port=$2
@@ -292,14 +286,30 @@ function warmUpChaincode () {
 function installChaincode() {
     org=$1
     n=$2
+    v=$3
     # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
     p=${n}
     f="ledger/docker-compose-${org}.yaml"
 
     info "installing chaincode $n to peers of $org from ./chaincode/go/$p using $f"
 
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v 1.0 -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v 1.0 -p $p"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p"
 }
+
+
+function upgradeChaincode() {
+    org=$1
+    n=$2
+    v=$3
+    # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
+    p=${n}
+    f="ledger/docker-compose-${org}.yaml"
+
+    info "upgrading chaincode $n to peers of $org from ./chaincode/go/$p using $f"
+
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -p $p"
+}
+
 
 function dockerComposeUp () {
   compose_file="ledger/docker-compose-$1.yaml"
@@ -327,9 +337,9 @@ function dockerComposeDown () {
 function installAll() {
   org=$1
 
-  for chaincode_name in ${CHAINCODE_COMMON_NAME} ${CHAINCODE_BILATERAL_NAME}
+  for chaincode_name in ${CHAINCODE_NAME}
   do
-    installChaincode ${org} ${chaincode_name}
+    installChaincode ${org} ${chaincode_name} "1.0"
   done
 }
 
@@ -393,7 +403,7 @@ function downloadMemberMSP() {
 
     info "downloading member MSP files using $f"
 
-    c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/admincerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/admincerts/Admin@\$ORG.$DOMAIN-cert.pem && wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/cacerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/cacerts/ca.\$ORG.$DOMAIN-cert.pem && wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/tlscacerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/tlscacerts/tlsca.\$ORG.$DOMAIN-cert.pem; done"
+    c="for ORG in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/admincerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/admincerts/Admin@\$ORG.$DOMAIN-cert.pem && wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/cacerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/cacerts/ca.\$ORG.$DOMAIN-cert.pem && wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/tlscacerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/tlscacerts/tlsca.\$ORG.$DOMAIN-cert.pem; done"
     echo ${c}
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
@@ -455,7 +465,7 @@ function downloadArtifactsMember() {
   #TODO download not from all members but from the orderer
   info "downloading member cert files using $f"
 
-  c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
+  c="for ORG in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
@@ -473,7 +483,7 @@ function downloadArtifactsOrderer() {
 
   info "downloading member cert files using $f"
 
-  c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
+  c="for ORG in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
@@ -528,7 +538,7 @@ function clean() {
   removeDockersFromCompose
 #  removeDockersWithDomain
   removeUnwantedImages
-  removeArtifacts
+#  removeArtifacts
 }
 
 function generateWait() {
@@ -546,6 +556,14 @@ function generatePeerArtifacts2() {
 
 function generatePeerArtifacts3() {
   generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
+}
+
+function generatePeerArtifacts4() {
+  generatePeerArtifacts ${ORG4} 4003 8084 1054 1051 1053 1056 1058
+}
+
+function generatePeerArtifacts5() {
+  generatePeerArtifacts ${ORG5} 4004 8085 1154 1151 1153 1156 1158
 }
 
 function printArgs() {
@@ -628,13 +646,15 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:" opt; do
   case "$opt" in
     h|\?)
       printHelp
       exit 0
     ;;
     m)  MODE=$OPTARG
+    ;;
+    v)  CHAINCODE_VERSION=$OPTARG
     ;;
     o)  ORG=$OPTARG
     ;;
@@ -658,42 +678,48 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:" opt; do
 done
 
 if [ "${MODE}" == "up" -a "${ORG}" == "" ]; then
-  for org in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3}
+  for org in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
   do
     dockerComposeUp ${org}
   done
 
-  for org in ${ORG1} ${ORG2} ${ORG3}
+  for org in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
   do
     installAll ${org}
   done
 
-  createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_COMMON_NAME} ${CHAINCODE_COMMON_INIT}
-  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
-  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+  createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_NAME} ${CHAINCODE_INIT}
+  joinWarmUp ${ORG2} common ${CHAINCODE_NAME}
+  joinWarmUp ${ORG3} common ${CHAINCODE_NAME}
+  joinWarmUp ${ORG4} common ${CHAINCODE_NAME}
+  joinWarmUp ${ORG5} common ${CHAINCODE_NAME}
 
-  joinWarmUp ${ORG2} common ${CHAINCODE_COMMON_NAME}
-  joinWarmUp ${ORG2} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME}
-  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+  createJoinInstantiateWarmUp ${ORG1} "${ORG1}" ${CHAINCODE_NAME} ${CHAINCODE_INIT}
 
-  joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
-  joinWarmUp ${ORG3} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
-  joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
+  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_NAME} ${CHAINCODE_INIT}
+  joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_NAME}
 
 elif [ "${MODE}" == "down" ]; then
   dockerComposeDown ${DOMAIN}
   dockerComposeDown ${ORG1}
   dockerComposeDown ${ORG2}
   dockerComposeDown ${ORG3}
+  dockerComposeDown ${ORG4}
+  dockerComposeDown ${ORG5}
   removeUnwantedContainers
   removeUnwantedImages
 elif [ "${MODE}" == "clean" ]; then
   clean
 elif [ "${MODE}" == "generate" ]; then
   clean
+  removeArtifacts
+
   generatePeerArtifacts ${ORG1} 4000 8081 7054 7051 7053 7056 7058
   generatePeerArtifacts ${ORG2} 4001 8082 8054 8051 8053 8056 8058
   generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
+  generatePeerArtifacts ${ORG4} 4003 8084 1054 1051 1053 1056 1058
+  generatePeerArtifacts ${ORG5} 4004 8085 1154 1151 1153 1156 1158
+
   generateOrdererDockerCompose
   generateOrdererArtifacts
   generateWait
@@ -708,42 +734,50 @@ elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
 elif [ "${MODE}" == "up-1" ]; then
-  downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
+  downloadArtifactsMember ${ORG1} common "${ORG1}"
   dockerComposeUp ${ORG1}
   installAll ${ORG1}
 
-  createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_COMMON_NAME} ${CHAINCODE_COMMON_INIT}
+  createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_NAME} ${CHAINCODE_INIT}
 
-  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
-
-  createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+  createJoinInstantiateWarmUp ${ORG1} "${ORG1}" ${CHAINCODE_NAME} ${CHAINCODE_INIT}
 
 elif [ "${MODE}" == "up-2" ]; then
-  downloadArtifactsMember ${ORG2} common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
+  downloadArtifactsMember ${ORG2} "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG2}
   installAll ${ORG2}
 
   downloadChannelBlockFile ${ORG2} ${ORG1} common
-  joinWarmUp ${ORG2} common ${CHAINCODE_COMMON_NAME}
+  joinWarmUp ${ORG2} common ${CHAINCODE_NAME}
 
-  downloadChannelBlockFile ${ORG2} ${ORG1} "${ORG1}-${ORG2}"
-  joinWarmUp ${ORG2} "${ORG1}-${ORG2}" ${CHAINCODE_BILATERAL_NAME}
-
-  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
+  createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_NAME} ${CHAINCODE_INIT}
 
 elif [ "${MODE}" == "up-3" ]; then
-  downloadArtifactsMember ${ORG3} common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
+  downloadArtifactsMember ${ORG3}
   dockerComposeUp ${ORG3}
   installAll ${ORG3}
 
   downloadChannelBlockFile ${ORG3} ${ORG1} common
-  joinWarmUp ${ORG3} common ${CHAINCODE_COMMON_NAME}
+  joinWarmUp ${ORG3} common ${CHAINCODE_NAME}
 
   downloadChannelBlockFile ${ORG3} ${ORG2} "${ORG2}-${ORG3}"
-  joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
+  joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_NAME}
 
-  downloadChannelBlockFile ${ORG3} ${ORG1} "${ORG1}-${ORG3}"
-  joinWarmUp ${ORG3} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
+elif [ "${MODE}" == "up-4" ]; then
+  downloadArtifactsMember ${ORG4}
+  dockerComposeUp ${ORG4}
+  installAll ${ORG4}
+
+  downloadChannelBlockFile ${ORG4} ${ORG1} common
+  joinWarmUp ${ORG4} common ${CHAINCODE_NAME}
+
+elif [ "${MODE}" == "up-5" ]; then
+  downloadArtifactsMember ${ORG5}
+  dockerComposeUp ${ORG5}
+  installAll ${ORG5}
+
+  downloadChannelBlockFile ${ORG5} ${ORG1} common
+  joinWarmUp ${ORG5} common ${CHAINCODE_NAME}
 
 elif [ "${MODE}" == "logs" ]; then
   logs ${ORG}
@@ -767,6 +801,11 @@ elif [ "${MODE}" == "iterateChannels" ]; then
   iterateChannels
 elif [ "${MODE}" == "removeArtifacts" ]; then
   removeArtifacts
+elif [ "${MODE}" == "upgradeChaincode" ]; then
+  for org in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
+  do
+    upgradeChaincode ${org} ${CHAINCODE_NAME} ${CHAINCODE_VERSION}
+  done
 else
   printHelp
   exit 1

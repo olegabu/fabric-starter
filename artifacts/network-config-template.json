@@ -70,6 +70,50 @@
 				"key":  "crypto-config/peerOrganizations/ORG3.DOMAIN/users/Admin@ORG3.DOMAIN/msp/keystore",
 				"cert": "crypto-config/peerOrganizations/ORG3.DOMAIN/users/Admin@ORG3.DOMAIN/msp/signcerts"
 			}
+		},
+
+		"ORG4": {
+			"name":  "peerORG4",
+			"mspid": "ORG4MSP",
+			"ca": "https://ca.ORG4.DOMAIN:7054",
+			"peer0": {
+				"requests": "grpcs://peer0.ORG4.DOMAIN:7051",
+				"events":   "grpcs://peer0.ORG4.DOMAIN:7053",
+				"server-hostname": "peer0.ORG4.DOMAIN",
+				"tls_cacerts": "crypto-config/peerOrganizations/ORG4.DOMAIN/peers/peer0.ORG4.DOMAIN/tls/ca.crt"
+			},
+			"peer1": {
+				"requests": "grpcs://peer1.ORG4.DOMAIN:7051",
+				"events":   "grpcs://peer1.ORG4.DOMAIN:7053",
+				"server-hostname": "peer1.ORG4.DOMAIN",
+				"tls_cacerts": "crypto-config/peerOrganizations/ORG4.DOMAIN/peers/peer1.ORG4.DOMAIN/tls/ca.crt"
+			},
+			"admin": {
+				"key":  "crypto-config/peerOrganizations/ORG4.DOMAIN/users/Admin@ORG4.DOMAIN/msp/keystore",
+				"cert": "crypto-config/peerOrganizations/ORG4.DOMAIN/users/Admin@ORG4.DOMAIN/msp/signcerts"
+			}
+		},
+
+		"ORG5": {
+			"name":  "peerORG5",
+			"mspid": "ORG5MSP",
+			"ca": "https://ca.ORG5.DOMAIN:7054",
+			"peer0": {
+				"requests": "grpcs://peer0.ORG5.DOMAIN:7051",
+				"events":   "grpcs://peer0.ORG5.DOMAIN:7053",
+				"server-hostname": "peer0.ORG5.DOMAIN",
+				"tls_cacerts": "crypto-config/peerOrganizations/ORG5.DOMAIN/peers/peer0.ORG5.DOMAIN/tls/ca.crt"
+			},
+			"peer1": {
+				"requests": "grpcs://peer1.ORG5.DOMAIN:7051",
+				"events":   "grpcs://peer1.ORG5.DOMAIN:7053",
+				"server-hostname": "peer1.ORG5.DOMAIN",
+				"tls_cacerts": "crypto-config/peerOrganizations/ORG5.DOMAIN/peers/peer1.ORG5.DOMAIN/tls/ca.crt"
+			},
+			"admin": {
+				"key":  "crypto-config/peerOrganizations/ORG5.DOMAIN/users/Admin@ORG5.DOMAIN/msp/keystore",
+				"cert": "crypto-config/peerOrganizations/ORG5.DOMAIN/users/Admin@ORG5.DOMAIN/msp/signcerts"
+			}
 		}
 	}
 }
