@@ -137,6 +137,8 @@ function generateOrdererArtifacts() {
 function generatePeerArtifacts() {
     org=$1
 
+    removeArtifacts
+
     [[ ${#} == 0 ]] && echo "missing required argument -o ORG" && exit 1
 
     if [ ${#} == 1 ]; then
