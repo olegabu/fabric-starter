@@ -19,7 +19,9 @@ services:
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peerORG1/tls/ca.crt, /etc/hyperledger/crypto/peerORG2/tls/ca.crt, /etc/hyperledger/crypto/peerORG3/tls/ca.crt]
+      #- ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt, /etc/hyperledger/crypto/peerORG1/tls/ca.crt, /etc/hyperledger/crypto/peerORG2/tls/ca.crt, /etc/hyperledger/crypto/peerORG3/tls/ca.crt]
+      #TODO remove?
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
     working_dir: /etc/hyperledger
     command: orderer
     ports:
@@ -27,9 +29,9 @@ services:
     volumes:
         - ../artifacts/channel:/etc/hyperledger/configtx
         - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/:/etc/hyperledger/crypto/orderer
-        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/peers/peer0.ORG1.DOMAIN/:/etc/hyperledger/crypto/peerORG1
-        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/peers/peer0.ORG2.DOMAIN/:/etc/hyperledger/crypto/peerORG2
-        - ../artifacts/crypto-config/peerOrganizations/ORG3.DOMAIN/peers/peer0.ORG3.DOMAIN/:/etc/hyperledger/crypto/peerORG3
+#        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/peers/peer0.ORG1.DOMAIN/:/etc/hyperledger/crypto/peerORG1
+#        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/peers/peer0.ORG2.DOMAIN/:/etc/hyperledger/crypto/peerORG2
+#        - ../artifacts/crypto-config/peerOrganizations/ORG3.DOMAIN/peers/peer0.ORG3.DOMAIN/:/etc/hyperledger/crypto/peerORG3
 
   cli.DOMAIN:
     container_name: cli.DOMAIN
