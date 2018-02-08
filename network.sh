@@ -341,7 +341,9 @@ function dockerComposeDown () {
 }
 
 function installAll() {
-  org=$1
+    org=$1
+
+  sleep 7
 
   for chaincode_name in ${CHAINCODE_COMMON_NAME} ${CHAINCODE_BILATERAL_NAME}
   do
