@@ -335,7 +335,9 @@ function dockerComposeDown () {
 }
 
 function installAll() {
-  org=$1
+    org=$1
+
+  sleep 7
 
   for chaincode_name in ${CHAINCODE_NAME}
   do
@@ -546,26 +548,6 @@ function generateWait() {
   sleep 7m
 }
 
-function generatePeerArtifacts1() {
-  generatePeerArtifacts ${ORG1} 4000 8081 7054 7051 7053 7056 7058
-}
-
-function generatePeerArtifacts2() {
-  generatePeerArtifacts ${ORG2} 4001 8082 8054 8051 8053 8056 8058
-}
-
-function generatePeerArtifacts3() {
-  generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
-}
-
-function generatePeerArtifacts4() {
-  generatePeerArtifacts ${ORG4} 4003 8084 1054 1051 1053 1056 1058
-}
-
-function generatePeerArtifacts5() {
-  generatePeerArtifacts ${ORG5} 4004 8085 1154 1151 1153 1156 1158
-}
-
 function printArgs() {
   echo "$DOMAIN, $ORG1, $ORG2, $ORG3, $IP1, $IP2, $IP3"
 }
@@ -722,7 +704,7 @@ elif [ "${MODE}" == "generate" ]; then
 
   generateOrdererDockerCompose
   generateOrdererArtifacts
-  generateWait
+  #generateWait
 elif [ "${MODE}" == "generate-orderer" ]; then
   generateOrdererDockerCompose
   downloadArtifactsOrderer
