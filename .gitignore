@@ -21,5 +21,4 @@ build
 /ledger/docker-compose-*.yaml
 /fabric-starter.iws
 /ledger/docker-compose-*.yaml-e
-/www/*
-
+/www/artifacts/*

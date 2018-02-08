@@ -292,14 +292,30 @@ function warmUpChaincode () {
 function installChaincode() {
     org=$1
     n=$2
+    v=$3
     # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
     p=${n}
     f="ledger/docker-compose-${org}.yaml"
 
     info "installing chaincode $n to peers of $org from ./chaincode/go/$p using $f"
 
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v 1.0 -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v 1.0 -p $p"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p"
 }
+
+
+function upgradeChaincode() {
+    org=$1
+    n=$2
+    v=$3
+    # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
+    p=${n}
+    f="ledger/docker-compose-${org}.yaml"
+
+    info "upgrading chaincode $n to peers of $org from ./chaincode/go/$p using $f"
+
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -p $p"
+}
+
 
 function dockerComposeUp () {
   compose_file="ledger/docker-compose-$1.yaml"
@@ -329,7 +345,7 @@ function installAll() {
 
   for chaincode_name in ${CHAINCODE_COMMON_NAME} ${CHAINCODE_BILATERAL_NAME}
   do
-    installChaincode ${org} ${chaincode_name}
+    installChaincode ${org} ${chaincode_name} "1.0"
   done
 }
 
@@ -528,24 +544,12 @@ function clean() {
   removeDockersFromCompose
 #  removeDockersWithDomain
   removeUnwantedImages
-  removeArtifacts
+#  removeArtifacts
 }
 
 function generateWait() {
   echo "$(date --rfc-3339='seconds' -u) *** Wait for 7 minutes to make sure the certificates become active ***"
   sleep 7m
-}
-
-function generatePeerArtifacts1() {
-  generatePeerArtifacts ${ORG1} 4000 8081 7054 7051 7053 7056 7058
-}
-
-function generatePeerArtifacts2() {
-  generatePeerArtifacts ${ORG2} 4001 8082 8054 8051 8053 8056 8058
-}
-
-function generatePeerArtifacts3() {
-  generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
 }
 
 function printArgs() {
@@ -628,13 +632,15 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:" opt; do
   case "$opt" in
     h|\?)
       printHelp
       exit 0
     ;;
     m)  MODE=$OPTARG
+    ;;
+    v)  CHAINCODE_VERSION=$OPTARG
     ;;
     o)  ORG=$OPTARG
     ;;
@@ -691,12 +697,14 @@ elif [ "${MODE}" == "clean" ]; then
   clean
 elif [ "${MODE}" == "generate" ]; then
   clean
+  removeArtifacts
+
   generatePeerArtifacts ${ORG1} 4000 8081 7054 7051 7053 7056 7058
   generatePeerArtifacts ${ORG2} 4001 8082 8054 8051 8053 8056 8058
   generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
   generateOrdererDockerCompose
   generateOrdererArtifacts
-  generateWait
+  #generateWait
 elif [ "${MODE}" == "generate-orderer" ]; then
   generateOrdererDockerCompose
   downloadArtifactsOrderer
@@ -767,6 +775,11 @@ elif [ "${MODE}" == "iterateChannels" ]; then
   iterateChannels
 elif [ "${MODE}" == "removeArtifacts" ]; then
   removeArtifacts
+elif [ "${MODE}" == "upgradeChaincode" ]; then
+  for org in ${ORG1} ${ORG2} ${ORG3}
+  do
+    upgradeChaincode ${org} ${CHAINCODE_COMMON_NAME} ${CHAINCODE_VERSION}
+  done
 else
   printHelp
   exit 1
