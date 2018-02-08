@@ -22,7 +22,7 @@ COMPOSE_TEMPLATE=ledger/docker-composetemplate.yaml
 COMPOSE_FILE_DEV=ledger/docker-composedev.yaml
 
 CHAINCODE_NAME=auditpro
-CHAINCODE_INIT='{"Args":["init","a","100","b","100"]}'
+CHAINCODE_INIT='{"Args":[]}'
 
 DEFAULT_ORDERER_PORT=7050
 DEFAULT_WWW_PORT=8080
@@ -275,7 +275,7 @@ function warmUpChaincode () {
 
     info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\",\"a\"]}'  -C $channel_name"
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"getAllLedgerEntries\"]}'  -C $channel_name"
     i="cli.$org.$DOMAIN"
     echo ${i}
     echo ${c}
