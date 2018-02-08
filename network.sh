@@ -716,6 +716,7 @@ elif [ "${MODE}" == "up-orderer" ]; then
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}"
   dockerComposeUp ${ORG1}
+  sleep 7
   installAll ${ORG1}
 
   createJoinInstantiateWarmUp ${ORG1} common ${CHAINCODE_NAME} ${CHAINCODE_INIT}
