@@ -22,3 +22,5 @@ build
 /fabric-starter.iws
 /ledger/docker-compose-*.yaml-e
 /www/artifacts/*
+/artifacts/*.pb
+/artifacts/update*

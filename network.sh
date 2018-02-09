@@ -33,7 +33,6 @@ DEFAULT_PEER0_EVENT_PORT=7053
 DEFAULT_PEER1_PORT=7056
 DEFAULT_PEER1_EVENT_PORT=7058
 
-DEFAULT_ORDERER_EXTRA_HOSTS="extra_hosts:[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG2.$DOMAIN:$IP2[newline]      - peer0.$ORG4.$DOMAIN:$IP4[newline]      - peer0.$ORG5.$DOMAIN:$IP5[newline]      - peer0.$ORG5.$DOMAIN:$IP5"
 DEFAULT_PEER_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER"
 DEFAULT_CLI_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - www.$DOMAIN:$IP_ORDERER[newline]      - www.$ORG1.$DOMAIN:$IP1[newline]      - www.$ORG2.$DOMAIN:$IP2[newline]      - www.$ORG3.$DOMAIN:$IP3[newline]      - www.$ORG4.$DOMAIN:$IP4[newline]      - www.$ORG5.$DOMAIN:$IP5"
 DEFAULT_API_EXTRA_HOSTS="extra_hosts:[newline]      - orderer.$DOMAIN:$IP_ORDERER[newline]      - peer0.$ORG1.$DOMAIN:$IP1[newline]      - peer0.$ORG2.$DOMAIN:$IP2[newline]      - peer0.$ORG3.$DOMAIN:$IP3[newline]      - peer0.$ORG4.$DOMAIN:$IP4[newline]      - peer0.$ORG5.$DOMAIN:$IP5"
@@ -103,19 +102,56 @@ function generateOrdererDockerCompose() {
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/ORDERER_PORT/$DEFAULT_ORDERER_PORT/g" -e "s/WWW_PORT/$DEFAULT_WWW_PORT/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" -e "s/ORG4/$ORG4/g" -e "s/ORG5/$ORG5/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
 }
 
+function generateNetworkConfig() {
+  orgs=${@}
+
+  echo "Generating network-config.json for $orgs"
+
+  # replace for orderer in network-config.json
+  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json`
+  placeholder=",}}"
+
+  for org in ${orgs}
+    do
+      snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/network-config-orgsnippet.json`
+#      echo ${snippet}
+      out="${out//$placeholder/,$snippet}"
+    done
+
+  out="${out//$placeholder/\}\}}"
+
+  echo ${out} > artifacts/network-config.json
+}
+
+function addOrgToNetworkConfig() {
+  org=$1
+
+  echo "Adding $org to network-config.json"
+
+  out=`cat artifacts/network-config.json`
+  placeholder="}}}"
+
+  snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/network-config-orgsnippet.json`
+#  echo ${snippet}
+  out="${out//$placeholder/\},$snippet}"
+
+  out="${out//,\}\}/\}\}}"
+
+  echo ${out} > artifacts/network-config.json
+}
+
 function generateOrdererArtifacts() {
     echo "Creating orderer yaml files with $DOMAIN, $ORG1, $ORG2, $ORG3, $ORG4, $ORG5, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
 
     f="ledger/docker-compose-$DOMAIN.yaml"
+
+    generateNetworkConfig ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
 
     # replace in configtx
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" -e "s/ORG4/$ORG4/g" -e "s/ORG5/$ORG5/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
 
     # replace in cryptogen
     sed -e "s/DOMAIN/$DOMAIN/g" artifacts/cryptogentemplate-orderer.yaml > artifacts/"cryptogen-$DOMAIN.yaml"
-
-    # replace in network-config.json
-    sed -e "s/\DOMAIN/$DOMAIN/g" -e "s/\ORG1/$ORG1/g" -e "s/\ORG2/$ORG2/g" -e "s/\ORG3/$ORG3/g" -e "s/ORG4/$ORG4/g" -e "s/ORG5/$ORG5/g" -e "s/^\s*\/\/.*$//g" artifacts/network-config-template.json > artifacts/network-config.json
 
     echo "Generating crypto material with cryptogen"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
@@ -136,8 +172,6 @@ function generateOrdererArtifacts() {
 
 function generatePeerArtifacts() {
     org=$1
-
-    removeArtifacts
 
     [[ ${#} == 0 ]] && echo "missing required argument -o ORG" && exit 1
 
@@ -169,13 +203,13 @@ function generatePeerArtifacts() {
     f="ledger/docker-compose-$org.yaml"
     compose_template=ledger/docker-composetemplate-peer.yaml
 
-    # cryptogen
+    # cryptogen yaml
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/cryptogentemplate-peer.yaml > artifacts/"cryptogen-$org.yaml"
 
-    # docker-compose.yaml
+    # docker-compose yaml
     sed -e "s/PEER_EXTRA_HOSTS/$peer_extra_hosts/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/API_EXTRA_HOSTS/$api_extra_hosts/g" -e "s/DOMAIN/$DOMAIN/g" -e "s/\([^ ]\)ORG/\1$org/g" -e "s/API_PORT/$api_port/g" -e "s/WWW_PORT/$www_port/g" -e "s/CA_PORT/$ca_port/g" -e "s/PEER0_PORT/$peer0_port/g" -e "s/PEER0_EVENT_PORT/$peer0_event_port/g" -e "s/PEER1_PORT/$peer1_port/g" -e "s/PEER1_EVENT_PORT/$peer1_event_port/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
 
-    # fabric-ca-server-config.yaml
+    # fabric-ca-server-config yaml
     sed -e "s/ORG/$org/g" artifacts/fabric-ca-server-configtemplate.yaml > artifacts/"fabric-ca-server-config-$org.yaml"
 
     echo "Generating crypto material with cryptogen"
@@ -712,6 +746,7 @@ elif [ "${MODE}" == "generate-orderer" ]; then
   downloadArtifactsOrderer
   generateOrdererArtifacts
 elif [ "${MODE}" == "generate-peer" ]; then
+  removeArtifacts
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
 elif [ "${MODE}" == "up-orderer" ]; then
@@ -763,6 +798,63 @@ elif [ "${MODE}" == "up-5" ]; then
   downloadChannelBlockFile ${ORG5} ${ORG1} common
   joinWarmUp ${ORG5} common ${CHAINCODE_NAME}
 
+elif [ "${MODE}" == "addOrg" ]; then
+  org="pa"
+  channel="common"
+
+  rm -rf "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
+  docker rm -f api.pa.cbx.com peer0.pa.cbx.com peer1.pa.cbx.com ca.pa.cbx.com couchdb0.pa.cbx.com www.pa.cbx.com cli.pa.cbx.com couchdb1.pa.cbx.com
+
+  generatePeerArtifacts ${org} 4005 8086 1254 1251 1253 1256 1258
+
+  addOrgToNetworkConfig ${org}
+
+  configtxDir="artifacts/"
+
+  info "Generating configtx.yaml for $org into $configtxDir"
+  mkdir -p ${configtxDir}
+  sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/configtx-orgtemplate.yaml > "$configtxDir/configtx.yaml"
+
+  f="ledger/docker-compose-$org.yaml"
+
+  c="FABRIC_CFG_PATH=../$configtxDir configtxgen -printOrg ${org}MSP > ${org}MSP.json"
+  info "Generating ${org}MSP.json with $f by $c"
+  docker-compose --file ${f} run "cli.$org.$DOMAIN" bash -c "${c}"
+
+  f="ledger/docker-compose-$ORG1.yaml"
+
+  c="apt update && apt install -y jq \
+  && configtxlator start & sleep 20 \
+  && peer channel fetch config config_block.pb -o orderer.cbx.com:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
+  && jq .data.data[0].payload.data.config config_block.json > config.json \
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' config.json ${org}MSP.json >& updated_config.json \
+  && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
+  && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
+  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
+  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
+  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
+  && curl -X POST --data-binary @update_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_in_envelope.pb"
+  info "Generating config tx with $f by $c"
+  docker exec "cli.$ORG1.$DOMAIN" bash -c "${c}"
+
+  for o in ${ORG2} ${ORG3} ${ORG4} ${ORG5}
+    do
+      info "Signing update_in_envelope.pb by $o"
+      docker exec "cli.$o.$DOMAIN" bash -c "peer channel signconfigtx -f update_in_envelope.pb"
+    done
+
+  info "Sending channel update update_in_envelope.pb by $ORG1"
+  docker exec "cli.$ORG1.$DOMAIN" bash -c "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+
+  dockerComposeUp ${org}
+
+  sleep 10
+
+  installAll ${org}
+
+  joinChannel ${org} ${channel}
+
 elif [ "${MODE}" == "logs" ]; then
   logs ${ORG}
 elif [ "${MODE}" == "devup" ]; then
@@ -785,6 +877,10 @@ elif [ "${MODE}" == "iterateChannels" ]; then
   iterateChannels
 elif [ "${MODE}" == "removeArtifacts" ]; then
   removeArtifacts
+elif [ "${MODE}" == "generateNetworkConfig" ]; then
+  generateNetworkConfig ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
+elif [ "${MODE}" == "addOrgToNetworkConfig" ]; then
+  addOrgToNetworkConfig pa
 elif [ "${MODE}" == "upgradeChaincode" ]; then
   for org in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
   do
@@ -796,4 +892,4 @@ else
 fi
 
 endtime=$(date +%s)
-echo "Finished in $(($endtime - $starttime)) seconds"
+info "Finished in $(($endtime - $starttime)) seconds"

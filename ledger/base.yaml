@@ -35,7 +35,7 @@ services:
     image: hyperledger/fabric-couchdb:x86_64-1.1.0-preview
 
   cli-base:
-    image: hyperledger/fabric-tools:x86_64-1.0.5
+    image: hyperledger/fabric-tools:x86_64-1.1.0-preview
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -59,7 +59,7 @@ services:
     image: maxxx1313/fabric-rest
     volumes:
      - ../artifacts:/usr/src/artifacts
-    command: npm start
+    command: sh -c "sleep 10 && npm start"
 
   www-base:
     image: nginx
