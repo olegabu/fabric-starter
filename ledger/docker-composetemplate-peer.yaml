@@ -8,7 +8,7 @@ services:
 
   ca.ORG.DOMAIN:
     container_name: ca.ORG.DOMAIN
-    image: hyperledger/fabric-ca:x86_64-1.1.0-preview
+    image: hyperledger/fabric-ca:x86_64-1.1.0-alpha
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.ORG.DOMAIN-cert.pem
@@ -32,6 +32,8 @@ services:
       - CORE_PEER_ID=peer0.ORG.DOMAIN
       - CORE_PEER_LOCALMSPID=ORGMSP
       - CORE_PEER_ADDRESS=peer0.ORG.DOMAIN:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0.ORG.DOMAIN:5984
     ports:
       - PEER0_PORT:7051
       - PEER0_EVENT_PORT:7053
@@ -39,7 +41,14 @@ services:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer0.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
     depends_on:
       - ca.ORG.DOMAIN
+      - couchdb0.ORG.DOMAIN
     PEER_EXTRA_HOSTS
+
+  couchdb0.ORG.DOMAIN:
+    container_name: couchdb0.ORG.DOMAIN
+    extends:
+      file:   base.yaml
+      service: couchdb-base
 
   peer1.ORG.DOMAIN:
     container_name: peer1.ORG.DOMAIN
@@ -50,6 +59,8 @@ services:
       - CORE_PEER_ID=peer1.ORG.DOMAIN
       - CORE_PEER_LOCALMSPID=ORGMSP
       - CORE_PEER_ADDRESS=peer1.ORG.DOMAIN:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1.ORG.DOMAIN:5984
     ports:
       - PEER1_PORT:7051
       - PEER1_EVENT_PORT:7053
@@ -57,7 +68,14 @@ services:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer1.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
     depends_on:
       - ca.ORG.DOMAIN
+      - couchdb1.ORG.DOMAIN
     PEER_EXTRA_HOSTS
+
+  couchdb1.ORG.DOMAIN:
+    container_name: couchdb1.ORG.DOMAIN
+    extends:
+      file:   base.yaml
+      service: couchdb-base
 
   # fabric-rest api server
   api.ORG.DOMAIN:

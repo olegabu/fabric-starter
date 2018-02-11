@@ -1,0 +1,18 @@
+{
+  "name": "fabric-starter-client",
+  "version": "0.1.0",
+  "description": "client to listen to hyperledger fabric blocks",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Oleg Abdrashitov <olegabu73@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "log4js": "^2.3.3",
+    "socket.io-client": "^2.0.3",
+    "socketio": "^1.0.0"
+  },
+  "devDependencies": {
+    "nock": "^9.0.14"
+  }
+}
