@@ -20,7 +20,7 @@ build
 /ledger/docker-compose-*.yaml
 /fabric-starter.iws
 /ledger/docker-compose-*.yaml-e
-/www/artifacts/*
+/www/artifacts/*.block
 /artifacts/update.*
 /artifacts/updated_config.*
 /artifacts/update_in_envelope.*

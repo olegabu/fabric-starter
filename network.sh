@@ -335,8 +335,8 @@ function warmUpChaincode () {
 
     info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"getAllLedgerEntries\"]}' -C $channel_name \
-    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"getAllLedgerEntries\"]}' -C $channel_name"
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\"]}' -C $channel_name \
+    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\"]}' -C $channel_name"
     d="cli.$org.$DOMAIN"
 
     echo "warming up with $d by $c"
@@ -399,7 +399,7 @@ function dockerComposeDown () {
 function installAll() {
   org=$1
 
-  sleep 7
+  sleep 2
 
   for chaincode_name in ${CHAINCODE_COMMON_NAME} ${CHAINCODE_BILATERAL_NAME}
   do
@@ -413,8 +413,8 @@ function joinWarmUp() {
   chaincode_name=$3
 
   joinChannel ${org} ${channel_name}
-  sleep 7
-  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
+#  sleep 2
+#  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
 }
 
 function createJoinInstantiateWarmUp() {
@@ -426,8 +426,8 @@ function createJoinInstantiateWarmUp() {
   createChannel ${org} ${channel_name}
   joinChannel ${org} ${channel_name}
   instantiateChaincode ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
-  sleep 7
-  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
+#  sleep 2
+#  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
 }
 
 function makeCertDirs() {
@@ -573,11 +573,11 @@ function addOrg() {
   info "$ORG1 is starting configtxlator on $d by $c"
   docker exec -d ${d} bash -c "$c"
 
-  echo "sleeping 10s to start..."
-  sleep 10
+  echo "waiting 5s for configtxlator to start..."
+  sleep 5
 
   d="cli.$ORG1.$DOMAIN"
-  c="peer channel fetch config config_block.pb -o orderer.cbx.com:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
   && jq .data.data[0].payload.data.config config_block.json > config.json \
   && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' config.json newOrgMSP.json >& updated_config.json \
@@ -612,17 +612,17 @@ function addOrg() {
 
   joinChannel ${org} ${channel}
 
-  info "$ORG1 is upgrading chaincode $CHAINCODE_NAME on $channel to include org $org in its endorsement policy"
+  info "$ORG1 is upgrading chaincode $CHAINCODE_COMMON_NAME on $channel to include org $org in its endorsement policy"
 
   v="2.0"
-  policy="OR ('${ORG1}MSP.member','${ORG2}MSP.member','${ORG3}MSP.member','${ORG4}MSP.member','${ORG5}MSP.member','${org}MSP.member')"
+  policy="OR ('${ORG1}MSP.member','${ORG2}MSP.member','${ORG3}MSP.member','${org}MSP.member')"
 
-  for o in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5} ${org}
+  for o in ${ORG1} ${ORG2} ${ORG3} ${org}
     do
-      installChaincode ${o} ${CHAINCODE_NAME} ${v}
+      installChaincode ${o} ${CHAINCODE_COMMON_NAME} ${v}
     done
 
-  upgradeChaincode ${ORG1} ${CHAINCODE_NAME} ${v} ${CHAINCODE_INIT} ${channel} \""${policy}"\"
+  upgradeChaincode ${ORG1} ${CHAINCODE_COMMON_NAME} ${v} ${CHAINCODE_COMMON_INIT} ${channel} \""${policy}"\"
 }
 
 function devNetworkUp () {
@@ -835,6 +835,8 @@ elif [ "${MODE}" == "up-3" ]; then
 elif [ "${MODE}" == "addOrg" ]; then
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNEL" && exit 1
+
+  #./network.sh -m addOrg -o foo -k common -a 4003 -w 8084 -c 1054 -0 1051 -1 1053 -2 1056 -3 1058
 
   addOrg ${ORG} ${CHANNELS}
 
