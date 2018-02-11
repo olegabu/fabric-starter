@@ -67,21 +67,38 @@ function removeArtifacts() {
   rm artifacts/configtx.yaml
 }
 
-function removeDockersFromCompose() {
+function removeDockersFromAllCompose() {
     for o in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3}
     do
-      f="ledger/docker-compose-$o.yaml"
-
-      if [ -f ${f} ]; then
-        echo "Removing docker containers listed in $f"
-        docker-compose -f ${f} kill
-        docker-compose -f ${f} rm -f
-      fi;
+      removeDockersFromCompose ${o}
     done
+}
+
+function removeDockersFromCompose() {
+  o=$1
+  f="ledger/docker-compose-$o.yaml"
+
+  if [ -f ${f} ]; then
+      info "stopping docker instances from $f"
+      docker-compose -f ${f} down
+      docker-compose -f ${f} kill
+      docker-compose -f ${f} rm -f
+  fi;
 }
 
 function removeDockersWithDomain() {
   search="$DOMAIN"
+  docker_ids=$(docker ps -a | grep ${search} | awk '{print $1}')
+  if [ -z "$docker_ids" -o "$docker_ids" == " " ]; then
+    echo "No docker instances available for deletion with $search"
+  else
+    echo "Removing docker instances found with $search: $docker_ids"
+    docker rm -f ${docker_ids}
+  fi
+}
+
+function removeDockersWithOrg() {
+  search="$1"
   docker_ids=$(docker ps -a | grep ${search} | awk '{print $1}')
   if [ -z "$docker_ids" -o "$docker_ids" == " " ]; then
     echo "No docker instances available for deletion with $search"
@@ -304,9 +321,10 @@ function instantiateChaincode () {
     info "instantiating chaincode $n on $channel_name by $org using $f with $i"
 
     c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode instantiate -n $n -v 1.0 -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
-    echo ${c}
+    d="cli.$org.$DOMAIN"
 
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
+    echo "instantiating with $d by $c"
+    docker-compose --file ${f} run --rm ${d} bash -c "${c}"
 }
 
 function warmUpChaincode () {
@@ -317,12 +335,12 @@ function warmUpChaincode () {
 
     info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\",\"a\"]}'  -C $channel_name"
-    i="cli.$org.$DOMAIN"
-    echo ${i}
-    echo ${c}
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"getAllLedgerEntries\"]}' -C $channel_name \
+    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"getAllLedgerEntries\"]}' -C $channel_name"
+    d="cli.$org.$DOMAIN"
 
-    docker-compose --file ${f} run --rm ${i} bash -c "${c}"
+    echo "warming up with $d by $c"
+    docker-compose --file ${f} run --rm ${d} bash -c "${c}"
 }
 
 function installChaincode() {
@@ -333,23 +351,26 @@ function installChaincode() {
     p=${n}
     f="ledger/docker-compose-${org}.yaml"
 
-    info "installing chaincode $n to peers of $org from ./chaincode/go/$p using $f"
+    info "installing chaincode $n to peers of $org from ./chaincode/go/$p $v using $f"
 
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p \
+    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p"
 }
-
 
 function upgradeChaincode() {
     org=$1
     n=$2
     v=$3
-    # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
-    p=${n}
+    i=$4
+    channel_name=$5
+    policy=$6
     f="ledger/docker-compose-${org}.yaml"
 
-    info "upgrading chaincode $n to peers of $org from ./chaincode/go/$p using $f"
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name -P $policy --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    d="cli.$org.$DOMAIN"
 
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -p $p && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -p $p"
+    info "upgrading chaincode $n to $v using $d with $c"
+    docker-compose --file ${f} run --rm ${d} bash -c "$c"
 }
 
 
@@ -373,11 +394,10 @@ function dockerComposeDown () {
       info "stopping docker instances from $compose_file"
       docker-compose -f ${compose_file} down
   fi;
-
 }
 
 function installAll() {
-    org=$1
+  org=$1
 
   sleep 7
 
@@ -386,27 +406,6 @@ function installAll() {
     installChaincode ${org} ${chaincode_name} "1.0"
   done
 }
-
-#function installInstantiateWarmUp() {
-#  org=$1
-#  channel_name=$2
-#  chaincode_name=$3
-#  chaincode_init=$4
-#
-#  installChaincode ${org} ${chaincode_name}
-#  instantiateWarmUp ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
-#}
-
-#function instantiateWarmUp() {
-#  org=$1
-#  channel_name=$2
-#  chaincode_name=$3
-#  chaincode_init=$4
-#
-#  instantiateChaincode ${org} ${channel_name} ${chaincode_name} ${chaincode_init}
-#  sleep 7
-#  warmUpChaincode ${org} ${channel_name} ${chaincode_name}
-#}
 
 function joinWarmUp() {
   org=$1
@@ -532,6 +531,100 @@ function downloadArtifactsOrderer() {
   docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
 
+function addOrg() {
+  org=$1
+  channel=$2
+
+  info "adding org $org to channel $channel"
+
+  rm -rf "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
+
+  removeDockersWithOrg ${org}
+
+  rm -f artifacts/newOrgMSP.json artifacts/config.* artifacts/update.* artifacts/updated_config.* artifacts/update_in_envelope.*
+
+  # ex. generatePeerArtifacts foo 4005 8086 1254 1251 1253 1256 1258
+  generatePeerArtifacts ${org} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
+
+  dockerComposeUp ${org}
+
+  addOrgToNetworkConfig ${org}
+
+  configtxDir="artifacts/"
+
+  echo "generating configtx.yaml for $org into $configtxDir"
+  mkdir -p ${configtxDir}
+  sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/configtx-orgtemplate.yaml > "$configtxDir/configtx.yaml"
+
+  d="cli.$org.$DOMAIN"
+  c="FABRIC_CFG_PATH=../$configtxDir configtxgen -printOrg ${org}MSP > newOrgMSP.json"
+
+  info "$org is generating newOrgMSP.json with $d by $c"
+  docker exec ${d} bash -c "$c"
+
+  d="cli.$ORG1.$DOMAIN"
+  c="apt update && apt install -y jq"
+
+  info "$ORG1 is installing tools on $d by $c"
+  docker exec ${d} bash -c "$c"
+
+  c="configtxlator start & sleep 1"
+
+  info "$ORG1 is starting configtxlator on $d by $c"
+  docker exec -d ${d} bash -c "$c"
+
+  echo "sleeping 10s to start..."
+  sleep 10
+
+  d="cli.$ORG1.$DOMAIN"
+  c="peer channel fetch config config_block.pb -o orderer.cbx.com:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
+  && jq .data.data[0].payload.data.config config_block.json > config.json \
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' config.json newOrgMSP.json >& updated_config.json \
+  && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
+  && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
+  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
+  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
+  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
+  && curl -X POST --data-binary @update_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_in_envelope.pb"
+
+  info "$ORG1 is generating config tx file update_in_envelope.pb with $d by $c"
+  docker exec ${d} bash -c "$c"
+
+  ! [[ -s artifacts/config_block.json ]] && echo "artifacts/config_block.json is empty. Is configtxlator running?" && exit 1
+
+  for o in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
+    do
+      d="cli.$o.$DOMAIN"
+      c="peer channel signconfigtx -f update_in_envelope.pb"
+
+      info "$o is signing update_in_envelope.pb with $d by $c"
+      docker exec ${d} bash -c "$c"
+    done
+
+  d="cli.$ORG1.$DOMAIN"
+  c="peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+
+  info "$ORG1 is sending channel update update_in_envelope.pb with $d by $c"
+  docker exec ${d} bash -c "$c"
+
+  installAll ${org}
+
+  joinChannel ${org} ${channel}
+
+  info "$ORG1 is upgrading chaincode $CHAINCODE_NAME on $channel to include org $org in its endorsement policy"
+
+  v="2.0"
+  policy="OR ('${ORG1}MSP.member','${ORG2}MSP.member','${ORG3}MSP.member','${ORG4}MSP.member','${ORG5}MSP.member','${org}MSP.member')"
+
+  for o in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5} ${org}
+    do
+      installChaincode ${o} ${CHAINCODE_NAME} ${v}
+    done
+
+  upgradeChaincode ${ORG1} ${CHAINCODE_NAME} ${v} ${CHAINCODE_INIT} ${channel} \""${policy}"\"
+}
+
 function devNetworkUp () {
   docker-compose -f ${COMPOSE_FILE_DEV} up -d 2>&1
   if [ $? -ne 0 ]; then
@@ -579,8 +672,8 @@ function devLogs () {
 }
 
 function clean() {
-  removeDockersFromCompose
-#  removeDockersWithDomain
+#  removeDockersFromAllCompose
+  removeDockersWithDomain
   removeUnwantedImages
 #  removeArtifacts
 }
@@ -592,60 +685,6 @@ function generateWait() {
 
 function printArgs() {
   echo "$DOMAIN, $ORG1, $ORG2, $ORG3, $IP1, $IP2, $IP3"
-}
-
-function iterateChannels() {
-  ORGS="e:198.168.0.5 f:198.168.0.6 b:198.168.0.2 c:198.168.0.3 d:198.168.0.4 a:198.168.0.1"
-
-  orgs=($(for o in ${ORGS}; do echo ${o%:*}; done | sort))
-  ips=($(for o in ${ORGS}; do echo ${o#*:}; done | sort))
-
-  declare -A creators joiners
-  size=${#orgs[*]}
-
-  for i in ${!orgs[@]}
-  do
-    creator=${orgs[$i]}
-    joiner=${orgs[$i]}
-    for j in ${!orgs[@]}
-    do
-      if (( j > i )); then
-        creator+=" ${orgs[$i]}-${orgs[$j]}"
-      elif (( j < i )); then
-        joiner+=" ${orgs[$j]}-${orgs[$i]}"
-      fi
-    done
-    if (( i < $((size-1)) )); then
-      creators[${i}]=${creator}
-    fi
-    if (( i > 0 )); then
-      joiners[${i}]=${joiner}
-    fi
-  done
-
-  info orgs
-  for i in ${!orgs[@]}
-  do
-    echo ${orgs[$i]}
-  done
-
-  info ips
-  for i in ${!ips[@]}
-  do
-    echo ${ips[$i]}
-  done
-
-  info creators
-  for i in ${!creators[@]}
-  do
-    echo ${creators[$i]}
-  done
-
-  info joiners
-  for i in ${!joiners[@]}
-  do
-    echo ${joiners[$i]}
-  done
 }
 
 # Print the usage message
@@ -725,10 +764,11 @@ if [ "${MODE}" == "up" -a "${ORG}" == "" ]; then
   joinWarmUp ${ORG3} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
 
 elif [ "${MODE}" == "down" ]; then
-  dockerComposeDown ${DOMAIN}
-  dockerComposeDown ${ORG1}
-  dockerComposeDown ${ORG2}
-  dockerComposeDown ${ORG3}
+  for org in ${DOMAIN} ${ORG1} ${ORG2} ${ORG3}
+  do
+    dockerComposeDown ${org}
+  done
+
   removeUnwantedContainers
   removeUnwantedImages
 elif [ "${MODE}" == "clean" ]; then
@@ -793,61 +833,10 @@ elif [ "${MODE}" == "up-3" ]; then
   joinWarmUp ${ORG3} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME}
 
 elif [ "${MODE}" == "addOrg" ]; then
-  org="pa"
-  channel="common"
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG" && exit 1
+  [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNEL" && exit 1
 
-  rm -rf "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
-  docker rm -f api.pa.cbx.com peer0.pa.cbx.com peer1.pa.cbx.com ca.pa.cbx.com couchdb0.pa.cbx.com www.pa.cbx.com cli.pa.cbx.com couchdb1.pa.cbx.com
-
-  generatePeerArtifacts ${org} 4005 8086 1254 1251 1253 1256 1258
-
-  addOrgToNetworkConfig ${org}
-
-  configtxDir="artifacts/"
-
-  info "Generating configtx.yaml for $org into $configtxDir"
-  mkdir -p ${configtxDir}
-  sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/configtx-orgtemplate.yaml > "$configtxDir/configtx.yaml"
-
-  f="ledger/docker-compose-$org.yaml"
-
-  c="FABRIC_CFG_PATH=../$configtxDir configtxgen -printOrg ${org}MSP > ${org}MSP.json"
-  info "Generating ${org}MSP.json with $f by $c"
-  docker-compose --file ${f} run "cli.$org.$DOMAIN" bash -c "${c}"
-
-  f="ledger/docker-compose-$ORG1.yaml"
-
-  c="apt update && apt install -y jq \
-  && configtxlator start & sleep 20 \
-  && peer channel fetch config config_block.pb -o orderer.cbx.com:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
-  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
-  && jq .data.data[0].payload.data.config config_block.json > config.json \
-  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' config.json ${org}MSP.json >& updated_config.json \
-  && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
-  && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
-  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
-  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
-  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
-  && curl -X POST --data-binary @update_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_in_envelope.pb"
-  info "Generating config tx with $f by $c"
-  docker exec "cli.$ORG1.$DOMAIN" bash -c "${c}"
-
-  for o in ${ORG2} ${ORG3} ${ORG4} ${ORG5}
-    do
-      info "Signing update_in_envelope.pb by $o"
-      docker exec "cli.$o.$DOMAIN" bash -c "peer channel signconfigtx -f update_in_envelope.pb"
-    done
-
-  info "Sending channel update update_in_envelope.pb by $ORG1"
-  docker exec "cli.$ORG1.$DOMAIN" bash -c "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
-
-  dockerComposeUp ${org}
-
-  sleep 10
-
-  installAll ${org}
-
-  joinChannel ${org} ${channel}
+  addOrg ${ORG} ${CHANNELS}
 
 elif [ "${MODE}" == "logs" ]; then
   logs ${ORG}
