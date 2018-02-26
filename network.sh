@@ -245,6 +245,12 @@ function generatePeerArtifacts() {
     ca_private_key=$(basename `ls -t artifacts/crypto-config/peerOrganizations/"$org.$DOMAIN"/ca/*_sk`)
     [[ -z  ${ca_private_key}  ]] && echo "empty CA private key" && exit 1
     sed -i -e "s/CA_PRIVATE_KEY/${ca_private_key}/g" ${f}
+
+    # replace in configtx
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate-one-org.yaml > artifacts/configtx.yaml
+
+    echo "Generating $org.json"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}.json"
 }
 
 function servePeerArtifacts() {
@@ -259,6 +265,11 @@ function servePeerArtifacts() {
     d="artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
     echo "Copying generated MSP cert files from $d to be served by www.$org.$DOMAIN"
     cp -r "${d}/msp" "www/${d}"
+
+    d="artifacts"
+    echo "Copying generated $org.json from $d to be served by www.$org.$DOMAIN"
+    mkdir -p "www/${d}"
+    cp "${d}/$org.json" "www/${d}"
 
     docker-compose --file ${f} up -d "www.$org.$DOMAIN"
 }
@@ -433,7 +444,8 @@ function createJoinInstantiateWarmUp() {
 function makeCertDirs() {
   mkdir -p "artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls"
 
-  for org in ${ORG1} ${ORG2} ${ORG3}
+#  for org in ${ORG1} ${ORG2} ${ORG3}
+   for org in "$@"
     do
         d="artifacts/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls"
         echo "mkdir -p ${d}"
@@ -491,7 +503,7 @@ function downloadChannelBlockFile() {
 }
 
 function downloadArtifactsMember() {
-  makeCertDirs
+  makeCertDirs ${ORG1} ${ORG2} ${ORG3}
 
   org=$1
   f="ledger/docker-compose-$org.yaml"
@@ -519,7 +531,7 @@ function downloadArtifactsOrderer() {
 #      rm -rf "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
 #    done
 
-  makeCertDirs
+  makeCertDirs ${ORG1} ${ORG2} ${ORG3}
   downloadMemberMSP
 
   f="ledger/docker-compose-$DOMAIN.yaml"
@@ -529,6 +541,27 @@ function downloadArtifactsOrderer() {
   c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+}
+
+
+prepareСhannelConfigOps (){
+
+  org=$1
+
+  d="cli.$org.$DOMAIN"
+  c="apt update && apt install -y jq"
+
+  info "$org is installing tools on $d by $c"
+  docker exec ${d} bash -c "$c"
+
+  c="configtxlator start & sleep 1"
+
+  info "$org is starting configtxlator on $d by $c"
+  docker exec -d ${d} bash -c "$c"
+
+  echo "waiting 5s for configtxlator to start..."
+  sleep 5
+
 }
 
 function addOrg() {
@@ -562,19 +595,7 @@ function addOrg() {
   info "$org is generating newOrgMSP.json with $d by $c"
   docker exec ${d} bash -c "$c"
 
-  d="cli.$ORG1.$DOMAIN"
-  c="apt update && apt install -y jq"
-
-  info "$ORG1 is installing tools on $d by $c"
-  docker exec ${d} bash -c "$c"
-
-  c="configtxlator start & sleep 1"
-
-  info "$ORG1 is starting configtxlator on $d by $c"
-  docker exec -d ${d} bash -c "$c"
-
-  echo "waiting 5s for configtxlator to start..."
-  sleep 5
+  prepareСhannelConfigOps $ORG1
 
   d="cli.$ORG1.$DOMAIN"
   c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
@@ -623,6 +644,20 @@ function addOrg() {
     done
 
   upgradeChaincode ${ORG1} ${CHAINCODE_COMMON_NAME} ${v} ${CHAINCODE_COMMON_INIT} ${channel} \""${policy}"\"
+}
+
+function updateAddOrgPolicyForChannel() {
+  org=$1
+  $channel=$2
+  prepareСhannelConfigOps ${org}
+
+  d="cli.$org.$DOMAIN"
+  c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
+  && jq .data.data[0].payload.data.config config_block.json > config.json \
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' config.json newOrgMSP.json >& updated_config.json \
+  "
+
 }
 
 function devNetworkUp () {
@@ -791,9 +826,21 @@ elif [ "${MODE}" == "generate-peer" ]; then
   removeArtifacts
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
+elif [ "${MODE}" == "generate-peer-add-org" ]; then
+  removeArtifacts
+  generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
+  servePeerArtifacts ${ORG}
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
+elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG
+  dockerComposeUp ${ORG}
+  createChannel ${ORG} common
+  joinChannel ${ORG} common
+elif  [ "${MODE}" == "add-new-org" ]; then # params: -o ORG
+  downloadArtifactsMember ${ORG}
+
+
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
