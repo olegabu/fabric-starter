@@ -651,12 +651,44 @@ function updateAddOrgPolicyForChannel() {
   $channel=$2
   prepareСhannelConfigOps ${org}
 
+  policyName="${org}Only"
+  orgMsp="${org}MSP"
+
+  policy= "{\"${policyName}\":
+                        \"mod_policy\": \"Admins\", \
+                        \"policy\": { \
+                          \"type\": 1, \
+                          \"value\": { \
+                            \"identities\": [ \
+                              { \
+                                \"principal\": { \
+                                  \"msp_identifier\": \"${orgMsp}\", \
+                                  \"role\": \"ADMIN\" \
+                                }, \
+                                \"principal_classification\": \"ROLE\" \
+                              } \
+                            ], \
+                            \"rule\": { \
+                              \"n_out_of\": { \
+                                \"n\": 1, \
+                                \"rules\": [ \
+                                  { \
+                                    \"signed_by\": 0 \
+                                  } \
+                                ] \
+                              } \
+                            }, \
+                            \"version\": 0 \
+                          } \
+                        }, \
+                        \"version\": \"0\" \
+                      }"
+
   d="cli.$org.$DOMAIN"
   c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
   && jq .data.data[0].payload.data.config config_block.json > config.json \
-  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' config.json newOrgMSP.json >& updated_config.json \
-  "
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"mod_policy\": \"${policyName}\", \"policies\":{${policy}}}}}' config.json >& updated_config.json "
 
 }
 
@@ -833,10 +865,13 @@ elif [ "${MODE}" == "generate-peer-add-org" ]; then
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
-elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG
+elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -c channel
   dockerComposeUp ${ORG}
   createChannel ${ORG} common
   joinChannel ${ORG} common
+  policy_add
+elif  [ "${MODE}" == "update-policy" ]; then
+
 elif  [ "${MODE}" == "add-new-org" ]; then # params: -o ORG
   downloadArtifactsMember ${ORG}
 
