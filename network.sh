@@ -249,8 +249,8 @@ function generatePeerArtifacts() {
     # replace in configtx
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate-one-org.yaml > artifacts/configtx.yaml
 
-    echo "Generating $org.json"
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}.json"
+    echo "Generating {$org}Config.json"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
 }
 
 function servePeerArtifacts() {
@@ -267,9 +267,9 @@ function servePeerArtifacts() {
     cp -r "${d}/msp" "www/${d}"
 
     d="artifacts"
-    echo "Copying generated $org.json from $d to be served by www.$org.$DOMAIN"
+    echo "Copying generated {$org}Config.json from $d to be served by www.$org.$DOMAIN"
     mkdir -p "www/${d}"
-    cp "${d}/$org.json" "www/${d}"
+    cp "${d}/{$org}Config.json" "www/${d}"
 
     docker-compose --file ${f} up -d "www.$org.$DOMAIN"
 }
@@ -646,6 +646,95 @@ function addOrg() {
   upgradeChaincode ${ORG1} ${CHAINCODE_COMMON_NAME} ${v} ${CHAINCODE_COMMON_INIT} ${channel} \""${policy}"\"
 }
 
+##################################
+#
+# expects org name, ip address and common channels list to register organization in respectively as arguments.
+#
+# for each provided channel, calls for a specific registerNewOrgInChannel function, which registers the channel in
+# the specified channel, one by one.
+#
+# after that, creates new channels with each existing organization in organizations list.
+#
+##################################
+function registerNewOrg() {
+  org=$1
+  ip=$2
+  channels=$3
+
+  info " >> accepted the following channels list to register org $org in: ${channels[@]}; registering in channels one by one"
+  for c in "${channels[@]}"
+    do
+      registerNewOrgInChannel ${org} ${ip} ${c}
+    done
+
+  info " >> new org ${org} has been registered in all common channels, now going to create channels with each existing org"
+
+  # need to fetch all organizations currently registered in network topology and create a channel for each
+#  command="apt update && apt install -y jq \
+#  && peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+#  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
+#  && jq .data.data[0].payload.data.config config_block.json > config.json \
+#  && jq '.channel_group.groups.Application.groups | keys | join(\" \")' config.json > orgs.json"
+#
+#  echo " >> going to invoke command = ${c}"
+#
+#  d="cli.$ORG1.$DOMAIN"
+#  docker exec ${d} bash -c "$c"
+#
+#  cat artifacts/orgs.json &
+}
+
+
+#################################
+#
+# first, downloads new organization config json file from the remote WWW via the specified IP address
+# then, prepares config-update envelop by including the new organization into the current network topology config file
+# after that, updates channel by
+#
+#################################
+function registerNewOrgInChannel() {
+  org=$1
+  ip=$2
+  channel=$3
+
+  info " >> registering org $org with ip $ip in channel $channel"
+
+  # downloading newOrgMSP.json config
+  info " >> first downloading new org configuration json file from ip $ip"
+
+  d="cli.$ORG1.$DOMAIN"
+  c="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/artifacts/${org}Config.json"
+  echo ${c}
+  docker-compose --file ${f} run --rm "${d}" bash -c "${c} && chown -R $UID:$GID ."
+
+
+  # prepare update envelop
+  info " >> next preparing update_${org}_in_envelope.pb envelop to include ${org} into topology config"
+
+  command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > ${org}_config_block.json \
+  && jq .data.data[0].payload.data.config ${org}_config_block.json > ${org}_config.json \
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' ${org}_config.json ${org}Config.json >& updated_${org}_config.json \
+  && curl -X POST --data-binary @${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > ${org}_config.pb \
+  && curl -X POST --data-binary @updated_${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_${org}_config.pb \
+  && curl -X POST -F channel=$channel -F 'original=@${org}_config.pb' -F 'updated=@updated_${org}_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update_${org}.pb \
+  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
+  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update_${org}.json\`'}}}' | jq . > update_${org}_in_envelope.json \
+  && curl -X POST --data-binary @update_${org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${org}_in_envelope.pb"
+
+  # now update the channel with the config delta envelop
+  info " >> $ORG1 is generating config tx file update_${org}_in_envelope.pb with $d by $c"
+  docker exec ${d} bash -c "$command"
+
+  ! [[ -s artifacts/${org}_config_block.json ]] && echo "artifacts/${org}_config_block.json is empty. Is configtxlator running?" && exit 1
+
+  d="cli.$ORG1.$DOMAIN"
+  command="peer channel update -f update_${org}_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+
+  info " >> $ORG1 is sending channel update update_${org}_in_envelope.pb with $d by $command"
+  docker exec ${d} bash -c "$command"
+}
+
 function updateAddOrgPolicyForChannel() {
   org=$1
   $channel=$2
@@ -776,7 +865,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -803,6 +892,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:" opt; do
     3)  PEER1_EVENT_PORT=$OPTARG
     ;;
     k)  CHANNELS=$OPTARG
+    ;;
+    i) IP=$OPTARG
     ;;
   esac
 done
@@ -873,9 +964,9 @@ elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -c channel
 #  policy_add
 elif  [ "${MODE}" == "update-policy" ]; then
     echo "TODO"
-elif  [ "${MODE}" == "add-new-org" ]; then # params: -o ORG
-  downloadArtifactsMember ${ORG}
-
+elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP
+  common_channels=("channel")
+  registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
 
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
