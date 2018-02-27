@@ -520,7 +520,7 @@ function downloadArtifactsMember() {
   #TODO download not from all members but from the orderer
   info "downloading member cert files using $f"
 
-  c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
+  c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${ORG}.$DOMAIN/peers/peer0.${ORG}.$DOMAIN/tls http://www.${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/${ORG}.$DOMAIN/peers/peer0.${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
@@ -866,12 +866,13 @@ elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
 elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -c channel
+  downloadArtifactsMember ${ORG} common
   dockerComposeUp ${ORG}
   createChannel ${ORG} common
   joinChannel ${ORG} common
-  policy_add
+#  policy_add
 elif  [ "${MODE}" == "update-policy" ]; then
-
+    echo "TODO"
 elif  [ "${MODE}" == "add-new-org" ]; then # params: -o ORG
   downloadArtifactsMember ${ORG}
 
