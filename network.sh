@@ -158,14 +158,28 @@ function addOrgToNetworkConfig() {
 }
 
 function generateOrdererArtifacts() {
+    org=$1
+
     echo "Creating orderer yaml files with $DOMAIN, $ORG1, $ORG2, $ORG3, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
 
     f="ledger/docker-compose-$DOMAIN.yaml"
 
-    generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
+    mkdir -p artifacts/channel
 
-    # replace in configtx
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
+    if [[ -n "$org" ]]; then
+        generateNetworkConfig ${org}
+        sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$org/g" artifacts/configtxtemplate-oneOrg-orderer.yaml > artifacts/configtx.yaml
+    else
+        generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
+        # replace in configtx
+        sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
+
+        for channel_name in common "$ORG1-$ORG2" "$ORG1-$ORG3" "$ORG2-$ORG3"
+        do
+            echo "Generating channel config transaction for $channel_name"
+            docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
+        done
+    fi
 
     # replace in cryptogen
     sed -e "s/DOMAIN/$DOMAIN/g" artifacts/cryptogentemplate-orderer.yaml > artifacts/"cryptogen-$DOMAIN.yaml"
@@ -174,14 +188,7 @@ function generateOrdererArtifacts() {
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
 
     echo "Generating orderer genesis block with configtxgen"
-    mkdir -p artifacts/channel
     docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile OrdererGenesis -outputBlock ./channel/genesis.block
-
-    for channel_name in common "$ORG1-$ORG2" "$ORG1-$ORG3" "$ORG2-$ORG3"
-    do
-        echo "Generating channel config transaction for $channel_name"
-        docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
-    done
 
     echo "Changing artifacts file ownership"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
@@ -247,9 +254,9 @@ function generatePeerArtifacts() {
     sed -i -e "s/CA_PRIVATE_KEY/${ca_private_key}/g" ${f}
 
     # replace in configtx
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate-one-org.yaml > artifacts/configtx.yaml
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/configtx-orgtemplate.yaml > artifacts/configtx.yaml
 
-    echo "Generating {$org}Config.json"
+    echo "Generating ${org}Config.json"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
 }
 
@@ -267,9 +274,9 @@ function servePeerArtifacts() {
     cp -r "${d}/msp" "www/${d}"
 
     d="artifacts"
-    echo "Copying generated {$org}Config.json from $d to be served by www.$org.$DOMAIN"
+    echo "Copying generated ${org}Config.json from $d to be served by www.$org.$DOMAIN"
     mkdir -p "www/${d}"
-    cp "${d}/{$org}Config.json" "www/${d}"
+    cp "${d}/${org}Config.json" "www/${d}"
 
     docker-compose --file ${f} up -d "www.$org.$DOMAIN"
 }
@@ -281,6 +288,11 @@ function serveOrdererArtifacts() {
     echo "Copying generated orderer TLS cert files from $d to be served by www.$DOMAIN"
     mkdir -p "www/${d}"
     cp "${d}/ca.crt" "www/${d}"
+
+    d="artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/msp/tlscacerts"
+    echo "Copying generated orderer MSP cert files from $d to be served by www.$DOMAIN"
+    mkdir -p "www/${d}"
+    cp "${d}/tlsca.${DOMAIN}-cert.pem" "www/${d}"
 
     d="artifacts"
     echo "Copying generated network config file from $d to be served by www.$DOMAIN"
@@ -520,7 +532,7 @@ function downloadArtifactsMember() {
   #TODO download not from all members but from the orderer
   info "downloading member cert files using $f"
 
-  c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${ORG}.$DOMAIN/peers/peer0.${ORG}.$DOMAIN/tls http://www.${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/${ORG}.$DOMAIN/peers/peer0.${ORG}.$DOMAIN/tls/ca.crt; done"
+  c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
@@ -737,13 +749,13 @@ function registerNewOrgInChannel() {
 
 function updateAddOrgPolicyForChannel() {
   org=$1
-  $channel=$2
+  channel=$2
   prepareСhannelConfigOps ${org}
 
   policyName="${org}Only"
   orgMsp="${org}MSP"
 
-  policy= "{\"${policyName}\":
+  policy="{\"${policyName}\": { \
                         \"mod_policy\": \"Admins\", \
                         \"policy\": { \
                           \"type\": 1, \
@@ -770,14 +782,31 @@ function updateAddOrgPolicyForChannel() {
                             \"version\": 0 \
                           } \
                         }, \
-                        \"version\": \"0\" \
-                      }"
+                        \"version\": \"1\" \
+                      }}"
 
   d="cli.$org.$DOMAIN"
-  c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  c="echo '$policy' > new_policy.json \
+  && peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
   && jq .data.data[0].payload.data.config config_block.json > config.json \
-  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"mod_policy\": \"${policyName}\", \"policies\":{${policy}}}}}' config.json >& updated_config.json "
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"mod_policy\": \"${policyName}\", \"policies\":.[1]}}}}' config.json new_policy.json >& updated_config.json \
+  \
+  && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
+  && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
+  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
+  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
+  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
+  && curl -X POST --data-binary @update_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_in_envelope.pb \
+  && pkill configtxlator"
+
+  info "$org is generating config tx file update_in_envelope.pb with $d by $c"
+  docker exec ${d} bash -c "$c"
+
+  c="peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+
+  info "$ORG1 is sending channel update update_in_envelope.pb with $d by $c"
+  docker exec ${d} bash -c "$c"
 
 }
 
@@ -941,31 +970,28 @@ elif [ "${MODE}" == "generate" ]; then
   generateOrdererDockerCompose
   generateOrdererArtifacts
   #generateWait
-elif [ "${MODE}" == "generate-orderer" ]; then
+elif [ "${MODE}" == "generate-orderer" ]; then  # params: -o ORG (optional)
   generateOrdererDockerCompose
   downloadArtifactsOrderer
-  generateOrdererArtifacts
-elif [ "${MODE}" == "generate-peer" ]; then
-  removeArtifacts
-  generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
-  servePeerArtifacts ${ORG}
-elif [ "${MODE}" == "generate-peer-add-org" ]; then
+  generateOrdererArtifacts ${ORG}
+elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG
   removeArtifacts
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
-elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -c channel
+elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -k channel(optional)
   downloadArtifactsMember ${ORG} common
   dockerComposeUp ${ORG}
-  createChannel ${ORG} common
-  joinChannel ${ORG} common
-#  policy_add
-elif  [ "${MODE}" == "update-policy" ]; then
-    echo "TODO"
+  if [[ -n "$CHANNELS" ]]; then
+    createChannel ${ORG} common
+    joinChannel ${ORG} common
+  fi
+elif  [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k channel
+  updateAddOrgPolicyForChannel $ORG common
 elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP
-  common_channels=("channel")
+  common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
 
 elif [ "${MODE}" == "up-1" ]; then
