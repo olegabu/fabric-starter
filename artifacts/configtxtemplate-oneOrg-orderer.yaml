@@ -27,6 +27,12 @@ Profiles:
             Organizations:
                 - *ORG1
 
+    CHANNEL_NAME:
+        Consortium: SampleConsortium
+        Application:
+            Organizations:
+                - *ORG1
+
 ################################################################################
 #
 #   Section: Organizations

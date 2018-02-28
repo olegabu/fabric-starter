@@ -166,20 +166,24 @@ function generateOrdererArtifacts() {
 
     mkdir -p artifacts/channel
 
+
     if [[ -n "$org" ]]; then
         generateNetworkConfig ${org}
         sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$org/g" artifacts/configtxtemplate-oneOrg-orderer.yaml > artifacts/configtx.yaml
+        createChannels=("common")
     else
         generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
         # replace in configtx
         sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" artifacts/configtxtemplate.yaml > artifacts/configtx.yaml
-
-        for channel_name in common "$ORG1-$ORG2" "$ORG1-$ORG3" "$ORG2-$ORG3"
-        do
-            echo "Generating channel config transaction for $channel_name"
-            docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
-        done
+        createChannels=("common" "$ORG1-$ORG2" "$ORG1-$ORG3" "$ORG2-$ORG3")
     fi
+
+
+    for channel_name in ${createChannels[@]}
+    do
+        echo "Generating channel config transaction for $channel_name"
+        docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
+    done
 
     # replace in cryptogen
     sed -e "s/DOMAIN/$DOMAIN/g" artifacts/cryptogentemplate-orderer.yaml > artifacts/"cryptogen-$DOMAIN.yaml"
@@ -304,6 +308,26 @@ function serveOrdererArtifacts() {
     cp "${d}/"*.tx "www/${d}/"
 
     docker-compose --file ${f} up -d "www.$DOMAIN"
+}
+
+function generateChannelConfig() {
+
+    mainOrg=$1
+    channel_name=$2
+
+#    echo "{\"payload\":\"a\"}" | jq . > testChannel.json
+    sed -e "s/ORG1/$mainOrg/g" -e "s/CHANNEL_NAME/$channel_name/g" artifacts/configtxtemplate-oneOrg-orderer.yaml > artifacts/configtx.yaml
+
+    i=2
+    for org in "${@:3}"
+    do
+        echo "sed -e \"s/ORG${i}/$org/g\" artifacts/configtx.yaml > artifacts/configtx.yaml.tmp && mv artifacts/configtx.yaml.tmp artifacts/configtx.yaml"
+        sed -e "s/ORG${i}/$org/g" artifacts/configtx.yaml > "artifacts/configtx.yaml.tmp" && mv "artifacts/configtx.yaml.tmp" "artifacts/configtx.yaml"
+        i=$((i+1))
+    done
+
+    f="ledger/docker-compose-$DOMAIN.yaml"
+    docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
 }
 
 function createChannel () {
@@ -561,7 +585,7 @@ prepareСhannelConfigOps (){
   org=$1
 
   d="cli.$org.$DOMAIN"
-  c="apt update && apt install -y jq"
+  c="apt-get update && apt-get install -y jq"
 
   info "$org is installing tools on $d by $c"
   docker exec ${d} bash -c "$c"
@@ -747,7 +771,7 @@ function registerNewOrgInChannel() {
   docker exec ${d} bash -c "$command"
 }
 
-function updateAddOrgPolicyForChannel() {
+function updateSignPolicyForChannel() {
   org=$1
   channel=$2
   prepareСhannelConfigOps ${org}
@@ -981,18 +1005,21 @@ elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
-elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -k channel(optional)
+elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -k CHANNELS(optional)
   downloadArtifactsMember ${ORG} common
   dockerComposeUp ${ORG}
   if [[ -n "$CHANNELS" ]]; then
     createChannel ${ORG} common
     joinChannel ${ORG} common
   fi
-elif  [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k channel
-  updateAddOrgPolicyForChannel $ORG common
+elif  [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
+  updateSignPolicyForChannel $ORG common
 elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP
   common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
+elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg channel_name org1 org2
+    generateChannelConfig ${@:3}
+    createChannel $3 $4
 
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
