@@ -730,7 +730,7 @@ function registerNewOrgInChannel() {
   # downloading newOrgMSP.json config
   info " >> first downloading new org configuration json file from ip $ip"
 
-  f="ledger/docker-compose-$DOMAIN.yaml"
+  f="ledger/docker-compose-${ORG1}.yaml"
   d="cli.$ORG1.$DOMAIN"
   command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${org}Config.json"
   echo ${c}
