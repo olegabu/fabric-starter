@@ -730,8 +730,9 @@ function registerNewOrgInChannel() {
   # downloading newOrgMSP.json config
   info " >> first downloading new org configuration json file from ip $ip"
 
+  f="ledger/docker-compose-$DOMAIN.yaml"
   d="cli.$ORG1.$DOMAIN"
-  command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/artifacts/${org}Config.json"
+  command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${org}Config.json"
   echo ${c}
   docker-compose --file ${f} run --rm "${d}" bash -c "${command} && chown -R $UID:$GID ."
 
