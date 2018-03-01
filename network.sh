@@ -921,7 +921,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -950,6 +950,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:" opt; do
     k)  CHANNELS=$OPTARG
     ;;
     i) IP=$OPTARG
+    ;;
+    e) ENV=$OPTARG
     ;;
   esac
 done
@@ -1001,8 +1003,8 @@ elif [ "${MODE}" == "generate-orderer" ]; then  # params: -o ORG (optional)
   generateOrdererDockerCompose
   downloadArtifactsOrderer
   generateOrdererArtifacts ${ORG}
-elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG
-  removeArtifacts
+elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -e ENV(optional)
+  [[ -z "$ENV" ]] && removeArtifacts
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
 elif [ "${MODE}" == "up-orderer" ]; then
@@ -1022,10 +1024,12 @@ elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example:
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
-elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg channel_name org1 org2
+elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg channel_name org1 [org2] [org3]
     generateChannelConfig ${@:3}
     createChannel $3 $4
-
+elif  [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
+    downloadChannelBlockFile ${@:3}
+    joinChannel ${3} $5
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
