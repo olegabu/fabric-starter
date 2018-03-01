@@ -743,6 +743,7 @@ function registerNewOrgInChannel() {
   info " >> next preparing update_${org}_in_envelope.pb envelop to include ${org} into topology config"
 
   command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  && rm -rf ${org}_config_block.json ${org}_config.json updated_${org}_config.json update_$org.json\
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > ${org}_config_block.json \
   && sleep 1 \
   && echo 'wc for artifacts/${org}_config_block.json: $(wc -c < artifacts/${org}_config_block.json)' \
@@ -770,6 +771,7 @@ function registerNewOrgInChannel() {
   # now update the channel with the config delta envelop
   info " >> $ORG1 is generating config tx file update_${org}_in_envelope.pb with $d by $c"
   docker exec ${d} bash -c "$command"
+  info " >> $ORG1 successfully generated config tx file update_${org}_in_envelope.pb"
 
   ! [[ -s artifacts/${org}_config_block.json ]] && echo "artifacts/${org}_config_block.json is empty. Is configtxlator running?" && exit 1
 
