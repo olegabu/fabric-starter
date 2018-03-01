@@ -591,12 +591,12 @@ function installCliToolset (){
   org=$1
 
   d="cli.$org.$DOMAIN"
-  c="apt-get update && apt-get install -y jq"
+  c="apt-get update && apt-get install -y jq && pkill configtxlator"
 
   info "$org is installing tools on $d by $c"
   docker exec ${d} bash -c "$c"
 
-  c="pkill configtxlator && configtxlator start & sleep 1"
+  c="configtxlator start & sleep 1"
 
   info "$org is starting configtxlator on $d by $c"
   docker exec -d ${d} bash -c "$c"
