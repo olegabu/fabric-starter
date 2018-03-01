@@ -699,17 +699,17 @@ function addOrg() {
 #
 ##################################
 function registerNewOrg() {
-  org=$1
+  new_org=$1
   ip=$2
   channels=$3
 
-  info " >> accepted the following channels list to register org $org in: ${channels[@]}; registering in channels one by one"
+  info " >> accepted the following channels list to register org ${new_org} in: ${channels[@]}; registering in channels one by one"
   for c in "${channels[@]}"
     do
-      registerNewOrgInChannel ${org} ${ip} ${c}
+      registerNewOrgInChannel ${new_org} ${ip} ${c}
     done
 
-  info " >> new org ${org} has been registered in all common channels !"
+  info " >> new org ${new_org} has been registered in all common channels !"
 }
 
 
@@ -721,64 +721,64 @@ function registerNewOrg() {
 #
 #################################
 function registerNewOrgInChannel() {
-  org=$1
+  new_org=$1
   ip=$2
   channel=$3
 
   installCliToolset ${ORG1}
 
-  info " >> registering org $org with ip $ip in channel $channel"
+  info " >> registering org $new_org with ip $ip in channel $channel"
 
   # downloading newOrgMSP.json config
   info " >> first downloading new org configuration json file from ip $ip"
 
   f="ledger/docker-compose-${ORG1}.yaml"
   d="cli.$ORG1.$DOMAIN"
-  command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${org}Config.json"
+  command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${new_org}Config.json"
   echo ${c}
   docker-compose --file ${f} run --rm "${d}" bash -c "${command} && chown -R $UID:$GID ."
 
 
   # prepare update envelop
-  info " >> next preparing update_${org}_in_envelope.pb envelop to include ${org} into topology config"
+  info " >> next preparing update_${new_org}_in_envelope.pb envelop to include ${new_org} into topology config"
 
   command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
-  && rm -rf ${org}_config_block.json ${org}_config.json updated_${org}_config.json update_$org.json\
-  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > ${org}_config_block.json \
+  && rm -rf ${new_org}_config_block.json ${new_org}_config.json updated_${new_org}_config.json update_${new_org}.json\
+  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > ${new_org}_config_block.json \
   && sleep 1 \
-  && echo 'wc for artifacts/${org}_config_block.json: $(wc -c < artifacts/${org}_config_block.json)' \
-  && jq .data.data[0].payload.data.config ${org}_config_block.json > ${org}_config.json \
+  && echo 'wc for artifacts/${new_org}_config_block.json: $(wc -c < artifacts/${org}_config_block.json)' \
+  && jq .data.data[0].payload.data.config ${new_org}_config_block.json > ${new_org}_config.json \
   && sleep 1 \
-  && echo 'wc for artifacts/${org}_config.json: $(wc -c < artifacts/${org}_config.json)' \
-  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' ${org}_config.json ${org}Config.json >& updated_${org}_config.json \
+  && echo 'wc for artifacts/${new_org}_config.json: $(wc -c < artifacts/${org}_config.json)' \
+  && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${new_org}MSP\":.[1]}}}}}' ${new_org}_config.json ${new_org}Config.json >& updated_${new_org}_config.json \
   && sleep 1 \
-  && echo 'wc for artifacts/updated_${org}_config.json: $(wc -c < artifacts/updated_${org}_config.json)' \
-  && curl -X POST --data-binary @${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > ${org}_config.pb \
+  && echo 'wc for artifacts/updated_${new_org}_config.json: $(wc -c < artifacts/updated_${new_org}_config.json)' \
+  && curl -X POST --data-binary @${new_org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > ${new_org}_config.pb \
   && sleep 1 \
-  && curl -X POST --data-binary @updated_${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_${org}_config.pb \
+  && curl -X POST --data-binary @updated_${new_org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_${new_org}_config.pb \
   && sleep 1 \
-  && curl -X POST -F channel=$channel -F 'original=@${org}_config.pb' -F 'updated=@updated_${org}_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update_${org}.pb \
+  && curl -X POST -F channel=$channel -F 'original=@${new_org}_config.pb' -F 'updated=@updated_${new_org}_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update_${new_org}.pb \
   && sleep 1 \
-  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update_$org.json \
+  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update_${new_org}.json \
   && sleep 1 \
-  && echo 'wc for artifacts/update_$org.json: $(wc -c < artifacts/update_$org.json)' \
-  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update_$org.json\`'}}}' | jq . > update_${org}_in_envelope.json \
+  && echo 'wc for artifacts/update_${new_org}.json: $(wc -c < artifacts/update_${new_org}.json)' \
+  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update_$new_org.json\`'}}}' | jq . > update_${new_org}_in_envelope.json \
   && sleep 1 \
-  && echo 'wc for artifacts/update_${org}_in_envelope.json: $(wc -c < artifacts/update_${org}_in_envelope.json)' \
-  && curl -X POST --data-binary @update_${org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${org}_in_envelope.pb \
-  && echo 'Finished update_${org}_in_envelope.pb preparation!' && pkill configtxlator && exit 0"
+  && echo 'wc for artifacts/update_${new_org}_in_envelope.json: $(wc -c < artifacts/update_${new_org}_in_envelope.json)' \
+  && curl -X POST --data-binary @update_${new_org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${new_org}_in_envelope.pb \
+  && echo 'Finished update_${new_org}_in_envelope.pb preparation!' && pkill configtxlator && exit 0"
 
   # now update the channel with the config delta envelop
-  info " >> $ORG1 is generating config tx file update_${org}_in_envelope.pb with $d by $c"
+  info " >> $ORG1 is generating config tx file update_${new_org}_in_envelope.pb with $d by $c"
   docker exec ${d} bash -c "$command"
-  info " >> $ORG1 successfully generated config tx file update_${org}_in_envelope.pb"
+  info " >> $ORG1 successfully generated config tx file update_${new_org}_in_envelope.pb"
 
-  ! [[ -s artifacts/${org}_config_block.json ]] && echo "artifacts/${org}_config_block.json is empty. Is configtxlator running?" && exit 1
+  ! [[ -s artifacts/${new_org}_config_block.json ]] && echo "artifacts/${new_org}_config_block.json is empty. Is configtxlator running?" && exit 1
 
   d="cli.$ORG1.$DOMAIN"
-  command="peer channel update -f update_${org}_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+  command="peer channel update -f update_${new_org}_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 
-  info " >> $ORG1 is sending channel update update_${org}_in_envelope.pb with $d by $command"
+  info " >> $ORG1 is sending channel update update_${new_org}_in_envelope.pb with $d by $command"
   docker exec ${d} bash -c "$command"
 }
 
