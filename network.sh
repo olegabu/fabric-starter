@@ -744,19 +744,28 @@ function registerNewOrgInChannel() {
 
   command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > ${org}_config_block.json \
+  && sleep 1 \
   && echo 'wc for artifacts/${org}_config_block.json: $(wc -c < artifacts/${org}_config_block.json)' \
   && jq .data.data[0].payload.data.config ${org}_config_block.json > ${org}_config.json \
+  && sleep 1 \
   && echo 'wc for artifacts/${org}_config.json: $(wc -c < artifacts/${org}_config.json)' \
   && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' ${org}_config.json ${org}Config.json >& updated_${org}_config.json \
+  && sleep 1 \
   && echo 'wc for artifacts/updated_${org}_config.json: $(wc -c < artifacts/updated_${org}_config.json)' \
   && curl -X POST --data-binary @${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > ${org}_config.pb \
+  && sleep 1 \
   && curl -X POST --data-binary @updated_${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_${org}_config.pb \
+  && sleep 1 \
   && curl -X POST -F channel=$channel -F 'original=@${org}_config.pb' -F 'updated=@updated_${org}_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update_${org}.pb \
+  && sleep 1 \
   && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update_$org.json \
+  && sleep 1 \
   && echo 'wc for artifacts/update_$org.json: $(wc -c < artifacts/update_$org.json)' \
   && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update_$org.json\`'}}}' | jq . > update_${org}_in_envelope.json \
+  && sleep 1 \
   && echo 'wc for artifacts/update_${org}_in_envelope.json: $(wc -c < artifacts/update_${org}_in_envelope.json)' \
-  && curl -X POST --data-binary @update_${org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${org}_in_envelope.pb"
+  && curl -X POST --data-binary @update_${org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${org}_in_envelope.pb \
+  && echo 'Finished update_${org}_in_envelope.pb preparation!'"
 
   # now update the channel with the config delta envelop
   info " >> $ORG1 is generating config tx file update_${org}_in_envelope.pb with $d by $c"
