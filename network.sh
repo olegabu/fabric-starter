@@ -579,8 +579,14 @@ function downloadArtifactsOrderer() {
   docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
 
-
-prepareСhannelConfigOps (){
+#############################
+#
+# Install toolset on cli required to perform signing and other operations - jq, configtxlator, etc.
+#
+# Example usage: installCliToolset "org-name"
+#
+#############################
+function installCliToolset (){
 
   org=$1
 
@@ -631,7 +637,7 @@ function addOrg() {
   info "$org is generating newOrgMSP.json with $d by $c"
   docker exec ${d} bash -c "$c"
 
-  prepareСhannelConfigOps $ORG1
+  installCliToolset ${ORG1}
 
   d="cli.$ORG1.$DOMAIN"
   c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
@@ -703,21 +709,7 @@ function registerNewOrg() {
       registerNewOrgInChannel ${org} ${ip} ${c}
     done
 
-  info " >> new org ${org} has been registered in all common channels, now going to create channels with each existing org"
-
-  # need to fetch all organizations currently registered in network topology and create a channel for each
-#  command="apt update && apt install -y jq \
-#  && peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
-#  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
-#  && jq .data.data[0].payload.data.config config_block.json > config.json \
-#  && jq '.channel_group.groups.Application.groups | keys | join(\" \")' config.json > orgs.json"
-#
-#  echo " >> going to invoke command = ${c}"
-#
-#  d="cli.$ORG1.$DOMAIN"
-#  docker exec ${d} bash -c "$c"
-#
-#  cat artifacts/orgs.json &
+  info " >> new org ${org} has been registered in all common channels !"
 }
 
 
@@ -739,9 +731,9 @@ function registerNewOrgInChannel() {
   info " >> first downloading new org configuration json file from ip $ip"
 
   d="cli.$ORG1.$DOMAIN"
-  c="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/artifacts/${org}Config.json"
+  command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/artifacts/${org}Config.json"
   echo ${c}
-  docker-compose --file ${f} run --rm "${d}" bash -c "${c} && chown -R $UID:$GID ."
+  docker-compose --file ${f} run --rm "${d}" bash -c "${command} && chown -R $UID:$GID ."
 
 
   # prepare update envelop
@@ -774,7 +766,7 @@ function registerNewOrgInChannel() {
 function updateSignPolicyForChannel() {
   org=$1
   channel=$2
-  prepareСhannelConfigOps ${org}
+  installCliToolset ${org}
 
   policyName="${org}Only"
   orgMsp="${org}MSP"
@@ -1014,7 +1006,9 @@ elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -k CHANNELS(optional)
   fi
 elif  [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
   updateSignPolicyForChannel $ORG common
-elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP
+elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
+  [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
 elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg channel_name org1 org2
