@@ -765,7 +765,7 @@ function registerNewOrgInChannel() {
   && sleep 1 \
   && echo 'wc for artifacts/update_${org}_in_envelope.json: $(wc -c < artifacts/update_${org}_in_envelope.json)' \
   && curl -X POST --data-binary @update_${org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${org}_in_envelope.pb \
-  && echo 'Finished update_${org}_in_envelope.pb preparation!'"
+  && echo 'Finished update_${org}_in_envelope.pb preparation!' && exit 0"
 
   # now update the channel with the config delta envelop
   info " >> $ORG1 is generating config tx file update_${org}_in_envelope.pb with $d by $c"
