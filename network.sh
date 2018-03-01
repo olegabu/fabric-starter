@@ -596,7 +596,7 @@ function installCliToolset (){
   info "$org is installing tools on $d by $c"
   docker exec ${d} bash -c "$c"
 
-  c="configtxlator start & sleep 1"
+  c="pkill configtxlator && configtxlator start & sleep 1"
 
   info "$org is starting configtxlator on $d by $c"
   docker exec -d ${d} bash -c "$c"
