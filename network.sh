@@ -753,7 +753,7 @@ function registerNewOrgInChannel() {
   && curl -X POST --data-binary @${new_org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > ${new_org}_config.pb \
   && curl -X POST --data-binary @updated_${new_org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_${new_org}_config.pb \
   && curl -X POST -F channel=$channel -F 'original=@${new_org}_config.pb' -F 'updated=@updated_${new_org}_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update_${new_org}.pb \
-  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update_${new_org}.json \
+  && curl -X POST --data-binary @update_${new_org}.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update_${new_org}.json \
   && echo 'wc for artifacts/update_${new_org}.json: $(wc -c < artifacts/update_${new_org}.json)' \
   && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update_$new_org.json\`'}}}' | jq . > update_${new_org}_in_envelope.json \
   && echo 'wc for artifacts/update_${new_org}_in_envelope.json: $(wc -c < artifacts/update_${new_org}_in_envelope.json)' \
