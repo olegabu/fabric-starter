@@ -703,8 +703,6 @@ function registerNewOrg() {
   ip=$2
   channels=$3
 
-#  installCliToolset ${ORG1}
-
   info " >> accepted the following channels list to register org $org in: ${channels[@]}; registering in channels one by one"
   for c in "${channels[@]}"
     do
@@ -726,6 +724,8 @@ function registerNewOrgInChannel() {
   org=$1
   ip=$2
   channel=$3
+
+  installCliToolset ${ORG1}
 
   info " >> registering org $org with ip $ip in channel $channel"
 
@@ -766,7 +766,7 @@ function registerNewOrgInChannel() {
   && sleep 1 \
   && echo 'wc for artifacts/update_${org}_in_envelope.json: $(wc -c < artifacts/update_${org}_in_envelope.json)' \
   && curl -X POST --data-binary @update_${org}_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_${org}_in_envelope.pb \
-  && echo 'Finished update_${org}_in_envelope.pb preparation!' && exit 0"
+  && echo 'Finished update_${org}_in_envelope.pb preparation!' && pkill configtxlator && exit 0"
 
   # now update the channel with the config delta envelop
   info " >> $ORG1 is generating config tx file update_${org}_in_envelope.pb with $d by $c"
