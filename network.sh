@@ -703,6 +703,8 @@ function registerNewOrg() {
   ip=$2
   channels=$3
 
+  installCliToolset ${ORG1}
+
   info " >> accepted the following channels list to register org $org in: ${channels[@]}; registering in channels one by one"
   for c in "${channels[@]}"
     do
@@ -742,8 +744,11 @@ function registerNewOrgInChannel() {
 
   command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > ${org}_config_block.json \
+  && echo 'wc for artifacts/${org}_config_block.json: $(wc -c artifacts/${org}_config_block.json)' \
   && jq .data.data[0].payload.data.config artifacts/${org}_config_block.json > ${org}_config.json \
+  && echo 'wc for artifacts/${org}_config.json: $(wc -c artifacts/${org}_config.json)' \
   && jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${org}MSP\":.[1]}}}}}' artifacts/${org}_config.json ${org}Config.json >& updated_${org}_config.json \
+  && echo 'wc for artifacts/updated_${org}_config.json: $(wc -c updated_${org}_config.json)' \
   && curl -X POST --data-binary @artifacts/${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > ${org}_config.pb \
   && curl -X POST --data-binary @artifacts/updated_${org}_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_${org}_config.pb \
   && curl -X POST -F channel=$channel -F 'original=@artifacts/${org}_config.pb' -F 'updated=@artifacts/updated_${org}_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update_${org}.pb \
