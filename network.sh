@@ -703,7 +703,7 @@ function registerNewOrg() {
   ip=$2
   channels=$3
 
-  installCliToolset ${ORG1}
+#  installCliToolset ${ORG1}
 
   info " >> accepted the following channels list to register org $org in: ${channels[@]}; registering in channels one by one"
   for c in "${channels[@]}"
