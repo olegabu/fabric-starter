@@ -1024,9 +1024,10 @@ elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example:
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
-elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg channel_name org1 [org2] [org3]
+elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
     generateChannelConfig ${@:3}
     createChannel $3 $4
+    joinChannel $3 $4
 elif  [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
     downloadChannelBlockFile ${@:3}
     joinChannel ${3} $5
@@ -1100,8 +1101,8 @@ elif [ "${MODE}" == "removeArtifacts" ]; then
   removeArtifacts
 elif [ "${MODE}" == "generateNetworkConfig" ]; then
   generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
-elif [ "${MODE}" == "addOrgToNetworkConfig" ]; then
-  addOrgToNetworkConfig pa
+elif [ "${MODE}" == "addOrgToNetworkConfig" ]; then # -o ORG
+  addOrgToNetworkConfig ${ORG}
 elif [ "${MODE}" == "upgradeChaincode" ]; then
   for org in ${ORG1} ${ORG2} ${ORG3}
   do

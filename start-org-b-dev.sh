@@ -1,10 +1,10 @@
 ./network.sh -m generate-peer -o b -e env
 
-read -n1 -r -p "Press any key to UP orh..."
+read -n1 -r -p "Add org b from org a cli and press any key to UP org b..."
 
 ./network.sh -m up-one-org -o b
 
-read -n1 -r -p "Press any key to join channel common "
+read -n1 -r -p "Press any key to join org b to channel common"
 
 #export API_PORT=4001
 #export WWW_PORT=8082
