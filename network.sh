@@ -1033,11 +1033,16 @@ elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name 
 elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
     downloadChannelBlockFile ${@:3}
     joinChannel ${3} $5
-elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -k book
+elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -d book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
+elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -d book
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
+  [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
+  [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
+  instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_COMMON_INIT}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
