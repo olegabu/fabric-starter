@@ -921,7 +921,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:d:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -952,6 +952,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:" opt; do
     i) IP=$OPTARG
     ;;
     e) ENV=$OPTARG
+    ;;
+    d) CHAINCODE=$OPTARG
     ;;
   esac
 done
@@ -1017,20 +1019,25 @@ elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -k CHANNELS(optional)
     createChannel ${ORG} common
     joinChannel ${ORG} common
   fi
-elif  [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
+elif [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
   updateSignPolicyForChannel $ORG common
-elif  [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
+elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
-elif  [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
+elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
     generateChannelConfig ${@:3}
     createChannel $3 $4
     joinChannel $3 $4
-elif  [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
+elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
     downloadChannelBlockFile ${@:3}
     joinChannel ${3} $5
+elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -k book
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
+  [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
+  [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
+  installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
