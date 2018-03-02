@@ -65,6 +65,7 @@ function removeArtifacts() {
   rm artifacts/fabric-ca-server-config-*.yaml
   rm artifacts/network-config.json
   rm artifacts/configtx.yaml
+  rm -r artifacts/api
 }
 
 function removeDockersFromAllCompose() {
@@ -260,54 +261,57 @@ function generatePeerArtifacts() {
     # replace in configtx
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/configtx-orgtemplate.yaml > artifacts/configtx.yaml
 
+    mkdir -p artifacts/api/${org}
+    cp artifacts/default_hosts artifacts/api/${org}/hosts
+
     echo "Generating ${org}Config.json"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
 }
 
+function addOrgToHosts() {
+  thisOrg=$1
+  org=$2
+  ip=$3
+  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN" >> artifacts/api/${thisOrg}/hosts
+}
+
+function copyFilesToWWW() {
+  dir=$1
+  targetFileOrDir=$2
+  comment=$3
+  org=$4
+
+  echo "Copying $comment files from $dir to be served by www.$org.$DOMAIN"
+  mkdir -p "www/${dir}"
+  echo "cp -r ${dir}/${targetFileOrDir} www/${dir}"
+  cp -r ${dir}/${targetFileOrDir} www/${dir}
+}
+
 function servePeerArtifacts() {
     org=$1
+
+    copyFilesToWWW "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls" "ca.crt" "generated TLS cert" $org
+    copyFilesToWWW "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN" "msp" "generated TLS cert" $org
+    copyFilesToWWW "artifacts" "${org}Config.json" "generated ${org}Config.json" $org
+
     f="ledger/docker-compose-$org.yaml"
-
-    d="artifacts/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls"
-    echo "Copying generated TLS cert files from $d to be served by www.$org.$DOMAIN"
-    mkdir -p "www/${d}"
-    cp "${d}/ca.crt" "www/${d}"
-
-    d="artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
-    echo "Copying generated MSP cert files from $d to be served by www.$org.$DOMAIN"
-    cp -r "${d}/msp" "www/${d}"
-
-    d="artifacts"
-    echo "Copying generated ${org}Config.json from $d to be served by www.$org.$DOMAIN"
-    mkdir -p "www/${d}"
-    cp "${d}/${org}Config.json" "www/${d}"
-
     docker-compose --file ${f} up -d "www.$org.$DOMAIN"
 }
 
+
 function serveOrdererArtifacts() {
+
+    copyFilesToWWW "artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls" "ca.crt" "generated orderer TLS cert"
+    copyFilesToWWW "artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/msp/tlscacerts" "tlsca.${DOMAIN}-cert.pem" "generated orderer MSP cert"
+    copyFilesToWWW "artifacts/channel" '*.tx' "channel transaction config"
+    copyNetworkConfigToWWW
+
     f="ledger/docker-compose-$DOMAIN.yaml"
-
-    d="artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls"
-    echo "Copying generated orderer TLS cert files from $d to be served by www.$DOMAIN"
-    mkdir -p "www/${d}"
-    cp "${d}/ca.crt" "www/${d}"
-
-    d="artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/msp/tlscacerts"
-    echo "Copying generated orderer MSP cert files from $d to be served by www.$DOMAIN"
-    mkdir -p "www/${d}"
-    cp "${d}/tlsca.${DOMAIN}-cert.pem" "www/${d}"
-
-    d="artifacts"
-    echo "Copying generated network config file from $d to be served by www.$DOMAIN"
-    cp "${d}/network-config.json" "www/${d}"
-
-    d="artifacts/channel"
-    echo "Copying channel transaction config files from $d to be served by www.$DOMAIN"
-    mkdir -p "www/${d}"
-    cp "${d}/"*.tx "www/${d}/"
-
     docker-compose --file ${f} up -d "www.$DOMAIN"
+}
+
+function copyNetworkConfigToWWW() {
+    copyFilesToWWW "artifacts" "network-config.json" "generated network config"
 }
 
 function generateChannelConfig() {
@@ -443,6 +447,15 @@ function dockerComposeDown () {
   fi;
 }
 
+function dockerContainerRestart () {
+  org=$1
+  service=$2
+
+  compose_file="ledger/docker-compose-$org.yaml"
+
+  docker-compose --file ${compose_file} restart $service.$org.$DOMAIN
+}
+
 function installAll() {
   org=$1
 
@@ -501,11 +514,13 @@ function downloadMemberMSP() {
 
 function downloadNetworkConfig() {
     org=$1
+    [[ -n "$2" ]] && mainOrgDomain="$2." || mainOrgDomain=""
+
     f="ledger/docker-compose-$org.yaml"
 
     info "downloading network config file using $f"
 
-    c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/network-config.json && chown -R $UID:$GID ."
+    c="wget ${WGET_OPTS} http://www.${mainOrgDomain}$DOMAIN:$DEFAULT_WWW_PORT/network-config.json && chown -R $UID:$GID ."
     echo ${c}
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
 }
@@ -542,10 +557,12 @@ function downloadArtifactsMember() {
   makeCertDirs ${ORG1} ${ORG2} ${ORG3}
 
   org=$1
+  mainOrg=$2
+
   f="ledger/docker-compose-$org.yaml"
 
   downloadChannelTxFiles ${@}
-  downloadNetworkConfig ${org}
+  downloadNetworkConfig ${org} ${mainOrg}
 
   info "downloading orderer cert file using $f"
 
@@ -921,7 +938,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:d:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:n:M:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -932,6 +949,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:d:" opt; do
     v)  CHAINCODE_VERSION=$OPTARG
     ;;
     o)  ORG=$OPTARG
+    ;;
+    M)  MAIN_ORG=$OPTARG
     ;;
     a)  API_PORT=$OPTARG
     ;;
@@ -953,7 +972,7 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:d:" opt; do
     ;;
     e) ENV=$OPTARG
     ;;
-    d) CHAINCODE=$OPTARG
+    n) CHAINCODE=$OPTARG
     ;;
   esac
 done
@@ -1012,8 +1031,8 @@ elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -e ENV(optional)
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
-elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -k CHANNELS(optional)
-  downloadArtifactsMember ${ORG} common
+elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -M mainOrg -k CHANNELS(optional)
+  downloadArtifactsMember ${ORG} ${MAIN_ORG} common
   dockerComposeUp ${ORG}
   if [[ -n "$CHANNELS" ]]; then
     createChannel ${ORG} common
@@ -1026,13 +1045,21 @@ elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example: 
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("common")
   registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
+  addOrgToNetworkConfig ${ORG}
+  copyNetworkConfigToWWW
+  addOrgToHosts $ORG1 $ORG $IP #todo: remove ORG1 dependency
+  dockerContainerRestart $ORG api
+elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
+  addOrgToHosts $ORG $MAIN_ORG $IP
+elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG -i IP
+  dockerContainerRestart $ORG api
 elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
-    generateChannelConfig ${@:3}
-    createChannel $3 $4
-    joinChannel $3 $4
+  generateChannelConfig ${@:3}
+  createChannel $3 $4
+  joinChannel $3 $4
 elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
-    downloadChannelBlockFile ${@:3}
-    joinChannel ${3} $5
+  downloadChannelBlockFile ${@:3}
+  joinChannel ${3} $5
 elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -d book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
@@ -1044,7 +1071,7 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_COMMON_INIT}
 elif [ "${MODE}" == "up-1" ]; then
-  downloadArtifactsMember ${ORG1} common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
+  downloadArtifactsMember ${ORG1} "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
   installAll ${ORG1}
 
@@ -1055,7 +1082,7 @@ elif [ "${MODE}" == "up-1" ]; then
   createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-2" ]; then
-  downloadArtifactsMember ${ORG2} common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
+  downloadArtifactsMember ${ORG2} "" common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG2}
   installAll ${ORG2}
 
@@ -1068,7 +1095,7 @@ elif [ "${MODE}" == "up-2" ]; then
   createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-3" ]; then
-  downloadArtifactsMember ${ORG3} common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
+  downloadArtifactsMember ${ORG3} "" common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG3}
   installAll ${ORG3}
 
@@ -1112,7 +1139,8 @@ elif [ "${MODE}" == "iterateChannels" ]; then
 elif [ "${MODE}" == "removeArtifacts" ]; then
   removeArtifacts
 elif [ "${MODE}" == "generateNetworkConfig" ]; then
-  generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
+  [[ -z "$3" ]] && generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
+  [[ -n "$3" ]] && generateNetworkConfig ${@:3}
 elif [ "${MODE}" == "addOrgToNetworkConfig" ]; then # -o ORG
   addOrgToNetworkConfig ${ORG}
 elif [ "${MODE}" == "upgradeChaincode" ]; then
