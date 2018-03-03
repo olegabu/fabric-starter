@@ -16,11 +16,6 @@ fi;
 sudo apt-get update && sudo apt-get -y install docker-compose git jq enca
 
 
-#git clone https://github.com/olegabu/nsd-commercial-paper
-#cd nsd-commercial-paper
-git clone https://github.com/olegabu/fabric-starter && cd fabric-starter
-chmod +x *.sh
-
 
 docker pull hyperledger/fabric-ca:${FABRIC_PACK}
 docker pull hyperledger/fabric-orderer:${FABRIC_PACK}
