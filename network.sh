@@ -65,7 +65,7 @@ function removeArtifacts() {
   rm artifacts/fabric-ca-server-config-*.yaml
   rm artifacts/network-config.json
   rm artifacts/configtx.yaml
-  rm -r artifacts/api
+  rm -rf artifacts/api
 }
 
 function removeDockersFromAllCompose() {

@@ -20,8 +20,13 @@ sudo apt-get update && sudo apt-get -y install docker-compose git jq enca
 docker pull hyperledger/fabric-ca:${FABRIC_PACK}
 docker pull hyperledger/fabric-orderer:${FABRIC_PACK}
 docker pull hyperledger/fabric-peer:${FABRIC_PACK}
+docker pull hyperledger/fabric-ccenv:${FABRIC_PACK}
+#docker pull hyperledger/fabric-buildenv:${FABRIC_PACK}
+
 docker pull hyperledger/fabric-tools:${FABRIC_PACK}
 docker pull hyperledger/fabric-tools:x86_64-1.1.0-preview
+
+docker pull hyperledger/fabric-baseos:x86_64-0.4.5
 docker pull maxxx1313/fabric-rest
 docker pull nginx
 docker pull node:6-alpine
