@@ -754,6 +754,7 @@ info " >> configReplacementScript: $configReplacementScript ..."
   && echo 'wc for artifacts/config.json: $(wc -c < artifacts/config.json)' \
   && eval echo eval $configReplacementScript >& updated_config.json \
   && echo 'wc for artifacts/updated_config.json: $(wc -c < artifacts/updated_config.json)' \
+  && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
   && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
   && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
   && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
