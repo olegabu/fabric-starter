@@ -767,7 +767,7 @@ info " >> configReplacementScript: $configReplacementScript ..."
 
   # now update the channel with the config delta envelop
   d="cli.$org.$DOMAIN"
-  info " >> $org is generating config tx file update_in_envelope.pb with $d by $c"
+  info " >> $org is generating config tx file update_in_envelope.pb with $d by $command"
   docker exec ${d} bash -c "$command"
   info " >> $org successfully generated config tx file update_in_envelope.pb"
 
