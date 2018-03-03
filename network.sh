@@ -746,7 +746,7 @@ function updateChannelConfig() {
   info " >> preparing update_in_envelope.pb envelop..."
 
   command="rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json \
-  && peer channel fetch config_config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
+  && peer channel fetch config configblock.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
   && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
   && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
   && jq .data.data[0].payload.data.config config_block.json > config.json \
