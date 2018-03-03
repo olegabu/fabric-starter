@@ -743,6 +743,7 @@ function updateChannelConfig() {
   channel=$2
   configReplacementScript=$3
 
+info " >> configReplacementScript: $configReplacementScript ..."
   info " >> preparing update_in_envelope.pb envelop..."
 
   command="rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json \
