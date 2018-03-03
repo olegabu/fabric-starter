@@ -32,7 +32,7 @@ services:
       - /var/run/:/host/var/run/
 
   couchdb-base:
-    image: hyperledger/fabric-couchdb:x86_64-1.1.0-preview
+    image: hyperledger/fabric-couchdb:x86_64-1.1.0-alpha
 
   cli-base:
     image: hyperledger/fabric-tools:x86_64-1.1.0-preview
