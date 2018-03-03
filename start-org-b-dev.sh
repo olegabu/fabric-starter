@@ -19,11 +19,3 @@ read -n1 -r -p "Press any key to refresh api after adding another org"
 
 
 
-
-#export API_PORT=4001
-#export WWW_PORT=8082
-#export CA_PORT=8054
-#export PEER0_PORT=8051
-#export PEER0_EVENT_PORT=8053
-#export PEER1_PORT=8056
-#export PEER1_EVENT_PORT=8058

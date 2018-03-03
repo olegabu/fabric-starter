@@ -453,7 +453,8 @@ function dockerContainerRestart () {
 
   compose_file="ledger/docker-compose-$org.yaml"
 
-  docker-compose --file ${compose_file} restart $service.$org.$DOMAIN
+  echo "Restart container: docker-compose -f ${compose_file} restart $service.$org.$DOMAIN"
+  docker-compose -f ${compose_file} restart $service.$org.$DOMAIN
 }
 
 function installAll() {
@@ -607,19 +608,23 @@ function installCliToolset (){
 
   org=$1
 
-  d="cli.$org.$DOMAIN"
-  c="apt-get update && apt-get install -y jq && pkill configtxlator"
+  bin/configtxlator start &
+  sleep 2
 
-  info "$org is installing tools on $d by $c"
-  docker exec ${d} bash -c "$c"
 
-  c="configtxlator start & sleep 1"
-
-  info "$org is starting configtxlator on $d by $c"
-  docker exec -d ${d} bash -c "$c"
-
-  echo "waiting 5s for configtxlator to start..."
-  sleep 5
+#  d="cli.$org.$DOMAIN"
+#  c="apt-get update && apt-get install -y jq && pkill configtxlator"
+#
+#  info "$org is installing tools on $d by $c"
+#  docker exec ${d} bash -c "$c"
+#
+#  c="configtxlator start & sleep 1"
+#
+#  info "$org is starting configtxlator on $d by $c"
+#  docker exec -d ${d} bash -c "$c"
+#
+#  echo "waiting 5s for configtxlator to start..."
+#  sleep 5
 
 }
 
@@ -746,31 +751,47 @@ function updateChannelConfig() {
 info " >> configReplacementScript: $configReplacementScript ..."
   info " >> preparing update_in_envelope.pb envelop..."
 
-  command="rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json \
-  && peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
-  && curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
-  && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
-  && jq .data.data[0].payload.data.config config_block.json > config.json \
-  && echo 'wc for artifacts/config.json: $(wc -c < artifacts/config.json)' \
-  && eval "${configReplacementScript}" >& updated_config.json \
-  && echo 'wc for artifacts/updated_config.json: $(wc -c < artifacts/updated_config.json)' \
-  && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
-  && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
+#  && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
+#  && echo 'wc for artifacts/config.json: $(wc -c < artifacts/config.json)' \
+#&& echo 'wc for artifacts/updated_config.json: $(wc -c < artifacts/updated_config.json)' \
+#  && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
+#  && echo 'wc for artifacts/update.json: $(wc -c < artifacts/update.json)' \
+#  && echo 'wc for artifacts/update_in_envelope.json: $(wc -c < artifacts/update_in_envelope.json)' \
+  cd artifacts && rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
+
+  command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+  info " fetchig config_block for $channel with $d by $command"
+  d="cli.$org.$DOMAIN"
+  docker exec ${d} bash -c "$command"
+
+  # now update the channel with the config delta envelop
+
+  command="curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
+  && jq .data.data[0].payload.data.config config_block.json > config.json"
+
+  echo $command
+  eval $command
+  eval "jq -s ${configReplacementScript}" > updated_config.json
+
+  command="curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
   && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
   && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
   && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
-  && echo 'wc for artifacts/update.json: $(wc -c < artifacts/update.json)' \
   && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
-  && echo 'wc for artifacts/update_in_envelope.json: $(wc -c < artifacts/update_in_envelope.json)' \
   && curl -X POST --data-binary @update_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_in_envelope.pb \
   && echo 'Finished update_in_envelope.pb preparation!' && pkill configtxlator"
 
-  # now update the channel with the config delta envelop
-  d="cli.$org.$DOMAIN"
-  info " >> $org is generating config tx file update_in_envelope.pb with $d by $command"
-  docker exec ${d} bash -c "$command"
-  info " >> $org successfully generated config tx file update_in_envelope.pb"
 
+  echo $command
+  eval $command
+
+  # now update the channel with the config delta envelop
+#  d="cli.$org.$DOMAIN"
+#  info " >> $org is generating config tx file update_in_envelope.pb with $d by $command"
+#  docker exec ${d} bash -c "$command"
+#  info " >> $org successfully generated config tx file update_in_envelope.pb"
+
+    cd ..
   ! [[ -s artifacts/config_block.json ]] && echo "artifacts/config_block.json is empty. Is configtxlator running?" && exit 1
 
   command="peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
@@ -807,7 +828,7 @@ function registerNewOrgInChannel() {
 
 
   # update channel config with the help of newOrgMSP.json
-  updateChannelConfig ${ORG1} ${channel} "jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"${new_org}MSP\":.[1]}}}}}' config.json ${new_org}Config.json"
+  updateChannelConfig ${ORG1} ${channel} $'\'.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"'${new_org}MSP$'\":.[1]}}}}}\' config.json '${new_org}Config.json''
 
 #  # prepare update envelop
 #  info " >> next preparing update_${new_org}_in_envelope.pb envelop to include ${new_org} into topology config"
@@ -883,8 +904,8 @@ function updateSignPolicyForChannel() {
                       }}"
 
   d="cli.$org.$DOMAIN"
-  echo '${policy}' > artifacts/new_policy.json
-  updateChannelConfig ${org} ${channel} "jq -s '.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"mod_policy\": \"${policyName}\", \"policies\":.[1]}}}}' config.json new_policy.json"
+  echo "${policy}" > artifacts/new_policy.json
+  updateChannelConfig ${org} ${channel} $'\'.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"mod_policy\": \"'${policyName}$'\", \"policies\":.[1]}}}}\' config.json new_policy.json'
 
 #  c="echo '$policy' > new_policy.json \
 #  && peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
@@ -1104,7 +1125,7 @@ elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example: 
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
   addOrgToHosts $ORG1 $ORG $IP #todo: remove ORG1 dependency
-  dockerContainerRestart $ORG api
+  dockerContainerRestart $ORG1 api #todo: remove ORG1 dependency
 elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
   addOrgToHosts $ORG $MAIN_ORG $IP
 elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG -i IP

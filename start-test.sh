@@ -2,6 +2,7 @@
 
 #export IP_ORDERER=172.18.0.3
 export IP2=192.168.56.102
+export IP3=192.168.56.102
 export ORG1=a
 
 ./network.sh -m down
