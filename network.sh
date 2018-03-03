@@ -752,7 +752,7 @@ info " >> configReplacementScript: $configReplacementScript ..."
   && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
   && jq .data.data[0].payload.data.config config_block.json > config.json \
   && echo 'wc for artifacts/config.json: $(wc -c < artifacts/config.json)' \
-  && eval \"$configReplacementScript\" >& updated_config.json \
+  && eval "${configReplacementScript}" >& updated_config.json \
   && echo 'wc for artifacts/updated_config.json: $(wc -c < artifacts/updated_config.json)' \
   && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
   && curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
