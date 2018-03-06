@@ -319,7 +319,6 @@ function generateChannelConfig() {
     mainOrg=$1
     channel_name=$2
 
-#    echo "{\"payload\":\"a\"}" | jq . > testChannel.json
     sed -e "s/ORG1/$mainOrg/g" -e "s/CHANNEL_NAME/$channel_name/g" artifacts/configtxtemplate-oneOrg-orderer.yaml > artifacts/configtx.yaml
 
     i=2
@@ -725,10 +724,21 @@ function registerNewOrg() {
   ip=$2
   channels=$3
 
+  f="ledger/docker-compose-${ORG1}.yaml"
+  d="cli.$ORG1.$DOMAIN"
+
   info " >> accepted the following channels list to register org ${new_org} in: ${channels[@]}; registering in channels one by one"
+
   for c in "${channels[@]}"
     do
-      registerNewOrgInChannel ${new_org} ${ip} ${c}
+      # downloading newOrgMSP.json config
+      info " >> first downloading new org configuration json file from ip $ip"
+
+      command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${new_org}Config.json"
+      echo ${c}
+      docker-compose --file ${f} run --rm "${d}" bash -c "${command} && chown -R $UID:$GID ."
+
+      registerNewOrgInChannel ${new_org} ${c}
     done
 
   info " >> new org ${new_org} has been registered in all common channels !"
@@ -810,22 +820,11 @@ info " >> configReplacementScript: $configReplacementScript ..."
 #################################
 function registerNewOrgInChannel() {
   new_org=$1
-  ip=$2
-  channel=$3
+  channel=$2
 
   installCliToolset ${ORG1}
 
-  info " >> registering org $new_org with ip $ip in channel $channel"
-
-  # downloading newOrgMSP.json config
-  info " >> first downloading new org configuration json file from ip $ip"
-
-  f="ledger/docker-compose-${ORG1}.yaml"
-  d="cli.$ORG1.$DOMAIN"
-  command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${new_org}Config.json"
-  echo ${c}
-  docker-compose --file ${f} run --rm "${d}" bash -c "${command} && chown -R $UID:$GID ."
-
+  info " >> registering org $new_org in channel $channel"
 
   # update channel config with the help of newOrgMSP.json
   updateChannelConfig ${ORG1} ${channel} $'\'.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"'${new_org}MSP$'\":.[1]}}}}}\' config.json '${new_org}Config.json''
@@ -1131,18 +1130,23 @@ elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thi
 elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG -i IP
   dockerContainerRestart $ORG api
 elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
+  channel_name=$4
   generateChannelConfig ${@:3}
-  createChannel $3 $4
-  joinChannel $3 $4
+  createChannel $3 $channel_name
+  joinChannel $3 $channel_name
+  for org in "${@:5}"; do
+    registerNewOrgInChannel $org $channel_name
+  done
+
 elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
   downloadChannelBlockFile ${@:3}
   joinChannel ${3} $5
-elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -d book
+elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -n book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
-elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -d book
+elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
