@@ -24,6 +24,7 @@ docker pull hyperledger/fabric-ccenv:${FABRIC_PACK}
 #docker pull hyperledger/fabric-buildenv:${FABRIC_PACK}
 
 docker pull hyperledger/fabric-tools:${FABRIC_PACK}
+#workaround until fixed in 1.1.0-alpha
 docker pull hyperledger/fabric-tools:x86_64-1.1.0-preview
 
 docker pull hyperledger/fabric-baseos:x86_64-0.4.5

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+export IP_ORDERER=
+
+export THIS_ORG=a
+export MAIN_ORG=a
+
+
+export ORG1=a
+
+export IP2=192.168.56.102
+export IP3=192.168.56.102
