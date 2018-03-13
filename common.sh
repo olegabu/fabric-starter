@@ -3,12 +3,14 @@
 export FABRIC_STARTER_HOME=$FABRIC_STARTER_HOME
 export PATH=$FABRIC_STARTER_HOME/:$PATH
 
-loadEnvFile=$1
-[[ -z $loadEnvFile ]] && echo "Specify organization environment file as parameter: $0  env-org" && exit 1;
-! [[ -f "$loadEnvFile" ]] && cp $FABRIC_STARTER_HOME/env_default "$loadEnvFile" && echo "Adjust environment in the $loadEnvFile file before create network" && exit 1
+orgEnvFile=$1
+[[ -n $2 ]] && commonEnvFile=$2 || commonEnvFile="env-common"
 
-source ./env-common
-source ./$loadEnvFile
+[[ -z "$orgEnvFile" ]] && echo "Specify organization environment file as parameter: $0  env-org" && exit 1;
+! [[ -f "$orgEnvFile" ]] && cp $FABRIC_STARTER_HOME/env_default "$orgEnvFile" && echo "Adjust environment in the $orgEnvFile file before create network" && exit 1
+
+source ./${commonEnvFile}
+source ./${orgEnvFile}
 
 [[ -d chaincode ]] || mkdir chaincode
 copyChaincodeCommand="cp -r $FABRIC_STARTER_HOME/chaincode/* chaincode/"

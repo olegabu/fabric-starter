@@ -1043,7 +1043,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:n:M:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -1075,9 +1075,9 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:e:n:M:" opt; do
     ;;
     i) IP=$OPTARG
     ;;
-    e) ENV=$OPTARG
-    ;;
     n) CHAINCODE=$OPTARG
+    ;;
+    I) CHAINCODE_INIT_ARG=$OPTARG
     ;;
   esac
 done
@@ -1179,7 +1179,8 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
-  instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_COMMON_INIT}
+  [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
+  instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}

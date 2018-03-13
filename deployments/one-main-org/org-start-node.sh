@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 : ${FABRIC_STARTER_HOME:=../..}
-source $FABRIC_STARTER_HOME/common.sh $1
+source $FABRIC_STARTER_HOME/common.sh $1 $2
 
 ###########################################################################
 # Start
 ###########################################################################
-network.sh -m generate-peer -o $THIS_ORG -e env
+network.sh -m generate-peer -o $THIS_ORG
 
 echo -e $separateLine
 read -n1 -r -p "Peer material is generated. Now on node 'a' add org 'b' then press any key in this console to start UP org b..."

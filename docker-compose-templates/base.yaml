@@ -31,8 +31,8 @@ services:
     volumes:
       - /var/run/:/host/var/run/
 
-  couchdb-base:
-    image: hyperledger/fabric-couchdb:x86_64-1.1.0-alpha
+#  couchdb-base:
+#    image: hyperledger/fabric-couchdb:x86_64-1.1.0-alpha
 
   cli-base:
     image: hyperledger/fabric-tools:x86_64-1.1.0-preview
@@ -59,7 +59,7 @@ services:
     image: maxxx1313/fabric-rest
     volumes:
      - ../artifacts:/usr/src/artifacts
-    command: sh -c "sleep 10 && npm start"
+    command: sh -c "npm start"
 
   www-base:
     image: nginx
