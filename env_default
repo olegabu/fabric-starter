@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
+export DOMAIN=example.com
 export IP_ORDERER=
 
 export THIS_ORG=a
 export MAIN_ORG=a
-
+export IP1=
 
 export ORG1=a
 
-export IP2=192.168.56.102
-export IP3=192.168.56.102
+export IP2=
+export IP3=

@@ -1,0 +1,8 @@
+export DOMAIN=example.com
+
+export IP1=192.168.56.101
+export IP2=192.168.56.102
+export IP3=192.168.56.102
+
+export MAIN_ORG=a
+

@@ -31,5 +31,6 @@ docker pull hyperledger/fabric-baseos:x86_64-0.4.5
 docker pull maxxx1313/fabric-rest
 docker pull nginx
 docker pull node:6-alpine
+export FABRIC_PACK=x86_64-1.1.0-alpha
 
 

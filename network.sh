@@ -4,10 +4,10 @@ starttime=$(date +%s)
 
 # defaults; export these variables before executing this script
 : ${FABRIC_STARTER_HOME:=$PWD}
-: ${TEMPLATES_ARTIFACTS_FODLER:=$FABRIC_STARTER_HOME/artifacts}
-: ${TEMPLATES_DOCKER_COMPOSE_FOLDER:=$FABRIC_STARTER_HOME/ledger}
-: ${GENERATED_ARTIFACTS_FODLER:=./artifacts}
-: ${GENERATED_DOCKER_COMPOSE_FOLDER:=./ledger}
+: ${TEMPLATES_ARTIFACTS_FOLDER:=$FABRIC_STARTER_HOME/artifact-templates}
+: ${TEMPLATES_DOCKER_COMPOSE_FOLDER:=$FABRIC_STARTER_HOME/docker-compose-templates}
+: ${GENERATED_ARTIFACTS_FOLDER:=./artifacts}
+: ${GENERATED_DOCKER_COMPOSE_FOLDER:=./docker-compose}
 
 : ${DOMAIN:="example.com"}
 : ${IP_ORDERER:="54.234.201.67"}
@@ -20,18 +20,18 @@ starttime=$(date +%s)
 
 echo "Use Fabric-Starter home: $FABRIC_STARTER_HOME"
 echo "Use docker compose template folder: $TEMPLATES_DOCKER_COMPOSE_FOLDER"
-echo "Use target artifact folder: $GENERATED_ARTIFACTS_FODLER"
+echo "Use target artifact folder: $GENERATED_ARTIFACTS_FOLDER"
 echo "Use target docker-compose folder: $GENERATED_DOCKER_COMPOSE_FOLDER"
 
-[[ -d $GENERATED_ARTIFACTS_FODLER ]] || mkdir $GENERATED_ARTIFACTS_FODLER
+[[ -d $GENERATED_ARTIFACTS_FOLDER ]] || mkdir $GENERATED_ARTIFACTS_FOLDER
 [[ -d $GENERATED_DOCKER_COMPOSE_FOLDER ]] || mkdir $GENERATED_DOCKER_COMPOSE_FOLDER
 [[ -f $GENERATED_DOCKER_COMPOSE_FOLDER/base.yaml ]] || cp "$TEMPLATES_DOCKER_COMPOSE_FOLDER/base.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"
 
 
 WGET_OPTS="--verbose -N"
 CLI_TIMEOUT=10000
-COMPOSE_TEMPLATE=ledger/docker-composetemplate.yaml
-COMPOSE_FILE_DEV=ledger/docker-composedev.yaml
+COMPOSE_TEMPLATE=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate.yaml
+COMPOSE_FILE_DEV=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composedev.yaml
 
 CHAINCODE_COMMON_NAME=reference
 CHAINCODE_BILATERAL_NAME=relationship
@@ -73,15 +73,15 @@ function removeUnwantedImages() {
 function removeArtifacts() {
   echo "Removing generated and downloaded artifacts"
   rm $GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-*.yaml
-  rm -rf $GENERATED_ARTIFACTS_FODLER/crypto-config
-  rm -rf $GENERATED_ARTIFACTS_FODLER/channel
-  rm $GENERATED_ARTIFACTS_FODLER/*block*
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/crypto-config
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/channel
+  rm $GENERATED_ARTIFACTS_FOLDER/*block*
   rm -rf www/artifacts && mkdir www/artifacts
-  rm $GENERATED_ARTIFACTS_FODLER/cryptogen-*.yaml
-  rm $GENERATED_ARTIFACTS_FODLER/fabric-ca-server-config-*.yaml
-  rm $GENERATED_ARTIFACTS_FODLER/network-config.json
-  rm $GENERATED_ARTIFACTS_FODLER/configtx.yaml
-  rm -rf $GENERATED_ARTIFACTS_FODLER/api
+  rm $GENERATED_ARTIFACTS_FOLDER/cryptogen-*.yaml
+  rm $GENERATED_ARTIFACTS_FOLDER/fabric-ca-server-config-*.yaml
+  rm $GENERATED_ARTIFACTS_FOLDER/network-config.json
+  rm $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/api
 }
 
 function removeDockersFromAllCompose() {
@@ -93,7 +93,7 @@ function removeDockersFromAllCompose() {
 
 function removeDockersFromCompose() {
   o=$1
-  f="ledger/docker-compose-$o.yaml"
+  f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$o.yaml"
 
   if [ -f ${f} ]; then
       info "stopping docker instances from $f"
@@ -142,19 +142,19 @@ function generateNetworkConfig() {
   echo "Generating network-config.json for $orgs"
 
   # replace for orderer in network-config.json
-  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/^\s*\/\/.*$//g" $TEMPLATES_ARTIFACTS_FODLER/network-config-template.json`
+  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/^\s*\/\/.*$//g" $TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json`
   placeholder=",}}"
 
   for org in ${orgs}
     do
-      snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FODLER/network-config-orgsnippet.json`
+      snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/network-config-orgsnippet.json`
 #      echo ${snippet}
       out="${out//$placeholder/,$snippet}"
     done
 
   out="${out//$placeholder/\}\}}"
 
-  echo ${out} > $GENERATED_ARTIFACTS_FODLER/network-config.json
+  echo ${out} > $GENERATED_ARTIFACTS_FOLDER/network-config.json
 }
 
 function addOrgToNetworkConfig() {
@@ -162,28 +162,28 @@ function addOrgToNetworkConfig() {
 
   echo "Adding $org to network-config.json"
 
-  out=`cat artifacts/network-config.json`
+  out=`cat $GENERATED_ARTIFACTS_FOLDER/network-config.json`
   placeholder="}}}"
 
-  snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/network-config-orgsnippet.json`
+  snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATE_ARTIFACTS_FODLER/network-config-orgsnippet.json`
 #  echo ${snippet}
   out="${out//$placeholder/\},$snippet}"
 
   out="${out//,\}\}/\}\}}"
 
-  echo ${out} > artifacts/network-config.json
+  echo ${out} > $GENERATED_ARTIFACTS_FOLDER/network-config.json
 }
 
-
-function executeBashCmdInCli () {
-  file=$GENERATED_DOCKER_COMPOSE_FOLDER/$1
-  container=$2
-  cmd=$3
-
-  echo "using: $file"
-  docker-compose --file ${file} run --rm "$container" bash -c "$cmd"
-
-}
+#
+#function executeBashCmdInCli () {
+#  file=$GENERATED_DOCKER_COMPOSE_FOLDER/$1
+#  container=$2
+#  cmd=$3
+#
+#  echo "using: $file"
+#  docker-compose --file ${file} run --rm "$container" bash -c "$cmd"
+#
+#}
 
 function generateOrdererArtifacts() {
     org=$1
@@ -192,17 +192,17 @@ function generateOrdererArtifacts() {
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
 
-    mkdir -p "$GENERATED_ARTIFACTS_FODLER/channel"
+    mkdir -p "$GENERATED_ARTIFACTS_FOLDER/channel"
 
 
     if [[ -n "$org" ]]; then
         generateNetworkConfig ${org}
-        sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$org/g" "$TEMPLATES_ARTIFACTS_FODLER/configtxtemplate-oneOrg-orderer.yaml" > $GENERATED_ARTIFACTS_FODLER/configtx.yaml
+        sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$org/g" "$TEMPLATES_ARTIFACTS_FOLDER/configtxtemplate-oneOrg-orderer.yaml" > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
         createChannels=("common")
     else
         generateNetworkConfig ${ORG1} ${ORG2} ${ORG3}
         # replace in configtx
-        sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" $TEMPLATES_ARTIFACTS_FODLER/configtxtemplate.yaml > $GENERATED_ARTIFACTS_FODLER/configtx.yaml
+        sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" $TEMPLATES_ARTIFACTS_FOLDER/configtxtemplate.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
         createChannels=("common" "$ORG1-$ORG2" "$ORG1-$ORG3" "$ORG2-$ORG3")
     fi
 
@@ -214,7 +214,7 @@ function generateOrdererArtifacts() {
     done
 
     # replace in cryptogen
-    sed -e "s/DOMAIN/$DOMAIN/g" $TEMPLATES_ARTIFACTS_FODLER/cryptogentemplate-orderer.yaml > "$GENERATED_ARTIFACTS_FODLER/cryptogen-$DOMAIN.yaml"
+    sed -e "s/DOMAIN/$DOMAIN/g" $TEMPLATES_ARTIFACTS_FOLDER/cryptogentemplate-orderer.yaml > "$GENERATED_ARTIFACTS_FOLDER/cryptogen-$DOMAIN.yaml"
 
     echo "Generating crypto material with cryptogen"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
@@ -266,13 +266,13 @@ function generatePeerArtifacts() {
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     # cryptogen yaml
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FODLER/cryptogentemplate-peer.yaml > $GENERATED_ARTIFACTS_FODLER/"cryptogen-$org.yaml"
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/cryptogentemplate-peer.yaml > $GENERATED_ARTIFACTS_FOLDER/"cryptogen-$org.yaml"
 
     # docker-compose yaml
     sed -e "s/PEER_EXTRA_HOSTS/$peer_extra_hosts/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/API_EXTRA_HOSTS/$api_extra_hosts/g" -e "s/DOMAIN/$DOMAIN/g" -e "s/\([^ ]\)ORG/\1$org/g" -e "s/API_PORT/$api_port/g" -e "s/WWW_PORT/$www_port/g" -e "s/CA_PORT/$ca_port/g" -e "s/PEER0_PORT/$peer0_port/g" -e "s/PEER0_EVENT_PORT/$peer0_event_port/g" -e "s/PEER1_PORT/$peer1_port/g" -e "s/PEER1_EVENT_PORT/$peer1_event_port/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
 
     # fabric-ca-server-config yaml
-    sed -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FODLER/fabric-ca-server-configtemplate.yaml > $GENERATED_ARTIFACTS_FODLER/"fabric-ca-server-config-$org.yaml"
+    sed -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/fabric-ca-server-configtemplate.yaml > $GENERATED_ARTIFACTS_FOLDER/"fabric-ca-server-config-$org.yaml"
 
     echo "Generating crypto material with cryptogen"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$org.yaml"
@@ -281,15 +281,15 @@ function generatePeerArtifacts() {
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
     echo "Adding generated CA private keys filenames to $f"
-    ca_private_key=$(basename `ls -t $GENERATED_ARTIFACTS_FODLER/crypto-config/peerOrganizations/"$org.$DOMAIN"/ca/*_sk`)
+    ca_private_key=$(basename `ls -t $GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/"$org.$DOMAIN"/ca/*_sk`)
     [[ -z  ${ca_private_key}  ]] && echo "empty CA private key" && exit 1
     sed -i -e "s/CA_PRIVATE_KEY/${ca_private_key}/g" ${f}
 
     # replace in configtx
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FODLER/configtx-orgtemplate.yaml > $GENERATED_ARTIFACTS_FODLER/configtx.yaml
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/configtx-orgtemplate.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
 
-    mkdir -p $GENERATED_ARTIFACTS_FODLER/api/${org}
-    cp $TEMPLATES_ARTIFACTS_FODLER/default_hosts $GENERATED_ARTIFACTS_FODLER/api/${org}/hosts
+    mkdir -p $GENERATED_ARTIFACTS_FOLDER/api/${org}
+    cp $TEMPLATES_ARTIFACTS_FOLDER/default_hosts $GENERATED_ARTIFACTS_FOLDER/api/${org}/hosts
 
     echo "Generating ${org}Config.json"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
@@ -299,7 +299,7 @@ function addOrgToHosts() {
   thisOrg=$1
   org=$2
   ip=$3
-  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN" >> artifacts/api/${thisOrg}/hosts
+  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/api/${thisOrg}/hosts
 }
 
 function copyFilesToWWW() {
@@ -317,9 +317,9 @@ function copyFilesToWWW() {
 function servePeerArtifacts() {
     org=$1
 
-    copyFilesToWWW "$GENERATED_ARTIFACTS_FODLER/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls" "ca.crt" "generated TLS cert" $org
-    copyFilesToWWW "$GENERATED_ARTIFACTS_FODLER/crypto-config/peerOrganizations/$org.$DOMAIN" "msp" "generated TLS cert" $org
-    copyFilesToWWW "$GENERATED_ARTIFACTS_FODLER" "${org}Config.json" "generated ${org}Config.json" $org
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls" "ca.crt" "generated TLS cert" $org
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/$org.$DOMAIN" "msp" "generated TLS cert" $org
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER" "${org}Config.json" "generated ${org}Config.json" $org
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
     docker-compose --file ${f} up -d "www.$org.$DOMAIN"
@@ -328,17 +328,17 @@ function servePeerArtifacts() {
 
 function serveOrdererArtifacts() {
 
-    copyFilesToWWW "artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls" "ca.crt" "generated orderer TLS cert"
-    copyFilesToWWW "artifacts/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/msp/tlscacerts" "tlsca.${DOMAIN}-cert.pem" "generated orderer MSP cert"
-    copyFilesToWWW "artifacts/channel" '*.tx' "channel transaction config"
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls" "ca.crt" "generated orderer TLS cert"
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/msp/tlscacerts" "tlsca.${DOMAIN}-cert.pem" "generated orderer MSP cert"
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER/channel" '*.tx' "channel transaction config"
     copyNetworkConfigToWWW
 
-    f="ledger/docker-compose-$DOMAIN.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
     docker-compose --file ${f} up -d "www.$DOMAIN"
 }
 
 function copyNetworkConfigToWWW() {
-    copyFilesToWWW "artifacts" "network-config.json" "generated network config"
+    copyFilesToWWW "$GENERATED_ARTIFACTS_FOLDER" "network-config.json" "generated network config"
 }
 
 function generateChannelConfig() {
@@ -346,24 +346,24 @@ function generateChannelConfig() {
     mainOrg=$1
     channel_name=$2
 
-    sed -e "s/ORG1/$mainOrg/g" -e "s/CHANNEL_NAME/$channel_name/g" artifacts/configtxtemplate-oneOrg-orderer.yaml > artifacts/configtx.yaml
+    sed -e "s/ORG1/$mainOrg/g" -e "s/CHANNEL_NAME/$channel_name/g" $TEMPLATES_ARTIFACTS_FOLDER/configtxtemplate-oneOrg-orderer.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
 
     i=2
     for org in "${@:3}"
     do
-        echo "sed -e \"s/ORG${i}/$org/g\" artifacts/configtx.yaml > artifacts/configtx.yaml.tmp && mv artifacts/configtx.yaml.tmp artifacts/configtx.yaml"
-        sed -e "s/ORG${i}/$org/g" artifacts/configtx.yaml > "artifacts/configtx.yaml.tmp" && mv "artifacts/configtx.yaml.tmp" "artifacts/configtx.yaml"
+        echo "sed -e \"s/ORG${i}/$org/g\" $GENERATED_ARTIFACTS_FOLDER/configtx.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml.tmp && mv $GENERATED_ARTIFACTS_FOLDER/configtx.yaml.tmp $GENERATED_ARTIFACTS_FOLDER/configtx.yaml"
+        sed -e "s/ORG${i}/$org/g" $GENERATED_ARTIFACTS_FOLDER/configtx.yaml > "$GENERATED_ARTIFACTS_FOLDER/configtx.yaml.tmp" && mv "$GENERATED_ARTIFACTS_FOLDER/configtx.yaml.tmp" "$GENERATED_ARTIFACTS_FOLDER/configtx.yaml"
         i=$((i+1))
     done
 
-    f="ledger/docker-compose-$DOMAIN.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
     docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
 }
 
 function createChannel () {
     org=$1
     channel_name=$2
-    f="ledger/docker-compose-${org}.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     info "creating channel $channel_name by $org using $f"
 
@@ -372,7 +372,7 @@ function createChannel () {
     echo "changing ownership of channel block files"
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
-    d="artifacts"
+    d="$GENERATED_ARTIFACTS_FOLDER"
     echo "copying channel block file from ${d} to be served by www.$org.$DOMAIN"
     cp "${d}/$channel_name.block" "www/${d}"
 }
@@ -380,7 +380,7 @@ function createChannel () {
 function joinChannel() {
     org=$1
     channel_name=$2
-    f="ledger/docker-compose-${org}.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     info "joining channel $channel_name by all peers of $org using $f"
 
@@ -393,7 +393,7 @@ function instantiateChaincode () {
     channel_name=$2
     n=$3
     i=$4
-    f="ledger/docker-compose-${org}.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     info "instantiating chaincode $n on $channel_name by $org using $f with $i"
 
@@ -408,7 +408,7 @@ function warmUpChaincode () {
     org=$1
     channel_name=$2
     n=$3
-    f="ledger/docker-compose-${org}.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
@@ -426,7 +426,7 @@ function installChaincode() {
     v=$3
     # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
     p=${n}
-    f="ledger/docker-compose-${org}.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     info "installing chaincode $n to peers of $org from ./chaincode/go/$p $v using $f"
 
@@ -441,7 +441,7 @@ function upgradeChaincode() {
     i=$4
     channel_name=$5
     policy=$6
-    f="ledger/docker-compose-${org}.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name -P $policy --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
     d="cli.$org.$DOMAIN"
@@ -452,7 +452,7 @@ function upgradeChaincode() {
 
 
 function dockerComposeUp () {
-  compose_file="ledger/docker-compose-$1.yaml"
+  compose_file="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$1.yaml"
 
   info "starting docker instances from $compose_file"
 
@@ -465,7 +465,7 @@ function dockerComposeUp () {
 }
 
 function dockerComposeDown () {
-  compose_file="ledger/docker-compose-$1.yaml"
+  compose_file="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$1.yaml"
 
   if [ -f ${compose_file} ]; then
       info "stopping docker instances from $compose_file"
@@ -477,7 +477,7 @@ function dockerContainerRestart () {
   org=$1
   service=$2
 
-  compose_file="ledger/docker-compose-$org.yaml"
+  compose_file="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
   echo "Restart container: docker-compose -f ${compose_file} restart $service.$org.$DOMAIN"
   docker-compose -f ${compose_file} restart $service.$org.$DOMAIN
@@ -518,33 +518,33 @@ function createJoinInstantiateWarmUp() {
 }
 
 function makeCertDirs() {
-  mkdir -p "$GENERATED_ARTIFACTS_FODLER/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls"
+  mkdir -p "$GENERATED_ARTIFACTS_FOLDER/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls"
 
 #  for org in ${ORG1} ${ORG2} ${ORG3}
    for org in "$@"
     do
-        d="$GENERATED_ARTIFACTS_FODLER/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls"
+        d="$GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls"
         echo "mkdir -p ${d}"
         mkdir -p ${d}
     done
 }
 
 function downloadMemberMSP() {
-#    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
 
     info "downloading member MSP files using $f"
 
     c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/admincerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/admincerts/Admin@\$ORG.$DOMAIN-cert.pem && wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/cacerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/cacerts/ca.\$ORG.$DOMAIN-cert.pem && wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/tlscacerts http://www.\$ORG.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\$ORG.$DOMAIN/msp/tlscacerts/tlsca.\$ORG.$DOMAIN-cert.pem; done"
     echo ${c}
-    executeBashCmdInCli "docker-compose-$DOMAIN.yaml" "cli.$DOMAIN" "${c} && chown -R $UID:$GID ."
-#    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+#    executeBashCmdInCli "docker-compose-$DOMAIN.yaml" "cli.$DOMAIN" "${c} && chown -R $UID:$GID ."
+    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
 
 function downloadNetworkConfig() {
     org=$1
     [[ -n "$2" ]] && mainOrgDomain="$2." || mainOrgDomain=""
 
-    f="ledger/docker-compose-$org.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     info "downloading network config file using $f"
 
@@ -555,7 +555,7 @@ function downloadNetworkConfig() {
 
 function downloadChannelTxFiles() {
     org=$1
-    f="ledger/docker-compose-$org.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     info "downloading all channel config transaction files using $f"
 
@@ -569,7 +569,7 @@ function downloadChannelTxFiles() {
 
 function downloadChannelBlockFile() {
     org=$1
-    f="ledger/docker-compose-$org.yaml"
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     leader=$2
     channel_name=$3
@@ -587,7 +587,7 @@ function downloadArtifactsMember() {
   org=$1
   mainOrg=$2
 
-  f="ledger/docker-compose-$org.yaml"
+  f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
   downloadChannelTxFiles ${@}
   downloadNetworkConfig ${org} ${mainOrg}
@@ -615,14 +615,13 @@ function downloadArtifactsOrderer() {
   makeCertDirs ${ORG1} ${ORG2} ${ORG3}
   downloadMemberMSP
 
-#  f="ledger/docker-compose-$DOMAIN.yaml"
-
   info "downloading member cert files using $f"
 
   c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
-  executeBashCmdInCli "docker-compose-$DOMAIN.yaml" "cli.$DOMAIN" "${c} && chown -R $UID:$GID ."
-#  docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+#  executeBashCmdInCli "docker-compose-$DOMAIN.yaml" "cli.$DOMAIN" "${c} && chown -R $UID:$GID ."
+  f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
+  docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
 }
 
 #############################
@@ -662,11 +661,11 @@ function addOrg() {
 
   info "adding org $org to channel $channel"
 
-  rm -rf "artifacts/crypto-config/peerOrganizations/$org.$DOMAIN"
+  rm -rf "$GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/$org.$DOMAIN"
 
   removeDockersWithOrg ${org}
 
-  rm -f artifacts/newOrgMSP.json artifacts/config.* artifacts/update.* artifacts/updated_config.* artifacts/update_in_envelope.*
+  rm -f $GENERATED_ARTIFACTS_FOLDER/newOrgMSP.json $GENERATED_ARTIFACTS_FOLDER/config.* $GENERATED_ARTIFACTS_FOLDER/update.* $GENERATED_ARTIFACTS_FOLDER/updated_config.* $GENERATED_ARTIFACTS_FOLDER/update_in_envelope.*
 
   # ex. generatePeerArtifacts foo 4005 8086 1254 1251 1253 1256 1258
   generatePeerArtifacts ${org} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
@@ -675,11 +674,11 @@ function addOrg() {
 
   addOrgToNetworkConfig ${org}
 
-  configtxDir="artifacts/"
+  configtxDir="$GENERATED_ARTIFACTS_FOLDER/"
 
   echo "generating configtx.yaml for $org into $configtxDir"
   mkdir -p ${configtxDir}
-  sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" artifacts/configtx-orgtemplate.yaml > "$configtxDir/configtx.yaml"
+  sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/configtx-orgtemplate.yaml > "$configtxDir/configtx.yaml"
 
   d="cli.$org.$DOMAIN"
   c="FABRIC_CFG_PATH=../$configtxDir configtxgen -printOrg ${org}MSP > newOrgMSP.json"
@@ -704,7 +703,7 @@ function addOrg() {
   info "$ORG1 is generating config tx file update_in_envelope.pb with $d by $c"
   docker exec ${d} bash -c "$c"
 
-  ! [[ -s artifacts/config_block.json ]] && echo "artifacts/config_block.json is empty. Is configtxlator running?" && exit 1
+  ! [[ -s $GENERATED_ARTIFACTS_FOLDER/config_block.json ]] && echo "$GENERATED_ARTIFACTS_FOLDER/config_block.json is empty. Is configtxlator running?" && exit 1
 
   for o in ${ORG1} ${ORG2} ${ORG3} ${ORG4} ${ORG5}
     do
@@ -750,11 +749,12 @@ function addOrg() {
 ##################################
 function registerNewOrg() {
   new_org=$1
-  ip=$2
-  channels=$3
+  mainOrg=$2
+  ip=$3
+  channels=$4
 
-  f="ledger/docker-compose-${ORG1}.yaml"
-  d="cli.$ORG1.$DOMAIN"
+  f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${mainOrg}.yaml"
+  d="cli.$mainOrg.$DOMAIN"
 
   info " >> accepted the following channels list to register org ${new_org} in: ${channels[@]}; registering in channels one by one"
 
@@ -796,7 +796,7 @@ info " >> configReplacementScript: $configReplacementScript ..."
 #  && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
 #  && echo 'wc for artifacts/update.json: $(wc -c < artifacts/update.json)' \
 #  && echo 'wc for artifacts/update_in_envelope.json: $(wc -c < artifacts/update_in_envelope.json)' \
-  cd artifacts && rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
+  cd $GENERATED_ARTIFACTS_FOLDER && rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
 
   command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
   info " fetchig config_block for $channel with $d by $command"
@@ -831,7 +831,7 @@ info " >> configReplacementScript: $configReplacementScript ..."
 #  info " >> $org successfully generated config tx file update_in_envelope.pb"
 
     cd ..
-  ! [[ -s artifacts/config_block.json ]] && echo "artifacts/config_block.json is empty. Is configtxlator running?" && exit 1
+  ! [[ -s $GENERATED_ARTIFACTS_FOLDER/config_block.json ]] && echo "$GENERATED_ARTIFACTS_FOLDER/config_block.json is empty. Is configtxlator running?" && exit 1
 
   command="peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 
@@ -932,7 +932,7 @@ function updateSignPolicyForChannel() {
                       }}"
 
   d="cli.$org.$DOMAIN"
-  echo "${policy}" > artifacts/new_policy.json
+  echo "${policy}" > $GENERATED_ARTIFACTS_FOLDER/new_policy.json
   updateChannelConfig ${org} ${channel} $'\'.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"mod_policy\": \"'${policyName}$'\", \"policies\":.[1]}}}}\' config.json new_policy.json'
 
 #  c="echo '$policy' > new_policy.json \
@@ -996,7 +996,7 @@ function info() {
 }
 
 function logs () {
-  f="ledger/docker-compose-$1.yaml"
+  f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$1.yaml"
 
   TIMEOUT=${CLI_TIMEOUT} COMPOSE_HTTP_TIMEOUT=${CLI_TIMEOUT} docker-compose -f ${f} logs -f
 }
@@ -1144,12 +1144,12 @@ elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -M mainOrg -k CHANNELS
     joinChannel ${ORG} common
   fi
 elif [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
-  updateSignPolicyForChannel $ORG common
-elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
+  updateSignPolicyForChannel $ORG $CHANNELS
+elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -m MAIN_ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
-  common_channels=("common")
-  registerNewOrg ${ORG} ${IP} "${common_channels[@]}"
+  common_channels=("$CHANNELS")
+  registerNewOrg ${ORG} ${ORG1} ${IP} "${common_channels[@]}"
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
   addOrgToHosts $ORG1 $ORG $IP #todo: remove ORG1 dependency
