@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source common.sh env-main
+: ${FABRIC_STARTER_HOME:=../..}
+source $FABRIC_STARTER_HOME/common.sh $1
 
 ###########################################################################
 # Start
@@ -21,17 +22,25 @@ read -n1 -r -p "Org 'a' is up and joined to channel 'common'. Now on node 'b' ge
 network.sh -m register-new-org -o b -i ${IP2} -k common
 
 echo -e $separateLine
-read -n1 -r -p "On node'b' join to channel common (network.sh -m  join-channel b a common) Press any key to create channel a-b"
-network.sh -m create-channel a "a-b" b
+echo "Now chaincode 'chaincode_example02' will be installed and instantiated "
+network.sh -m install-chaincode -o a -v 1.0 -n chaincode_example02
+network.sh -m instantiate-chaincode -o a -k common -n chaincode_example02
 
 echo -e $separateLine
-read -n1 -r -p "On node 'b' join to channel 'a-b' then on node 'c' generate org c crypto (network.sh -m generate-peer -o c) and Press any key to register org c in channel common"
-network.sh -m register-new-org -o b -i ${IP3} -k common
+read -n1 -r -p "On node'b' join to channel common (network.sh -m  join-channel b a common) Press any key to create channel a-b"
+network.sh -m create-channel a "a-b" b
 
 echo -e $separateLine
 echo "Now chaincode 'chaincode_example02' will be installed and instantiated "
 network.sh -m install-chaincode -o a -v 1.0 -n chaincode_example02
 network.sh -m instantiate-chaincode -o a -k a-b -n chaincode_example02
+
+
+echo -e $separateLine
+read -n1 -r -p "On node 'b' join to channel 'a-b' then on node 'c' generate org c crypto (network.sh -m generate-peer -o c) and Press any key to register org c in channel common"
+network.sh -m register-new-org -o b -i ${IP3} -k common
+
+
 
 echo -e $separateLine
 read -n1 -r -p "Press any key to create channel a-c and a-b-c"

@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-envFile=$1
-[[ -z $envFile ]] && echo "Specify organization environment file as parameter: './org-start-node  env-org1'" && exit 1;
-
-source common.sh $envFile
+: ${FABRIC_STARTER_HOME:=../..}
+source $FABRIC_STARTER_HOME/common.sh $1
 
 ###########################################################################
 # Start

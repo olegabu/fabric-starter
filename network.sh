@@ -7,7 +7,7 @@ starttime=$(date +%s)
 : ${TEMPLATES_ARTIFACTS_FOLDER:=$FABRIC_STARTER_HOME/artifact-templates}
 : ${TEMPLATES_DOCKER_COMPOSE_FOLDER:=$FABRIC_STARTER_HOME/docker-compose-templates}
 : ${GENERATED_ARTIFACTS_FOLDER:=./artifacts}
-: ${GENERATED_DOCKER_COMPOSE_FOLDER:=./docker-compose}
+: ${GENERATED_DOCKER_COMPOSE_FOLDER:=./dockercompose}
 
 : ${DOMAIN:="example.com"}
 : ${IP_ORDERER:="54.234.201.67"}
@@ -165,7 +165,7 @@ function addOrgToNetworkConfig() {
   out=`cat $GENERATED_ARTIFACTS_FOLDER/network-config.json`
   placeholder="}}}"
 
-  snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATE_ARTIFACTS_FODLER/network-config-orgsnippet.json`
+  snippet=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/network-config-orgsnippet.json`
 #  echo ${snippet}
   out="${out//$placeholder/\},$snippet}"
 
