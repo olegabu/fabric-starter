@@ -12,7 +12,7 @@ chaincode=$5
 ###########################################################################
 # Start
 ###########################################################################
-network.sh -m register-new-org -o ${newOrg} -i ${newOrgIp} -k common
+network.sh -m register-new-org -o ${newOrg} -M $MAIN_ORG -i ${newOrgIp} -k common
 
 
 for channel in ${@:4}; do
@@ -35,7 +35,7 @@ network.sh -m instantiate-chaincode -o a -k a-b -n chaincode_example02
 
 echo -e $separateLine
 read -n1 -r -p "On node 'b' join to channel 'a-b' then on node 'c' generate org c crypto (network.sh -m generate-peer -o c) and Press any key to register org c in channel common"
-network.sh -m register-new-org -o b -i ${IP3} -k common
+network.sh -m register-new-org -o b -M a -i ${IP3} -k common
 
 
 

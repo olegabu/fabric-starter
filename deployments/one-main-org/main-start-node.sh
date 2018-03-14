@@ -19,7 +19,7 @@ network.sh -m update-sign-policy -o $THIS_ORG -k common
 
 echo -e $separateLine
 read -n1 -r -p "Org 'a' is up and joined to channel 'common'. Now on node 'b' generate org 'b' crypto(network.sh -m generate-peer -o b) and press any key to register org 'b' and in channel 'common'"
-network.sh -m register-new-org -o b -i ${IP2} -k common
+network.sh -m register-new-org -o b -M a -i ${IP2} -k common
 
 echo -e $separateLine
 echo "Now chaincode 'chaincode_example02' will be installed and instantiated "
@@ -38,7 +38,7 @@ network.sh -m instantiate-chaincode -o a -k a-b -n chaincode_example02
 
 echo -e $separateLine
 read -n1 -r -p "On node 'b' join to channel 'a-b' then on node 'c' generate org c crypto (network.sh -m generate-peer -o c) and Press any key to register org c in channel common"
-network.sh -m register-new-org -o b -i ${IP3} -k common
+network.sh -m register-new-org -o c -M a-i ${IP3} -k common
 
 
 

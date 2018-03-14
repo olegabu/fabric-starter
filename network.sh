@@ -1145,15 +1145,15 @@ elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -M mainOrg -k CHANNELS
   fi
 elif [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
   updateSignPolicyForChannel $ORG $CHANNELS
-elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -m MAIN_ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
+elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -M MAIN_ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("$CHANNELS")
-  registerNewOrg ${ORG} ${ORG1} ${IP} "${common_channels[@]}"
+  registerNewOrg ${ORG} ${MAIN_ORG} ${IP} "${common_channels[@]}"
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
-  addOrgToHosts $ORG1 $ORG $IP #todo: remove ORG1 dependency
-  dockerContainerRestart $ORG1 api #todo: remove ORG1 dependency
+  addOrgToHosts ${MAIN_ORG} ${ORG} ${IP}
+  dockerContainerRestart ${MAIN_ORG} api
 elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
   addOrgToHosts $ORG $MAIN_ORG $IP
 elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG -i IP
