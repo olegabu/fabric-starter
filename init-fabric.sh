@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # adjust ---------------
-: ${FABRIC_VERSION:="1.1.0-alpha"}
+: ${FABRIC_VERSION:="1.1.0-rc1"}
 #-----------------------
 
 ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
