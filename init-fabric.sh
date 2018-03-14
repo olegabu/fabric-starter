@@ -7,15 +7,14 @@
 ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
 FABRIC_PACK="x86_64-${FABRIC_VERSION}"
 
+sudo apt-get update && sudo apt-get -y install docker-compose git jq enca
+
+
 if [ ! -f 'bin/configtxgen' ]; then
   url=https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/${ARCH}-${FABRIC_VERSION}/hyperledger-fabric-${ARCH}-${FABRIC_VERSION}.tar.gz
   echo "===> Downloading platform binaries: $url"
   curl $url | tar xz
 fi;
-
-sudo apt-get update && sudo apt-get -y install docker-compose git jq enca
-
-
 
 docker pull hyperledger/fabric-ca:${FABRIC_PACK}
 docker pull hyperledger/fabric-orderer:${FABRIC_PACK}
