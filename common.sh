@@ -9,6 +9,8 @@ orgEnvFile=$1
 [[ -z "$orgEnvFile" ]] && echo "Specify organization environment file as parameter: $0  env-org" && exit 1;
 ! [[ -f "$orgEnvFile" ]] && cp $FABRIC_STARTER_HOME/env_default "$orgEnvFile" && echo "Adjust environment in the $orgEnvFile file before create network" && exit 1
 
+[[ -f "$commonEnvFile" ]] || echo "File does not exists: $commonEnvFile" && exit 1;
+
 source ./${commonEnvFile}
 source ./${orgEnvFile}
 
