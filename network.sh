@@ -631,28 +631,27 @@ function downloadArtifactsOrderer() {
 # Example usage: installCliToolset "org-name"
 #
 #############################
-function installCliToolset (){
+function startConfigTxlator (){
 
   org=$1
+  stop=$2
 
-  bin/configtxlator start &
+#  bin/configtxlator start &
+#  sleep 2
+
+
+  d="cli.$org.$DOMAIN"
+  c="sudo pkill -9 configtxlator "
+
+  docker exec -d ${d} bash -c "$c"
   sleep 2
 
+  info "$org is starting configtxlator on $d by $c"
+  c="configtxlator start & "
+  [[ -z "$stop" ]] && docker exec -d ${d} bash -c "$c"
 
-#  d="cli.$org.$DOMAIN"
-#  c="apt-get update && apt-get install -y jq && pkill configtxlator"
-#
-#  info "$org is installing tools on $d by $c"
-#  docker exec ${d} bash -c "$c"
-#
-#  c="configtxlator start & sleep 1"
-#
-#  info "$org is starting configtxlator on $d by $c"
-#  docker exec -d ${d} bash -c "$c"
-#
-#  echo "waiting 5s for configtxlator to start..."
-#  sleep 5
-
+  echo "waiting 3s for configtxlator to start..."
+  sleep 3
 }
 
 function addOrg() {
@@ -686,7 +685,7 @@ function addOrg() {
   info "$org is generating newOrgMSP.json with $d by $c"
   docker exec ${d} bash -c "$c"
 
-  installCliToolset ${ORG1}
+  startConfigTxlator ${ORG1}
 
   d="cli.$ORG1.$DOMAIN"
   c="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt \
@@ -787,7 +786,7 @@ function updateChannelConfig() {
   channel=$2
   configReplacementScript=$3
 
-info " >> configReplacementScript: $configReplacementScript ..."
+  info " >> configReplacementScript: $configReplacementScript ..."
   info " >> preparing update_in_envelope.pb envelop..."
 
 #  && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
@@ -805,24 +804,35 @@ info " >> configReplacementScript: $configReplacementScript ..."
 
   # now update the channel with the config delta envelop
 
-  command="curl -X POST --data-binary @config_block.pb http://127.0.0.1:7059/protolator/decode/common.Block | jq . > config_block.json \
+
+  cliContainerIP=`docker inspect ${d} | jq .[0].NetworkSettings.Networks.dockercompose_default.IPAddress` #"http://127.0.0.1:7059"
+  cliContainerIP="${cliContainerIP%\"}"
+  cliContainerIP="${cliContainerIP#\"}"
+  configtxlatorServer="http://${cliContainerIP}:7059"
+
+
+  startConfigTxlator ${ORG1}
+
+  command="curl -X POST --data-binary @config_block.pb ${configtxlatorServer}/protolator/decode/common.Block | jq . > config_block.json \
   && jq .data.data[0].payload.data.config config_block.json > config.json"
 
   echo $command
   eval $command
   eval "jq -s ${configReplacementScript}" > updated_config.json
 
-  command="curl -X POST --data-binary @config.json http://127.0.0.1:7059/protolator/encode/common.Config > config.pb \
-  && curl -X POST --data-binary @updated_config.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb \
-  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' http://127.0.0.1:7059/configtxlator/compute/update-from-configs > update.pb \
-  && curl -X POST --data-binary @update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate | jq . > update.json \
+  command="curl -X POST --data-binary @config.json ${configtxlatorServer}/protolator/encode/common.Config > config.pb \
+  && curl -X POST --data-binary @updated_config.json ${configtxlatorServer}/protolator/encode/common.Config > updated_config.pb \
+  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' ${configtxlatorServer}/configtxlator/compute/update-from-configs > update.pb \
+  && curl -X POST --data-binary @update.pb ${configtxlatorServer}/protolator/decode/common.ConfigUpdate | jq . > update.json \
   && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
-  && curl -X POST --data-binary @update_in_envelope.json http://127.0.0.1:7059/protolator/encode/common.Envelope > update_in_envelope.pb \
+  && curl -X POST --data-binary @update_in_envelope.json ${configtxlatorServer}/protolator/encode/common.Envelope > update_in_envelope.pb \
   && echo 'Finished update_in_envelope.pb preparation!' && pkill configtxlator"
 
 
   echo $command
   eval $command
+
+  startConfigTxlator ${ORG1} stop
 
   # now update the channel with the config delta envelop
 #  d="cli.$org.$DOMAIN"
@@ -850,8 +860,6 @@ info " >> configReplacementScript: $configReplacementScript ..."
 function registerNewOrgInChannel() {
   new_org=$1
   channel=$2
-
-  installCliToolset ${ORG1}
 
   info " >> registering org $new_org in channel $channel"
 
@@ -896,7 +904,6 @@ function registerNewOrgInChannel() {
 function updateSignPolicyForChannel() {
   org=$1
   channel=$2
-  installCliToolset ${org}
 
   policyName="${org}Only"
   orgMsp="${org}MSP"
