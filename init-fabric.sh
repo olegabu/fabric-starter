@@ -27,6 +27,7 @@ docker pull hyperledger/fabric-tools:${FABRIC_PACK}
 docker pull hyperledger/fabric-tools:x86_64-1.1.0-preview
 
 docker pull hyperledger/fabric-baseos:x86_64-0.4.5
+docker pull hyperledger/fabric-baseos:x86_64-0.4.6
 docker pull maxxx1313/fabric-rest
 docker pull nginx
 docker pull node:6-alpine
