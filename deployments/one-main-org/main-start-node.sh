@@ -3,6 +3,10 @@
 : ${FABRIC_STARTER_HOME:=../..}
 source $FABRIC_STARTER_HOME/common.sh $1 $2
 
+network.sh -m down
+docker rm -f $(docker ps -aq)
+docker ps -a
+
 ###########################################################################
 # Start
 ###########################################################################

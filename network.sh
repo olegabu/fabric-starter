@@ -1156,6 +1156,7 @@ elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -M MAIN_ORG -i I
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
   common_channels=("$CHANNELS")
+  echo "Add new org to channels: $common_channels"
   registerNewOrg ${ORG} ${MAIN_ORG} ${IP} "${common_channels[@]}"
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
