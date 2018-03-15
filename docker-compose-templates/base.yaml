@@ -81,6 +81,12 @@ services:
      - ../artifacts:/usr/src/artifacts
     command: sh -c "npm start"
 
+  api-base-0_11:
+    image: maxxx1313/fabric-rest:0.11.0
+    volumes:
+     - ../artifacts:/usr/src/artifacts
+    command: sh -c "npm start"
+
   www-base:
     image: nginx
     volumes:
