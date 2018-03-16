@@ -766,10 +766,10 @@ function registerNewOrg() {
       echo ${c}
       docker-compose --file ${f} run --rm "${d}" bash -c "${command} && chown -R $UID:$GID ."
 
-      registerNewOrgInChannel ${new_org} ${c}
+      registerNewOrgInChannel $mainOrg ${new_org} ${c}
     done
 
-  info " >> new org ${new_org} has been registered in all common channels !"
+  info " >> new org ${new_org} has been registered in passed channels !"
 }
 
 #################################
@@ -811,7 +811,7 @@ function updateChannelConfig() {
   configtxlatorServer="http://${cliContainerIP}:7059"
 
 
-  startConfigTxlator ${ORG1}
+  startConfigTxlator ${org}
 
   command="curl -X POST --data-binary @config_block.pb ${configtxlatorServer}/protolator/decode/common.Block | jq . > config_block.json \
   && jq .data.data[0].payload.data.config config_block.json > config.json"
@@ -832,7 +832,7 @@ function updateChannelConfig() {
   echo $command
   eval $command
 
-  startConfigTxlator ${ORG1} stop
+  startConfigTxlator ${org} stop
 
   # now update the channel with the config delta envelop
 #  d="cli.$org.$DOMAIN"
@@ -858,13 +858,14 @@ function updateChannelConfig() {
 #
 #################################
 function registerNewOrgInChannel() {
-  new_org=$1
-  channel=$2
+  mainOrg=$1
+  new_org=$2
+  channel=$3
 
   info " >> registering org $new_org in channel $channel"
 
   # update channel config with the help of newOrgMSP.json
-  updateChannelConfig ${ORG1} ${channel} $'\'.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"'${new_org}MSP$'\":.[1]}}}}}\' config.json '${new_org}Config.json''
+  updateChannelConfig ${mainOrg} ${channel} $'\'.[0] * {\"channel_group\":{\"groups\":{\"Application\":{\"groups\": {\"'${new_org}MSP$'\":.[1]}}}}}\' config.json '${new_org}Config.json''
 
 #  # prepare update envelop
 #  info " >> next preparing update_${new_org}_in_envelope.pb envelop to include ${new_org} into topology config"
@@ -1164,15 +1165,16 @@ elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -M MAIN_ORG -i I
   dockerContainerRestart ${MAIN_ORG} api
 elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
   addOrgToHosts $ORG $MAIN_ORG $IP
-elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG -i IP
+elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG
   dockerContainerRestart $ORG api
 elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
+  mainOrg=$3
   channel_name=$4
   generateChannelConfig ${@:3}
   createChannel $3 $channel_name
   joinChannel $3 $channel_name
   for org in "${@:5}"; do
-    registerNewOrgInChannel $org $channel_name
+    registerNewOrgInChannel $mainOrg $org $channel_name
   done
 
 elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
@@ -1189,6 +1191,8 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
   instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
+  sleep 4
+  warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}

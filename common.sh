@@ -3,6 +3,8 @@
 export FABRIC_STARTER_HOME=$FABRIC_STARTER_HOME
 export PATH=$FABRIC_STARTER_HOME/:$PATH
 
+echo "common.sh"
+
 orgEnvFile=$1
 commonEnvFile=$2
 [[ -n $commonEnvFile ]] || commonEnvFile="env-common"
@@ -12,6 +14,7 @@ commonEnvFile=$2
 
 [[ -f "$commonEnvFile" ]] || (echo "File does not exists: $commonEnvFile" && exit 1);
 
+echo -e "Load environment from: \n\t${commonEnvFile} \n\t${orgEnvFile}"
 source ./${commonEnvFile}
 source ./${orgEnvFile}
 
