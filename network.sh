@@ -299,7 +299,7 @@ function addOrgToHosts() {
   thisOrg=$1
   org=$2
   ip=$3
-  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/api/${thisOrg}/hosts
+  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN www.$org.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/api/${thisOrg}/hosts
 }
 
 function copyFilesToWWW() {
