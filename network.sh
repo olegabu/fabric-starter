@@ -555,11 +555,12 @@ function downloadNetworkConfig() {
 
 function downloadChannelTxFiles() {
     org=$1
+    mainOrg=$2
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     info "downloading all channel config transaction files using $f"
 
-    for channel_name in ${@:2}
+    for channel_name in ${@:3}
     do
       c="wget ${WGET_OPTS} --directory-prefix channel http://www.$DOMAIN:$DEFAULT_WWW_PORT/channel/$channel_name.tx && chown -R $UID:$GID ."
       echo ${c}
@@ -574,8 +575,11 @@ function downloadChannelBlockFile() {
     leader=$2
     channel_name=$3
 
-    info "downloading channel block file of created $channel_name from $leader using $f"
+    info "downloading channel block file of created $channel_name from $DOMAIN and $leader using $f"
 
+    c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
+    echo ${c}
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
     c="wget ${WGET_OPTS} http://www.$leader.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
     echo ${c}
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
