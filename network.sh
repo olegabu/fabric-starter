@@ -81,6 +81,11 @@ function removeArtifacts() {
   rm $GENERATED_ARTIFACTS_FOLDER/fabric-ca-server-config-*.yaml
   rm $GENERATED_ARTIFACTS_FOLDER/network-config.json
   rm $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
+  rm $GENERATED_ARTIFACTS_FOLDER/*Config.json
+  rm $GENERATED_ARTIFACTS_FOLDER/*.pb
+  rm $GENERATED_ARTIFACTS_FOLDER/updated_config.*
+  rm $GENERATED_ARTIFACTS_FOLDER/update.*
+  rm $GENERATED_ARTIFACTS_FOLDER/config.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/api
 }
 
@@ -299,7 +304,7 @@ function addOrgToHosts() {
   thisOrg=$1
   org=$2
   ip=$3
-  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN www.$org.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/api/${thisOrg}/hosts
+  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/api/${thisOrg}/hosts
 }
 
 function copyFilesToWWW() {
@@ -754,17 +759,21 @@ function registerNewOrg() {
   new_org=$1
   mainOrg=$2
   ip=$3
-  channels=$4
+  channels=($4)
+
+  for cc in ${@:4}; do
+    echo $cc
+  done
 
   f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${mainOrg}.yaml"
   d="cli.$mainOrg.$DOMAIN"
 
-  info " >> accepted the following channels list to register org ${new_org} in: ${channels[@]}; registering in channels one by one"
+  info " >> accepted the following channels list to register org ${new_org} in: ${@:4}; registering in channels one by one"
 
-  for c in "${channels[@]}"
+  for c in ${@:4} #"${channels[@]}"
     do
       # downloading newOrgMSP.json config
-      info " >> first downloading new org configuration json file from ip $ip"
+#      info " >> first downloading new org configuration json file from ip $ip"
 
       command="wget ${WGET_OPTS} http://$ip:$DEFAULT_WWW_PORT/${new_org}Config.json"
       echo ${c}
@@ -791,7 +800,7 @@ function updateChannelConfig() {
   configReplacementScript=$3
 
   info " >> configReplacementScript: $configReplacementScript ..."
-  info " >> preparing update_in_envelope.pb envelop..."
+#  info " >> preparing update_in_envelope.pb envelop..."
 
 #  && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
 #  && echo 'wc for artifacts/config.json: $(wc -c < artifacts/config.json)' \
@@ -799,10 +808,10 @@ function updateChannelConfig() {
 #  && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
 #  && echo 'wc for artifacts/update.json: $(wc -c < artifacts/update.json)' \
 #  && echo 'wc for artifacts/update_in_envelope.json: $(wc -c < artifacts/update_in_envelope.json)' \
-  cd $GENERATED_ARTIFACTS_FOLDER && rm -rf config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
+  cd $GENERATED_ARTIFACTS_FOLDER && rm -r -f config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
 
   command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
-  info " fetchig config_block for $channel with $d by $command"
+#  info " fetchig config_block for $channel with $d by $command"
   d="cli.$org.$DOMAIN"
   docker exec ${d} bash -c "$command"
 
@@ -833,7 +842,7 @@ function updateChannelConfig() {
   && echo 'Finished update_in_envelope.pb preparation!' && pkill configtxlator"
 
 
-  echo $command
+#  echo $command
   eval $command
 
   startConfigTxlator ${org} stop
@@ -1160,15 +1169,14 @@ elif [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_chan
 elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -M MAIN_ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
-  common_channels=("$CHANNELS")
-  echo "Add new org to channels: $common_channels"
-  registerNewOrg ${ORG} ${MAIN_ORG} ${IP} "${common_channels[@]}"
+  registerNewOrg ${ORG} ${MAIN_ORG} ${IP} "$CHANNELS"
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
-  addOrgToHosts ${MAIN_ORG} ${ORG} ${IP}
+#  addOrgToHosts ${MAIN_ORG} ${ORG} ${IP}
   dockerContainerRestart ${MAIN_ORG} api
 elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
   addOrgToHosts $ORG $MAIN_ORG $IP
+  dockerContainerRestart ${ORG} api
 elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG
   dockerContainerRestart $ORG api
 elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
