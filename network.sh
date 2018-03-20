@@ -84,6 +84,7 @@ function removeArtifacts() {
   rm $GENERATED_ARTIFACTS_FOLDER/*Config.json
   rm $GENERATED_ARTIFACTS_FOLDER/*.pb
   rm $GENERATED_ARTIFACTS_FOLDER/updated_config.*
+  rm $GENERATED_ARTIFACTS_FOLDER/update_in_envelope.*
   rm $GENERATED_ARTIFACTS_FOLDER/update.*
   rm $GENERATED_ARTIFACTS_FOLDER/config.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/api
@@ -1172,7 +1173,7 @@ elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -M MAIN_ORG -i I
   registerNewOrg ${ORG} ${MAIN_ORG} ${IP} "$CHANNELS"
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
-#  addOrgToHosts ${MAIN_ORG} ${ORG} ${IP}
+  addOrgToHosts ${MAIN_ORG} ${ORG} ${IP}
   dockerContainerRestart ${MAIN_ORG} api
 elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
   addOrgToHosts $ORG $MAIN_ORG $IP
@@ -1203,7 +1204,7 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
   instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
-  sleep 4
+  sleep 3
   warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
