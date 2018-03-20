@@ -3,9 +3,11 @@
 starttime=$(date +%s)
 
 # defaults; export these variables before executing this script
+composeTemplatesFolder="docker-compose-templates"
+artifactsTemplatesFolder="artifact-templates"
 : ${FABRIC_STARTER_HOME:=$PWD}
-: ${TEMPLATES_ARTIFACTS_FOLDER:=$FABRIC_STARTER_HOME/artifact-templates}
-: ${TEMPLATES_DOCKER_COMPOSE_FOLDER:=$FABRIC_STARTER_HOME/docker-compose-templates}
+: ${TEMPLATES_ARTIFACTS_FOLDER:=$FABRIC_STARTER_HOME/$artifactsTemplatesFolder}
+: ${TEMPLATES_DOCKER_COMPOSE_FOLDER:=$FABRIC_STARTER_HOME/$composeTemplatesFolder}
 : ${GENERATED_ARTIFACTS_FOLDER:=./artifacts}
 : ${GENERATED_DOCKER_COMPOSE_FOLDER:=./dockercompose}
 
@@ -25,7 +27,8 @@ echo "Use target docker-compose folder: $GENERATED_DOCKER_COMPOSE_FOLDER"
 
 [[ -d $GENERATED_ARTIFACTS_FOLDER ]] || mkdir $GENERATED_ARTIFACTS_FOLDER
 [[ -d $GENERATED_DOCKER_COMPOSE_FOLDER ]] || mkdir $GENERATED_DOCKER_COMPOSE_FOLDER
-cp -u "$TEMPLATES_DOCKER_COMPOSE_FOLDER/base.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"
+cp -f "$TEMPLATES_DOCKER_COMPOSE_FOLDER/base.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"
+if [[ -d ./$composeTemplatesFolder ]]; then cp -f "./$composeTemplatesFolder/base.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"; fi
 
 
 WGET_OPTS="--verbose -N"
@@ -75,18 +78,18 @@ function removeArtifacts() {
   rm $GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-*.yaml
   rm -rf $GENERATED_ARTIFACTS_FOLDER/crypto-config
   rm -rf $GENERATED_ARTIFACTS_FOLDER/channel
-  rm $GENERATED_ARTIFACTS_FOLDER/*block*
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/*block*
   rm -rf www/artifacts && mkdir www/artifacts
-  rm $GENERATED_ARTIFACTS_FOLDER/cryptogen-*.yaml
-  rm $GENERATED_ARTIFACTS_FOLDER/fabric-ca-server-config-*.yaml
-  rm $GENERATED_ARTIFACTS_FOLDER/network-config.json
-  rm $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
-  rm $GENERATED_ARTIFACTS_FOLDER/*Config.json
-  rm $GENERATED_ARTIFACTS_FOLDER/*.pb
-  rm $GENERATED_ARTIFACTS_FOLDER/updated_config.*
-  rm $GENERATED_ARTIFACTS_FOLDER/update_in_envelope.*
-  rm $GENERATED_ARTIFACTS_FOLDER/update.*
-  rm $GENERATED_ARTIFACTS_FOLDER/config.*
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/cryptogen-*.yaml
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/fabric-ca-server-config-*.yaml
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/network-config.json
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/*Config.json
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/*.pb
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/updated_config.*
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/update_in_envelope.*
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/update.*
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/config.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/api
 }
 
@@ -147,9 +150,16 @@ function generateNetworkConfig() {
 
   echo "Generating network-config.json for $orgs"
 
+  networkConfigTemplate=$TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json
+  if [ -f ./$artifactsTemplatesFolder/network-config-template.json ]; then
+    networkConfigTemplate=./$artifactsTemplatesFolder/network-config-template.json
+  fi
+
   # replace for orderer in network-config.json
-  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/^\s*\/\/.*$//g" $TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json`
+  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/^\s*\/\/.*$//g" $networkConfigTemplate`
   placeholder=",}}"
+
+#TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json`
 
   for org in ${orgs}
     do
@@ -1204,8 +1214,8 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
   instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
-  sleep 3
-  warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
+#  sleep 3
+#  warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
