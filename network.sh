@@ -148,7 +148,7 @@ function generateOrdererDockerCompose() {
 function generateNetworkConfig() {
   orgs=${@}
 
-  echo "Generating network-config.json for $orgs"
+  echo "Generating network-config.json for $orgs, ${orgs[0]}"
 
   networkConfigTemplate=$TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json
   if [ -f ./$artifactsTemplatesFolder/network-config-template.json ]; then
@@ -156,7 +156,8 @@ function generateNetworkConfig() {
   fi
 
   # replace for orderer in network-config.json
-  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/^\s*\/\/.*$//g" $networkConfigTemplate`
+  # TODO: replace ORG1.
+  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/${orgs[0]}/g" -e "s/^\s*\/\/.*$//g" $networkConfigTemplate`
   placeholder=",}}"
 
 #TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json`
@@ -290,6 +291,10 @@ function generatePeerArtifacts() {
     # fabric-ca-server-config yaml
     sed -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/fabric-ca-server-configtemplate.yaml > $GENERATED_ARTIFACTS_FOLDER/"fabric-ca-server-config-$org.yaml"
 
+    mkdir -p $GENERATED_ARTIFACTS_FOLDER/hosts/${org}
+    cp $TEMPLATES_ARTIFACTS_FOLDER/default_hosts $GENERATED_ARTIFACTS_FOLDER/hosts/${org}/api_hosts
+    cp $TEMPLATES_ARTIFACTS_FOLDER/default_hosts $GENERATED_ARTIFACTS_FOLDER/hosts/${org}/cli_hosts
+
     echo "Generating crypto material with cryptogen"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$org.yaml"
 
@@ -304,18 +309,24 @@ function generatePeerArtifacts() {
     # replace in configtx
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/configtx-orgtemplate.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
 
-    mkdir -p $GENERATED_ARTIFACTS_FOLDER/api/${org}
-    cp $TEMPLATES_ARTIFACTS_FOLDER/default_hosts $GENERATED_ARTIFACTS_FOLDER/api/${org}/hosts
-
     echo "Generating ${org}Config.json"
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
 }
 
-function addOrgToHosts() {
+function addOrgToApiHosts() {
   thisOrg=$1
-  org=$2
+  remoteOrg=$2
   ip=$3
-  echo "$ip peer0.$org.$DOMAIN peer1.$org.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/api/${thisOrg}/hosts
+  # check duplication
+  echo "$ip peer0.$remoteOrg.$DOMAIN peer1.$remoteOrg.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/hosts/${thisOrg}/api_hosts
+}
+
+function addOrgToCliHosts() {
+  thisOrg=$1
+  serverName=$2
+  ip=$3
+  # check duplication
+  echo "$ip $serverName.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/hosts/${thisOrg}/cli_hosts
 }
 
 function copyFilesToWWW() {
@@ -537,9 +548,9 @@ function makeCertDirs() {
   mkdir -p "$GENERATED_ARTIFACTS_FOLDER/crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/tls"
 
 #  for org in ${ORG1} ${ORG2} ${ORG3}
-   for org in "$@"
+   for certDirsOrg in "$@"
     do
-        d="$GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/$org.$DOMAIN/peers/peer0.$org.$DOMAIN/tls"
+        d="$GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/$certDirsOrg.$DOMAIN/peers/peer0.$certDirsOrg.$DOMAIN/tls"
         echo "mkdir -p ${d}"
         mkdir -p ${d}
     done
@@ -576,7 +587,7 @@ function downloadChannelTxFiles() {
 
     info "downloading all channel config transaction files using $f"
 
-    for channel_name in ${@:3}
+    for channel_name in ${@:4}
     do
       c="wget ${WGET_OPTS} --directory-prefix channel http://www.$DOMAIN:$DEFAULT_WWW_PORT/channel/$channel_name.tx && chown -R $UID:$GID ."
       echo ${c}
@@ -606,7 +617,7 @@ function downloadArtifactsMember() {
 
   org=$1
   mainOrg=$2
-
+  remoteOrg=$3
   f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
   downloadChannelTxFiles ${@}
@@ -624,6 +635,14 @@ function downloadArtifactsMember() {
   c="for ORG in ${ORG1} ${ORG2} ${ORG3}; do wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls http://www.\${ORG}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/\${ORG}.$DOMAIN/peers/peer0.\${ORG}.$DOMAIN/tls/ca.crt; done"
   echo ${c}
   docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+
+  if [ -n "$remoteOrg" ]; then
+    makeCertDirs $remoteOrg
+    c="wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${remoteOrg}.$DOMAIN/peers/peer0.${remoteOrg}.$DOMAIN/tls http://www.${remoteOrg}.$DOMAIN:$DEFAULT_WWW_PORT/crypto-config/peerOrganizations/${remoteOrg}.$DOMAIN/peers/peer0.${remoteOrg}.$DOMAIN/tls/ca.crt"
+    echo ${c}
+
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+  fi
 }
 
 function downloadArtifactsOrderer() {
@@ -771,10 +790,6 @@ function registerNewOrg() {
   mainOrg=$2
   ip=$3
   channels=($4)
-
-  for cc in ${@:4}; do
-    echo $cc
-  done
 
   f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${mainOrg}.yaml"
   d="cli.$mainOrg.$DOMAIN"
@@ -1075,7 +1090,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:R:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -1110,6 +1125,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:" opt; do
     n) CHAINCODE=$OPTARG
     ;;
     I) CHAINCODE_INIT_ARG=$OPTARG
+    ;;
+    R) REMOTE_ORG=$OPTARG
     ;;
   esac
 done
@@ -1161,32 +1178,48 @@ elif [ "${MODE}" == "generate-orderer" ]; then  # params: -o ORG (optional)
   generateOrdererDockerCompose
   downloadArtifactsOrderer
   generateOrdererArtifacts ${ORG}
-elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -e ENV(optional)
-#  [[ -z "$ENV" ]] && removeArtifacts
+elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -R true(optional)
+  if [ -z "$REMOTE_ORG" ]; then removeArtifacts; fi
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
+  if [ -n "$REMOTE_ORG" ]; then
+    addOrgToCliHosts ${ORG} "orderer" ${IP_ORDERER}
+    addOrgToCliHosts ${ORG} "www" ${IP_ORDERER}
+  fi
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
   serveOrdererArtifacts
 elif [ "${MODE}" == "up-one-org" ]; then # params: -o ORG -M mainOrg -k CHANNELS(optional)
-  downloadArtifactsMember ${ORG} ${MAIN_ORG} common
+  downloadArtifactsMember ${ORG} ${MAIN_ORG} "" $CHANNELS
   dockerComposeUp ${ORG}
   if [[ -n "$CHANNELS" ]]; then
-    createChannel ${ORG} common
-    joinChannel ${ORG} common
+    createChannel ${ORG} $CHANNELS
+    joinChannel ${ORG} $CHANNELS
   fi
 elif [ "${MODE}" == "update-sign-policy" ]; then # params: -o ORG -k common_channel
   updateSignPolicyForChannel $ORG $CHANNELS
+
 elif [ "${MODE}" == "register-new-org" ]; then # params: -o ORG -M MAIN_ORG -i IP; example: ./network.sh -m register-new-org -o testOrg -i 172.12.34.56
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
+  [[ -z "${MAIN_ORG}" ]] && echo "missing required argument -M MAIN_ORG: main organization id" && exit 1
   [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the machine being registered" && exit 1
+  addOrgToCliHosts ${MAIN_ORG} "www.${ORG}" ${IP}
+  downloadArtifactsMember ${MAIN_ORG} ${MAIN_ORG} ${ORG}
+
   registerNewOrg ${ORG} ${MAIN_ORG} ${IP} "$CHANNELS"
   addOrgToNetworkConfig ${ORG}
   copyNetworkConfigToWWW
-  addOrgToHosts ${MAIN_ORG} ${ORG} ${IP}
+  addOrgToApiHosts ${MAIN_ORG} ${ORG} ${IP}
   dockerContainerRestart ${MAIN_ORG} api
-elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -M remoteOrg -o thisOrg -i IP
-  addOrgToHosts $ORG $MAIN_ORG $IP
+elif [ "${MODE}" == "add-org-connectivity" ]; then # params: -R remoteOrg -M mainOrg -o thisOrg -i IP
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to register in system" && exit 1
+  [[ -z "${MAIN_ORG}" ]] && echo "missing required argument -M MAIN_ORG: main organization id" && exit 1
+  [[ -z "${REMOTE_ORG}" ]] && echo "missing required argument -R REMOTE_ORG: org id to define connection to" && exit 1
+  [[ -z "${IP}" ]] && echo "missing required argument -i IP: ip address of the REMOTE_ORG (machine connection is established to)" && exit 1
+
+  addOrgToCliHosts $ORG "www.$REMOTE_ORG" $IP
+  downloadArtifactsMember ${ORG} ${MAIN_ORG} ${REMOTE_ORG}
+  addOrgToApiHosts $ORG $REMOTE_ORG $IP
   dockerContainerRestart ${ORG} api
 elif [ "${MODE}" == "restart-api" ]; then # params:  -o ORG
   dockerContainerRestart $ORG api
@@ -1196,7 +1229,17 @@ elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name 
   generateChannelConfig ${@:3}
   createChannel $3 $channel_name
   joinChannel $3 $channel_name
+  echo "Register Orgs in channel $channel_name: ${@:5}"
   for org in "${@:5}"; do
+    registerNewOrgInChannel $mainOrg $org $channel_name
+  done
+
+elif [ "${MODE}" == "register-org-in-channel" ]; then # params: mainOrg($3) channel_name org1 [org2] [org3]
+  mainOrg=$3
+  channel_name=$4
+  echo "Register Orgs in channel $channel_name: ${@:5}"
+  for org in "${@:5}"; do
+    echo "Org ${org}"
     registerNewOrgInChannel $mainOrg $org $channel_name
   done
 
@@ -1217,7 +1260,7 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
 #  sleep 3
 #  warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
 elif [ "${MODE}" == "up-1" ]; then
-  downloadArtifactsMember ${ORG1} "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
+  downloadArtifactsMember ${ORG1} "" "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
   installAll ${ORG1}
 
@@ -1228,7 +1271,7 @@ elif [ "${MODE}" == "up-1" ]; then
   createJoinInstantiateWarmUp ${ORG1} "${ORG1}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-2" ]; then
-  downloadArtifactsMember ${ORG2} "" common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
+  downloadArtifactsMember ${ORG2} "" "" common "${ORG1}-${ORG2}" "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG2}
   installAll ${ORG2}
 
@@ -1241,7 +1284,7 @@ elif [ "${MODE}" == "up-2" ]; then
   createJoinInstantiateWarmUp ${ORG2} "${ORG2}-${ORG3}" ${CHAINCODE_BILATERAL_NAME} ${CHAINCODE_BILATERAL_INIT}
 
 elif [ "${MODE}" == "up-3" ]; then
-  downloadArtifactsMember ${ORG3} "" common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
+  downloadArtifactsMember ${ORG3} "" "" common "${ORG1}-${ORG3}" "${ORG2}-${ORG3}"
   dockerComposeUp ${ORG3}
   installAll ${ORG3}
 

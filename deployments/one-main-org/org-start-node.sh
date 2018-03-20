@@ -10,11 +10,11 @@ docker ps -a
 ###########################################################################
 # Start
 ###########################################################################
-network.sh -m generate-peer -o $THIS_ORG
+network.sh -m generate-peer -o $THIS_ORG -R true
 
 echo -e $separateLine
 read -n1 -r -p "Peer material is generated. Now on node 'a' add org 'b' then press any key in this console to start UP org b..."
-network.sh -m add-org-connectivity -o $THIS_ORG -M $MAIN_ORG -i ${IP1}
+network.sh -m add-org-connectivity -o $THIS_ORG -M $MAIN_ORG -R $MAIN_ORG -i ${IP1}
 network.sh -m up-one-org -o $THIS_ORG -M $MAIN_ORG
 
 echo -e $separateLine

@@ -71,7 +71,7 @@ services:
       - ORG=ORG
       - PORT=4000
     volumes:
-      - ../artifacts/api/ORG/hosts:/etc/hosts
+      - ../artifacts/hosts/ORG/api_hosts:/etc/hosts
     depends_on:
       - peer0.ORG.DOMAIN
       - peer1.ORG.DOMAIN
@@ -92,6 +92,7 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=ORGMSP
     volumes:
+        - ../artifacts/hosts/ORG/cli_hosts:/etc/hosts
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/users/Admin@ORG.DOMAIN:/etc/hyperledger/crypto/peer
     CLI_EXTRA_HOSTS
 

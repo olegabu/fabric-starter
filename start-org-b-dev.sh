@@ -9,12 +9,12 @@ export IP3=192.168.56.102
 ./network.sh -m down
 docker ps -a
 
-./network.sh -m generate-peer -o b -e env
+./network.sh -m generate-peer -o b -R true
 
 separateLine='-------------------------------------------------------------------------------------\n-------------------------------------------------------------------------------------'
 echo -e $separateLine
 read -n1 -r -p "Peer material is generated. Now on node 'a' add org 'b' then press any key in this console to UP org b..."
-./network.sh -m add-org-connectivity -o b -M a -i ${IP1}
+./network.sh -m add-org-connectivity -o b -R a -M a -i ${IP1}
 ./network.sh -m up-one-org -o b -M a
 
 echo -e $separateLine
