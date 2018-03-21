@@ -5,4 +5,11 @@ export IP1=192.168.56.101
 export IP2=192.168.56.102
 export IP3=192.168.56.102
 
+export CHAINCODE_COMMON_INIT='{"Args":["init","a","100","b","100"]}'
+export CHAINCODE_BILATERAL_INIT='{"Args":["init","a","100","b","100"]}'
 
+: ${FABRIC_STARTER_HOME:=../..}
+export FABRIC_STARTER_HOME
+export PATH=$FABRIC_STARTER_HOME/:$PATH
+
+echo -e "Set environment for blockchain deployment:\nFABRIC_STARTER_HOME:$FABRIC_STARTER_HOME\nMain org:$MAIN_ORG"

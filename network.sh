@@ -90,7 +90,7 @@ function removeArtifacts() {
   rm -rf $GENERATED_ARTIFACTS_FOLDER/update_in_envelope.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/update.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/config.*
-  rm -rf $GENERATED_ARTIFACTS_FOLDER/api
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/hosts
 }
 
 function removeDockersFromAllCompose() {
@@ -868,7 +868,7 @@ function updateChannelConfig() {
   && echo 'Finished update_in_envelope.pb preparation!' && pkill configtxlator"
 
 
-#  echo $command
+  echo $command
   eval $command
 
   startConfigTxlator ${org} stop
@@ -1178,8 +1178,7 @@ elif [ "${MODE}" == "generate-orderer" ]; then  # params: -o ORG (optional)
   generateOrdererDockerCompose
   downloadArtifactsOrderer
   generateOrdererArtifacts ${ORG}
-elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -R true(optional)
-  if [ -z "$REMOTE_ORG" ]; then removeArtifacts; fi
+elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -R true(optional- REMOTE_ORG)
   generatePeerArtifacts ${ORG} ${API_PORT} ${WWW_PORT} ${CA_PORT} ${PEER0_PORT} ${PEER0_EVENT_PORT} ${PEER1_PORT} ${PEER1_EVENT_PORT}
   servePeerArtifacts ${ORG}
   if [ -n "$REMOTE_ORG" ]; then
