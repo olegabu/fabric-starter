@@ -1185,6 +1185,7 @@ elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -R true(optional)
   if [ -n "$REMOTE_ORG" ]; then
     addOrgToCliHosts ${ORG} "orderer" ${IP_ORDERER}
     addOrgToCliHosts ${ORG} "www" ${IP_ORDERER}
+    echo "$IP_ORDERER orderer.$DOMAIN" >> $GENERATED_ARTIFACTS_FOLDER/hosts/${thisOrg}/api_hosts
   fi
 elif [ "${MODE}" == "up-orderer" ]; then
   dockerComposeUp ${DOMAIN}
