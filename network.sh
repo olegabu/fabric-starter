@@ -433,7 +433,7 @@ function instantiateChaincode () {
 
 function warmUpChaincode () {
     org=$1
-    channel_name=$2
+    channel_names=($2)
     n=$3
     initArgs=$4
     if [ -z "$initArgs" ]; then
@@ -441,14 +441,16 @@ function warmUpChaincode () {
     fi
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
-    info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
+    for channel_name in ${channel_names[@]}; do
+        info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '$initArgs' -C $channel_name \
-    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '$initArgs' -C $channel_name"
-    d="cli.$org.$DOMAIN"
+        c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '$initArgs' -C $channel_name \
+        && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '$initArgs' -C $channel_name"
+        d="cli.$org.$DOMAIN"
 
-    echo "warming up with $d by $c"
-    docker-compose --file ${f} run --rm ${d} bash -c "${c}"
+        echo "warming up with $d by $c"
+        docker-compose --file ${f} run --rm ${d} bash -c "${c}"
+    done
 }
 
 function installChaincode() {
@@ -689,8 +691,8 @@ function startConfigTxlator (){
   docker exec -d ${d} bash -c "$c"
   sleep 2
 
-  info "$org is starting configtxlator on $d by $c"
   c="configtxlator start & "
+  info "$org is starting configtxlator on $d by $c"
   [[ -z "$stop" ]] && docker exec -d ${d} bash -c "$c"
 
   echo "waiting 3s for configtxlator to start..."
@@ -1267,9 +1269,9 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
 elif [ "${MODE}" == "warmup-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
-  [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channel" && exit 1
-  [[ -z "${CHAINCODE_QUERY_ARG}" ]] && echo "missing required argument -I CHAINCODE_QUERY_ARG: chaincode version" && exit 1
-    warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_QUERY_ARG}
+  [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels" && exit 1
+  [[ -z "${CHAINCODE_INIT_ARG}" ]] && echo "missing required argument -I CHAINCODE_QUERY_ARG: chaincode query args" && exit 1
+    warmUpChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}

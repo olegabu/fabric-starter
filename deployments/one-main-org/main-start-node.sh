@@ -34,6 +34,7 @@ echo "Org '"$THIS_ORG"' is created and registered in channel 'common'."
 
 #install chincodes in common channel
 network.sh -m instantiate-chaincode -o $THIS_ORG -k common -n chaincode_example02 -I "${CHAINCODE_COMMON_INIT}"
+echo "Warm up chaincode"
 network.sh -m warmup-chaincode -o $THIS_ORG -k common -n chaincode_example02 -I "${CHAINCODE_QUERY_ARG}"
 
 echo
