@@ -1257,8 +1257,10 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
   instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
-#  sleep 3
-#  warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
+  if [ "$DEBUG_NOT_WARMUP" == "" ]; then #may set the env var to skip Warmup fro debug
+    sleep 3
+    warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
+  fi
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
