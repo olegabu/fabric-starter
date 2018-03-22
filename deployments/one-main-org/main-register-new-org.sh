@@ -18,6 +18,7 @@ network.sh -m create-channel $MAIN_ORG "$channelWithMainOrg"
 network.sh -m update-sign-policy -o $THIS_ORG -k "$channelWithMainOrg"
 #instantiate  chaincode in bilateral channel with main org
 network.sh -m instantiate-chaincode -o $THIS_ORG -k $channelWithMainOrg -n chaincode_example02 -I "${CHAINCODE_COMMON_INIT}"
+network.sh -m warmup-chaincode -o $THIS_ORG -k $channelWithMainOrg -n chaincode_example02 -I "${CHAINCODE_QUERY_ARG}"
 
 #track channels list
 channels="$channels ${channelWithMainOrg}"
@@ -34,6 +35,7 @@ if [[ -n "$existingOrg" ]]; then
     network.sh -m register-org-in-channel $MAIN_ORG "$channelWithExisting" ${existingOrg}
     #instantiate  chaincodes in bilateral with main org channel
     network.sh -m instantiate-chaincode -o $THIS_ORG -k $channelWithExisting -n chaincode_example02 -I "${CHAINCODE_COMMON_INIT}"
+    network.sh -m warmup-chaincode -o $THIS_ORG -k $channelWithExisting -n chaincode_example02 -I "${CHAINCODE_QUERY_ARG}"
 
     #track channels list
     channels="$channels ${channelWithExisting}"

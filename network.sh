@@ -435,12 +435,16 @@ function warmUpChaincode () {
     org=$1
     channel_name=$2
     n=$3
+    initArgs=$4
+    if [ -z "$initArgs" ]; then
+      initArgs='{\"Args\":[\"query\, "$org"]}'
+    fi
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     info "warming up chaincode $n on $channel_name on all peers of $org with query using $f"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\"]}' -C $channel_name \
-    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '{\"Args\":[\"query\"]}' -C $channel_name"
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '$initArgs' -C $channel_name \
+    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode query -n $n -v 1.0 -c '$initArgs' -C $channel_name"
     d="cli.$org.$DOMAIN"
 
     echo "warming up with $d by $c"
@@ -1251,16 +1255,21 @@ elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o 
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
+
 elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
-  [[ -z "${CHANNELS}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
+  [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels list" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
   instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
-  if [ "$DEBUG_NOT_WARMUP" == "" ]; then #may set the env var to skip Warmup fro debug
-    sleep 3
-    warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE}
-  fi
+  sleep 3
+
+elif [ "${MODE}" == "warmup-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
+  [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
+  [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channel" && exit 1
+  [[ -z "${CHAINCODE_QUERY_ARG}" ]] && echo "missing required argument -I CHAINCODE_QUERY_ARG: chaincode version" && exit 1
+    warmUpChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_QUERY_ARG}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}
