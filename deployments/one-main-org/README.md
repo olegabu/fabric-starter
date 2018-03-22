@@ -69,9 +69,9 @@ This starts network on node 'b'
     `./org-start-node.sh`     
 This starts network on node 'c'
     
-2.6) To join org 'b' and 'c' to their bilateral channel run:
+2.6) To join org 'b' and 'c' to their bilateral channel run:  
     Org 'b':  
-    `./org-join-org.sh c $IP3 b-c` 
+    `./org-join-org.sh c $IP3 b-c`  
     Org 'c':  
     `./org-join-org.sh b $IP2 b-c` 
 
