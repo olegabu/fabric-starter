@@ -457,14 +457,17 @@ function installChaincode() {
     org=$1
     n=$2
     v=$3
+    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
     # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
     p=${n}
-    f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
+    #p=/opt/chaincode/node
+    l=golang
+    #l=node
 
     info "installing chaincode $n to peers of $org from ./chaincode/go/$p $v using $f"
 
-    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p \
-    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p"
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p -l $l \
+    && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p -l $l"
 }
 
 function upgradeChaincode() {

@@ -49,7 +49,7 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ../artifacts:/etc/hyperledger/artifacts
-      - ../chaincode/java:/opt/chaincode
+      - ../chaincode:/opt/chaincode
       - ../chaincode/go:/opt/gopath/src
     working_dir: /etc/hyperledger/artifacts
 
