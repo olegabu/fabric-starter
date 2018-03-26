@@ -103,7 +103,7 @@ func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) 
 		return shim.Error(err.Error())
 	}
 	if aBytes == nil {
-		return shim.Error("Entity not found")
+		return pb.Response{Status:404, Message:"Entity not found"}
 	}
 	aVal, _ = strconv.Atoi(string(aBytes))
 
@@ -112,14 +112,14 @@ func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) 
 		return shim.Error("Failed to get state")
 	}
 	if bBytes == nil {
-		return shim.Error("Entity not found")
+		return pb.Response{Status:404, Message:"Entity not found"}
 	}
 	bVal, _ = strconv.Atoi(string(bBytes))
 
 	// Perform the execution
 	x, err = strconv.Atoi(args[2])
 	if err != nil {
-		return pb.Response{Status:403, Message:"Invalid transaction amount, expecting a integer value"}
+		return pb.Response{Status:403, Message:"Invalid transaction amount, expecting an integer value"}
 	}
 	aVal = aVal - x
 	bVal = bVal + x
@@ -174,7 +174,7 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 	}
 
 	if valBytes == nil {
-		return shim.Error("Entity not found")
+		return pb.Response{Status:404, Message:"Entity not found"}
 	}
 
 	return shim.Success(valBytes)
