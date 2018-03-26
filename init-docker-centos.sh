@@ -21,16 +21,22 @@ sudo yum install -y yum-utils device-mapper-persistent-data  lvm2
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install -y docker-ce
 
-sudo systemctl start docker
-
 sudo groupadd docker
 sudo usermod -aG docker $USER
 
-sudo systemctl start docker
+
+
+echo
+echo "---------------------------------"
+echo "Install jq"
+echo "---------------------------------"
 
 sudo yum install epel-release -y
 sudo yum install jq -y
 jq --version
+
+
+sudo systemctl start docker
 
 
 echo
