@@ -17,7 +17,7 @@ echo "THIS_ORG: $THIS_ORG"
 network.sh -m generate-peer -o $THIS_ORG -a 4000 -w 8081
 
 # generate/up orderer
-network.sh -m generate-orderer -o $THIS_ORG
+network.sh -m generate-orderer -M $THIS_ORG
 network.sh -m up-orderer
 
 #start up main org
