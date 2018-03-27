@@ -28,9 +28,14 @@ sudo usermod -aG docker $USER
 
 echo
 echo "---------------------------------"
+echo "Docker-compose"
+echo "---------------------------------"
+sudo yum install -y docker-compose git
+
+echo
+echo "---------------------------------"
 echo "Install jq"
 echo "---------------------------------"
-
 sudo yum install epel-release -y
 sudo yum install jq -y
 jq --version
