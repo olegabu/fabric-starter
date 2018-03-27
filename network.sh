@@ -417,18 +417,20 @@ function joinChannel() {
 
 function instantiateChaincode () {
     org=$1
-    channel_name=$2
+    channel_names=($2)
     n=$3
     i=$4
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
-    info "instantiating chaincode $n on $channel_name by $org using $f with $i"
+    for channel_name in ${channel_names[@]}; do
+        info "instantiating chaincode $n on $channel_name by $org using $f with $i"
 
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode instantiate -n $n -v 1.0 -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
-    d="cli.$org.$DOMAIN"
+        c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode instantiate -n $n -v 1.0 -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+        d="cli.$org.$DOMAIN"
 
-    echo "instantiating with $d by $c"
-    docker-compose --file ${f} run --rm ${d} bash -c "${c}"
+        echo "instantiating with $d by $c"
+        docker-compose --file ${f} run --rm ${d} bash -c "${c}"
+    done
 }
 
 function warmUpChaincode () {
@@ -1266,7 +1268,7 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels list" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
-  instantiateChaincode ${ORG} ${CHANNELS} ${CHAINCODE} ${CHAINCODE_INIT_ARG}
+  instantiateChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG}
   sleep 3
 
 elif [ "${MODE}" == "warmup-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
