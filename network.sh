@@ -28,7 +28,8 @@ echo "Use target docker-compose folder: $GENERATED_DOCKER_COMPOSE_FOLDER"
 [[ -d $GENERATED_ARTIFACTS_FOLDER ]] || mkdir $GENERATED_ARTIFACTS_FOLDER
 [[ -d $GENERATED_DOCKER_COMPOSE_FOLDER ]] || mkdir $GENERATED_DOCKER_COMPOSE_FOLDER
 cp -f "$TEMPLATES_DOCKER_COMPOSE_FOLDER/base.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"
-if [[ -d ./$composeTemplatesFolder ]]; then cp -f "./$composeTemplatesFolder/base.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"; fi
+cp -f "$TEMPLATES_DOCKER_COMPOSE_FOLDER/base-intercept.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"
+if [[ -d ./$composeTemplatesFolder ]]; then cp -f "./$composeTemplatesFolder/base-intercept.yaml" "$GENERATED_DOCKER_COMPOSE_FOLDER"; fi
 
 
 WGET_OPTS="--verbose -N"
@@ -135,6 +136,7 @@ function removeDockersWithOrg() {
 }
 
 function generateOrdererDockerCompose() {
+    mainOrg=$1
     echo "Creating orderer docker compose yaml file with $DOMAIN, $ORG1, $ORG2, $ORG3, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
 
     compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer.yaml
@@ -142,7 +144,7 @@ function generateOrdererDockerCompose() {
 
     cli_extra_hosts=${DEFAULT_CLI_EXTRA_HOSTS}
 
-    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/ORDERER_PORT/$DEFAULT_ORDERER_PORT/g" -e "s/WWW_PORT/$DEFAULT_WWW_PORT/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/MAIN_ORG/$mainOrg/g" -e "s/CLI_EXTRA_HOSTS/$cli_extra_hosts/g" -e "s/ORDERER_PORT/$DEFAULT_ORDERER_PORT/g" -e "s/WWW_PORT/$DEFAULT_WWW_PORT/g" -e "s/ORG1/$ORG1/g" -e "s/ORG2/$ORG2/g" -e "s/ORG3/$ORG3/g" ${compose_template} | awk '{gsub(/\[newline\]/, "\n")}1' > ${f}
 }
 
 function generateNetworkConfig() {
@@ -579,6 +581,12 @@ function downloadMemberMSP() {
     echo ${c}
 #    executeBashCmdInCli "docker-compose-$DOMAIN.yaml" "cli.$DOMAIN" "${c} && chown -R $UID:$GID ."
     docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+
+#    #workaround until orderer-based network is implemented
+#    if [ -n $THIS_ORG ]; then
+#      f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$THIS_ORG.yaml"
+#      docker-compose --file ${f} run --rm "cli.$THIS_ORG.$DOMAIN" bash -c "${c} && chown -R $UID:$GID ."
+#    fi
 }
 
 function downloadNetworkConfig() {
@@ -621,6 +629,8 @@ function downloadChannelBlockFile() {
     c="wget ${WGET_OPTS} http://www.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
     echo ${c}
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
+
+    #workaround until orderer-based network is implemented
     c="wget ${WGET_OPTS} http://www.$leader.$DOMAIN:$DEFAULT_WWW_PORT/$channel_name.block && chown -R $UID:$GID ."
     echo ${c}
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "${c}"
@@ -1188,11 +1198,11 @@ elif [ "${MODE}" == "generate" ]; then
   generatePeerArtifacts ${ORG1} 4000 8081 7054 7051 7053 7056 7058
   generatePeerArtifacts ${ORG2} 4001 8082 8054 8051 8053 8056 8058
   generatePeerArtifacts ${ORG3} 4002 8083 9054 9051 9053 9056 9058
-  generateOrdererDockerCompose
+  generateOrdererDockerCompose ${ORG1}
   generateOrdererArtifacts
   #generateWait
 elif [ "${MODE}" == "generate-orderer" ]; then  # params: -M ORG (optional)
-  generateOrdererDockerCompose
+  generateOrdererDockerCompose ${MAIN_ORG}
   downloadArtifactsOrderer ${MAIN_ORG}
   generateOrdererArtifacts ${MAIN_ORG}
 elif [ "${MODE}" == "generate-peer" ]; then # params: -o ORG -R true(optional- REMOTE_ORG)

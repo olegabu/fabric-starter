@@ -4,6 +4,10 @@
 
 version: '2'
 
+volumes:
+  peer0.ORG.DOMAIN:
+  peer1.ORG.DOMAIN:
+
 services:
 
   ca.ORG.DOMAIN:
@@ -26,7 +30,7 @@ services:
   peer0.ORG.DOMAIN:
     container_name: peer0.ORG.DOMAIN
     extends:
-      file:   base.yaml
+      file: base-intercept.yaml
       service: peer-base
     environment:
       - CORE_PEER_ID=peer0.ORG.DOMAIN
@@ -37,6 +41,7 @@ services:
       - PEER0_EVENT_PORT:7053
     volumes:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer0.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
+        - peer0.ORG.DOMAIN:/var/hyperledger/production
     depends_on:
       - ca.ORG.DOMAIN
     PEER_EXTRA_HOSTS
@@ -44,7 +49,7 @@ services:
   peer1.ORG.DOMAIN:
     container_name: peer1.ORG.DOMAIN
     extends:
-      file:   base.yaml
+      file: base-intercept.yaml
       service: peer-base
     environment:
       - CORE_PEER_ID=peer1.ORG.DOMAIN
@@ -55,6 +60,7 @@ services:
       - PEER1_EVENT_PORT:7053
     volumes:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/peers/peer1.ORG.DOMAIN/:/etc/hyperledger/crypto/peer
+        - peer1.ORG.DOMAIN:/var/hyperledger/production
     depends_on:
       - ca.ORG.DOMAIN
     PEER_EXTRA_HOSTS
@@ -62,7 +68,7 @@ services:
   # fabric-rest api server
   api.ORG.DOMAIN:
     extends:
-      file: base.yaml
+      file: base-intercept.yaml
       service: api-base
     container_name: api.ORG.DOMAIN
     ports:
@@ -80,7 +86,7 @@ services:
   cli.DOMAIN:
     container_name: cli.DOMAIN
     extends:
-      file: base.yaml
+      file: base-intercept.yaml
       service: cli-base
     volumes:
       - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
@@ -99,7 +105,7 @@ services:
   # simple http server to disseminate certificates
   www.ORG.DOMAIN:
     extends:
-      file: base.yaml
+      file: base-intercept.yaml
       service: www-base
     container_name: www.ORG.DOMAIN
     ports:
