@@ -15,23 +15,29 @@ FABRIC_PACK="x86_64-${FABRIC_VERSION}"
 
 sudo apt-get update && sudo apt-get -y install docker-compose jq
 
-docker rmi -f $(docker images -q)
+sudo docker rmi -f $(docker images -q)
 
-docker pull hyperledger/fabric-ca:${FABRIC_PACK}
-docker pull hyperledger/fabric-orderer:${FABRIC_PACK}
-docker pull hyperledger/fabric-peer:${FABRIC_PACK}
-docker pull hyperledger/fabric-ccenv:${FABRIC_PACK}
+sudo docker pull hyperledger/fabric-ca:${FABRIC_PACK}
+sudo docker pull hyperledger/fabric-orderer:${FABRIC_PACK}
+sudo docker pull hyperledger/fabric-peer:${FABRIC_PACK}
+sudo docker pull hyperledger/fabric-ccenv:${FABRIC_PACK}
 #docker pull hyperledger/fabric-buildenv:${FABRIC_PACK}
 
-docker pull hyperledger/fabric-tools:${FABRIC_PACK}
+sudo docker pull hyperledger/fabric-tools:${FABRIC_PACK}
 #workaround until fixed in 1.1.0-alpha
-docker pull hyperledger/fabric-tools:x86_64-1.1.0-preview
+sudo docker pull hyperledger/fabric-tools:x86_64-1.1.0-preview
 
-docker pull hyperledger/fabric-baseos:x86_64-0.4.5
-docker pull hyperledger/fabric-baseos:x86_64-0.4.6
-docker pull maxxx1313/fabric-rest
-docker pull nginx
-docker pull node:6-alpine
+sudo docker pull hyperledger/fabric-baseos:x86_64-0.4.5
+sudo docker pull hyperledger/fabric-baseos:x86_64-0.4.6
+sudo docker pull maxxx1313/fabric-rest
+sudo docker pull nginx
+sudo docker pull node:6-alpine
 export FABRIC_PACK
+
+echo
+echo "---------------------------------"
+echo "Relogin to apply the user into the 'docker' group"
+echo "---------------------------------"
+
 
 
