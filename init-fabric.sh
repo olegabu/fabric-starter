@@ -13,7 +13,9 @@ FABRIC_PACK="x86_64-${FABRIC_VERSION}"
 #  curl $url | tar xz
 #fi;
 
-sudo apt-get update && sudo apt-get -y install docker-compose git jq enca
+sudo apt-get update && sudo apt-get -y install docker-compose jq
+
+docker rmi -f $(docker images -q)
 
 docker pull hyperledger/fabric-ca:${FABRIC_PACK}
 docker pull hyperledger/fabric-orderer:${FABRIC_PACK}
