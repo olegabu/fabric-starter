@@ -4,6 +4,9 @@
 
 version: '2'
 
+volumes:
+ orderer.DOMAIN:
+
 services:
 
   orderer.DOMAIN:
@@ -29,6 +32,7 @@ services:
     volumes:
         - ../artifacts/channel:/etc/hyperledger/configtx
         - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/:/etc/hyperledger/crypto/orderer
+        - orderer.example.com:/var/hyperledger/production/orderer
 #        - ../artifacts/crypto-config/peerOrganizations/ORG1.DOMAIN/peers/peer0.ORG1.DOMAIN/:/etc/hyperledger/crypto/peerORG1
 #        - ../artifacts/crypto-config/peerOrganizations/ORG2.DOMAIN/peers/peer0.ORG2.DOMAIN/:/etc/hyperledger/crypto/peerORG2
 #        - ../artifacts/crypto-config/peerOrganizations/ORG3.DOMAIN/peers/peer0.ORG3.DOMAIN/:/etc/hyperledger/crypto/peerORG3
