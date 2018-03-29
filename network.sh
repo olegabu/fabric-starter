@@ -380,7 +380,7 @@ function generateChannelConfig() {
     mainOrg=$1
     channel_name=$2
 
-    sed -e "s/ORG1/$mainOrg/g" -e "s/CHANNEL_NAME/$channel_name/g" $TEMPLATES_ARTIFACTS_FOLDER/configtxtemplate-oneOrg-orderer.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
+    sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/$mainOrg/g" -e "s/CHANNEL_NAME/$channel_name/g"  $TEMPLATES_ARTIFACTS_FOLDER/configtxtemplate-oneOrg-orderer.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
 
     i=2
     for org in "${@:3}"
@@ -401,6 +401,7 @@ function createChannel () {
 
     info "creating channel $channel_name by $org using $f"
 
+    echo "docker-compose --file ${f} run --rm \"cli.$org.$DOMAIN\" bash -c \"peer channel create -o orderer.$DOMAIN:7050 -c $channel_name -f /etc/hyperledger/artifacts/channel/$channel_name.tx --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt\""
     docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "peer channel create -o orderer.$DOMAIN:7050 -c $channel_name -f /etc/hyperledger/artifacts/channel/$channel_name.tx --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 
     echo "changing ownership of channel block files"
@@ -1267,6 +1268,7 @@ elif [ "${MODE}" == "create-channel" ]; then # params: mainOrg($3) channel_name 
   joinChannel $3 $channel_name
   echo "Register Orgs in channel $channel_name: ${@:5}"
   for org in "${@:5}"; do
+    sleep 1
     registerNewOrgInChannel $mainOrg $org $channel_name
   done
 
@@ -1287,6 +1289,7 @@ elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o 
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   echo "Install chaincode: $ORG ${CHAINCODE} ${CHAINCODE_VERSION}"
+  sleep 1
   installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
 
 elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
@@ -1294,15 +1297,16 @@ elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chain
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels list" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
+  sleep 1
   instantiateChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG}
-  sleep 3
 
 elif [ "${MODE}" == "warmup-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && echo "missing required argument -I CHAINCODE_QUERY_ARG: chaincode query args" && exit 1
-    warmUpChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG}
+  sleep 1
+  warmUpChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG}
 elif [ "${MODE}" == "up-1" ]; then
   downloadArtifactsMember ${ORG1} "" "" common "${ORG1}-${ORG2}" "${ORG1}-${ORG3}"
   dockerComposeUp ${ORG1}

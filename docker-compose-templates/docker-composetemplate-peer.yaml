@@ -109,6 +109,8 @@ services:
       service: cli-base
     environment:
       - CORE_PEER_LOCALMSPID=ORGMSP
+    volumes:
+        - ../artifacts/hosts/ORG/cli_hosts:/etc/hosts
 
   # simple http server to disseminate certificates
   www.ORG.DOMAIN:

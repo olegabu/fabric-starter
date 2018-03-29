@@ -5,7 +5,7 @@
 version: '2'
 
 volumes:
- orderer.DOMAIN:
+  orderer.DOMAIN:
 
 services:
 
