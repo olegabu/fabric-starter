@@ -1385,6 +1385,12 @@ elif [ "${MODE}" == "upgradeChaincode" ]; then
   do
     upgradeChaincode ${org} ${CHAINCODE_COMMON_NAME} ${CHAINCODE_VERSION}
   done
+elif [ "${MODE}" == "upgrade-chaincode" ]; then
+  [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
+  [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
+  [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
+
+  upgradeChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
 else
   printHelp
   exit 1
