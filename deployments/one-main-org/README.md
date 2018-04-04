@@ -59,7 +59,9 @@ Org 'c':
 ```
 
 This starts network on node a, creates channel 'common'; when register new orgs new bilateral channels ('a-b', 'a-c') 
-are automatically created; then orgs 'b' and 'c' are registered in channels 'common', 'a-b', 'a-c'
+are automatically created; then orgs 'b' and 'c' are registered in channels 'common', 'a-b', 'a-c'.
+The third parameter 'b' is added at registering org 'c' in order to create the channel 'b-c' same time as organization 'c' is created.
+
 
 2.4) On org 'b' run command:  
     `./org-start-node.sh` 
