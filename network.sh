@@ -1382,7 +1382,7 @@ elif [ "${MODE}" == "generateNetworkConfig" ]; then
   [[ -n "$3" ]] && generateNetworkConfig ${@:3}
 elif [ "${MODE}" == "addOrgToNetworkConfig" ]; then # -o ORG
   addOrgToNetworkConfig ${ORG}
-elif [ "${MODE}" == "upgradeChaincode" ]; then
+elif [ "${MODE}" == "upgradeChaincode" ]; then #deprecated
   for org in ${ORG1} ${ORG2} ${ORG3}
   do
     upgradeChaincode ${org} ${CHAINCODE_COMMON_NAME} ${CHAINCODE_VERSION}
