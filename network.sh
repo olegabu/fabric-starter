@@ -1288,7 +1288,7 @@ elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
   joinChannel ${3} $5
 elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -n book
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
-  [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
+  [[ -z "${CHAINCODE}" ]] && echo "missing required argument -n CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   echo "Install chaincode: $ORG ${CHAINCODE} ${CHAINCODE_VERSION}"
   sleep 1
