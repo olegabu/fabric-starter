@@ -159,7 +159,7 @@ function generateNetworkConfig() {
 
   # replace for orderer in network-config.json
   # TODO: replace ORG1.
-  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/${orgs[0]}/g" -e "s/^\s*\/\/.*$//g" $networkConfigTemplate`
+  out=`sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG1/${orgs[0]}/g" -e "s/DEV_DEPLOYMENT/$DEV_DEPLOYMENT/g" -e "s/^\s*\/\/.*$//g" $networkConfigTemplate`
   placeholder=",}}"
 
 #TEMPLATES_ARTIFACTS_FOLDER/network-config-template.json`
