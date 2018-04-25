@@ -497,7 +497,7 @@ function upgradeChaincode() {
     c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name $policy --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
     d="cli.$org.$DOMAIN"
 
-    info "upgrading chaincode $n to $v using $d with $c"
+    info "upgrading chaincode $n to $v using $d with $c and andorsement policy $policy"
     docker-compose --file ${f} run --rm ${d} bash -c "$c"
 }
 
@@ -1166,6 +1166,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:R:" opt; do
     ;;
     R) REMOTE_ORG=$OPTARG
     ;;
+    P) ENDORSEMENT_POLICY=$OPTARG
+    ;;
   esac
 done
 
@@ -1394,7 +1396,7 @@ elif [ "${MODE}" == "upgrade-chaincode" ]; then
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && echo "missing required argument -I CHAINCODE_INIT_ARG: chaincode initialization arguments" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNEL" && exit 1
 
-  upgradeChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION} ${CHAINCODE_INIT_ARG} ${CHANNELS}
+  upgradeChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION} ${CHAINCODE_INIT_ARG} ${CHANNELS} ${ENDORSEMENT_POLICY}
 else
   printHelp
   exit 1
