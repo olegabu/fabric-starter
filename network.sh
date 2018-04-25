@@ -490,11 +490,10 @@ function upgradeChaincode() {
     i=$4
     channel_name=$5
     policy=$6
-    if [ -n "$policy" ]; then policy="-P $policy"; fi
+    if [ -n "$policy" ]; then policy="-P \"$policy\""; fi
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
-
-    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name $policy --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode upgrade -n $n -v $v -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name "$policy" --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
     d="cli.$org.$DOMAIN"
 
     info "upgrading chaincode $n to $v using $d with $c and andorsement policy $policy"
@@ -1395,7 +1394,7 @@ elif [ "${MODE}" == "upgrade-chaincode" ]; then
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && echo "missing required argument -I CHAINCODE_INIT_ARG: chaincode initialization arguments" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNEL" && exit 1
-
+  echo "Upgrading with endorsement policy: ${ENDORSEMENT_POLICY}"
   upgradeChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION} ${CHAINCODE_INIT_ARG} ${CHANNELS} ${ENDORSEMENT_POLICY}
 else
   printHelp
