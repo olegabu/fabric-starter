@@ -1128,7 +1128,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:R:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:R:P:" opt; do
   case "$opt" in
     h|\?)
       printHelp
