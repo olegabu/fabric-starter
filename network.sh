@@ -242,11 +242,11 @@ function generateOrdererArtifacts() {
 
     echo "Generating crypto material with cryptogen"
 
-    echo "docker-compose --file ${f} run --rm \"cli.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --output=crypto-temp --config=cryptogen-$DOMAIN.yaml\""
-    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate  --output=crypto-temp --config=cryptogen-$DOMAIN.yaml"
+    echo "docker-compose --file ${f} run --rm \"cli.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --output=crypto --config=cryptogen-$DOMAIN.yaml\""
+    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate  --output=crypto-temp --config=cryptogen-$DOMAIN.yaml &&     cp -r -f crypto-temp/. crypto-config"
 
     sleep 1
-    cp -r -f $GENERATED_ARTIFACTS_FOLDER/crypto-temp/. $GENERATED_ARTIFACTS_FOLDER/crypto-config
+
 
 
 
