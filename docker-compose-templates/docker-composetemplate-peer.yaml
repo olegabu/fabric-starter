@@ -76,8 +76,6 @@ services:
     environment:
       - ORG=ORG
       - PORT=4000
-    volumes:
-      - ../artifacts/hosts/ORG/api_hosts:/etc/hosts
     depends_on:
       - peer0.ORG.DOMAIN
       - peer1.ORG.DOMAIN
