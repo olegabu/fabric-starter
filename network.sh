@@ -1102,6 +1102,7 @@ function clean() {
   removeDockersWithDomain
   removeUnwantedImages
   removeArtifacts
+  docker volume prune
 }
 
 function generateWait() {
