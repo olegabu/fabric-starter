@@ -42,8 +42,8 @@ services:
     extends:
       file: base-intercept.yaml
       service: cli-base
-#    volumes:
-#        - ../artifacts/hosts/MAIN_ORG/cli_hosts:/etc/hosts
+    volumes:
+        - ../artifacts/hosts/MAIN_ORG/cli_hosts:/etc/hosts
 #      - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
     CLI_EXTRA_HOSTS
 

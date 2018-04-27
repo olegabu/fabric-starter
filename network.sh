@@ -80,7 +80,7 @@ function removeArtifacts() {
   rm -rf $GENERATED_ARTIFACTS_FOLDER/crypto-config
   rm -rf $GENERATED_ARTIFACTS_FOLDER/channel
   rm -rf $GENERATED_ARTIFACTS_FOLDER/*block*
-  rm -rf www/artifacts && mkdir www/artifacts
+  rm -rf www/artifacts && mkdir -p www/artifacts
   rm -rf $GENERATED_ARTIFACTS_FOLDER/cryptogen-*.yaml
   rm -rf $GENERATED_ARTIFACTS_FOLDER/fabric-ca-server-config-*.yaml
   rm -rf $GENERATED_ARTIFACTS_FOLDER/network-config.json
@@ -140,6 +140,10 @@ function generateOrdererDockerCompose() {
     echo "Creating orderer docker compose yaml file with $DOMAIN, $ORG1, $ORG2, $ORG3, $DEFAULT_ORDERER_PORT, $DEFAULT_WWW_PORT"
 
     compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer.yaml
+    if [ -n "$mainOrg" ]; then
+        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml
+    fi
+
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
 
     cli_extra_hosts=${DEFAULT_CLI_EXTRA_HOSTS}
@@ -1093,7 +1097,7 @@ function clean() {
 #  removeDockersFromAllCompose
   removeDockersWithDomain
   removeUnwantedImages
-#  removeArtifacts
+  removeArtifacts
 }
 
 function generateWait() {
