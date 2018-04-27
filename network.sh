@@ -288,6 +288,10 @@ function generatePeerArtifacts() {
     echo "Creating peer yaml files with $DOMAIN, $org, $api_port, $www_port, $ca_port, $peer0_port, $peer0_event_port, $peer1_port, $peer1_event_port"
 
     compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-peer.yaml
+    if [ -n "$MAIN_ORG" ]; then
+        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml
+    fi
+
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     # cryptogen yaml

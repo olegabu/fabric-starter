@@ -98,6 +98,7 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=ORGMSP
     volumes:
+        - ../artifacts/hosts/ORG/cli_hosts:/etc/hosts
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/users/Admin@ORG.DOMAIN:/etc/hyperledger/crypto/peer
     CLI_EXTRA_HOSTS
 
@@ -108,6 +109,8 @@ services:
       service: cli-base
     environment:
       - CORE_PEER_LOCALMSPID=ORGMSP
+    volumes:
+        - ../artifacts/hosts/ORG/cli_hosts:/etc/hosts
     CLI_EXTRA_HOSTS
 
   # simple http server to disseminate certificates
