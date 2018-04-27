@@ -631,8 +631,7 @@ function downloadChannelTxFiles() {
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     info "downloading all channel config transaction files using $f"
-
-    for channel_name in ${@:4}
+    for channel_name in ${@}
     do
       c="wget ${WGET_OPTS} --directory-prefix channel http://www.$DOMAIN:$DEFAULT_WWW_PORT/channel/$channel_name.tx && chown -R $UID:$GID ."
       echo ${c}
