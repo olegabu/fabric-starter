@@ -215,6 +215,17 @@ function generateOrdererArtifacts() {
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
 
+    # replace in cryptogen
+    sed -e "s/DOMAIN/$DOMAIN/g" $TEMPLATES_ARTIFACTS_FOLDER/cryptogentemplate-orderer.yaml > "$GENERATED_ARTIFACTS_FOLDER/cryptogen-$DOMAIN.yaml"
+
+    echo "Generating crypto material with cryptogen"
+
+    echo "docker-compose --file ${f} run --rm \"cliNoCryptoVolume.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml\""
+    docker-compose --file ${f} run --rm "cliNoCryptoVolume.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
+
+
+
+
     mkdir -p "$GENERATED_ARTIFACTS_FOLDER/channel"
 
 
@@ -235,14 +246,6 @@ function generateOrdererArtifacts() {
         echo "Generating channel config transaction for $channel_name"
         docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
     done
-
-    # replace in cryptogen
-    sed -e "s/DOMAIN/$DOMAIN/g" $TEMPLATES_ARTIFACTS_FOLDER/cryptogentemplate-orderer.yaml > "$GENERATED_ARTIFACTS_FOLDER/cryptogen-$DOMAIN.yaml"
-
-    echo "Generating crypto material with cryptogen"
-
-    echo "docker-compose --file ${f} run --rm \"cli.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml\""
-    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
 
     echo "Generating orderer genesis block with configtxgen"
     docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile OrdererGenesis -outputBlock ./channel/genesis.block
