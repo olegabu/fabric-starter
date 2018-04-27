@@ -92,6 +92,7 @@ function removeArtifacts() {
   rm -rf $GENERATED_ARTIFACTS_FOLDER/update.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/config.*
   rm -rf $GENERATED_ARTIFACTS_FOLDER/hosts
+  rm -rf $GENERATED_ARTIFACTS_FOLDER/crypto-temp
 }
 
 function removeDockersFromAllCompose() {
@@ -141,7 +142,7 @@ function generateOrdererDockerCompose() {
 
     compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer.yaml
     if [ -n "$mainOrg" ]; then
-        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml
+        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml #todo: made one template
     fi
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
@@ -215,17 +216,6 @@ function generateOrdererArtifacts() {
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
 
-    # replace in cryptogen
-    sed -e "s/DOMAIN/$DOMAIN/g" $TEMPLATES_ARTIFACTS_FOLDER/cryptogentemplate-orderer.yaml > "$GENERATED_ARTIFACTS_FOLDER/cryptogen-$DOMAIN.yaml"
-
-    echo "Generating crypto material with cryptogen"
-
-    echo "docker-compose --file ${f} run --rm \"cliNoCryptoVolume.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml\""
-    docker-compose --file ${f} run --rm "cliNoCryptoVolume.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$DOMAIN.yaml"
-
-
-
-
     mkdir -p "$GENERATED_ARTIFACTS_FOLDER/channel"
 
 
@@ -246,6 +236,19 @@ function generateOrdererArtifacts() {
         echo "Generating channel config transaction for $channel_name"
         docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile "$channel_name" -outputCreateChannelTx "./channel/$channel_name.tx" -channelID "$channel_name"
     done
+
+    # replace in cryptogen
+    sed -e "s/DOMAIN/$DOMAIN/g" $TEMPLATES_ARTIFACTS_FOLDER/cryptogentemplate-orderer.yaml > "$GENERATED_ARTIFACTS_FOLDER/cryptogen-$DOMAIN.yaml"
+
+    echo "Generating crypto material with cryptogen"
+
+    echo "docker-compose --file ${f} run --rm \"cli.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --output=crypto-temp --config=cryptogen-$DOMAIN.yaml\""
+    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate  --output=crypto-temp --config=cryptogen-$DOMAIN.yaml"
+
+    sleep 1
+    cp -r -f $GENERATED_ARTIFACTS_FOLDER/crypto-temp/. $GENERATED_ARTIFACTS_FOLDER/crypto-config
+
+
 
     echo "Generating orderer genesis block with configtxgen"
     docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile OrdererGenesis -outputBlock ./channel/genesis.block
