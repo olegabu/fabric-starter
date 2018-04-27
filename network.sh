@@ -628,7 +628,6 @@ function downloadNetworkConfig() {
 
 function downloadChannelTxFiles() {
     org=$1
-    mainOrg=$2
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
 
     info "downloading all channel config transaction files using $f"
