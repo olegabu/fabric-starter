@@ -45,7 +45,7 @@ services:
     volumes:
         - ../artifacts/hosts/MAIN_ORG/cli_hosts:/etc/hosts
 #      - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
-    CLI_EXTRA_HOSTS
+
 
   # simple http server to disseminate certificates
   www.DOMAIN:

@@ -76,7 +76,7 @@ function removeUnwantedImages() {
 
 function removeArtifacts() {
   echo "Removing generated and downloaded artifacts from: $GENERATED_DOCKER_COMPOSE_FOLDER, $GENERATED_ARTIFACTS_FOLDER"
-  rm $GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-*.yaml
+  rm -rf $GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-*.yaml
   rm -rf $GENERATED_ARTIFACTS_FOLDER/crypto-config
   rm -rf $GENERATED_ARTIFACTS_FOLDER/channel
   rm -rf $GENERATED_ARTIFACTS_FOLDER/*block*
@@ -142,7 +142,7 @@ function generateOrdererDockerCompose() {
 
     compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer.yaml
     if [ -n "$mainOrg" ]; then
-        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml #todo: made one template
+        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml #todo: make one template
     fi
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$DOMAIN.yaml"
@@ -198,17 +198,6 @@ function addOrgToNetworkConfig() {
   echo ${out} > $GENERATED_ARTIFACTS_FOLDER/network-config.json
 }
 
-#
-#function executeBashCmdInCli () {
-#  file=$GENERATED_DOCKER_COMPOSE_FOLDER/$1
-#  container=$2
-#  cmd=$3
-#
-#  echo "using: $file"
-#  docker-compose --file ${file} run --rm "$container" bash -c "$cmd"
-#
-#}
-
 function generateOrdererArtifacts() {
     org=$1
 
@@ -243,12 +232,9 @@ function generateOrdererArtifacts() {
     echo "Generating crypto material with cryptogen"
 
     echo "docker-compose --file ${f} run --rm \"cli.$DOMAIN\" bash -c \"sleep 2 && cryptogen generate --output=crypto --config=cryptogen-$DOMAIN.yaml\""
-    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate  --output=crypto-temp --config=cryptogen-$DOMAIN.yaml &&     cp -r -f crypto-temp/. crypto-config"
+    docker-compose --file ${f} run --rm "cli.$DOMAIN" bash -c "sleep 2 && cryptogen generate  --output=crypto-temp --config=cryptogen-$DOMAIN.yaml &&  cp -r -f crypto-temp/. crypto-config"
 
     sleep 1
-
-
-
 
     echo "Generating orderer genesis block with configtxgen"
     docker-compose --file ${f} run --rm -e FABRIC_CFG_PATH=/etc/hyperledger/artifacts "cli.$DOMAIN" configtxgen -profile OrdererGenesis -outputBlock ./channel/genesis.block
@@ -295,7 +281,7 @@ function generatePeerArtifacts() {
 
     compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-peer.yaml
     if [ -n "$MAIN_ORG" ]; then
-        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-orderer-main-org.yaml
+        compose_template=$TEMPLATES_DOCKER_COMPOSE_FOLDER/docker-composetemplate-peer-main-org.yaml #todo: make one template
     fi
 
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-$org.yaml"
@@ -315,11 +301,11 @@ function generatePeerArtifacts() {
 
     echo "Generating crypto material with cryptogen"
 
-    echo "docker-compose --file ${f} run --rm \"cliNoCryptoVolume.$org.$DOMAIN\" bash -c \"cryptogen generate --config=cryptogen-$org.yaml\""
-    docker-compose --file ${f} run --rm "cliNoCryptoVolume.$org.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$org.yaml"
+    echo "docker-compose --file ${f} run --rm \"cli.$org.$DOMAIN\" bash -c \"cryptogen generate --config=cryptogen-$org.yaml  --output=crypto-temp \""
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "sleep 2 && cryptogen generate --config=cryptogen-$org.yaml  --output=crypto-temp  &&  cp -r -f crypto-temp/. crypto-config"
 
     echo "Changing artifacts ownership"
-    docker-compose --file ${f} run --rm "cliNoCryptoVolume.$org.$DOMAIN" bash -c "chown -R $UID:$GID ."
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "chown -R $UID:$GID ."
 
     echo "Adding generated CA private keys filenames to $f"
     ca_private_key=$(basename `ls -t $GENERATED_ARTIFACTS_FOLDER/crypto-config/peerOrganizations/"$org.$DOMAIN"/ca/*_sk`)
@@ -330,8 +316,8 @@ function generatePeerArtifacts() {
     sed -e "s/DOMAIN/$DOMAIN/g" -e "s/ORG/$org/g" $TEMPLATES_ARTIFACTS_FOLDER/configtx-orgtemplate.yaml > $GENERATED_ARTIFACTS_FOLDER/configtx.yaml
 
     echo "Generating ${org}Config.json"
-    echo "docker-compose --file ${f} run --rm \"cliNoCryptoVolume.$org.$DOMAIN\" bash -c \"FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json\""
-    docker-compose --file ${f} run --rm "cliNoCryptoVolume.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
+    echo "docker-compose --file ${f} run --rm \"cli.$org.$DOMAIN\" bash -c \"FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json\""
+    docker-compose --file ${f} run --rm "cli.$org.$DOMAIN" bash -c "FABRIC_CFG_PATH=./ configtxgen  -printOrg ${org}MSP > ${org}Config.json"
 }
 
 function addOrgToApiHosts() {
@@ -875,61 +861,47 @@ function updateChannelConfig() {
   configReplacementScript=$3
 
   info " >> configReplacementScript: $configReplacementScript ..."
-#  info " >> preparing update_in_envelope.pb envelop..."
+#  >> preparing update_in_envelope.pb envelop...
 
-#  && echo 'wc for artifacts/config_block.json: $(wc -c < artifacts/config_block.json)' \
-#  && echo 'wc for artifacts/config.json: $(wc -c < artifacts/config.json)' \
-#&& echo 'wc for artifacts/updated_config.json: $(wc -c < artifacts/updated_config.json)' \
-#  && echo 'cat for artifacts/updated_config.json: $(cat artifacts/updated_config.json)' \
-#  && echo 'wc for artifacts/update.json: $(wc -c < artifacts/update.json)' \
-#  && echo 'wc for artifacts/update_in_envelope.json: $(wc -c < artifacts/update_in_envelope.json)' \
-  cd $GENERATED_ARTIFACTS_FOLDER && rm -r -f config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
+  cd $GENERATED_ARTIFACTS_FOLDER
+  rm -r -f config_block.pb config_block.json config.json config.pb updated_config.json updated_config.pb update.json update.pb update_in_envelope.json update_in_envelope.pb 2>&1
 
-  command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
-#  info " fetchig config_block for $channel with $d by $command"
   d="cli.$org.$DOMAIN"
+
+  # fetchig config_block for $channel with $d by $command"
+  command="peer channel fetch config config_block.pb -o orderer.$DOMAIN:7050 -c $channel --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+  echo $command
   docker exec ${d} bash -c "$command"
 
-  # now update the channel with the config delta envelop
+  # now update the channel with the config delta
+  command="configtxlator proto_decode --type 'common.Block' --input=config_block.pb --output=config_block.json"
+  echo $command
+  docker exec ${d} bash -c "$command"
 
-
-  cliContainerIP=`docker inspect ${d} | jq .[0].NetworkSettings.Networks.dockercompose_default.IPAddress` #"http://127.0.0.1:7059"
-  cliContainerIP="${cliContainerIP%\"}"
-  cliContainerIP="${cliContainerIP#\"}"
-  configtxlatorServer="http://${cliContainerIP}:7059"
-
-
-  startConfigTxlator ${org}
-
-  command="curl -X POST --data-binary @config_block.pb ${configtxlatorServer}/protolator/decode/common.Block | jq . > config_block.json \
-  && jq .data.data[0].payload.data.config config_block.json > config.json"
-
+  command="jq .data.data[0].payload.data.config config_block.json > config.json"
   echo $command
   eval $command
+
   eval "jq -s ${configReplacementScript}" > updated_config.json
 
-  command="curl -X POST --data-binary @config.json ${configtxlatorServer}/protolator/encode/common.Config > config.pb \
-  && curl -X POST --data-binary @updated_config.json ${configtxlatorServer}/protolator/encode/common.Config > updated_config.pb \
-  && curl -X POST -F channel=$channel -F 'original=@config.pb' -F 'updated=@updated_config.pb' ${configtxlatorServer}/configtxlator/compute/update-from-configs > update.pb \
-  && curl -X POST --data-binary @update.pb ${configtxlatorServer}/protolator/decode/common.ConfigUpdate | jq . > update.json \
-  && echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json \
-  && curl -X POST --data-binary @update_in_envelope.json ${configtxlatorServer}/protolator/encode/common.Envelope > update_in_envelope.pb \
-  && echo 'Finished update_in_envelope.pb preparation!' && pkill configtxlator"
+  command="configtxlator proto_encode --type 'common.Config' --input=config.json --output=config.pb \
+  && configtxlator proto_encode --type 'common.Config' --input=updated_config.json --output=updated_config.pb \
+  && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
+  && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=update.json "
+  echo $command
+  docker exec ${d} bash -c "$command"
 
-
+  command="echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat update.json\`'}}}' | jq . > update_in_envelope.json"
   echo $command
   eval $command
 
-  startConfigTxlator ${org} stop
+  command="configtxlator proto_encode --type 'common.Envelope' --input=update_in_envelope.json --output=update_in_envelope.pb"
+  echo $command
+  docker exec ${d} bash -c "$command"
 
-  # now update the channel with the config delta envelop
-#  d="cli.$org.$DOMAIN"
-#  info " >> $org is generating config tx file update_in_envelope.pb with $d by $command"
-#  docker exec ${d} bash -c "$command"
-#  info " >> $org successfully generated config tx file update_in_envelope.pb"
+  echo 'Finished update_in_envelope.pb preparation!'
 
-    cd ..
-  ! [[ -s $GENERATED_ARTIFACTS_FOLDER/config_block.json ]] && echo "$GENERATED_ARTIFACTS_FOLDER/config_block.json is empty. Is configtxlator running?" && exit 1
+  cd ..
 
   command="peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 

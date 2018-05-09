@@ -99,15 +99,6 @@ services:
         - ../artifacts/crypto-config/peerOrganizations/ORG.DOMAIN/users/Admin@ORG.DOMAIN:/etc/hyperledger/crypto/peer
     CLI_EXTRA_HOSTS
 
-  cliNoCryptoVolume.ORG.DOMAIN:
-    container_name: cliNoCryptoVolume.ORG.DOMAIN
-    extends:
-      file: base-intercept.yaml
-      service: cli-base
-    environment:
-      - CORE_PEER_LOCALMSPID=ORGMSP
-    CLI_EXTRA_HOSTS
-
   # simple http server to disseminate certificates
   www.ORG.DOMAIN:
     extends:
