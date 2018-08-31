@@ -88,6 +88,7 @@ services:
       service: cli-base
     volumes:
       - ../artifacts/crypto-config/ordererOrganizations/DOMAIN/orderers/orderer.DOMAIN/tls:/etc/hyperledger/crypto/orderer/tls
+    CLI_EXTRA_HOSTS
 
   cli.ORG.DOMAIN:
     container_name: cli.ORG.DOMAIN
