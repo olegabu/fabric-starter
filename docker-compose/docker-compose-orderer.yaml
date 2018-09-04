@@ -1,0 +1,45 @@
+# 
+# Copyright . All Rights Reserved.
+# 
+
+version: '2.1'
+
+volumes:
+  orderer:
+
+services:
+
+  orderer:
+    container_name: orderer.${DOMAIN}
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
+      - ORDERER_GENERAL_LOCALMSPID=Orderer
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
+    working_dir: /etc/hyperledger
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+      - ${PWD}/crypto-config/configtx:/etc/hyperledger/configtx
+      - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN}/orderers/orderer.${DOMAIN}/:/etc/hyperledger/crypto/orderer
+      - orderer:/var/hyperledger/production/orderer
+
+  # http serves certificates
+  www.orderer:
+    extends:
+      file: base.yaml
+      service: www-base
+    container_name: www.${DOMAIN}
+    ports:
+      - 8080:80
+    volumes:
+      - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts:/usr/share/nginx/html
+
