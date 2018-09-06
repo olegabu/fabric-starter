@@ -92,3 +92,8 @@ services:
       - ${WWW_PORT:-8081}:80
     volumes:
       - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+
+networks:
+  default:
+    external:
+      name: dockercompose_default
