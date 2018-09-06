@@ -43,3 +43,10 @@ services:
     volumes:
       - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 
+#  member orgs also serve their certificates so orderer can download them when creating config tx to add to consortium or create channels
+#  and point `MSPDir: crypto/org1/msp` in configtx.yaml to the respective msp directories where certs were downloaded to:
+#
+#  use port 80 within docker network or the port exposed to the host ${WWW_PORT:-8081} in docker-compose-peer
+#  wget --directory-prefix crypto/org1/msp/cacerts http://www.org1.example.com/msp/cacerts/ca.org1.example.com-cert.pem
+#  wget --directory-prefix crypto/org1/msp/tlscacerts http://www.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+#  wget --directory-prefix crypto/org1/msp/admincerts http://www.org1.example.com/msp/admincerts/Admin\@org1.example.com-cert.pem
