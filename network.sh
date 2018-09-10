@@ -176,7 +176,7 @@ function generateNetworkConfig() {
       out="${out//$placeholder/,$snippet}"
     done
 
-  out="${out//$placeholder/\}\}}"
+  out="${out//$placeholder}}}"
 
   echo ${out} > $GENERATED_ARTIFACTS_FOLDER/network-config.json
 }
