@@ -13,7 +13,7 @@ class FabricStarterClient {
 
   async init() {
     await this.client.initCredentialStores();
-    this.fabric_ca_client = this.client.getCertificateAuthority();
+    this.fabricCaClient = this.client.getCertificateAuthority();
   }
 
   async login(username, password) {
@@ -21,9 +21,9 @@ class FabricStarterClient {
   }
 
   async register(username, password, affiliation) {
-    const registrar = this.fabric_ca_client.getRegistrar()[0];
+    const registrar = this.fabricCaClient.getRegistrar()[0];
     const admin = await this.client.setUserContext({username: registrar.enrollId, password: registrar.enrollSecret});
-    await this.fabric_ca_client.register({
+    await this.fabricCaClient.register({
       enrollmentID: username,
       enrollmentSecret: password,
       affiliation: affiliation,
@@ -84,6 +84,14 @@ class FabricStarterClient {
     return channel;
   }
 
+  getChannelEventHub(channel) {
+    //const channelEventHub = channel.getChannelEventHub(this.peer.getName());
+    const channelEventHub = channel.newChannelEventHub(this.peer.getName());
+    // const channelEventHub = channel.getChannelEventHubsForOrg()[0];
+    channelEventHub.connect();
+    return channelEventHub;
+  }
+
   async invoke(channelId, chaincodeId, fcn, args, targets) {
     const channel = await this.getChannel(channelId);
 
@@ -105,7 +113,7 @@ class FabricStarterClient {
       proposal: proposalResponse[1],
     };
 
-    const promise = this.waitForTransaction(tx_id, channel);
+    const promise = this.waitForTransactionEvent(tx_id, channel);
 
     const broadcastResponse = await channel.sendTransaction(transactionRequest);
     logger.trace('broadcastResponse', broadcastResponse);
@@ -113,7 +121,7 @@ class FabricStarterClient {
     return promise;
   }
 
-  async waitForTransaction(tx_id, channel) {
+  async waitForTransactionEvent(tx_id, channel) {
     const timeout = config.invokeTimeout;
     const id = tx_id.getTransactionID();
     let timeoutHandle;
@@ -124,10 +132,7 @@ class FabricStarterClient {
       }, timeout);
     });
 
-    //const channelEventHub = channel.getChannelEventHub(this.peer.getName());
-    const channelEventHub = channel.newChannelEventHub(this.peer.getName());
-    // const channelEventHub = channel.getChannelEventHubsForOrg()[0];
-    channelEventHub.connect();
+    const channelEventHub = this.getChannelEventHub(channel);
 
     const eventPromise = new Promise((resolve, reject) => {
       logger.trace(`registerTxEvent ${id}`);
