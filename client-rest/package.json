@@ -1,5 +1,5 @@
 {
-  "name": "fabric-starter-client",
+  "name": "fabric-starter-client-rest",
   "version": "0.1.0",
   "description": "client to listen to hyperledger fabric blocks",
   "scripts": {
