@@ -63,7 +63,7 @@ Open a separate console to allow for different environment variables and log out
 Define your project's DOMAIN and ORG, all other values will remain at defaults. COMPOSE_PROJECT_NAME needs to be redefined
 since we may be reusing service names.
 ```bash
-export DOMAIN=example.com ORG=org1 COMPOSE_PROJECT_NAME=org1
+export DOMAIN=example.com ORG=org1 COMPOSE_PROJECT_NAME="$ORG"
 ```
 
 Generate crypto material for peer organization org1:
@@ -84,7 +84,7 @@ Define your project's DOMAIN and ORG, and override defaults ports as these conta
 export DOMAIN=example.com ORG=org2 COMPOSE_PROJECT_NAME=org2 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058 API_PORT=4001 WWW_PORT=8082
 ```
 
-Generate crypto material for peer organization org1:
+Generate crypto material for peer organization org2:
 ```bash
 ./generate-peer.sh
 ```
