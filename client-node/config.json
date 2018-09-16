@@ -1,4 +1,5 @@
 {
+  "invokeTimeout": 10000,
   "log4js":{
     "appenders": {
       "stdout": { "type": "stdout" }

@@ -1,5 +1,6 @@
 const log4js = require('log4js');
-log4js.configure(require('./config.json').log4js);
+const config = require('./config.json');
+log4js.configure(config.log4js);
 const logger = log4js.getLogger('FabricStarterClient');
 const Client = require('fabric-client');
 const jwt = require('jsonwebtoken');
@@ -75,8 +76,9 @@ class FabricStarterClient {
     try {
       channel = this.client.getChannel(channelId);
     } catch (e) {
-      channel = this.client.newChannel(channelId);channel.addPeer(this.peer);
-      await channel.initialize({discover: true, asLocalhost:true});
+      channel = this.client.newChannel(channelId);
+      channel.addPeer(this.peer);
+      await channel.initialize({discover: true, asLocalhost: true});
     }
     // logger.trace('channel', channel);
     return channel;
@@ -103,7 +105,51 @@ class FabricStarterClient {
       proposal: proposalResponse[1],
     };
 
-    return await channel.sendTransaction(transactionRequest);
+    const promise = this.waitForTransaction(tx_id, channel);
+
+    const broadcastResponse = await channel.sendTransaction(transactionRequest);
+    logger.trace('broadcastResponse', broadcastResponse);
+
+    return promise;
+  }
+
+  async waitForTransaction(tx_id, channel) {
+    const timeout = config.invokeTimeout;
+    const id = tx_id.getTransactionID();
+    let timeoutHandle;
+
+    const timeoutPromise = new Promise((resolve, reject) => {
+      timeoutHandle = setTimeout(() => {
+        reject(new Error(`timed out waiting for transaction ${id} after ${timeout}`));
+      }, timeout);
+    });
+
+    //const channelEventHub = channel.getChannelEventHub(this.peer.getName());
+    const channelEventHub = channel.newChannelEventHub(this.peer.getName());
+    // const channelEventHub = channel.getChannelEventHubsForOrg()[0];
+    channelEventHub.connect();
+
+    const eventPromise = new Promise((resolve, reject) => {
+      logger.trace(`registerTxEvent ${id}`);
+
+      channelEventHub.registerTxEvent(id, (tx, status, blockNumber) => {
+        resolve(`committed transaction ${tx} as ${status} in block ${blockNumber}`);
+      }, (e) => {
+        reject(new Error(`registerTxEvent ${e}`));
+      });
+    });
+
+    const racePromise = Promise.race([eventPromise, timeoutPromise]);
+
+    racePromise.catch(() => {
+      clearTimeout(timeoutHandle);
+      channelEventHub.disconnect();
+    }).then(() => {
+      clearTimeout(timeoutHandle);
+      channelEventHub.disconnect();
+    });
+
+    return racePromise;
   }
 
   async query(channelId, chaincodeId, fcn, args, targets) {
