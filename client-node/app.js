@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const logger = require('log4js').getLogger('app');
+const jsonwebtoken = require('jsonwebtoken');
 const jwt = require('express-jwt');
 const FabricStarterClient = require('./fabric-starter-client');
 const fabricStarterClient = new FabricStarterClient();
@@ -12,20 +13,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const asyncMiddleware = fn =>
   (req, res, next) => {
     Promise.resolve(fn(req, res, next))
-      .catch(next);
+      .catch(e => {
+        logger.error('asyncMiddleware', e);
+        res.status(500).json(e.message);
+        next();
+      });
   };
 
+app.use(jwt({ secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users']}));
+app.use(async (req, res, next) => {
+  await fabricStarterClient.init();
+  if(req.user) {
+    const login = req.user.sub;
+    logger.debug('login', login);
+    await fabricStarterClient.loginOrRegister(login);
+  }
+  next();
+});
+
 const appRouter = (app) => {
-  app.use(jwt({ secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users']}));
-  app.use(async (req, res, next) => {
-    await fabricStarterClient.init();
-    if(req.user) {
-      const login = req.user.sub;
-      logger.info('login', login);
-      await fabricStarterClient.loginOrRegister(login);
-    }
-    next();
-  });
 
   app.get('/', (req, res) => {
     res.status(200).send('Welcome to fabric-starter REST server');
@@ -36,12 +42,13 @@ const appRouter = (app) => {
   }));
 
   app.post('/chaincodes', asyncMiddleware(async (req, res) => {
-    res.status(501).send('installing chaincode on peer not implemented');
+    res.status(501).json('installing chaincode on peer not implemented');
   }));
 
   app.post('/users', asyncMiddleware(async (req, res) => {
     await fabricStarterClient.loginOrRegister(req.body.login, req.body.password);
-    res.json(fabricStarterClient.getToken());
+    const token = jsonwebtoken.sign({sub: fabricStarterClient.user.getName()}, fabricStarterClient.getSecret());
+    res.json(token);
   }));
 
   app.get('/channels', asyncMiddleware(async (req, res) => {
@@ -49,7 +56,7 @@ const appRouter = (app) => {
   }));
 
   app.post('/channels', asyncMiddleware(async (req, res) => {
-    res.status(501).send('adding channel not implemented');
+    res.status(501).json('adding channel not implemented');
   }));
 
   app.get('/channels/:channelId', asyncMiddleware(async (req, res) => {
@@ -61,7 +68,7 @@ const appRouter = (app) => {
   }));
 
   app.post('/channels/:channelId/orgs', asyncMiddleware(async (req, res) => {
-    res.status(501).send('adding organization to channel not implemented');
+    res.status(501).json('adding organization to channel not implemented');
   }));
 
   app.get('/channels/:channelId/blocks/:number', asyncMiddleware(async (req, res) => {
@@ -77,7 +84,7 @@ const appRouter = (app) => {
   }));
 
   app.post('/channels/:channelId/chaincodes', asyncMiddleware(async (req, res) => {
-    res.status(501).send('instantiating chaincode on channel not implemented');
+    res.status(501).json('instantiating chaincode on channel not implemented');
   }));
 
   app.get('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {

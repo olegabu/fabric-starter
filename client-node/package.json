@@ -5,7 +5,8 @@
   "main": "fabric-starter-client.js",
   "scripts": {
     "test": "mocha",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "serve": "node app.js"
   },
   "author": "Oleg Abdrashitov <olegabu73@gmail.com>",
   "license": "ISC",
