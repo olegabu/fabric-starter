@@ -9,6 +9,8 @@ class FabricStarterClient {
   constructor() {
     this.client = Client.loadFromConfig('../crypto-config/network.yaml');
     this.peer = this.client.getPeersForOrg()[0];
+    //TODO parse affiliation from cert
+    this.affiliation = 'citi';
   }
 
   async init() {
@@ -26,7 +28,7 @@ class FabricStarterClient {
     await this.fabricCaClient.register({
       enrollmentID: username,
       enrollmentSecret: password,
-      affiliation: affiliation,
+      affiliation: affiliation || this.affiliation,
       maxEnrollments: -1
     }, admin);
   }
@@ -137,10 +139,12 @@ class FabricStarterClient {
     const eventPromise = new Promise((resolve, reject) => {
       logger.trace(`registerTxEvent ${id}`);
 
-      channelEventHub.registerTxEvent(id, (tx, status, blockNumber) => {
-        resolve(`committed transaction ${tx} as ${status} in block ${blockNumber}`);
+      channelEventHub.registerTxEvent(id, (id, status, blockNumber) => {
+        logger.debug(`committed transaction ${id} as ${status} in block ${blockNumber}`);
+        resolve({id: id, status: status, blockNumber: blockNumber});
       }, (e) => {
-        reject(new Error(`registerTxEvent ${e}`));
+        logger.error(`registerTxEvent ${e}`);
+        reject(new Error(e));
       });
     });
 
@@ -167,6 +171,8 @@ class FabricStarterClient {
       targets: targets || [this.peer]
     };
 
+    logger.trace('query', request);
+
     const responses = await channel.queryByChaincode(request);
 
     return responses.map(r => {
@@ -187,6 +193,16 @@ class FabricStarterClient {
   async queryInfo(channelId) {
     const channel = await this.getChannel(channelId);
     return await channel.queryInfo(this.peer, true);
+  }
+
+  async queryBlock(channelId, number) {
+    const channel = await this.getChannel(channelId);
+    return await channel.queryBlock(number, this.peer, /*, true*/);
+  }
+
+  async queryTransaction(channelId, id) {
+    const channel = await this.getChannel(channelId);
+    return await channel.queryTransaction(id, this.peer, /*, true*/);
   }
 }
 

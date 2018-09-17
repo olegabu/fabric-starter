@@ -4,11 +4,15 @@
   "description": "client with hyperledger fabric nodejs sdk",
   "main": "fabric-starter-client.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "dev": "nodemon app.js"
   },
   "author": "Oleg Abdrashitov <olegabu73@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-jwt": "^5.3.1",
     "fabric-ca-client": "^1.2.2",
     "fabric-client": "^1.2.2",
     "jsonwebtoken": "^8.3.0"
@@ -16,6 +20,7 @@
   "devDependencies": {
     "fs-extra": "^7.0.0",
     "mocha": "^5.2.0",
+    "nodemon": "^1.18.4",
     "randomstring": "^1.1.5"
   }
 }
