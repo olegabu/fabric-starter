@@ -11,7 +11,8 @@ describe('FabricStarterClient.', function () {
 
   let username = 'user7';
   let password = 'pass7';
-  let affiliation = 'citi';
+  let org = 'citi';
+  let affiliation = org;
 
   let channelId = 'citi-ing';
   let chaincodeId = 'portfolio';
@@ -25,14 +26,10 @@ describe('FabricStarterClient.', function () {
   describe('Login regular user.', () => {
 
     describe('#loginOrRegister', () => {
-      it('logs in or registers with username and password, encodes username into jwt, decodes from jwt and logs in' +
-        ' with decoded username only', async () => {
+      it('logs in or registers with username and password then logs in with username only', async () => {
         await fabricStarterClient.loginOrRegister(username, password, affiliation);
-        const token = fabricStarterClient.getToken();
-        assert(token, 'cannot get jwt from loginOrRegister');
-        logger.trace('token', token);
-
-        await fabricStarterClient.loginWithToken(token);
+        assert(fabricStarterClient.user, 'cannot get user from loginOrRegister');
+        await fabricStarterClient.login(fabricStarterClient.user.getName());
       });
     });
 
@@ -168,6 +165,13 @@ describe('FabricStarterClient.', function () {
       it('queries chaincodes instantiated on this channel', async () => {
         const instantiatedChaincodes = await fabricStarterClient.queryInstantiatedChaincodes(channelId);
         logger.trace('instantiatedChaincodes', instantiatedChaincodes);
+      });
+    });
+
+    describe('#getPeersForOrg', () => {
+      it('getPeersForOrg', async () => {
+        const peersForOrg = await fabricStarterClient.getPeersForOrg(channelId, 'ingMSP');
+        logger.trace('peersForOrg', peersForOrg);
       });
     });
   });
