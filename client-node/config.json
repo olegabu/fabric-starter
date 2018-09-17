@@ -1,5 +1,6 @@
 {
   "invokeTimeout": 10000,
+  "asLocalhost": true,
   "log4js":{
     "appenders": {
       "stdout": { "type": "stdout" }

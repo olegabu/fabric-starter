@@ -3,14 +3,21 @@ const config = require('./config.json');
 log4js.configure(config.log4js);
 const logger = log4js.getLogger('FabricStarterClient');
 const Client = require('fabric-client');
-const jwt = require('jsonwebtoken');
+
+//const networkConfigFile = '../crypto-config/network.json'; // or .yaml
+//const networkConfig = require('../crypto-config/network.json');
+const networkConfig = require('./network')();
+
+const invokeTimeout = process.env.INVOKE_TIMEOUT || config.invokeTimeout;
+const asLocalhost = process.env.DISCOVER_AS_LOCALHOST || config.asLocalhost;
 
 class FabricStarterClient {
   constructor() {
-    this.client = Client.loadFromConfig('../crypto-config/network.yaml');
+    this.client = Client.loadFromConfig(networkConfig); // or networkConfigFile
     this.peer = this.client.getPeersForOrg()[0];
     //TODO parse affiliation from cert
-    this.affiliation = 'citi';
+    this.org = Object.keys(networkConfig.organizations)[0];
+    this.affiliation = this.org;
   }
 
   async init() {
@@ -46,21 +53,10 @@ class FabricStarterClient {
     }
   }
 
-  getToken() {
-    return jwt.sign({sub: this.user.getName()}, this.getSecret());
-  }
-
   getSecret() {
     const signingIdentity = this.client._getSigningIdentity(true);
-    const signedBytes = signingIdentity.sign('licJidNi2Slap.');
+    const signedBytes = signingIdentity.sign(this.org);
     return String.fromCharCode.apply(null, signedBytes);
-  }
-
-  async loginWithToken(token) {
-    const decoded = jwt.decode(token, this.getSecret());
-    logger.trace(JSON.stringify(decoded) + ' ' + token);
-
-    await this.login(decoded.sub);
   }
 
   async queryChannels() {
@@ -80,7 +76,7 @@ class FabricStarterClient {
     } catch (e) {
       channel = this.client.newChannel(channelId);
       channel.addPeer(this.peer);
-      await channel.initialize({discover: true, asLocalhost: true});
+      await channel.initialize({discover: true, asLocalhost: asLocalhost});
     }
     // logger.trace('channel', channel);
     return channel;
@@ -124,13 +120,15 @@ class FabricStarterClient {
   }
 
   async waitForTransactionEvent(tx_id, channel) {
-    const timeout = config.invokeTimeout;
+    const timeout = invokeTimeout;
     const id = tx_id.getTransactionID();
     let timeoutHandle;
 
     const timeoutPromise = new Promise((resolve, reject) => {
       timeoutHandle = setTimeout(() => {
-        reject(new Error(`timed out waiting for transaction ${id} after ${timeout}`));
+        const msg = `timed out waiting for transaction ${id} after ${timeout}`;
+        logger.error(msg);
+        reject(new Error(msg));
       }, timeout);
     });
 
@@ -203,6 +201,11 @@ class FabricStarterClient {
   async queryTransaction(channelId, id) {
     const channel = await this.getChannel(channelId);
     return await channel.queryTransaction(id, this.peer, /*, true*/);
+  }
+
+  async getPeersForOrg(channelId, mspid) {
+    const channel = await this.getChannel(channelId);
+    return await channel.getPeersForOrg(mspid);
   }
 }
 
