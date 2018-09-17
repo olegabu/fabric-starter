@@ -1,7 +1,7 @@
 
 PeerOrgs:
-  - Name: ORG
-    Domain: ORG.DOMAIN
+  - Name: ${ORG}
+    Domain: ${ORG}.${DOMAIN}
 
     CA:
        Hostname: ca # implicitly ca.ORG.example.com

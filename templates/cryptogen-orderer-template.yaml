@@ -7,7 +7,7 @@ OrdererOrgs:
   # Orderer
   # ---------------------------------------------------------------------------
   - Name: Orderer
-    Domain: DOMAIN
+    Domain: ${DOMAIN}
 
     # ---------------------------------------------------------------------------
     # "Specs" - See PeerOrgs below for complete description

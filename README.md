@@ -81,7 +81,7 @@ Open a separate console.
 
 Define your project's DOMAIN and ORG, and override defaults ports as these containers expose them to the same host as org1:
 ```bash
-export DOMAIN=example.com ORG=org2 COMPOSE_PROJECT_NAME=org2 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058 API_PORT=4001 WWW_PORT=8082
+export DOMAIN=example.com ORG=org2 COMPOSE_PROJECT_NAME=org2 CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058 API_PORT=4001 WWW_PORT=8082
 ```
 
 Generate crypto material for peer organization org2:

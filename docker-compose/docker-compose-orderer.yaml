@@ -6,6 +6,7 @@ version: '2.1'
 
 volumes:
   orderer:
+  peer0.OrdererAdmin:
 
 services:
 
@@ -23,7 +24,7 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
-    working_dir: /etc/hyperledger
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
     command: orderer
     ports:
       - 7050:7050
@@ -31,6 +32,35 @@ services:
       - ${PWD}/crypto-config/configtx:/etc/hyperledger/configtx
       - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
+
+  cli.orderer:
+    container_name: cli.${DOMAIN:-example.com}
+    extends:
+      file: base.yaml
+      service: cli-base
+    tty: true
+    environment:
+    - DOMAIN=${DOMAIN:-example.com}
+    - ORDERER_GENERAL_LOGLEVEL=debug
+    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    - ORDERER_GENERAL_GENESISMETHOD=file
+    - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
+    - ORDERER_GENERAL_LOCALMSPID=Orderer
+    - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+    - ORDERER_GENERAL_TLS_ENABLED=true
+    - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+    - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+    - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
+    - CORE_PEER_LOCALMSPID=Orderer
+    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
+    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
+    working_dir: /etc/hyperledger
+    volumes:
+    - ${PWD}/crypto-config:/etc/hyperledger/crypto-config
+    - ${PWD}/templates:/etc/hyperledger/templates
+    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+
 
   # http serves certificates
   www.orderer:

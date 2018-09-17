@@ -1,0 +1,31 @@
+
+Organizations:
+
+    - &OrdererOrg
+        Name: Orderer
+        ID: Orderer
+        MSPDir: ordererOrganizations/${DOMAIN}/msp
+
+    - &${ORG}
+        Name: ${ORG}
+        ID: ${ORG1}
+        MSPDir: peerOrganizations/${ORG}.${DOMAIN}/msp
+
+        AnchorPeers:
+        # AnchorPeers defines the location of peers which can be used
+        # for cross org gossip communication.  Note, this value is only
+        # encoded in the genesis block in the Application section context
+          - Host: peer0.${ORG}.${DOMAIN}
+            Port: 7051
+
+
+Profiles:
+
+  CHANNEL:
+    Orderer:
+      Organizations:
+      - *OrdererOrg
+    Consortium: SampleConsortium
+    Application:
+      Organizations:
+        - *${ORG}
