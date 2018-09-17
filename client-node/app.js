@@ -4,11 +4,12 @@ const app = express();
 const logger = require('log4js').getLogger('app');
 const jsonwebtoken = require('jsonwebtoken');
 const jwt = require('express-jwt');
+const SocketServer = require('socket.io');
 const FabricStarterClient = require('./fabric-starter-client');
 const fabricStarterClient = new FabricStarterClient();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 
 const asyncMiddleware = fn =>
   (req, res, next) => {
@@ -20,10 +21,10 @@ const asyncMiddleware = fn =>
       });
   };
 
-app.use(jwt({ secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users']}));
+app.use(jwt({secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users']}));
 app.use(async (req, res, next) => {
   await fabricStarterClient.init();
-  if(req.user) {
+  if (req.user) {
     const login = req.user.sub;
     logger.debug('login', login);
     await fabricStarterClient.loginOrRegister(login);
@@ -101,4 +102,24 @@ appRouter(app);
 
 const server = app.listen(process.env.PORT || 3000, function () {
   logger.info('fabric-starter rest server running on port', server.address().port);
+});
+
+async function startSocketServer() {
+  const io = new SocketServer(server, {origins: '*:*'});
+
+  const channels = await fabricStarterClient.queryChannels();
+
+  channels.map(c => {return c.channel_id;}).forEach(async channelId => {
+    await fabricStarterClient.registerBlockEvent(channelId, block => {
+      logger.debug(`block ${block.number} on ${block.channel_id}`);
+      io.emit('chainblock', block);
+    }, e => {
+      logger.error('registerBlockEvent', e);
+    });
+    logger.debug(`registered for block event on ${channelId}`);
+  });
+}
+
+startSocketServer().then(() => {
+  logger.info('started socket server');
 });

@@ -137,9 +137,9 @@ class FabricStarterClient {
     const eventPromise = new Promise((resolve, reject) => {
       logger.trace(`registerTxEvent ${id}`);
 
-      channelEventHub.registerTxEvent(id, (id, status, blockNumber) => {
-        logger.debug(`committed transaction ${id} as ${status} in block ${blockNumber}`);
-        resolve({id: id, status: status, blockNumber: blockNumber});
+      channelEventHub.registerTxEvent(id, (txid, status, blockNumber) => {
+        logger.debug(`committed transaction ${txid} as ${status} in block ${blockNumber}`);
+        resolve({txid: txid, status: status, blockNumber: blockNumber});
       }, (e) => {
         logger.error(`registerTxEvent ${e}`);
         reject(new Error(e));
@@ -206,6 +206,18 @@ class FabricStarterClient {
   async getPeersForOrg(channelId, mspid) {
     const channel = await this.getChannel(channelId);
     return await channel.getPeersForOrg(mspid);
+  }
+
+  async registerBlockEvent(channelId, onEvent, onError) {
+    const channel = await this.getChannel(channelId);
+    const channelEventHub = this.getChannelEventHub(channel);
+    return channelEventHub.registerBlockEvent(onEvent, onError);
+  }
+
+  async disconnectChannelEventHub(channelId) {
+    const channel = await this.getChannel(channelId);
+    const channelEventHub = this.getChannelEventHub(channel);
+    return channelEventHub.disconnect();
   }
 }
 

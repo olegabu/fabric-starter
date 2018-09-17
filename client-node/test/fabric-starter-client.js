@@ -184,8 +184,16 @@ describe('FabricStarterClient.', function () {
 
     describe('#invoke', () => {
       it('invokes chaincode on this channel', async () => {
+        const blockRegistrationNumber = await fabricStarterClient.registerBlockEvent(channelId, block => {
+          logger.debug('block', block);
+        }, e => {
+          logger.error('registerBlockEvent', e);
+        });
+
         const invokeResponse = await fabricStarterClient.invoke(channelId, chaincodeId, fcn, args);
         logger.trace('invokeResponse', invokeResponse);
+
+        await fabricStarterClient.disconnectChannelEventHub(channelId);
       });
     });
 
