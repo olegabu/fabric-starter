@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 source lib.sh
 
 newOrg=${1:?New org must be specified}
