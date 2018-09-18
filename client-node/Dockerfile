@@ -5,7 +5,7 @@ MAINTAINER olegabu
 # Create app directory
 WORKDIR /usr/src/app
 
-## install dependancies
+## install dependencies
 # COPY ["package.json", "package-lock.json"] .
 COPY "package.json" .
 
