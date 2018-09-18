@@ -1,12 +1,12 @@
 const fs = require('fs');
 
-const org = process.env.ORG || 'org1';
+const myorg = process.env.ORG || 'org1';
 const domain = process.env.DOMAIN || 'example.com';
 const cryptoConfigDir = process.env.CRYPTO_CONFIG_DIR || '../fabric-starter/crypto-config';
 const enrollId = process.env.ENROLL_ID || 'admin';
 const enrollSecret = process.env.ENROLL_SECRET || 'adminpw';
-const peerAddress = process.env.PEER_ADDRESS || 'localhost:7051'; // || `peer0.${org}.${domain}:7051` inside docker
-const caAddress = process.env.CA_ADDRESS || 'localhost:7054'; // || `ca.${org}.${domain}:7054`
+const orgs = JSON.parse(process.env.ORGS || '{"org1":"localhost:7051"}' );// `peer0.${org}.${domain}:7051` inside docker
+const cas = JSON.parse(process.env.CAS || '{"org1":"localhost:7054"}' );
 
 const t = {
   name: 'Network',
@@ -14,11 +14,6 @@ const t = {
 };
 
 function addOrg(t, org) {
-  const keystorePath = `${cryptoConfigDir}/peerOrganizations/${org}.${domain}/users/Admin@${org}.${domain}/msp/keystore`;
-  const keystoreFiles = fs.readdirSync(keystorePath);
-  const keyPath = `${keystorePath}/${keystoreFiles[0]}`;
-  console.log('keyPath', keyPath);
-
   if(!t.organizations) {
     t.organizations = {};
   }
@@ -27,17 +22,22 @@ function addOrg(t, org) {
     // mspid: `${org}`,
     peers: [
       `peer0.${org}.${domain}`
-    ],
-    certificateAuthorities: [
-      org
-    ],
-    adminPrivateKey: {
-      path: keyPath
-    },
-    signedCert: {
-      path: `${cryptoConfigDir}/peerOrganizations/${org}.${domain}/users/Admin@${org}.${domain}/msp/signcerts/Admin@${org}.${domain}-cert.pem`
-    }
+    ]
   };
+
+  if(org === myorg) {
+    const keystorePath = `${cryptoConfigDir}/peerOrganizations/${org}.${domain}/users/Admin@${org}.${domain}/msp/keystore`;
+    const keystoreFiles = fs.readdirSync(keystorePath);
+    const keyPath = `${keystorePath}/${keystoreFiles[0]}`;
+
+    t.organizations[org].certificateAuthorities = [org];
+    t.organizations[org].adminPrivateKey = {
+      path: keyPath
+    };
+    t.organizations[org].signedCert = {
+      path: `${cryptoConfigDir}/peerOrganizations/${org}.${domain}/users/Admin@${org}.${domain}/msp/signcerts/Admin@${org}.${domain}-cert.pem`
+    };
+  }
 }
 
 function addPeer(t, org, i, peerAddress) {
@@ -82,18 +82,23 @@ function addCA(t, org, caAddress) {
 
 module.exports = function () {
   t.client = {
-    organization: org,
+    organization: myorg,
     credentialStore: {
-      path: `hfc-kvs/${org}`,
+      path: `hfc-kvs/${myorg}`,
       cryptoStore: {
-        path: `hfc-cvs/${org}`
+        path: `hfc-cvs/${myorg}`
       }
     }
   };
 
-  addOrg(t, org);
-  addPeer(t, org, 0, peerAddress);
-  addCA(t, org, caAddress);
+  Object.keys(orgs).forEach(k => {
+    addOrg(t, k);
+    addPeer(t, k, 0, orgs[k]);
+  });
+
+  Object.keys(cas).forEach(k => {
+    addCA(t, k, cas[k]);
+  });
 
   return t;
 };

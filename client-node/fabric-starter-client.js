@@ -1,6 +1,5 @@
 const log4js = require('log4js');
-const config = require('./config.json');
-log4js.configure(config.log4js);
+log4js.configure({appenders: {stdout: { type: 'stdout' }},categories: {default: { appenders: ['stdout'], level: 'ALL'}}});
 const logger = log4js.getLogger('FabricStarterClient');
 const Client = require('fabric-client');
 
@@ -8,8 +7,8 @@ const Client = require('fabric-client');
 //const networkConfig = require('../crypto-config/network.json');
 const networkConfig = require('./network')();
 
-const invokeTimeout = process.env.INVOKE_TIMEOUT || config.invokeTimeout;
-const asLocalhost = process.env.DISCOVER_AS_LOCALHOST || config.asLocalhost;
+const invokeTimeout = process.env.INVOKE_TIMEOUT || 60000;
+const asLocalhost = process.env.DISCOVER_AS_LOCALHOST || true;
 
 class FabricStarterClient {
   constructor() {
@@ -45,12 +44,8 @@ class FabricStarterClient {
     try {
       await this.login(username, password);
     } catch (e) {
-      try {
-        await this.register(username, password, affiliation);
-        await this.login(username, password);
-      } catch (e) {
-        logger.error('loginOrRegister', e);
-      }
+      await this.register(username, password, affiliation);
+      await this.login(username, password);
     }
   }
 
@@ -204,9 +199,8 @@ class FabricStarterClient {
     return await channel.queryTransaction(id, this.peer, /*, true*/);
   }
 
-  async getPeersForOrg(channelId, mspid) {
-    const channel = await this.getChannel(channelId);
-    return await channel.getPeersForOrg(mspid);
+  getPeersForOrg(mspid) {
+    return this.client.getPeersForOrg(mspid);
   }
 
   async registerBlockEvent(channelId, onEvent, onError) {

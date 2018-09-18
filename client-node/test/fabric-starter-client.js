@@ -1,4 +1,4 @@
-//export DOMAIN=dds.ru ORG=s1 CRYPTO_CONFIG_DIR=/home/oleg/workspace/decentralized-depository/artifacts/crypto-config
+//export DOMAIN=dds.ru ORG=regulator CRYPTO_CONFIG_DIR=/home/oleg/workspace/decentralized-depository/artifacts/crypto-config ORGS='{"regulator":"localhost:7051","s1":"localhost:7056"}' CAS='{"regulator":"localhost:7054"}'
 
 const assert = require('assert');
 const logger = require('log4js').getLogger('FabricStarterClientTest');
@@ -13,8 +13,6 @@ describe('FabricStarterClient.', function () {
 
   let username = 'user7';
   let password = 'pass7';
-  let org = 'regulator';
-  let affiliation = org;
 
   let channelId = 'common';
   let chaincodeId = 'reference';
@@ -151,31 +149,40 @@ describe('FabricStarterClient.', function () {
 
     describe('#queryInfo', () => {
       it('queries blockchain info of this channel', async () => {
-        const blockchainInfo = await fabricStarterClient.queryInfo(channelId);
-        logger.trace('blockchainInfo', blockchainInfo);
+        const channels = await fabricStarterClient.queryChannels();
+        channels.forEach(async c => {
+          const blockchainInfo = await fabricStarterClient.queryInfo(c.channel_id);
+          logger.trace('blockchainInfo for ' + c.channel_id, blockchainInfo);
+        });
       });
     });
 
-    describe('#getOrganizations', () => {
-      it('shows organizations of this channel', async () => {
-        const organizations = await fabricStarterClient.getOrganizations(channelId);
-        logger.trace('organizations', organizations);
+    describe('#getOrganizations #peersForOrg', () => {
+      it('queries organizations of this channel then queries peers of each organization', async () => {
+        const channels = await fabricStarterClient.queryChannels();
+        channels.forEach(async c => {
+          const organizations = await fabricStarterClient.getOrganizations(c.channel_id);
+          logger.trace('organizations for ' + c.channel_id, organizations);
+
+          organizations.forEach(async org => {
+            const orgName = org.id;
+            const peersForOrg = await fabricStarterClient.getPeersForOrg(orgName);
+            logger.trace('peersForOrg for ' + orgName, peersForOrg);
+          });
+        });
       });
     });
 
     describe('#queryInstantiatedChaincodes', () => {
       it('queries chaincodes instantiated on this channel', async () => {
-        const instantiatedChaincodes = await fabricStarterClient.queryInstantiatedChaincodes(channelId);
-        logger.trace('instantiatedChaincodes', instantiatedChaincodes);
+        const channels = await fabricStarterClient.queryChannels();
+        channels.forEach(async c => {
+          const instantiatedChaincodes = await fabricStarterClient.queryInstantiatedChaincodes(c.channel_id);
+          logger.trace('instantiatedChaincodes for ' + c.channel_id, instantiatedChaincodes);
+        });
       });
     });
 
-    describe('#getPeersForOrg', () => {
-      it('getPeersForOrg', async () => {
-        const peersForOrg = await fabricStarterClient.getPeersForOrg(channelId, 'ingMSP');
-        logger.trace('peersForOrg', peersForOrg);
-      });
-    });
   });
 
   describe('Invoke and query chaincode.', () => {
@@ -186,7 +193,7 @@ describe('FabricStarterClient.', function () {
 
     describe('#invoke', () => {
       it('invokes chaincode on this channel', async () => {
-        const blockRegistrationNumber = await fabricStarterClient.registerBlockEvent(channelId, block => {
+        await fabricStarterClient.registerBlockEvent(channelId, block => {
           logger.debug('block', block);
         }, e => {
           logger.error('registerBlockEvent', e);

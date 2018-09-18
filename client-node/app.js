@@ -101,7 +101,7 @@ const appRouter = (app) => {
 appRouter(app);
 
 const server = app.listen(process.env.PORT || 3000, function () {
-  logger.info('fabric-starter rest server running on port', server.address().port);
+  logger.info('started fabric-starter rest server on port', server.address().port);
 });
 
 async function startSocketServer() {
