@@ -1,3 +1,5 @@
+//export DOMAIN=dds.ru ORG=s1 CRYPTO_CONFIG_DIR=/home/oleg/workspace/decentralized-depository/artifacts/crypto-config
+
 const assert = require('assert');
 const logger = require('log4js').getLogger('FabricStarterClientTest');
 const fs = require('fs-extra');
@@ -11,12 +13,12 @@ describe('FabricStarterClient.', function () {
 
   let username = 'user7';
   let password = 'pass7';
-  let org = 'citi';
+  let org = 'regulator';
   let affiliation = org;
 
-  let channelId = 'citi-ing';
-  let chaincodeId = 'portfolio';
-  let fcn = 'config';
+  let channelId = 'common';
+  let chaincodeId = 'reference';
+  let fcn = 'ping';
   let args = [];
 
   before('initialize', async () => {
@@ -27,7 +29,7 @@ describe('FabricStarterClient.', function () {
 
     describe('#loginOrRegister', () => {
       it('logs in or registers with username and password then logs in with username only', async () => {
-        await fabricStarterClient.loginOrRegister(username, password, affiliation);
+        await fabricStarterClient.loginOrRegister(username, password);
         assert(fabricStarterClient.user, 'cannot get user from loginOrRegister');
         await fabricStarterClient.login(fabricStarterClient.user.getName());
       });
@@ -55,7 +57,7 @@ describe('FabricStarterClient.', function () {
       it('registers with existing username and password, recovers if already registered then logs in' +
         ' without password', async () => {
         try {
-          await fabricStarterClient.register(username, password, affiliation);
+          await fabricStarterClient.register(username, password);
         } catch (e) {
           if (e.message.includes('already registered')) {
             await fabricStarterClient.login(username, password);
@@ -90,7 +92,7 @@ describe('FabricStarterClient.', function () {
         const rpassword = 'pass' + random;
 
         try {
-          await fabricStarterClient.register(rusername, rpassword, affiliation);
+          await fabricStarterClient.register(rusername, rpassword);
         } catch (e) {
           assert.fail('failed to register ' + e);
         }
@@ -123,7 +125,7 @@ describe('FabricStarterClient.', function () {
   describe('Query peer.', () => {
 
     before('login', async () => {
-      await fabricStarterClient.loginOrRegister(username, password, affiliation);
+      await fabricStarterClient.loginOrRegister(username, password);
     });
 
     describe('#queryInstalledChaincodes', () => {
@@ -144,7 +146,7 @@ describe('FabricStarterClient.', function () {
   describe('Query channel.', () => {
 
     before('login', async () => {
-      await fabricStarterClient.loginOrRegister(username, password, affiliation);
+      await fabricStarterClient.loginOrRegister(username, password);
     });
 
     describe('#queryInfo', () => {
@@ -179,7 +181,7 @@ describe('FabricStarterClient.', function () {
   describe('Invoke and query chaincode.', () => {
 
     before('login', async () => {
-      await fabricStarterClient.loginOrRegister(username, password, affiliation);
+      await fabricStarterClient.loginOrRegister(username, password);
     });
 
     describe('#invoke', () => {

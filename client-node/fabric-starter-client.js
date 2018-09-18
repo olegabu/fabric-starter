@@ -13,6 +13,7 @@ const asLocalhost = process.env.DISCOVER_AS_LOCALHOST || config.asLocalhost;
 
 class FabricStarterClient {
   constructor() {
+    logger.info('constructing with network config', JSON.stringify(networkConfig));
     this.client = Client.loadFromConfig(networkConfig); // or networkConfigFile
     this.peer = this.client.getPeersForOrg()[0];
     //TODO parse affiliation from cert
