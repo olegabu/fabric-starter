@@ -4,7 +4,8 @@ Organizations:
     - &OrdererOrg
         Name: Orderer
         ID: Orderer
-        MSPDir: ordererOrganizations/DOMAIN/msp
+        MSPDir: ordererOrganizations/${DOMAIN}/msp
+
 
 Orderer: &OrdererDefaults
 
@@ -13,7 +14,7 @@ Orderer: &OrdererDefaults
     OrdererType: solo
 
     Addresses:
-        - orderer.DOMAIN:7050
+        - orderer.${DOMAIN}:7050
 
     # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
@@ -54,3 +55,4 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *OrdererOrg
+

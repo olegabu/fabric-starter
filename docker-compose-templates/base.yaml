@@ -59,7 +59,7 @@ services:
     image: maxxx1313/fabric-rest
     volumes:
      - ../artifacts:/usr/src/artifacts
-    command: sh -c "npm start"
+    command: sh -c "sleep 10 && npm start"
 
   www-base:
     image: nginx

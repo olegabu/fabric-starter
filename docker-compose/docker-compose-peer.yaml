@@ -65,6 +65,43 @@ services:
       - ca
 #    PEER_EXTRA_HOSTS
 
+  cli.peer:
+    container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
+    extends:
+      file: base.yaml
+      service: cli-base
+    tty: true
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_LOCALMSPID=${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
+      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
+    working_dir: /etc/hyperledger
+    volumes:
+    - /var/run/:/host/var/run/
+    - ${PWD}/crypto-config:/etc/hyperledger/artifacts
+    - ../chaincode:/opt/chaincode
+    - ../chaincode/go:/opt/gopath/src
+    - ${PWD}/crypto-config:/etc/hyperledger/crypto-config
+    - ${PWD}/templates:/etc/hyperledger/templates
+    - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+    - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
+    - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
+    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+
+
+
+
+
   # fabric-rest api server
   api:
     extends:
@@ -92,6 +129,7 @@ services:
       - ${WWW_PORT:-8081}:80
     volumes:
       - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ${PWD}/crypto-config/configtx:/usr/share/nginx/html/configtx
 
 networks:
   default:
