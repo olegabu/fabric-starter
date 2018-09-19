@@ -15,8 +15,7 @@ class FabricStarterClient {
     logger.info('constructing with network config', JSON.stringify(this.networkConfig));
     this.client = Client.loadFromConfig(this.networkConfig); // or networkConfigFile
     this.peer = this.client.getPeersForOrg()[0];
-    //TODO parse affiliation from cert
-    this.org = Object.keys(this.networkConfig.organizations)[0];
+    this.org = this.networkConfig.client.organization;
     this.affiliation = this.org;
   }
 

@@ -124,8 +124,8 @@ services:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
-      - "ORGS={\"org1\":\"peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051\"}"
-      - "CAS={\"org1\":\"ca.${ORG:-org1}.${DOMAIN:-example.com}:7054\"}"
+      - "ORGS=${ORGS:-{\"org1\":\"peer0.org1.example.com:7051\"}}"
+      - "CAS=${CAS:-{\"org1\":\"ca.org1.example.com:7054\"}}"
       - DISCOVER_AS_LOCALHOST=false
       - ENROLL_ID=admin
       - ENROLL_SECRET=adminpw

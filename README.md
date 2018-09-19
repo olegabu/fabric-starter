@@ -71,6 +71,16 @@ Generate crypto material for peer organization org1:
 ./generate-peer.sh
 ```
 
+Define list of all organizations your org will be transacting with:
+```bash
+export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}'
+```
+
+Define your organization's certificate authority:
+```bash
+export ORGS='{"org1":"ca.org1.example.com:7054"}'
+```
+
 Start docker containers for org1
 ```bash
 docker-compose -f docker-compose/docker-compose-peer.yaml up
