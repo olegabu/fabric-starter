@@ -10,11 +10,11 @@ function runCLI() {
    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateSuffix="orderer" || composeTemplateSuffix="peer"
    composeTemplateFile="docker-compose/docker-compose-$composeTemplateSuffix.yaml"
    service="cli.$composeTemplateSuffix"
-   echo "CLI exec:$composeTemplateFile:$service: $command"
 
    [ -n "$EXECUTE_BY_ORDERER" ] && checkContainer="cli.$DOMAIN" || checkContainer="cli.$ORG.$DOMAIN"
    cliId=`docker ps --filter name=$checkContainer -q`
-   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run"
+   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run --rm"
+   echo "CLI $composeCommand($cliId):$composeTemplateFile:$service: $command"
 
    docker-compose --file ${composeTemplateFile} ${composeCommand} ${service} bash -c "$command"
 }
@@ -106,12 +106,31 @@ function addOrgToChannel() {
 }
 
 function joinChannel() {
-
   channelOwnerOrg=${1:?Channel owner org must be specified}
   channel=${2:?Channel name must be specified}
 
   fetchChannelConfigBlock $channel "0"
-
   runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
   runCLI "CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
 }
+
+function installChaincode() {
+    chaincodeName=${1:?Chaincode name must be specified}
+    chaincodeVersion=${2:-1.0}
+    chaincodePath=${3:-$chaincodeName}
+    lang=${4:-golang}
+
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang"
+    runCLI "CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang"
+}
+
+
+function instantiateChaincode() {
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    initArguments=${4:-{\"Args\":[]}}
+    chaincodeVersion=${3:-1.0}
+
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$initArguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+}
+

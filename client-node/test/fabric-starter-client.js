@@ -121,6 +121,18 @@ describe('FabricStarterClient.', function () {
     });
   });
 
+  describe('Create channel', ()=>{
+      before('login', async () => {
+          await fabricStarterClient.loginOrRegister(username, password);
+      });
+
+      describe('#createChannelCommon', ()=>{
+        it('create channel "Common"', async ()=>{
+            //'Not implemented'
+        })
+      })
+  });
+
   describe('Query peer.', () => {
 
     before('login', async () => {

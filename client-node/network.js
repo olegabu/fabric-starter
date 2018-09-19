@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const myorg = process.env.ORG || 'org1';
 const domain = process.env.DOMAIN || 'example.com';
-const cryptoConfigDir = process.env.CRYPTO_CONFIG_DIR || '../fabric-starter/crypto-config';
+const cryptoConfigDir = process.env.CRYPTO_CONFIG_DIR || '../crypto-config';
 const enrollId = process.env.ENROLL_ID || 'admin';
 const enrollSecret = process.env.ENROLL_SECRET || 'adminpw';
 const orgs = JSON.parse(process.env.ORGS || '{"org1":"localhost:7051"}' );// `peer0.${org}.${domain}:7051` inside docker
