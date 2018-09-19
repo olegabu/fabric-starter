@@ -134,6 +134,13 @@ describe('FabricStarterClient.', function () {
       });
     });
 
+    describe('#getMspid', () => {
+      it('returns mspid of the client', async () => {
+        const mspid = fabricStarterClient.getMspid();
+        logger.trace('mspid', mspid);
+      });
+    });
+
     describe('#queryChannels', () => {
       it('queries channels this peer joined', async () => {
         const channels = await fabricStarterClient.queryChannels();
@@ -158,17 +165,20 @@ describe('FabricStarterClient.', function () {
       });
     });
 
-    describe('#getOrganizations #peersForOrg', () => {
+    describe('#getOrganizations #getPeersForOrgOnChannel #peersForOrg', () => {
       it('queries organizations of this channel then queries peers of each organization', async () => {
         const channels = await fabricStarterClient.queryChannels();
         channels.forEach(async c => {
           const organizations = await fabricStarterClient.getOrganizations(c.channel_id);
           logger.trace('organizations for ' + c.channel_id, organizations);
 
+          const peersForOrgOnChannel = fabricStarterClient.getPeersForOrgOnChannel(c.channel_id);
+          logger.trace('peers of my org for ' + c.channel_id, peersForOrgOnChannel);
+
           organizations.forEach(async org => {
             const orgName = org.id;
             const peersForOrg = await fabricStarterClient.getPeersForOrg(orgName);
-            logger.trace('peersForOrg for ' + orgName, peersForOrg);
+            logger.trace('peers of ' + orgName + ' for ' + c.channel_id, peersForOrg);
           });
         });
       });

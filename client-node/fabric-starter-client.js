@@ -5,18 +5,18 @@ const Client = require('fabric-client');
 
 //const networkConfigFile = '../crypto-config/network.json'; // or .yaml
 //const networkConfig = require('../crypto-config/network.json');
-const networkConfig = require('./network')();
 
 const invokeTimeout = process.env.INVOKE_TIMEOUT || 60000;
 const asLocalhost = process.env.DISCOVER_AS_LOCALHOST || true;
 
 class FabricStarterClient {
-  constructor() {
-    logger.info('constructing with network config', JSON.stringify(networkConfig));
-    this.client = Client.loadFromConfig(networkConfig); // or networkConfigFile
+  constructor(networkConfig) {
+    this.networkConfig = networkConfig || require('./network')();
+    logger.info('constructing with network config', JSON.stringify(this.networkConfig));
+    this.client = Client.loadFromConfig(this.networkConfig); // or networkConfigFile
     this.peer = this.client.getPeersForOrg()[0];
     //TODO parse affiliation from cert
-    this.org = Object.keys(networkConfig.organizations)[0];
+    this.org = Object.keys(this.networkConfig.organizations)[0];
     this.affiliation = this.org;
   }
 
@@ -201,6 +201,18 @@ class FabricStarterClient {
 
   getPeersForOrg(mspid) {
     return this.client.getPeersForOrg(mspid);
+  }
+
+  getMspid() {
+    return this.client.getMspid();
+  }
+
+  getNetworkConfig() {
+    return this.networkConfig;
+  }
+
+  getPeersForOrgOnChannel(channelId) {
+    return this.client.getPeersForOrgOnChannel(channelId);
   }
 
   async registerBlockEvent(channelId, onEvent, onError) {

@@ -22,10 +22,12 @@ const asyncMiddleware = fn =>
   };
 
 app.use(jwt({secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users']}));
+
 app.use(async (req, res, next) => {
   await fabricStarterClient.init();
   if (req.user) {
     const login = req.user.sub;
+    //TODO log request
     logger.debug('login', login);
     await fabricStarterClient.loginOrRegister(login);
   }
@@ -36,6 +38,15 @@ const appRouter = (app) => {
 
   app.get('/', (req, res) => {
     res.status(200).send('Welcome to fabric-starter REST server');
+  });
+
+  app.get('/mspid', (req, res) => {
+    res.json(fabricStarterClient.getMspid());
+  });
+
+  //TODO use for development only as it may expose sensitive data
+  app.get('/config', (req, res) => {
+    res.json(fabricStarterClient.getNetworkConfig());
   });
 
   app.get('/chaincodes', asyncMiddleware(async (req, res) => {
@@ -66,6 +77,14 @@ const appRouter = (app) => {
 
   app.get('/channels/:channelId/orgs', asyncMiddleware(async (req, res) => {
     res.json(await fabricStarterClient.getOrganizations(req.params.channelId));
+  }));
+
+  app.get('/channels/:channelId/peers', asyncMiddleware(async (req, res) => {
+    res.json(fabricStarterClient.getPeersForOrgOnChannel(req.params.channelId));
+  }));
+
+  app.get('/orgs/:org/peers', asyncMiddleware(async (req, res) => {
+    res.json(await fabricStarterClient.getPeersForOrg(req.params.org));
   }));
 
   app.post('/channels/:channelId/orgs', asyncMiddleware(async (req, res) => {

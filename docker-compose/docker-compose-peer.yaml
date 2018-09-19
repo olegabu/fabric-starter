@@ -98,25 +98,44 @@ services:
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
 
-
-
-
-
   # fabric-rest api server
+#  api:
+#    extends:
+#      file: base.yaml
+#      service: api-base
+#    container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
+#    ports:
+#      - ${API_PORT:-4000}:4000
+#    environment:
+#      - ORG=${ORG:-org1}
+#      - DOMAIN=${DOMAIN:-example.com}
+#      - PORT=4000
+#    depends_on:
+#      - peer0
+#      - peer1
+##    API_EXTRA_HOSTS
+
   api:
-    extends:
-      file: base.yaml
-      service: api-base
+    image: olegabu/fabric-starter-client
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     ports:
-      - ${API_PORT:-4000}:4000
+      - ${API_PORT:-3000}:3000
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
-      - PORT=4000
+      - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
+      - "ORGS={\"org1\":\"peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051\"}"
+      - "CAS={\"org1\":\"ca.${ORG:-org1}.${DOMAIN:-example.com}:7054\"}"
+      - DISCOVER_AS_LOCALHOST=false
+      - ENROLL_ID=admin
+      - ENROLL_SECRET=adminpw
     depends_on:
       - peer0
       - peer1
+    volumes:
+      - ../../fabric-starter/crypto-config:/usr/src/app/crypto-config
+#     - ../www:/usr/src/app/www
+    command: sh -c "npm start"
 #    API_EXTRA_HOSTS
 
   # simple http server to disseminate certificates
