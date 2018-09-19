@@ -29,7 +29,12 @@ app.use(async (req, res, next) => {
     const login = req.user.sub;
     //TODO log request
     logger.debug('login', login);
-    await fabricStarterClient.loginOrRegister(login);
+    try {
+      await fabricStarterClient.loginOrRegister(login);
+    } catch(e) {
+      logger.error('loginOrRegister', e);
+      res.status(500).json(e.message);
+    }
   }
   next();
 });
@@ -108,11 +113,13 @@ const appRouter = (app) => {
   }));
 
   app.get('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {
-    res.json(await fabricStarterClient.query(req.params.channelId, req.params.chaincodeId, req.query.fcn, req.query.args, req.query.targets));
+    res.json(await fabricStarterClient.query(req.params.channelId, req.params.chaincodeId,
+      req.query.fcn, req.query.args, req.query.targets));
   }));
 
   app.post('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {
-    res.json(await fabricStarterClient.invoke(req.params.channelId, req.params.chaincodeId, req.body.fcn, req.body.args, req.body.targets));
+    res.json(await fabricStarterClient.invoke(req.params.channelId, req.params.chaincodeId,
+      req.body.fcn, req.body.args, req.body.targets));
   }));
 
 };
