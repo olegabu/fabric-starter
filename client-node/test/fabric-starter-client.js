@@ -1,4 +1,5 @@
 //export DOMAIN=dds.ru ORG=regulator CRYPTO_CONFIG_DIR=/home/oleg/workspace/decentralized-depository/artifacts/crypto-config ORGS='{"regulator":"localhost:7051","s1":"localhost:7056"}' CAS='{"regulator":"localhost:7054"}'
+//export DOMAIN=example.com ORG=org1 CRYPTO_CONFIG_DIR=/home/oleg/workspace/fabric-starter/crypto-config ORGS='{"org1":"localhost:7051","org2":"localhost:7056"}' CAS='{"org1":"localhost:7054"}'
 
 const assert = require('assert');
 const logger = require('log4js').getLogger('FabricStarterClientTest');

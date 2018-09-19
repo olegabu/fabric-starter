@@ -72,8 +72,8 @@ class FabricStarterClient {
     } catch (e) {
       channel = this.client.newChannel(channelId);
       channel.addPeer(this.peer);
-      await channel.initialize({discover: true, asLocalhost: asLocalhost});
     }
+    await channel.initialize({discover: true, asLocalhost: asLocalhost});
     // logger.trace('channel', channel);
     return channel;
   }
