@@ -18,8 +18,8 @@ function addOrg(t, org) {
     t.organizations = {};
   }
   t.organizations[org] = {
-    mspid: `${org}MSP`,
-    // mspid: `${org}`,
+    // mspid: `${org}MSP`,
+    mspid: `${org}`,
     peers: [
       `peer0.${org}.${domain}`
     ]
