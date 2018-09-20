@@ -128,7 +128,7 @@ function installChaincode() {
 function instantiateChaincode() {
     channelName=${1:?Channel name must be specified}
     chaincodeName=${2:?Chaincode name must be specified}
-    initArguments=${3:-{\"Args\":[]}}
+    initArguments=${3:-{\"Args\":[]}
     chaincodeVersion=${4:-1.0}
 
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$initArguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
