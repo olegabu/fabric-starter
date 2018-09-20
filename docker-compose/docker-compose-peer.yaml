@@ -116,6 +116,7 @@ services:
 ##    API_EXTRA_HOSTS
 
   api:
+    build: ../client-node
     image: olegabu/fabric-starter-client
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     ports:
