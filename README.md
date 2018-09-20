@@ -234,3 +234,9 @@ Invoke chaincode *reference* on channel *common*, it's implemented by chaincode_
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"invoke","args":["a","b","1"]}'
 ```
+
+Query chaincode *reference* on channel *common* for balances of `a` and `b`:
+```bash
+curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
+curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=b'
+```
