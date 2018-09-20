@@ -100,7 +100,7 @@ services:
 
   # fabric-rest api server
   api:
-    build: ../client-node
+#    build: ../client-node
     image: olegabu/fabric-starter-client
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     ports:

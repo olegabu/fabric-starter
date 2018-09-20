@@ -168,34 +168,39 @@ export ORG=org1 DOMAIN=example.com
 ./channel-join.sh org1 common
 ``` 
 
-Let's create a bilateral channel between *org1* and *org2*:
+Let's create a bilateral channel between *org1* and *org2* and join to it:
 ```bash
 ./channel-create.sh org1-org2
 ./channel-add-org.sh org2 org1-org2
 ./channel-join.sh org1 org1-org2
 ```
 
-Install and instantiate chaincode *reference* on channel *common*:
+Install and instantiate chaincode *reference* on channel *common*. Note the path to the source code is inside `cli` 
+docker container and is mapped to the local  `./chaincode/node/reference`
 ```bash
 ./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
-./chaincode-instantiate.sh common reference "{\"Args\":[\"init\",\"a\",\"10\",\"b\",\"0\"]}" 1.0
+./chaincode-instantiate.sh common reference '{"Args":["init","a","10","b","0"]}'
 ```
 Install and instantiate chaincode *relationship* on channel *org1-org2*:
 ```bash
 ./chaincode-install.sh relationship 1.0 /opt/chaincode/node/relationship node
-./chaincode-instantiate.sh org1-org2 relationship "{\"Args\":[\"init\",\"a\",\"10\",\"b\",\"0\"]}" 1.0
+./chaincode-instantiate.sh org1-org2 relationship '{"Args":["init","a","10","b","0"]}'
 ```
 
-Open another console where we'll become *org2* to join channels *common* and *org1-org2*:
+Open another console where we'll become *org2* to install chaincodes *reference* and  *relationship* 
+and to join channels *common* and *org1-org2*:
 ```bash
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com
+./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
+./chaincode-install.sh relationship 1.0 /opt/chaincode/node/relationship node
 ./channel-join.sh org1 common
 ./channel-join.sh org1 org1-org2
 ``` 
 
-Now become *org3* to join channel *common*:
+Now become *org3* to install chaincode *reference* and join channel *common*:
 ```bash
 export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com
+./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
 ./channel-join.sh org1 common
 ``` 
 
@@ -230,7 +235,7 @@ curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"invoke","args":["a","b","1"]}'
 ```
 
-Query chaincode *reference* on channel *common* for balances of `a` and `b`:
+Query chaincode *reference* on channel *common* for balances of a and b:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
