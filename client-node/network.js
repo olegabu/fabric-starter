@@ -5,8 +5,9 @@ const domain = process.env.DOMAIN || 'example.com';
 const cryptoConfigDir = process.env.CRYPTO_CONFIG_DIR || '../crypto-config';
 const enrollId = process.env.ENROLL_ID || 'admin';
 const enrollSecret = process.env.ENROLL_SECRET || 'adminpw';
-const orgs = JSON.parse(process.env.ORGS || '{"org1":"localhost:7051"}' );// `peer0.${org}.${domain}:7051` inside docker
-const cas = JSON.parse(process.env.CAS || '{"org1":"localhost:7054"}' );
+// default to peer0.org1.example.com:7051 inside docker-compose or export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}'
+let orgs = JSON.parse(process.env.ORGS || '"org1":"localhost:7051"' );
+let cas = JSON.parse(process.env.CAS || '"org1":"localhost:7054"' );
 
 const t = {
   name: 'Network',
@@ -90,6 +91,14 @@ module.exports = function () {
       }
     }
   };
+
+  if(typeof orgs === 'string') {
+    orgs = JSON.parse('{' + orgs + '}');
+  }
+
+  if(typeof cas === 'string') {
+    cas = JSON.parse('{' + cas + '}');
+  }
 
   Object.keys(orgs).forEach(k => {
     addOrg(t, k);

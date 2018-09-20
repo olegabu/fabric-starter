@@ -46,11 +46,6 @@ Run script on your host machine to generate crypto material and genesis block fo
 ./generate-orderer.sh
 ```
 
-Inspect how environment variables fill in values for docker parameters (optional):
-```bash
-docker-compose -f docker-compose/docker-compose-orderer.yaml config
-```
-
 Start the orderer
 ```bash
 docker-compose -f docker-compose/docker-compose-orderer.yaml up
@@ -107,4 +102,135 @@ docker-compose -f docker-compose/docker-compose-peer.yaml config
 Start docker containers for org2
 ```bash
 docker-compose -f docker-compose/docker-compose-peer.yaml up
+```
+
+# Example with a network of 3 organizations
+
+## Create organizations, channels and chaincodes
+
+Remove all containers, delete local crypto material:
+```bash
+export DOMAIN=example.com
+docker rm -f $(docker ps -aq)
+docker volume prune -f
+sudo rm -rf crypto-config
+```
+
+Generate and start the *orderer*:
+```bash
+./generate-orderer.sh
+docker-compose -f docker-compose/docker-compose-orderer.yaml up
+```
+
+Generate and start *org1* in another console:
+```bash
+export ORG=org1 DOMAIN=example.com CRYPTO_CONFIG_DIR=./crypto-config ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org1":"ca.org1.example.com:7054"}'
+./generate-peer.sh
+docker-compose -f docker-compose/docker-compose-peer.yaml up
+```
+
+Generate and start *org2* in another console. Note the ports open to host machine need to be redefined to avoid collision:
+```bash
+export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com CRYPTO_CONFIG_DIR=./crypto-config ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
+export CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058 API_PORT=3001 WWW_PORT=8082
+./generate-peer.sh
+docker-compose -f docker-compose/docker-compose-peer.yaml up
+```
+
+Generate and start *org3* in another console:
+```bash
+export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com CRYPTO_CONFIG_DIR=./crypto-config ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org3":"ca.org2.example.com:7054"}'
+export CA_PORT=9054 PEER0_PORT=9051 PEER0_EVENT_PORT=9053 PEER1_PORT=9056 PEER1_EVENT_PORT=9058 API_PORT=3002 WWW_PORT=8083
+./generate-peer.sh
+docker-compose -f docker-compose/docker-compose-peer.yaml up
+```
+
+Now you should have 4 consoles open running with the orderer, org1, org2, org3.
+
+Open another console where we'll become the Admin of the *Orderer* organization. We'll add orgs to the consortium:
+```bash
+export DOMAIN=example.com
+./consortium-addorg.sh org1
+./consortium-addorg.sh org2
+./consortium-addorg.sh org3
+``` 
+
+Open another console where we'll become *org1* again. We'll create channel *common*, add other orgs to it, 
+and join ourselves to it:
+```bash
+export ORG=org1 DOMAIN=example.com
+./channel-create.sh common
+./channel-add-org.sh org2 common
+./channel-add-org.sh org3 common
+./channel-join.sh org1 common
+``` 
+
+Let's create a bilateral channel between *org1* and *org2*:
+```bash
+./channel-create.sh org1-org2
+./channel-add-org.sh org2 org1-org2
+./channel-join.sh org1 org1-org2
+```
+
+Install and instantiate chaincode *reference* on channel *common*:
+```bash
+./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
+./chaincode-instantiate.sh common reference "{\"Args\":[\"init\",\"a\",\"10\",\"b\",\"0\"]}" 1.0
+```
+Install and instantiate chaincode *relationship* on channel *org1-org2*:
+```bash
+./chaincode-install.sh relationship 1.0 /opt/chaincode/node/relationship node
+./chaincode-instantiate.sh org1-org2 relationship "{\"Args\":[\"init\",\"a\",\"10\",\"b\",\"0\"]}" 1.0
+```
+
+Open another console where we'll become *org2* to join channels *common* and *org1-org2*:
+```bash
+export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com
+./channel-join.sh org1 common
+./channel-join.sh org1 org1-org2
+``` 
+
+Now become *org3* to join channel *common*:
+```bash
+export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com
+./channel-join.sh org1 common
+``` 
+
+## Use REST API servers to query and invoke chaincodes
+
+Login into *org1* as `user1` and save returned token into env variable `JWT` which we'll use to identify our user 
+in subsequent requests:
+```bash
+JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3000/users | tr -d '"')`
+```
+
+Query channels *org1* has joined
+```bash
+curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels
+```
+returns
+```json
+[{"channel_id":"common"},{"channel_id":"org1-org2"}]
+``` 
+
+Query channels *org1* has joined
+```bash
+curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels
+```
+returns
+```json
+[{"channel_id":"common"},{"channel_id":"org1-org2"}]
+``` 
+
+Query latest block, orgs, instantiated chaincodes and block 2 of channel *common*:
+```bash
+curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common
+curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/chaincodes
+curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/orgs
+curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/blocks/2
+```
+
+Invoke chaincode *reference* on channel *common*, it's implemented by chaincode_example_02 and moves 1 from a to b:
+```bash
+curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"invoke","args":["a","b","1"]}'
 ```
