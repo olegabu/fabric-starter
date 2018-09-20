@@ -100,7 +100,7 @@ services:
 
   # fabric-rest api server
   api:
-#    build: ../client-node
+    build: ../client-node
     image: olegabu/fabric-starter-client
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     ports:
@@ -114,11 +114,12 @@ services:
       - DISCOVER_AS_LOCALHOST=false
       - ENROLL_ID=admin
       - ENROLL_SECRET=adminpw
+      - P=$PWD
     depends_on:
       - peer0
       - peer1
     volumes:
-      - ../../fabric-starter/crypto-config:/usr/src/app/crypto-config
+      - $PWD/crypto-config:/usr/src/app/crypto-config
 #     - ../www:/usr/src/app/www
     command: sh -c "npm start"
 #    API_EXTRA_HOSTS

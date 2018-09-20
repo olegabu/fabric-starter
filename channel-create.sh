@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 source lib.sh
+usageMsg="$0 channelName "
+exampleMsg="$0 common "
 
-channelName=${1:?"Channel channel name must be specified"}
-[ -z "$ORG" ] && echo "ORG environmet variable should be set" && exit 1
+IFS=
+channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 
 echo "Create channel $ORG $channelName"
 downloadMSP orderer

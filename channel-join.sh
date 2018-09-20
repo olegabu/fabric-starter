@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 source lib.sh
+usageMsg="$0 channelName "
+exampleMsg="$0 common "
 
-channelOwnerOrg=${1:?Parameters: <channel owner org> <channel name>}
-channelName=${2:?Parameters: <channel owner org> <channel name>}
+IFS=
+channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 
-echo "Join org '$ORG' to channel $channelName"
-joinChannel "$channelOwnerOrg" "$channelName"
+joinChannel "$channelName"

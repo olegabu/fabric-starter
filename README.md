@@ -67,7 +67,7 @@ export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.co
 
 Define your organization's certificate authority:
 ```bash
-export ORGS='{"org1":"ca.org1.example.com:7054"}'
+export CAS='{"org1":"ca.org1.example.com:7054"}'
 ```
 
 Start docker containers for *org1*
@@ -110,6 +110,7 @@ export DOMAIN=example.com
 docker rm -f $(docker ps -aq)
 docker volume prune -f
 sudo rm -rf crypto-config
+docker rmi -f $(docker images -q -f "reference=dev-*")
 ```
 
 Generate and start the *orderer*:
@@ -165,43 +166,43 @@ export ORG=org1 DOMAIN=example.com
 ./channel-create.sh common
 ./channel-add-org.sh org2 common
 ./channel-add-org.sh org3 common
-./channel-join.sh org1 common
+./channel-join.sh common
 ``` 
 
 Let's create a bilateral channel between *org1* and *org2* and join to it:
 ```bash
 ./channel-create.sh org1-org2
 ./channel-add-org.sh org2 org1-org2
-./channel-join.sh org1 org1-org2
+./channel-join.sh org1-org2
 ```
 
 Install and instantiate chaincode *reference* on channel *common*. Note the path to the source code is inside `cli` 
 docker container and is mapped to the local  `./chaincode/node/reference`
 ```bash
-./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
-./chaincode-instantiate.sh common reference '{"Args":["init","a","10","b","0"]}'
+./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
 ```
 Install and instantiate chaincode *relationship* on channel *org1-org2*:
 ```bash
-./chaincode-install.sh relationship 1.0 /opt/chaincode/node/relationship node
-./chaincode-instantiate.sh org1-org2 relationship '{"Args":["init","a","10","b","0"]}'
+./chaincode-install.sh relationship /opt/chaincode/node/relationship node 1.0
+./chaincode-instantiate.sh org1-org2 relationship '["init","a","10","b","0"]'
 ```
 
 Open another console where we'll become *org2* to install chaincodes *reference* and  *relationship* 
 and to join channels *common* and *org1-org2*:
 ```bash
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com
-./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
-./chaincode-install.sh relationship 1.0 /opt/chaincode/node/relationship node
-./channel-join.sh org1 common
-./channel-join.sh org1 org1-org2
+./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./chaincode-install.sh relationship /opt/chaincode/node/relationship node 1.0
+./channel-join.sh common
+./channel-join.sh org1-org2
 ``` 
 
 Now become *org3* to install chaincode *reference* and join channel *common*:
 ```bash
 export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com
-./chaincode-install.sh reference 1.0 /opt/chaincode/node/reference node
-./channel-join.sh org1 common
+./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./channel-join.sh common
 ``` 
 
 ## Use REST API servers to query and invoke chaincodes
@@ -239,6 +240,9 @@ Query chaincode *reference* on channel *common* for balances of a and b:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
+
+OR by script:
+./chaincode-query.sh common reference '["query", "a"]'
 ```
 
 Now login into the API server of *org2* `http://localhost:3001` and query balance of b:
@@ -246,4 +250,7 @@ Now login into the API server of *org2* `http://localhost:3001` and query balanc
 JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3001/users | tr -d '"')`
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
+
+OR by script:
+./chaincode-query.sh common reference '["query", "b"]'
 ```

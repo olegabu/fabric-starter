@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 source lib.sh
+usageMsg="$0  chaincodeName [path to chaincode=<chaincodeName>] [lang=golang] [version=1.0]"
+exampleMsg="$0 reference /opt/chaincode/node/reference node"
 
-chaincodeName=${1:?Usage: ./chaincode-install chaincodeName [chaincodeVersion] [path to chaincode] [lang]}
-version=$2
-path=$3
-lang=$4
+IFS=
+chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
+path=$2
+lang=$3
+version=$4
 
-echo "Install chaincode $chaincodeName [$version] [$path] [$lang]"
-installChaincode "$chaincodeName" "$version" "$path" "$lang"
+installChaincode "$chaincodeName" "$path" "$lang" "$version"

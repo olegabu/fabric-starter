@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 source lib.sh
+usageMsg="$0 newOrg [consortiumName=SampleConsortium]"
+exampleMsg="$0 org1"
 
-NEWORG=${1:?Organization to be added to consortium must be specified}
+IFS=
+NEWORG=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 consortiumName=${2:-"SampleConsortium"}
 
 echo "Add $NEWORG to consortium $consortiumName"

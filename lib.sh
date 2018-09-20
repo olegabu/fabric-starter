@@ -5,6 +5,13 @@
 : ${WGET_OPTS:="--verbose -N"}
 : ${WWW_PORT:=8081}
 
+function printUsage() {
+   usageMsg=$1
+   exampleMsg=$2
+   echo -e "\n\e[1;31mUsage:\e[m \e[1;33m$usageMsg\e[m"
+   echo -e "\e[1;31mExample:\e[m \e[1;33m$exampleMsg\e[m"
+
+}
 function runCLI() {
    command="$1"
    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateSuffix="orderer" || composeTemplateSuffix="peer"
@@ -14,7 +21,7 @@ function runCLI() {
    [ -n "$EXECUTE_BY_ORDERER" ] && checkContainer="cli.$DOMAIN" || checkContainer="cli.$ORG.$DOMAIN"
    cliId=`docker ps --filter name=$checkContainer -q`
    [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run --rm"
-   echo "CLI $composeCommand($cliId):$composeTemplateFile:$service: $command"
+   echo -e "\e[1;35mExecute:\e[m \e[1;32mdocker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\e[m"
 
    docker-compose --file ${composeTemplateFile} ${composeCommand} ${service} bash -c "$command"
 }
@@ -100,15 +107,17 @@ function updateChannelModificationPolicy() {
 function addOrgToChannel() {
   newOrg=${1:?"New Org must be specified"}
   channel=${2:?"Channel must be specified"}
+
+  echo "Add new org '$newOrg' to channel $channel"
   txTranslateChannelConfigBlock "$channel"
-  updateChannelGroupConfigForNewOrg $newOrg ./templates/NewOrg.json  "$(certificationsEnv $newOrg)"
+  updateChannelGroupConfigForNewOrg $newOrg ./templates/NewOrg.json "$(certificationsEnv $newOrg)"
   createConfigUpdateEnvelope $channel
 }
 
 function joinChannel() {
-  channelOwnerOrg=${1:?Channel owner org must be specified}
-  channel=${2:?Channel name must be specified}
+  channel=${1:?Channel name must be specified}
 
+  echo "Join $ORG to channel $channel"
   fetchChannelConfigBlock $channel "0"
   runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
   runCLI "CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
@@ -116,10 +125,11 @@ function joinChannel() {
 
 function installChaincode() {
     chaincodeName=${1:?Chaincode name must be specified}
-    chaincodeVersion=${2:-1.0}
-    chaincodePath=${3:-$chaincodeName}
-    lang=${4:-golang}
+    chaincodePath=${2:-$chaincodeName}
+    lang=${3:-golang}
+    chaincodeVersion=${4:-1.0}
 
+    echo "Install chaincode $chaincodeName  $path $lang $version"
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang"
     runCLI "CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang"
 }
@@ -128,9 +138,41 @@ function installChaincode() {
 function instantiateChaincode() {
     channelName=${1:?Channel name must be specified}
     chaincodeName=${2:?Chaincode name must be specified}
-    initArguments=${3:-{\"Args\":[]}
+    initArguments=${3:-[]}
     chaincodeVersion=${4:-1.0}
 
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$initArguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    arguments="{\"Args\":$initArguments}"
+    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
 
+
+function upgradeChaincode() {
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    initArguments=${3:-[]}
+    chaincodeVersion=${4:-1.0}
+    policy=${5}
+    if [ -n "$policy" ]; then policy="-P \"$policy\""; fi
+
+    arguments="{\"Args\":$initArguments}"
+    echo "Upgrade chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion '$policy'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName "$policy" --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+}
+
+function callChaincode() {
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+    action=${4:-query}
+
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+}
+
+function queryChaincode() {
+    callChaincode $@ query
+}
+function invokeChaincode() {
+    callChaincode $@ invoke
+}

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 source lib.sh
+usageMsg="$0 channelName chaincodeName [init args='[]' as [\"Init\", \"arg1\", \"arg2\"...]] [version=1.0]"
+exampleMsg="$0 common chanicode1 '{\"Args\":[\"Init\",\"a\",\"10\", \"b\", \"0\"]}'"
 
-channelName=${1:?Usage: ./chaincode-instantiate.sh channelName chaincodeName [init args] [version]}
-chaincodeName=${2:?Usage: ./chaincode-instantiate.sh channelName chaincodeName [init args] [version]}
+IFS=
+channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
+chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 initArguments=${3}
 chaincodeVersion=${4}
 
-
-echo "Instantiate chaincode $channelName $chaincodeName [$initArguments] $chaincodeVersion"
 instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion"

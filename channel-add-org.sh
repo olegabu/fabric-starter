@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 source lib.sh
+usageMsg="$0 newOrg channelName"
+exampleMsg="$0 org2 common "
 
-newOrg=${1:?New org must be specified}
-channelName=${2:?"Channel channel name must be specified"}
+IFS=
+newOrg=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
+channelName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 
-echo "Add new org '$newOrg' to channel $channelName"
 addOrgToChannel $newOrg $channelName
