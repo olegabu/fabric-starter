@@ -102,7 +102,7 @@ docker-compose -f docker-compose/docker-compose-peer.yaml up
 
 # Example with a network of 3 organizations
 
-## Create organizations, and add them to the consortium
+## Create organizations and add them to the consortium
 
 Clean up. Remove all containers, delete local crypto material:
 ```bash
@@ -240,5 +240,5 @@ Now login into the API server of *org2* `http://localhost:3001` and query balanc
 ```bash
 JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3001/users | tr -d '"')`
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
-'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=b'
+'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
 ```
