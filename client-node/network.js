@@ -6,8 +6,8 @@ const cryptoConfigDir = process.env.CRYPTO_CONFIG_DIR || '../crypto-config';
 const enrollId = process.env.ENROLL_ID || 'admin';
 const enrollSecret = process.env.ENROLL_SECRET || 'adminpw';
 // default to peer0.org1.example.com:7051 inside docker-compose or export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}'
-let orgs = JSON.parse(process.env.ORGS || '"org1":"localhost:7051"' );
-let cas = JSON.parse(process.env.CAS || '"org1":"localhost:7054"' );
+let orgs = JSON.parse(process.env.ORGS || '{"org1":"localhost:7051"}' );
+let cas = JSON.parse(process.env.CAS || '{"org1":"localhost:7054"}' );
 
 const t = {
   name: 'Network',

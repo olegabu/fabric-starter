@@ -4,7 +4,7 @@
   "description": "client with hyperledger fabric nodejs sdk",
   "main": "fabric-starter-client.js",
   "scripts": {
-    "test": "mocha",
+    "test": "DISCOVER_AS_LOCALHOST=true mocha",
     "dev": "nodemon app.js",
     "start": "node app.js"
   },
