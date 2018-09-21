@@ -1,7 +1,0 @@
-source ./env-common
-
-export IP_ORDERER=192.168.56.101
-export THIS_ORG=c
-
-echo -e "This org:$THIS_ORG\nOrderer IP:$IP_ORDERER"
-

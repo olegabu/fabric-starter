@@ -1,6 +1,0 @@
-source ./env-common
-
-export IP_ORDERER=
-export THIS_ORG=a
-
-echo -e "This org:$THIS_ORG"
