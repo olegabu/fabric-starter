@@ -35,7 +35,7 @@ docker rm -f `(docker ps -aq)`
 docker rmi -f `(docker images -aq)`
 ```
 
-Create directories, environment and clone the latest source of Hyperledger Fabric from `master`
+Create directories, environment and clone the latest source of Hyperledger Fabric from `master`.
 ```bash
 mkdir -p ~/go
 export GOPATH=~/go
@@ -45,7 +45,7 @@ git clone https://github.com/hyperledger/fabric
 cd fabric
 ```
 
-Build docker images with java enabled via `EXPERIMENTAL` flag
+Build docker images with java enabled via `EXPERIMENTAL` flag.
 ```bash
 export EXPERIMENTAL=true
 make docker
@@ -76,7 +76,7 @@ Start docker containers for *Orderer*.
 docker-compose -f docker-compose/docker-compose-orderer.yaml up
 ```
 
-Open another console. Generate crypto material and the genesis block for the member organization. Using default ORG name *org1*.
+Open another console. Generate crypto material for the member organization. Using default ORG name *org1*.
 ```bash
 ./generate-peer.sh
 ```
@@ -105,12 +105,6 @@ Note the path to the source code is inside `cli` docker container and is mapped 
 ./chaincode-instantiate.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]'
 ```
 
-Install and instantiate *nodejs* chaincode *reference* on channel *common*.
-```bash
-./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
-./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
-```
-
 Invoke chaincode *fabric-chaincode-example-gradle*.
 ```bash
 ./chaincode-invoke.sh common fabric-chaincode-example-gradle '["invoke","a","b","1"]'
@@ -123,7 +117,7 @@ Query chaincode.
 # Example with a network of 3 organizations
 
 You can replace default DOMAIN *example.com* and *org1*, *org2* with the names of your organizations.
-Extend this example by adding more than 3 organizations and any number of channels with various org membership.
+Extend this example by adding more than 3 organizations and any number of channels with various membership.
 
 ## Create organizations and add them to the consortium
 
@@ -262,19 +256,9 @@ curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
 ```
 
-Or by script:
-```bash
-./chaincode-query.sh common reference '["query", "a"]'
-```
-
 Now login into the API server of *org2* `http://localhost:3001` and query balance of b:
 ```bash
 JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3001/users | tr -d '"')`
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
-```
-
-Or by script:
-```bash
-./chaincode-query.sh common reference '["query", "b"]'
 ```
