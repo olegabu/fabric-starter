@@ -250,15 +250,16 @@ curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"invoke","args":["a","b","1"]}'
 ```
 
-Query chaincode *reference* on channel *common* for balances of a and b:
+Query chaincode *reference* on channel *common* for the balance of *a*:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
 ```
 
-Now login into the API server of *org2* `http://localhost:3001` and query balance of b:
+Now login into the API server of *org2* `http://localhost:3001` and query the balance of *b*:
 ```bash
 JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3001/users | tr -d '"')`
+
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
 ```
