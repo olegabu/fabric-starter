@@ -27,89 +27,109 @@ sudo apt install docker-ce docker-compose
 sudo usermod -aG docker ${USER}
 ```
 
-# Create the network
+# Build Fabric with Java support
 
-## Orderer Organization
-
-Define your project's DOMAIN: all of your component names will have this as a top level domain:
+Clean up. Delete all docker containers and images.
 ```bash
-export DOMAIN=example.com
+docker rm -f `(docker ps -aq)`
+docker rmi -f `(docker images -aq)`
 ```
 
-Run this script on your host machine to generate crypto material and the genesis block for the *Orderer* organization:
+Create directories, environment and clone the latest source of Hyperledger Fabric from `master`
+```bash
+mkdir -p ~/go
+export GOPATH=~/go
+mkdir -p $GOPATH/src/github.com/hyperledger
+cd $GOPATH/src/github.com/hyperledger
+git clone https://github.com/hyperledger/fabric
+cd fabric
+```
+
+Build docker images with java enabled via `EXPERIMENTAL` flag
+```bash
+export EXPERIMENTAL=true
+make docker
+```
+
+Clone the latest source of java chaincode support.
+```bash
+cd $GOPATH/src/github.com/hyperledger
+git clone https://github.com/hyperledger/fabric-chaincode-java 
+cd fabric-chaincode-java
+```
+
+Build docker image for java chaincode `fabric-javaenv` and java `shim` for chaincode development.
+```bash
+./gradlew buildImage
+./gradlew publishToMavenLocal
+```
+
+# Create a network with 1 organization for development
+
+Generate crypto material and the genesis block for the *Orderer* organization. Using default *example.com* DOMAIN. 
 ```bash
 ./generate-orderer.sh
 ```
 
-Start docker containers for the orderer
+Start docker containers for *Orderer*.
 ```bash
 docker-compose -f docker-compose/docker-compose-orderer.yaml up
 ```
 
-## Peer Organization 1
-
-Open a separate console to allow for different environment variables and log output.
-
-Define your project's DOMAIN and ORG, all other values will remain at defaults.
-```bash
-export DOMAIN=example.com ORG=org1
-```
-
-Generate crypto material for peer organization *org1*:
+Open another console. Generate crypto material and the genesis block for the member organization. Using default ORG name *org1*.
 ```bash
 ./generate-peer.sh
 ```
 
-Define list of all organizations your org will be transacting with:
-```bash
-export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}'
-```
-
-Define your organization's certificate authority:
-```bash
-export CAS='{"org1":"ca.org1.example.com:7054"}'
-```
-
-Start docker containers for *org1*
+Start docker containers for *org1*.
 ```bash
 docker-compose -f docker-compose/docker-compose-peer.yaml up
 ```
-## Peer Organization 2
 
-Open a separate console.
-
-Define your project's DOMAIN and ORG, and override defaults ports as these containers expose them to the same host as org1.
-Note COMPOSE_PROJECT_NAME needs to be redefined since we may be reusing service names.
+Open another console. Add *org1* to the consortium as *Admin* of the *Orderer* organization:
 ```bash
-export COMPOSE_PROJECT_NAME=org2 DOMAIN=example.com ORG=org2 
-export CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058 API_PORT=4001 WWW_PORT=8082
+./consortium-addorg.sh org1
+``` 
+
+Create channel *common* as *Admin* of *org1* and join our peers to the channel:
+```bash
+./channel-create.sh common
+./channel-join.sh common
+``` 
+
+Install and instantiate *java* chaincode *fabric-chaincode-example-gradle* on channel *common*. 
+Note the path to the source code is inside `cli` docker container and is mapped to the local 
+`./chaincode/java/fabric-chaincode-example-gradle`
+```bash
+./chaincode-install.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java 1.0
+./chaincode-instantiate.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]'
 ```
 
-Generate crypto material for peer organization *org2*:
+Install and instantiate *nodejs* chaincode *reference* on channel *common*.
 ```bash
-./generate-peer.sh
+./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
 ```
 
-Inspect how environment variables fill in values for docker parameters (optional):
+Invoke chaincode *fabric-chaincode-example-gradle*.
 ```bash
-docker-compose -f docker-compose/docker-compose-peer.yaml config
+./chaincode-invoke.sh common fabric-chaincode-example-gradle '["invoke","a","b","1"]'
 ```
-
-Start docker containers for org2
+Query chaincode.
 ```bash
-docker-compose -f docker-compose/docker-compose-peer.yaml up
+./chaincode-query.sh common fabric-chaincode-example-gradle '["query","a"]'
 ```
 
 # Example with a network of 3 organizations
+
+You can replace default DOMAIN *example.com* and *org1*, *org2* with the names of your organizations.
+Extend this example by adding more than 3 organizations and any number of channels with various org membership.
 
 ## Create organizations and add them to the consortium
 
 Clean up. Remove all containers, delete local crypto material:
 ```bash
-export DOMAIN=example.com
-docker rm -f $(docker ps -aq) && docker volume prune -f
-sudo rm -rf crypto-config
-docker rmi -f $(docker images -q -f "reference=dev-*")
+./clean.sh
 ```
 
 Generate and start the *orderer*:
@@ -181,6 +201,7 @@ docker container and is mapped to the local  `./chaincode/node/reference`
 ./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
 ./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
 ```
+
 Install and instantiate chaincode *relationship* on channel *org1-org2*:
 ```bash
 ./chaincode-install.sh relationship /opt/chaincode/node/relationship node 1.0
@@ -239,8 +260,10 @@ Query chaincode *reference* on channel *common* for balances of a and b:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
+```
 
-OR by script:
+Or by script:
+```bash
 ./chaincode-query.sh common reference '["query", "a"]'
 ```
 
@@ -249,7 +272,9 @@ Now login into the API server of *org2* `http://localhost:3001` and query balanc
 JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3001/users | tr -d '"')`
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
+```
 
-OR by script:
+Or by script:
+```bash
 ./chaincode-query.sh common reference '["query", "b"]'
 ```
