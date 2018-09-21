@@ -7,9 +7,9 @@ const Client = require('fabric-client');
 //const networkConfig = require('../crypto-config/network.json');
 
 const invokeTimeout = process.env.INVOKE_TIMEOUT || 60000;
-const asLocalhost = process.env.DISCOVER_AS_LOCALHOST === 'true';
+const asLocalhost = (process.env.DISCOVER_AS_LOCALHOST === 'true');
 
-logger.debug(`invokeTimeout=${invokeTimeout} asLocalhost=${asLocalhost} type ${typeof asLocalhost}`);
+logger.debug(`invokeTimeout=${invokeTimeout} asLocalhost=${asLocalhost} type ${typeof asLocalhost} process.env.DISCOVER_AS_LOCALHOST=${process.env.DISCOVER_AS_LOCALHOST}`);
 
 class FabricStarterClient {
   constructor(networkConfig) {

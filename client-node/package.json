@@ -5,7 +5,7 @@
   "main": "fabric-starter-client.js",
   "scripts": {
     "test": "DISCOVER_AS_LOCALHOST=true mocha",
-    "dev": "nodemon app.js",
+    "dev": "DISCOVER_AS_LOCALHOST=true nodemon app.js",
     "start": "node app.js"
   },
   "author": "Oleg Abdrashitov <olegabu73@gmail.com>",

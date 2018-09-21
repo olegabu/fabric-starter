@@ -107,8 +107,7 @@ docker-compose -f docker-compose/docker-compose-peer.yaml up
 Clean up. Remove all containers, delete local crypto material:
 ```bash
 export DOMAIN=example.com
-docker rm -f $(docker ps -aq)
-docker volume prune -f
+docker rm -f $(docker ps -aq) && docker volume prune -f
 sudo rm -rf crypto-config
 docker rmi -f $(docker images -q -f "reference=dev-*")
 ```

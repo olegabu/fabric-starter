@@ -12,7 +12,7 @@ services:
 
   orderer:
     container_name: orderer.${DOMAIN:-example.com}
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
