@@ -29,6 +29,16 @@ sudo usermod -aG docker ${USER}
 
 # Build Fabric with Java support
 
+This excercise has been tested with the following versions:
+```bash
+docker --version && java -version && go version
+```
+
+- Docker version 17.12.1-ce, build 7390fc6
+- java version "1.8.0_181"
+- go version go1.10.1 linux/amd64
+
+
 Clean up. Delete all docker containers and images.
 ```bash
 docker rm -f `(docker ps -aq)`
@@ -109,10 +119,23 @@ Invoke chaincode *fabric-chaincode-example-gradle*.
 ```bash
 ./chaincode-invoke.sh common fabric-chaincode-example-gradle '["invoke","a","b","1"]'
 ```
+
 Query chaincode.
 ```bash
 ./chaincode-query.sh common fabric-chaincode-example-gradle '["query","a"]'
 ```
+
+Now you can make changes to your chaincode, install a new version `1.1` and upgrade it.
+```bash
+./chaincode-install.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java 1.1
+./chaincode-upgrade.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]' 1.1
+```
+
+When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
+new random version
+```bash
+./chaincode-reload.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java common '["init","a","10","b","0"]'
+``` 
 
 # Example with a network of 3 organizations
 
@@ -219,7 +242,7 @@ export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com
 ./channel-join.sh common
 ``` 
 
-## Use REST API servers to query and invoke chaincodes
+## Use REST API to query and invoke chaincodes
 
 Login into *org1* as *user1* and save returned token into env variable `JWT` which we'll use to identify our user 
 in subsequent requests:
