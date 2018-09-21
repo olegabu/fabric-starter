@@ -36,10 +36,11 @@ function downloadMSP() {
 }
 
 function certificationsEnv() {
+#TODO don't do anything on the host, only inside docker: Mac doesn't have the -w switch but Linux does: base64 -w 0
   newOrg=$1
-  echo "export ORG_ADMIN_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/admincerts/Admin@${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
+  echo "export ORG_ADMIN_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/admincerts/Admin@${newOrg}.${DOMAIN:-example.com}-cert.pem | base64` \
   && export ORG_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/cacerts/ca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-  && export ORG_TLS_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0`"
+  && export ORG_TLS_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64`"
 }
 
 function fetchChannelConfigBlock() {
