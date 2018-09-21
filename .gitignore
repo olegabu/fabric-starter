@@ -28,6 +28,7 @@ build
 /artifacts/config_block.*
 /artifacts/newOrgMSP.json
 /dockercompose/*.yaml
+/artifacts/
 
 /crypto-config
 
