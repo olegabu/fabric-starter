@@ -27,53 +27,6 @@ sudo apt install docker-ce docker-compose
 sudo usermod -aG docker ${USER}
 ```
 
-# Build Fabric with Java support
-
-This excercise has been tested with the following versions:
-```bash
-docker --version && java -version && go version
-```
-
-- Docker version 17.12.1-ce, build 7390fc6
-- java version "1.8.0_181"
-- go version go1.10.1 linux/amd64
-
-
-Clean up. Delete all docker containers and images.
-```bash
-docker rm -f `(docker ps -aq)`
-docker rmi -f `(docker images -aq)`
-```
-
-Create directories, environment and clone the latest source of Hyperledger Fabric from `master`.
-```bash
-mkdir -p ~/go
-export GOPATH=~/go
-mkdir -p $GOPATH/src/github.com/hyperledger
-cd $GOPATH/src/github.com/hyperledger
-git clone https://github.com/hyperledger/fabric
-cd fabric
-```
-
-Build docker images with java enabled via `EXPERIMENTAL` flag.
-```bash
-export EXPERIMENTAL=true
-make docker
-```
-
-Clone the latest source of java chaincode support.
-```bash
-cd $GOPATH/src/github.com/hyperledger
-git clone https://github.com/hyperledger/fabric-chaincode-java 
-cd fabric-chaincode-java
-```
-
-Build docker image for java chaincode `fabric-javaenv` and java `shim` for chaincode development.
-```bash
-./gradlew buildImage
-./gradlew publishToMavenLocal
-```
-
 # Create a network with 1 organization for development
 
 Generate crypto material and the genesis block for the *Orderer* organization. Using default *example.com* DOMAIN. 
@@ -107,34 +60,34 @@ Create channel *common* as *Admin* of *org1* and join our peers to the channel:
 ./channel-join.sh common
 ``` 
 
-Install and instantiate *java* chaincode *fabric-chaincode-example-gradle* on channel *common*. 
+Install and instantiate *nodejs* chaincode *reference* on channel *common*. 
 Note the path to the source code is inside `cli` docker container and is mapped to the local 
-`./chaincode/java/fabric-chaincode-example-gradle`
+`./chaincode/node/reference`
 ```bash
-./chaincode-install.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java 1.0
-./chaincode-instantiate.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]'
+./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
 ```
 
-Invoke chaincode *fabric-chaincode-example-gradle*.
+Invoke chaincode *reference*.
 ```bash
-./chaincode-invoke.sh common fabric-chaincode-example-gradle '["invoke","a","b","1"]'
+./chaincode-invoke.sh common reference '["invoke","a","b","1"]'
 ```
 
 Query chaincode.
 ```bash
-./chaincode-query.sh common fabric-chaincode-example-gradle '["query","a"]'
+./chaincode-query.sh common reference '["query","a"]'
 ```
 
 Now you can make changes to your chaincode, install a new version `1.1` and upgrade it.
 ```bash
-./chaincode-install.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java 1.1
-./chaincode-upgrade.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]' 1.1
+./chaincode-install.sh reference /opt/chaincode/node/reference node 1.1
+./chaincode-upgrade.sh common reference '["init","a","10","b","0"]' 1.1
 ```
 
 When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
 new random version
 ```bash
-./chaincode-reload.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java common '["init","a","10","b","0"]'
+./chaincode-reload.sh reference /opt/chaincode/node/reference node common '["init","a","10","b","0"]'
 ``` 
 
 # Example with a network of 3 organizations
@@ -285,4 +238,59 @@ JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: appl
 
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
+```
+
+# Build Fabric with Java support
+
+This excercise has been tested with the following versions:
+```bash
+docker --version && java -version && go version
+```
+
+- Docker version 17.12.1-ce, build 7390fc6
+- java version "1.8.0_181"
+- go version go1.10.1 linux/amd64
+
+
+Clean up. Delete all docker containers and images.
+```bash
+docker rm -f `(docker ps -aq)`
+docker rmi -f `(docker images -aq)`
+```
+
+Create directories, environment and clone the latest source of Hyperledger Fabric from `master`.
+```bash
+mkdir -p ~/go
+export GOPATH=~/go
+mkdir -p $GOPATH/src/github.com/hyperledger
+cd $GOPATH/src/github.com/hyperledger
+git clone https://github.com/hyperledger/fabric
+cd fabric
+```
+
+Build docker images with java enabled via `EXPERIMENTAL` flag.
+```bash
+export EXPERIMENTAL=true
+make docker
+```
+
+Clone the latest source of java chaincode support.
+```bash
+cd $GOPATH/src/github.com/hyperledger
+git clone https://github.com/hyperledger/fabric-chaincode-java 
+cd fabric-chaincode-java
+```
+
+Build docker image for java chaincode `fabric-javaenv` and java `shim` for chaincode development.
+```bash
+./gradlew buildImage
+./gradlew publishToMavenLocal
+```
+
+Install and instantiate *java* chaincode *fabric-chaincode-example-gradle* on channel *common*. 
+Note the path to the source code is inside `cli` docker container and is mapped to the local 
+`./chaincode/java/fabric-chaincode-example-gradle`
+```bash
+./chaincode-install.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java 1.0
+./chaincode-instantiate.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]'
 ```
