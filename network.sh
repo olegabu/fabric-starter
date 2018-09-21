@@ -428,12 +428,13 @@ function instantiateChaincode () {
     channel_names=($2)
     n=$3
     i=$4
+    v=${5:-1.0}
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
 
     for channel_name in ${channel_names[@]}; do
         info "instantiating chaincode $n on $channel_name by $org using $f with $i"
 
-        c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode instantiate -n $n -v 1.0 -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+        c="CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode instantiate -n $n -v $v -c '$i' -o orderer.$DOMAIN:7050 -C $channel_name --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
         d="cli.$org.$DOMAIN"
 
         echo "instantiating with $d by $c"
@@ -466,15 +467,18 @@ function warmUpChaincode () {
 function installChaincode() {
     org=$1
     n=$2
-    v=$3
+    v=${3:-1.0}
+    l=${4:-golang}
     f="$GENERATED_DOCKER_COMPOSE_FOLDER/docker-compose-${org}.yaml"
-    # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
-    p=${n}
-    #p=/opt/chaincode/node
-    l=golang
-    #l=node
 
-    info "installing chaincode $n to peers of $org from ./chaincode/go/$p $v using $f"
+    # chaincode path is the same as chaincode name by convention: code of chaincode instruction lives in ./chaincode/go/instruction mapped to docker path /opt/gopath/src/instruction
+    if [ $l = "golang" ]; then
+        p=${n}
+        info "installing chaincode $n to peers of $org from ./chaincode/go/$p $v using $f"
+    else
+        p="/opt/chaincode/$l/$n"
+        info "installing chaincode $n to peers of $org from $p $v using $f"
+    fi
 
     echo "docker-compose --file ${f} run --rm \"cli.$org.$DOMAIN\" bash -c \"CORE_PEER_ADDRESS=peer0.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p -l $l "
     echo " && CORE_PEER_ADDRESS=peer1.$org.$DOMAIN:7051 peer chaincode install -n $n -v $v -p $p -l $l\""
@@ -1112,7 +1116,7 @@ function printHelp () {
 }
 
 # Parse commandline args
-while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:R:P:" opt; do
+while getopts "h?m:o:a:w:c:0:1:2:3:k:v:l:i:n:M:I:R:P:" opt; do
   case "$opt" in
     h|\?)
       printHelp
@@ -1121,6 +1125,8 @@ while getopts "h?m:o:a:w:c:0:1:2:3:k:v:i:n:M:I:R:P:" opt; do
     m)  MODE=$OPTARG
     ;;
     v)  CHAINCODE_VERSION=$OPTARG
+    ;;
+    l)  CHAINCODE_LANGUAGE=$OPTARG
     ;;
     o)  ORG=$OPTARG
     ;;
@@ -1272,25 +1278,27 @@ elif [ "${MODE}" == "register-org-in-channel" ]; then # params: mainOrg($3) chan
 elif [ "${MODE}" == "join-channel" ]; then # params: thisOrg mainOrg channel
   downloadChannelBlockFile ${@:3}
   joinChannel ${3} $5
-elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o nsd -v 2.0 -n book
+elif [ "${MODE}" == "install-chaincode" ]; then # example: install-chaincode -o a -v 1.0 -n chaincode_example02 -l java
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -n CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
-  echo "Install chaincode: $ORG ${CHAINCODE} ${CHAINCODE_VERSION}"
+  [[ -z "${CHAINCODE_LANGUAGE}" ]] && echo "missing required argument -l CHAINCODE_LANGUAGE: chaincode language golang node java" && exit 1
+  echo "Install chaincode: $ORG ${CHAINCODE} ${CHAINCODE_VERSION} ${CHAINCODE_LANGUAGE}"
   sleep 1
-  installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION}
+  installChaincode ${ORG} ${CHAINCODE} ${CHAINCODE_VERSION} ${CHAINCODE_LANGUAGE}
 
-elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
+elif [ "${MODE}" == "instantiate-chaincode" ]; then # example: instantiate-chaincode -o a -k common -n chaincode_example02
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels list" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && CHAINCODE_INIT_ARG=${CHAINCODE_COMMON_INIT}
   sleep 1
-  instantiateChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG}
+  instantiateChaincode ${ORG} "${CHANNELS}" ${CHAINCODE} ${CHAINCODE_INIT_ARG} ${CHAINCODE_VERSION}
 
-elif [ "${MODE}" == "warmup-chaincode" ]; then # example: instantiate-chaincode -o nsd -k common -n book
+elif [ "${MODE}" == "warmup-chaincode" ]; then # example: instantiate-chaincode -o a -v 1.0 -k common -n chaincode_example02
   [[ -z "${ORG}" ]] && echo "missing required argument -o ORG: organization name to install chaincode into" && exit 1
   [[ -z "${CHAINCODE}" ]] && echo "missing required argument -d CHAINCODE: chaincode name to install" && exit 1
+  [[ -z "${CHAINCODE_VERSION}" ]] && echo "missing required argument -v CHAINCODE_VERSION: chaincode version" && exit 1
   [[ -z "${CHANNELS}" ]] && echo "missing required argument -k CHANNELS: channels" && exit 1
   [[ -z "${CHAINCODE_INIT_ARG}" ]] && echo "missing required argument -I CHAINCODE_QUERY_ARG: chaincode query args" && exit 1
   sleep 3
