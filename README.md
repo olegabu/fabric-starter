@@ -36,7 +36,7 @@ Generate crypto material and the genesis block for the *Orderer* organization. U
 
 Start docker containers for *Orderer*.
 ```bash
-docker-compose -f docker-compose/docker-compose-orderer.yaml up
+docker-compose -f docker-compose-orderer.yaml up
 ```
 
 Open another console. Generate crypto material for the member organization. Using default ORG name *org1*.
@@ -46,12 +46,12 @@ Open another console. Generate crypto material for the member organization. Usin
 
 Start docker containers for *org1*.
 ```bash
-docker-compose -f docker-compose/docker-compose-peer.yaml up
+docker-compose up
 ```
 
 Open another console. Add *org1* to the consortium as *Admin* of the *Orderer* organization:
 ```bash
-./consortium-addorg.sh org1
+./consortium-add-org.sh org1
 ``` 
 
 Create channel *common* as *Admin* of *org1* and join our peers to the channel:
@@ -61,10 +61,12 @@ Create channel *common* as *Admin* of *org1* and join our peers to the channel:
 ``` 
 
 Install and instantiate *nodejs* chaincode *reference* on channel *common*. 
+Using defaults: language `node`, version `1.0`, source code is in the folder of the same 
+name as the chaincode.
 Note the path to the source code is inside `cli` docker container and is mapped to the local 
-`./chaincode/node/reference`
+`./chaincode/node/reference`. 
 ```bash
-./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./chaincode-install.sh reference
 ./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
 ```
 
@@ -92,8 +94,13 @@ new random version
 
 # Example with a network of 3 organizations
 
-You can replace default DOMAIN *example.com* and *org1*, *org2* with the names of your organizations.
-Extend this example by adding more than 3 organizations and any number of channels with various membership.
+You can replace default DOMAIN *example.com* and *org1*, *org2* with the names of your organizations. 
+Define them via environment variables either in shell or `.env` file. 
+```bash
+export DOMAIN=example.com ORG=org1
+```
+
+You can also extend this example by adding more than 3 organizations and any number of channels with various membership.
 
 ## Create organizations and add them to the consortium
 
@@ -102,56 +109,67 @@ Clean up. Remove all containers, delete local crypto material:
 ./clean.sh
 ```
 
-Generate and start the *orderer*:
+Generate crypto material and start docker containers of the *Orderer* organization:
 ```bash
 ./generate-orderer.sh
-docker-compose -f docker-compose/docker-compose-orderer.yaml up
+
+docker-compose -f docker-compose-orderer.yaml up
 ```
 
-Generate and start *org1* in another console:
+Open another shell. Set environment variables `ORGS` and `CAS` that define how this org's client will connect to other 
+organizations' peers and certificate authorities. When moving to multi host deployment they will be need 
+to be redefined.  
+
+Generate and start *org1*.
 ```bash
-export ORG=org1 DOMAIN=example.com CRYPTO_CONFIG_DIR=./crypto-config 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org1":"ca.org1.example.com:7054"}'
+
 ./generate-peer.sh
-docker-compose -f docker-compose/docker-compose-peer.yaml up
+
+docker-compose up
 ```
 
-Generate and start *org2* in another console. Note the ports open to host machine need to be redefined to avoid collision:
+Open another shell. Note since we're reusing the same `docker-compose.yaml` file we need to redefine `COMPOSE_PROJECT_NAME`.
+Also the ports open to host machine need to be redefined to avoid collision.
+
+Generate and start *org2*.
 ```bash
-export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com CRYPTO_CONFIG_DIR=./crypto-config 
+export COMPOSE_PROJECT_NAME=org2 ORG=org2 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
-export CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058 API_PORT=3001 WWW_PORT=8082
+export API_PORT=3001
+
 ./generate-peer.sh
-docker-compose -f docker-compose/docker-compose-peer.yaml up
+
+docker-compose up
 ```
 
-Generate and start *org3* in another console:
+Generate and start *org3* in another shell:
 ```bash
-export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com CRYPTO_CONFIG_DIR=./crypto-config 
+export COMPOSE_PROJECT_NAME=org3 ORG=org3 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org3":"ca.org2.example.com:7054"}'
-export CA_PORT=9054 PEER0_PORT=9051 PEER0_EVENT_PORT=9053 PEER1_PORT=9056 PEER1_EVENT_PORT=9058 API_PORT=3002 WWW_PORT=8083
+export API_PORT=3002
+
 ./generate-peer.sh
-docker-compose -f docker-compose/docker-compose-peer.yaml up
+
+docker-compose up
 ```
 
-Now you should have 4 console windows open running with the orderer, org1, org2, org3.
+Now you should have 4 console windows running containers of *Orderer*, *org1*, *org2*, *org3* organizations.
 
-Open another console where we'll become the Admin of the *Orderer* organization. We'll add orgs to the consortium:
+Open another console where we'll become an *Admin* user of the *Orderer* organization. We'll add orgs to the consortium:
 ```bash
-export DOMAIN=example.com
-./consortium-addorg.sh org1
-./consortium-addorg.sh org2
-./consortium-addorg.sh org3
+./consortium-add-org.sh org1
+./consortium-add-org.sh org2
+./consortium-add-org.sh org3
 ``` 
 
-Now all 3 orgs are known in the consortium and all can create and join channels.
+Now all 3 orgs are known in the consortium and can create and join channels.
 
 ## Create channels, install and instantiate chaincodes
 
 Open another console where we'll become *org1* again. We'll create channel *common*, add other orgs to it, 
 and join our peers to the channel:
 ```bash
-export ORG=org1 DOMAIN=example.com
 ./channel-create.sh common
 ./channel-add-org.sh org2 common
 ./channel-add-org.sh org3 common
@@ -181,7 +199,8 @@ Install and instantiate chaincode *relationship* on channel *org1-org2*:
 Open another console where we'll become *org2* to install chaincodes *reference* and  *relationship* 
 and to join channels *common* and *org1-org2*:
 ```bash
-export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com
+export COMPOSE_PROJECT_NAME=org2 ORG=org2
+
 ./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
 ./chaincode-install.sh relationship /opt/chaincode/node/relationship node 1.0
 ./channel-join.sh common
@@ -190,7 +209,8 @@ export COMPOSE_PROJECT_NAME=org2 ORG=org2 DOMAIN=example.com
 
 Now become *org3* to install chaincode *reference* and join channel *common*:
 ```bash
-export COMPOSE_PROJECT_NAME=org3 ORG=org3 DOMAIN=example.com
+export COMPOSE_PROJECT_NAME=org3 ORG=org3
+
 ./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
 ./channel-join.sh common
 ``` 

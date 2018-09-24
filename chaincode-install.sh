@@ -5,8 +5,8 @@ exampleMsg="$0 reference /opt/chaincode/node/reference node"
 
 IFS=
 chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
-path=$2
-lang=$3
-version=$4
+path=${2-"/opt/chaincode/node/$chaincodeName"}
+lang=${3-node}
+version=${4-1.0}
 
 installChaincode "$chaincodeName" "$path" "$lang" "$version"

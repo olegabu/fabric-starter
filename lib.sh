@@ -12,15 +12,22 @@ function printUsage() {
    echo -e "\e[1;31mExample:\e[m \e[1;33m$exampleMsg\e[m"
 
 }
+
 function runCLI() {
    command="$1"
-   [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateSuffix="orderer" || composeTemplateSuffix="peer"
-   composeTemplateFile="docker-compose/docker-compose-$composeTemplateSuffix.yaml"
-   service="cli.$composeTemplateSuffix"
+
+   if [ -n "$EXECUTE_BY_ORDERER" ]; then
+        composeTemplateFile="docker-compose-orderer.yaml"
+        service="cli.orderer"
+   else
+        composeTemplateFile="docker-compose.yaml"
+        service="cli.peer"
+   fi
 
    [ -n "$EXECUTE_BY_ORDERER" ] && checkContainer="cli.$DOMAIN" || checkContainer="cli.$ORG.$DOMAIN"
    cliId=`docker ps --filter name=$checkContainer -q`
-   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run --rm"
+   #TODO getting error No such command: run __rm
+   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run"
    echo -e "\e[1;35mExecute:\e[m \e[1;32mdocker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\e[m"
 
    docker-compose --file ${composeTemplateFile} ${composeCommand} ${service} bash -c "$command"
@@ -38,9 +45,9 @@ function downloadMSP() {
 function certificationsEnv() {
 #TODO don't do anything on the host, only inside docker: Mac doesn't have the -w switch but Linux does: base64 -w 0
   newOrg=$1
-  echo "export ORG_ADMIN_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/admincerts/Admin@${newOrg}.${DOMAIN:-example.com}-cert.pem | base64` \
-  && export ORG_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/cacerts/ca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64` \
-  && export ORG_TLS_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64`"
+  echo "export ORG_ADMIN_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/admincerts/Admin@${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
+  && export ORG_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/cacerts/ca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
+  && export ORG_TLS_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0`"
 }
 
 function fetchChannelConfigBlock() {
