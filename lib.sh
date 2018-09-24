@@ -28,19 +28,19 @@ function runCLI() {
 
 function downloadMSP() {
     org=$1
-    [ -n "$EXECUTE_BY_ORDERER" ] && mspSubPath="$org.$DOMAIN" && port=WWW_PORT ||  mspSubPath="$DOMAIN" && port=8080
-#TODO:
-#    wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${mspSubPath}/msp/admincerts http://www.${mspSubPath}:$port/msp/admincerts/Admin@${mspSubPath}-cert.pem
-#    wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${mspSubPath}/msp/cacerts http://www.${mspSubPath}:$port/msp/cacerts/ca.${mspSubPath}-cert.pem
-#    wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}:$port/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    [ -n "$EXECUTE_BY_ORDERER" ] && mspSubPath="$org.$DOMAIN" ||  mspSubPath="$DOMAIN"
+
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${mspSubPath}/msp/admincerts http://www.${mspSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${mspSubPath}/msp/cacerts http://www.${mspSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/peerOrganizations/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
 }
 
 function certificationsEnv() {
-#TODO don't do anything on the host, only inside docker: Mac doesn't have the -w switch but Linux does: base64 -w 0
   newOrg=$1
-  echo "export ORG_ADMIN_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/admincerts/Admin@${newOrg}.${DOMAIN:-example.com}-cert.pem | base64` \
-  && export ORG_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/cacerts/ca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64` \
-  && export ORG_TLS_ROOT_CERT=`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64`"
+
+  echo "export ORG_ADMIN_CERT=\`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/admincerts/Admin@${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
+  && export ORG_ROOT_CERT=\`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/cacerts/ca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
+  && export ORG_TLS_ROOT_CERT=\`cat crypto-config/peerOrganizations/${newOrg}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${newOrg}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\`"
 }
 
 function fetchChannelConfigBlock() {
@@ -94,6 +94,7 @@ function updateConsortium() {
 
   txTranslateChannelConfigBlock "$channel"
   exportEnv="export CONSORTIUM_NAME=${consortiumName} && $(certificationsEnv $newOrg)"
+  runCLI "export CONSORTIUM_NAME=${consortiumName} &&`certificationsEnv $newOrg` && env"
   updateChannelGroupConfigForNewOrg "$newOrg" ./templates/Consortium.json "$exportEnv"
   createConfigUpdateEnvelope orderer-system-channel
 }
