@@ -15,7 +15,7 @@ Most of the plumbing work is taken care of by this starter.
 
 # Install
 
-Install prerequisites: `docker`. This example is for Ubuntu 18:
+Install prerequisites: `docker` and `docker-compose`. This instruction is for Ubuntu 18:
 ```bash
 sudo apt update
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
@@ -92,7 +92,7 @@ Query chaincode.
 
 ## Upgrade chaincode 
 
-Now you can make changes to your chaincode, install a new version `1.1` and upgrade it.
+Now you can make changes to your chaincode, install a new version `1.1` and upgrade to it.
 ```bash
 ./chaincode-install.sh reference 1.1
 ./chaincode-upgrade.sh reference common '["init","a","10","b","0"]' 1.1
@@ -106,7 +106,7 @@ new random version
 
 ## Golang chaincode 
 
-Install and instantiate *golang* chaincode *example_02* on channel *common*. 
+Install and instantiate *golang* chaincode *example02* on channel *common*. 
 Source code is in local `./chaincode/go/chaincode_example02` mapped to `/opt/gopath/src/chaincode_example02` 
 inside `cli` container.
 ```bash
