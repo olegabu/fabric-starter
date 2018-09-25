@@ -47,7 +47,6 @@ function downloadMSP() {
     runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
     runCLI "mkdir -p crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ \
     && cp crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ca.crt"
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/orderers/orderer.${mspSubPath}/tls http://www.${mspSubPath}/msp/tls/ca.crt"
 }
 
 function certificationsEnv() {
