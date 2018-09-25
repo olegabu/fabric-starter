@@ -6,9 +6,9 @@ Organizations:
         ID: Orderer
         MSPDir: ordererOrganizations/${DOMAIN}/msp
 
-    - &${ORG}
+    - &firstOrg
         Name: ${ORG}
-        ID: ${ORG1}
+        ID: ${ORG}
         MSPDir: peerOrganizations/${ORG}.${DOMAIN}/msp
 
         AnchorPeers:
@@ -28,4 +28,4 @@ Profiles:
     Consortium: SampleConsortium
     Application:
       Organizations:
-        - *${ORG}
+        - *firstOrg
