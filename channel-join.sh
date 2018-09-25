@@ -5,5 +5,5 @@ exampleMsg="$0 common "
 
 IFS=
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
-
+downloadMSP
 joinChannel "$channelName"

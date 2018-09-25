@@ -7,7 +7,7 @@ IFS=
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 
 echo "Create channel $ORG $channelName"
-downloadMSP orderer
+downloadMSP
 runCLI "mkdir -p crypto-config/configtx \
     && envsubst <templates/configtx-channel-template.yaml >crypto-config/configtx.yaml \
     && configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName \
