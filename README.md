@@ -29,6 +29,8 @@ sudo usermod -aG docker ${USER}
 
 # Create a network with 1 organization for development
 
+## Generate and start orderer
+
 Generate crypto material and the genesis block for the *Orderer* organization. Using default *example.com* DOMAIN. 
 ```bash
 ./generate-orderer.sh
@@ -39,6 +41,8 @@ Start docker containers for *Orderer*.
 docker-compose -f docker-compose-orderer.yaml up
 ```
 
+## Generate and start member organization
+
 Open another console. Generate crypto material for the member organization. Using default ORG name *org1*.
 ```bash
 ./generate-peer.sh
@@ -48,6 +52,8 @@ Start docker containers for *org1*.
 ```bash
 docker-compose up
 ```
+
+## Add organization to the consortium and create a channel
 
 Open another console. Add *org1* to the consortium as *Admin* of the *Orderer* organization:
 ```bash
@@ -60,6 +66,8 @@ Create channel *common* as *Admin* of *org1* and join our peers to the channel:
 ./channel-join.sh common
 ``` 
 
+## Install and instantiate chaincode
+
 Install and instantiate *nodejs* chaincode *reference* on channel *common*. 
 Using defaults: language `node`, version `1.0`, source code is in the folder of the same 
 name as the chaincode.
@@ -67,30 +75,49 @@ Note the path to the source code is inside `cli` docker container and is mapped 
 `./chaincode/node/reference`. 
 ```bash
 ./chaincode-install.sh reference
-./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
+./chaincode-instantiate.sh reference common '["init","a","10","b","0"]'
 ```
+
+## Invoke chaincode
 
 Invoke chaincode *reference*.
 ```bash
-./chaincode-invoke.sh common reference '["invoke","a","b","1"]'
+./chaincode-invoke.sh reference common '["invoke","a","b","1"]'
 ```
 
 Query chaincode.
 ```bash
-./chaincode-query.sh common reference '["query","a"]'
+./chaincode-query.sh reference common '["query","a"]'
 ```
+
+## Upgrade chaincode 
 
 Now you can make changes to your chaincode, install a new version `1.1` and upgrade it.
 ```bash
-./chaincode-install.sh reference /opt/chaincode/node/reference node 1.1
-./chaincode-upgrade.sh common reference '["init","a","10","b","0"]' 1.1
+./chaincode-install.sh reference 1.1
+./chaincode-upgrade.sh reference common '["init","a","10","b","0"]' 1.1
 ```
 
 When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
 new random version
 ```bash
-./chaincode-reload.sh reference /opt/chaincode/node/reference node common '["init","a","10","b","0"]'
+./chaincode-reload.sh reference common '["init","a","10","b","0"]'
 ``` 
+
+## Golang chaincode 
+
+Install and instantiate *golang* chaincode *example_02* on channel *common*. 
+Source code is in local `./chaincode/go/chaincode_example02` mapped to `/opt/gopath/src/chaincode_example02` 
+inside `cli` container.
+```bash
+./chaincode-install.sh example02 1.0 chaincode_example02 golang
+./chaincode-instantiate.sh example02 common '["init","a","10","b","0"]'
+```
+
+Reload *golang* chaincode.
+```bash
+./chaincode-reload.sh example02 common '["init","a","10","b","0"]' chaincode_example02 golang
+```
 
 # Example with a network of 3 organizations
 
@@ -118,7 +145,7 @@ docker-compose -f docker-compose-orderer.yaml up
 
 Open another shell. Set environment variables `ORGS` and `CAS` that define how this org's client will connect to other 
 organizations' peers and certificate authorities. When moving to multi host deployment they will be need 
-to be redefined.  
+to be redefined.
 
 Generate and start *org1*.
 ```bash
@@ -186,14 +213,14 @@ Let's create a bilateral channel between *org1* and *org2* and join to it:
 Install and instantiate chaincode *reference* on channel *common*. Note the path to the source code is inside `cli` 
 docker container and is mapped to the local  `./chaincode/node/reference`
 ```bash
-./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
-./chaincode-instantiate.sh common reference '["init","a","10","b","0"]'
+./chaincode-install.sh reference
+./chaincode-instantiate.sh reference common '["init","a","10","b","0"]'
 ```
 
 Install and instantiate chaincode *relationship* on channel *org1-org2*:
 ```bash
-./chaincode-install.sh relationship /opt/chaincode/node/relationship node 1.0
-./chaincode-instantiate.sh org1-org2 relationship '["init","a","10","b","0"]'
+./chaincode-install.sh relationship
+./chaincode-instantiate.sh relationship org1-org2 '["init","a","10","b","0"]'
 ```
 
 Open another console where we'll become *org2* to install chaincodes *reference* and  *relationship* 
@@ -201,8 +228,8 @@ and to join channels *common* and *org1-org2*:
 ```bash
 export COMPOSE_PROJECT_NAME=org2 ORG=org2
 
-./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
-./chaincode-install.sh relationship /opt/chaincode/node/relationship node 1.0
+./chaincode-install.sh reference
+./chaincode-install.sh relationship
 ./channel-join.sh common
 ./channel-join.sh org1-org2
 ``` 
@@ -211,7 +238,7 @@ Now become *org3* to install chaincode *reference* and join channel *common*:
 ```bash
 export COMPOSE_PROJECT_NAME=org3 ORG=org3
 
-./chaincode-install.sh reference /opt/chaincode/node/reference node 1.0
+./chaincode-install.sh reference
 ./channel-join.sh common
 ``` 
 
@@ -260,7 +287,7 @@ curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
 'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
 ```
 
-# Build Fabric with Java support
+# Build Fabric with support for chaincodes in Java
 
 This excercise has been tested with the following versions:
 ```bash
@@ -307,10 +334,10 @@ Build docker image for java chaincode `fabric-javaenv` and java `shim` for chain
 ./gradlew publishToMavenLocal
 ```
 
-Install and instantiate *java* chaincode *fabric-chaincode-example-gradle* on channel *common*. 
+Install and instantiate *java* chaincode *fabric-chaincode-example* on channel *common*. 
 Note the path to the source code is inside `cli` docker container and is mapped to the local 
 `./chaincode/java/fabric-chaincode-example-gradle`
 ```bash
-./chaincode-install.sh fabric-chaincode-example-gradle /opt/chaincode/java/fabric-chaincode-example-gradle java 1.0
-./chaincode-instantiate.sh common fabric-chaincode-example-gradle '["init","a","10","b","0"]'
+./chaincode-install.sh fabric-chaincode-example /opt/chaincode/java/fabric-chaincode-example-gradle java
+./chaincode-instantiate.sh fabric-chaincode-example common '["init","a","10","b","0"]'
 ```
