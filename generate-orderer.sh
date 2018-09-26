@@ -6,7 +6,7 @@ EXECUTE_BY_ORDERER=1 runCLI "rm -rf crypto-config/ordererOrganizations \
     && cryptogen generate --config=crypto-config/cryptogen-orderer.yaml"
 
 EXECUTE_BY_ORDERER=1 runCLI "mkdir -p crypto-config/configtx \
-    && envsubst <templates/configtx-genesis-template.yaml >crypto-config/configtx.yaml \
+    && envsubst <templates/configtx-template.yaml >crypto-config/configtx.yaml \
     && configtxgen -configPath crypto-config/ -outputBlock crypto-config/configtx/genesis.pb -profile OrdererGenesis -channelID orderer-system-channel \
     && chown $UID -R crypto-config/"
 

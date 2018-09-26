@@ -104,7 +104,7 @@ services:
     image: olegabu/fabric-starter-rest
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     ports:
-      - ${API_PORT:-3000}:3000
+      - ${API_PORT:-4000}:3000
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -153,7 +153,3 @@ services:
       - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ${PWD}/crypto-config/configtx:/usr/share/nginx/html/configtx
 
-networks:
-  default:
-    external:
-      name: fabricstarter_default

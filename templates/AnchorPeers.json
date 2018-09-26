@@ -1,0 +1,22 @@
+{
+  "Application": {
+    "groups": {
+      "${NEWORG}": {
+        "values": {
+          "AnchorPeers": {
+            "mod_policy": "Admins",
+            "value": {
+              "anchor_peers": [
+                {
+                  "host": "peer0.${NEWORG}.${DOMAIN}",
+                  "port": 7051
+                }
+              ]
+            },
+            "version": "0"
+          }
+        }
+      }
+    }
+  }
+}
