@@ -13,14 +13,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 // relax cors
-function corsCb(req, cb){
-  cb(null, {origin: req.headers.origin, credentials:true});
-}
-app.options('*', cors(corsCb));
-app.use(cors(corsCb));
+// function corsCb(req, cb, next){
+//   cb(null, {origin: req.headers.origin, credentials:true});
+//   next();
+// }
+// app.options('*', cors(corsCb));
+// app.use(cors(corsCb));
+
+app.use(cors());
+app.options('*', cors());
 
 const asyncMiddleware = fn =>
   (req, res, next) => {
+    // logger.debug('asyncMiddleware');
     Promise.resolve(fn(req, res, next))
       .catch(e => {
         logger.error('asyncMiddleware', e);
@@ -62,74 +67,81 @@ const appRouter = (app) => {
     res.json(fabricStarterClient.getNetworkConfig());
   });
 
-  app.get('/chaincodes', asyncMiddleware(async (req, res) => {
+  app.get('/chaincodes', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.queryInstalledChaincodes());
   }));
 
-  app.post('/chaincodes', asyncMiddleware(async (req, res) => {
+  app.post('/chaincodes', asyncMiddleware(async (req, res, next) => {
     res.status(501).json('installing chaincode on peer not implemented');
   }));
 
-  app.post('/users', asyncMiddleware(async (req, res) => {
+  app.post('/users', asyncMiddleware(async (req, res, next) => {
     await fabricStarterClient.loginOrRegister(req.body.username, req.body.password);
     const token = jsonwebtoken.sign({sub: fabricStarterClient.user.getName()}, fabricStarterClient.getSecret());
     logger.debug('token', token);
     res.json(token);
   }));
 
-  app.get('/channels', asyncMiddleware(async (req, res) => {
+  app.get('/channels', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.queryChannels());
   }));
 
-  app.post('/channels', asyncMiddleware(async (req, res) => {
+  app.post('/channels', asyncMiddleware(async (req, res, next) => {
     res.status(501).json('adding channel not implemented');
   }));
 
-  app.get('/channels/:channelId', asyncMiddleware(async (req, res) => {
+  app.get('/channels/:channelId', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.queryInfo(req.params.channelId));
   }));
 
-  app.get('/channels/:channelId/orgs', asyncMiddleware(async (req, res) => {
+  app.get('/channels/:channelId/orgs', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.getOrganizations(req.params.channelId));
   }));
 
-  app.get('/channels/:channelId/peers', asyncMiddleware(async (req, res) => {
+  app.get('/channels/:channelId/peers', asyncMiddleware(async (req, res, next) => {
     res.json(fabricStarterClient.getPeersForOrgOnChannel(req.params.channelId));
   }));
 
-  app.get('/orgs/:org/peers', asyncMiddleware(async (req, res) => {
+  app.get('/orgs/:org/peers', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.getPeersForOrg(req.params.org));
   }));
 
-  app.post('/channels/:channelId/orgs', asyncMiddleware(async (req, res) => {
+  app.post('/channels/:channelId/orgs', asyncMiddleware(async (req, res, next) => {
     res.status(501).json('adding organization to channel not implemented');
   }));
 
-  app.get('/channels/:channelId/blocks/:number', asyncMiddleware(async (req, res) => {
+  app.get('/channels/:channelId/blocks/:number', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.queryBlock(req.params.channelId, parseInt(req.params.number)));
   }));
 
-  app.get('/channels/:channelId/transactions/:id', asyncMiddleware(async (req, res) => {
+  app.get('/channels/:channelId/transactions/:id', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.queryTransaction(req.params.channelId, req.params.id));
   }));
 
-  app.get('/channels/:channelId/chaincodes', asyncMiddleware(async (req, res) => {
+  app.get('/channels/:channelId/chaincodes', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.queryInstantiatedChaincodes(req.params.channelId));
   }));
 
-  app.post('/channels/:channelId/chaincodes', asyncMiddleware(async (req, res) => {
+  app.post('/channels/:channelId/chaincodes', asyncMiddleware(async (req, res, next) => {
     res.status(501).json('instantiating chaincode on channel not implemented');
   }));
 
-  app.get('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {
-    res.json(await fabricStarterClient.query(req.params.channelId, req.params.chaincodeId,
-      req.query.fcn, JSON.parse(req.query.args), req.query.targets));
+  app.get('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res, next) => {
+    let ret = await fabricStarterClient.query(req.params.channelId, req.params.chaincodeId,
+      req.query.fcn, JSON.parse(req.query.args), req.query.targets);
+
+    if(ret[0].startsWith('Error')) {
+      throw new Error(ret[0]);
+    }
+
+    res.json(ret);
   }));
 
-  app.post('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {
+  app.post('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res, next) => {
     res.json(await fabricStarterClient.invoke(req.params.channelId, req.params.chaincodeId,
       req.body.fcn, req.body.args, req.body.targets));
   }));
+
 
 };
 
