@@ -4,12 +4,20 @@ const app = express();
 const logger = require('log4js').getLogger('app');
 const jsonwebtoken = require('jsonwebtoken');
 const jwt = require('express-jwt');
+const cors = require('cors');
 const SocketServer = require('socket.io');
 const FabricStarterClient = require('./fabric-starter-client');
 const fabricStarterClient = new FabricStarterClient();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
+// relax cors
+function corsCb(req, cb){
+  cb(null, {origin: req.headers.origin, credentials:true});
+}
+app.options('*', cors(corsCb));
+app.use(cors(corsCb));
 
 const asyncMiddleware = fn =>
   (req, res, next) => {
@@ -21,7 +29,7 @@ const asyncMiddleware = fn =>
       });
   };
 
-app.use(jwt({secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users']}));
+app.use(jwt({secret: fabricStarterClient.getSecret()}).unless({path: ['/', '/users', '/mspid']}));
 
 app.use(async (req, res, next) => {
   await fabricStarterClient.init();
@@ -63,8 +71,9 @@ const appRouter = (app) => {
   }));
 
   app.post('/users', asyncMiddleware(async (req, res) => {
-    await fabricStarterClient.loginOrRegister(req.body.login, req.body.password);
+    await fabricStarterClient.loginOrRegister(req.body.username, req.body.password);
     const token = jsonwebtoken.sign({sub: fabricStarterClient.user.getName()}, fabricStarterClient.getSecret());
+    logger.debug('token', token);
     res.json(token);
   }));
 
@@ -114,7 +123,7 @@ const appRouter = (app) => {
 
   app.get('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {
     res.json(await fabricStarterClient.query(req.params.channelId, req.params.chaincodeId,
-      req.query.fcn, req.query.args, req.query.targets));
+      req.query.fcn, JSON.parse(req.query.args), req.query.targets));
   }));
 
   app.post('/channels/:channelId/chaincodes/:chaincodeId', asyncMiddleware(async (req, res) => {
