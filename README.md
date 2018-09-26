@@ -63,31 +63,39 @@ Open another console. Add *org1* to the consortium as *Admin* of the *Orderer* o
 Create channel *common* as *Admin* of *org1* and join our peers to the channel:
 ```bash
 ./channel-create.sh common
+
 ./channel-join.sh common
 ``` 
 
 ## Install and instantiate chaincode
 
 Install and instantiate *nodejs* chaincode *reference* on channel *common*. 
-Using defaults: language `node`, version `1.0`, source code is in the folder of the same 
-name as the chaincode.
+Using defaults: language `node`, version `1.0`, empty args `[]`.
 Note the path to the source code is inside `cli` docker container and is mapped to the local 
 `./chaincode/node/reference`. 
 ```bash
 ./chaincode-install.sh reference
-./chaincode-instantiate.sh reference common '["init","a","10","b","0"]'
+
+./chaincode-instantiate.sh reference common
 ```
 
 ## Invoke chaincode
 
-Invoke chaincode *reference*.
+Chaincode *reference* extends [chaincode-node-storage](https://github.com/olegabu/chaincode-node-storage) 
+which provides CRUD functionality.
+
+Invoke chaincode to save entities of type *account*.
 ```bash
-./chaincode-invoke.sh reference common '["invoke","a","b","1"]'
+./chaincode-invoke.sh reference common '["put","account","1","{\"name\":\"one\"}"]'
+
+./chaincode-invoke.sh reference common '["put","account","2","{\"name\":\"two\"}"]'
 ```
 
-Query chaincode.
+Query chaincode functions *list* and *get*.
 ```bash
-./chaincode-query.sh reference common '["query","a"]'
+./chaincode-query.sh reference common '["list","account"]'
+
+./chaincode-query.sh reference common '["get","account","1"]'
 ```
 
 ## Upgrade chaincode 
@@ -95,13 +103,13 @@ Query chaincode.
 Now you can make changes to your chaincode, install a new version `1.1` and upgrade to it.
 ```bash
 ./chaincode-install.sh reference 1.1
-./chaincode-upgrade.sh reference common '["init","a","10","b","0"]' 1.1
+./chaincode-upgrade.sh reference common 1.1
 ```
 
 When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
 new random version
 ```bash
-./chaincode-reload.sh reference common '["init","a","10","b","0"]'
+./chaincode-reload.sh reference common
 ``` 
 
 ## Golang chaincode 
@@ -214,7 +222,7 @@ Install and instantiate chaincode *reference* on channel *common*. Note the path
 docker container and is mapped to the local  `./chaincode/node/reference`
 ```bash
 ./chaincode-install.sh reference
-./chaincode-instantiate.sh reference common '["init","a","10","b","0"]'
+./chaincode-instantiate.sh reference common
 ```
 
 Install and instantiate chaincode *relationship* on channel *org1-org2*:
@@ -247,7 +255,7 @@ export COMPOSE_PROJECT_NAME=org3 ORG=org3
 Login into *org1* as *user1* and save returned token into env variable `JWT` which we'll use to identify our user 
 in subsequent requests:
 ```bash
-JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3000/users | tr -d '"')`
+JWT=`(curl -d '{"username":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3000/users | tr -d '"')`
 ```
 
 Query channels *org1* has joined
@@ -267,24 +275,16 @@ curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/orgs
 curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/blocks/2
 ```
 
-Invoke chaincode *reference* on channel *common*, it's implemented by chaincode_example_02 and moves 1 from a to b:
+Invoke function `put` of chaincode *reference* on channel *common* to save entity of type `account` and id `1`:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
-http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"invoke","args":["a","b","1"]}'
+http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"]}'
 ```
 
-Query chaincode *reference* on channel *common* for the balance of *a*:
+Query function `list` of chaincode *reference* on channel *common* with args `["account"]`:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
-'http://localhost:3000/channels/common/chaincodes/reference?fcn=query&args=a'
-```
-
-Now login into the API server of *org2* `http://localhost:3001` and query the balance of *b*:
-```bash
-JWT=`(curl -d '{"login":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3001/users | tr -d '"')`
-
-curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
-'http://localhost:3001/channels/common/chaincodes/reference?fcn=query&args=b'
+'http://localhost:3000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
 ```
 
 # Build Fabric with support for chaincodes in Java

@@ -8,6 +8,6 @@ l=$5
 v="1.$RANDOM"
 
 ./chaincode-install.sh $n $v $p $l
-./chaincode-upgrade.sh $n $k $a $v
+./chaincode-upgrade.sh $n $k $v $a
 
-echo -e "\e[1;31mUpgraded to version:\e[m \e[1;33m$v\e[m"
+echo -e "\e[1;35mUpgraded to version:\e[m \e[1;32m$v\e[m"

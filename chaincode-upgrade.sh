@@ -6,7 +6,7 @@ exampleMsg="$0 chaincode1 common '[\"Init\",\"arg1\",\"val1\"]' 2.0 \"OR ('org1.
 IFS=
 chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 channelName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
-initArguments=${3}
-chaincodeVersion=${4}
+chaincodeVersion=${3}
+initArguments=${4:'[]'}
 
 upgradeChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion"
