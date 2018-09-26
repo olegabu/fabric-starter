@@ -20,8 +20,8 @@ services:
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
-    ports:
-      - ${CA_PORT:-7054}:7054
+#    ports:
+#      - ${CA_PORT:-7054}:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d --ca.name default'
     volumes:
       - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
@@ -36,9 +36,9 @@ services:
       - CORE_PEER_ID=peer0.${ORG:-org1}.${DOMAIN:-example.com}
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
-    ports:
-      - ${PEER0_PORT:-7051}:7051
-      - ${PEER0_EVENT_PORT:-7053}:7053
+#    ports:
+#      - ${PEER0_PORT:-7051}:7051
+#      - ${PEER0_EVENT_PORT:-7053}:7053
     volumes:
         - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
         - peer0:/var/hyperledger/production
@@ -55,9 +55,9 @@ services:
       - CORE_PEER_ID=peer1.${ORG:-org1}.${DOMAIN:-example.com}
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_ADDRESS=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
-    ports:
-      - ${PEER1_PORT:-7056}:7051
-      - ${PEER1_EVENT_PORT:-7058}:7053
+#    ports:
+#      - ${PEER1_PORT:-7056}:7051
+#      - ${PEER1_EVENT_PORT:-7058}:7053
     volumes:
         - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
         - peer1:/var/hyperledger/production
@@ -99,30 +99,30 @@ services:
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
 
   # fabric-rest api server
-#  api:
-#    build: ./client-node
-#    image: olegabu/fabric-starter-client
-#    container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
-#    ports:
-#      - ${API_PORT:-3000}:3000
-#    environment:
-#      - ORG=${ORG:-org1}
-#      - DOMAIN=${DOMAIN:-example.com}
-#      - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
-#      - ORGS=${ORGS:-"org1":"peer0.org1.example.com:7051"}
-#      - CAS=${CAS:-"org1":"ca.org1.example.com:7054"}
-#      - DISCOVER_AS_LOCALHOST=false
-#      - ENROLL_ID=admin
-#      - ENROLL_SECRET=adminpw
-#      - P=$PWD
-#    depends_on:
-#      - peer0
-#      - peer1
-#    volumes:
-#      - $PWD/crypto-config:/usr/src/app/crypto-config
-##     - ../www:/usr/src/app/www
-#    command: sh -c "npm start"
-##    API_EXTRA_HOSTS
+  api:
+#    build: ../fabric-starter-rest
+    image: olegabu/fabric-starter-rest
+    container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
+    ports:
+      - ${API_PORT:-3000}:3000
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
+      - ORGS=${ORGS:-"org1":"peer0.org1.example.com:7051"}
+      - CAS=${CAS:-"org1":"ca.org1.example.com:7054"}
+      - DISCOVER_AS_LOCALHOST=false
+      - ENROLL_ID=admin
+      - ENROLL_SECRET=adminpw
+      - P=$PWD
+    depends_on:
+      - peer0
+      - peer1
+    volumes:
+      - $PWD/crypto-config:/usr/src/app/crypto-config
+#     - ../www:/usr/src/app/www
+    command: sh -c "npm start"
+#    API_EXTRA_HOSTS
 
 #  api:
 #    extends:
@@ -138,7 +138,7 @@ services:
 #    depends_on:
 #      - peer0
 #      - peer1
-##    API_EXTRA_HOSTS
+#    API_EXTRA_HOSTS
 
   # simple http server to disseminate certificates
   www.peer:

@@ -1,15 +1,23 @@
 # Starter Application for Hyperledger Fabric
 
-Create a network to jump start development of your decentralized application.
+Create a network to jump start development of your decentralized application on 
+[Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) platform.
 
 The network can be deployed to multiple docker containers on one host for development or to multiple hosts for testing 
 or production.
 
 Scripts of this starter generate crypto material and config files, start the network and deploy your chaincodes. 
-Developers can use REST API to invoke and query chaincodes, explore blocks and transactions.
+Developers can use [REST API](https://github.com/olegabu/fabric-starter-rest) to invoke and query chaincodes, 
+explore blocks and transactions.
 
 What's left is to develop your chaincodes and place them into the [chaincode](./chaincode) folder, 
-and user interface as a single page web app that you can serve by by placing the sources into the [www](./www) folder. 
+and user interface as a single page web app that you can serve by by placing the sources into the [www](./www) folder.
+
+See also
+
+- [fabric-starter-rest](https://github.com/olegabu/fabric-starter-rest)
+- [fabric-starter-web](https://github.com/olegabu/fabric-starter-web) 
+- [chaincode-node-storage](https://github.com/olegabu/chaincode-node-storage) 
 
 Most of the plumbing work is taken care of by this starter.
 
