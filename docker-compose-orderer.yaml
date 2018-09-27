@@ -26,8 +26,8 @@ services:
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
     command: orderer
-#    ports:
-#      - 7050:7050
+    ports:
+      - 7050:7050
     volumes:
       - ${PWD}/crypto-config/configtx:/etc/hyperledger/configtx
       - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
@@ -60,6 +60,9 @@ services:
     - ${PWD}/templates:/etc/hyperledger/templates
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+#    extra_hosts:
+#    - "peer0.org1.example.com:192.168.56.1"
+#    - "www.org1.example.com:192.168.56.1"
 
 
   # http serves certificates
@@ -69,7 +72,7 @@ services:
       service: www-base
     container_name: www.${DOMAIN:-example.com}
     ports:
-      - 8080:80
+      - ${WWW_PORT:-8080}:80
     volumes:
       - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 
