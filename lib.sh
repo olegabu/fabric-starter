@@ -28,7 +28,7 @@ function runCLI() {
    cliId=`docker ps --filter name=$checkContainer -q`
    #TODO getting error No such command: run __rm
    [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run"
-   echo -e "\e[1;35mExecute:\e[m \e[1;32mdocker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\e[m"
+   echo -e "\x1b[32mExecute:docker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\033[0m"
 
    docker-compose --file ${composeTemplateFile} ${composeCommand} ${service} bash -c "$command"
 }
