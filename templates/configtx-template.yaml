@@ -17,6 +17,15 @@ Organizations:
         - Host: peer0.${ORG}.${DOMAIN}
           Port: 7051
 
+Capabilities:
+  Global: &ChannelCapabilities
+    V1_1: true
+  Orderer: &OrdererCapabilities
+    V1_1: true
+  Application: &ApplicationCapabilities
+    V1_2: true
+
+
 
 Orderer: &OrdererDefaults
 
@@ -58,10 +67,15 @@ Orderer: &OrdererDefaults
 Profiles:
 
     OrdererGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+
         Consortiums:
             SampleConsortium:
                 Organizations:
@@ -76,3 +90,5 @@ Profiles:
         Application:
             Organizations:
             - *firstOrg
+            Capabilities:
+                <<: *ApplicationCapabilities

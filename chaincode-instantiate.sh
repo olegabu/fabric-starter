@@ -8,5 +8,8 @@ chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 channelName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 initArguments=${3-'[]'}
 chaincodeVersion=${4-1.0}
+path=${5:-''}
+collection=${6}
 
-instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion"
+
+instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$path" "$collection"
