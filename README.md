@@ -179,7 +179,7 @@ Generate and start *org2*.
 ```bash
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
-export API_PORT=3001
+export API_PORT=4001
 
 ./generate-peer.sh
 
@@ -190,7 +190,7 @@ Generate and start *org3* in another shell:
 ```bash
 export COMPOSE_PROJECT_NAME=org3 ORG=org3 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org3":"ca.org2.example.com:7054"}'
-export API_PORT=3002
+export API_PORT=4002
 
 ./generate-peer.sh
 
@@ -263,12 +263,12 @@ export COMPOSE_PROJECT_NAME=org3 ORG=org3
 Login into *org1* as *user1* and save returned token into env variable `JWT` which we'll use to identify our user 
 in subsequent requests:
 ```bash
-JWT=`(curl -d '{"username":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:3000/users | tr -d '"')`
+JWT=`(curl -d '{"username":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:4000/users | tr -d '"')`
 ```
 
 Query channels *org1* has joined
 ```bash
-curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels
+curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels
 ```
 returns
 ```json
@@ -277,22 +277,22 @@ returns
 
 Query status, orgs, instantiated chaincodes and block 2 of channel *common*:
 ```bash
-curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common
-curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/chaincodes
-curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/orgs
-curl -H "Authorization: Bearer $JWT" http://localhost:3000/channels/common/blocks/2
+curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common
+curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/chaincodes
+curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/orgs
+curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/blocks/2
 ```
 
 Invoke function `put` of chaincode *reference* on channel *common* to save entity of type `account` and id `1`:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
-http://localhost:3000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"]}'
+http://localhost:4000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"]}'
 ```
 
 Query function `list` of chaincode *reference* on channel *common* with args `["account"]`:
 ```bash
 curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
-'http://localhost:3000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
+'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
 ```
 
 # Build Fabric with support for chaincodes in Java
