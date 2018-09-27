@@ -153,3 +153,7 @@ services:
       - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ${PWD}/crypto-config/configtx:/usr/share/nginx/html/configtx
 
+networks:
+  default:
+    external:
+      name: fabric-starter_default

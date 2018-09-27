@@ -28,7 +28,7 @@ function runCLI() {
    cliId=`docker ps --filter name=$checkContainer -q`
    #TODO getting error No such command: run __rm
    [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run"
-   echo -e "\e[1;35mExecute:\e[m \e[1;32mdocker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\e[m"
+   echo -e "\x1b[32mExecute:docker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\033[0m"
 
    docker-compose --file ${composeTemplateFile} ${composeCommand} ${service} bash -c "$command"
 }
@@ -164,10 +164,14 @@ function instantiateChaincode() {
     chaincodeName=${2:?Chaincode name must be specified}
     initArguments=${3:-[]}
     chaincodeVersion=${4:-1.0}
+    path=${5}
+    privateCollection=${6}
+
 
     arguments="{\"Args\":$initArguments}"
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt --collections-config ${path}${privateCollection}.json"
+# runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
 
 
