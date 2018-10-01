@@ -24,7 +24,7 @@ services:
       - ${CA_PORT:-7054}:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d --ca.name default'
     volumes:
-      - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
 #      - ../artifacts/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
@@ -40,7 +40,7 @@ services:
       - ${PEER0_PORT:-7051}:7051
       - ${PEER0_EVENT_PORT:-7053}:7053
     volumes:
-        - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+        - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
         - peer0:/var/hyperledger/production
     depends_on:
       - ca
@@ -58,7 +58,7 @@ services:
       - ${PEER1_PORT:-7056}:7051
       - ${PEER1_EVENT_PORT:-7058}:7053
     volumes:
-        - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+        - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
         - peer1:/var/hyperledger/production
     depends_on:
       - ca
@@ -85,16 +85,16 @@ services:
     working_dir: /etc/hyperledger
     volumes:
     - /var/run/:/host/var/run/
-    - ${PWD}/crypto-config:/etc/hyperledger/artifacts
-    - ${PWD}/chaincode:/opt/chaincode
-    - ${PWD}/chaincode/go:/opt/gopath/src
-    - ${PWD}/crypto-config:/etc/hyperledger/crypto-config
-    - ${PWD}/templates:/etc/hyperledger/templates
-    - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
-    - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
-    - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
-    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - ./crypto-config:/etc/hyperledger/artifacts
+    - ./chaincode:/opt/chaincode
+    - ./chaincode/go:/opt/gopath/src
+    - ./crypto-config:/etc/hyperledger/crypto-config
+    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
+    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
+    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
+    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
 
   # fabric-rest api server
   api:
@@ -118,8 +118,8 @@ services:
       - peer0
       - peer1
     volumes:
-      - ${PWD}/crypto-config:/usr/src/app/crypto-config
-      - ${PWD}/webapp:/usr/src/app/webapp
+      - ./crypto-config:/usr/src/app/crypto-config
+      - ./webapp:/usr/src/app/webapp
     command: sh -c "npm start"
 
   # simple http server to disseminate certificates
@@ -131,8 +131,8 @@ services:
     ports:
       - ${WWW_PORT:-8081}:80
     volumes:
-      - ${PWD}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-      - ${PWD}/crypto-config/configtx:/usr/share/nginx/html/configtx
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+#      - crypto-config/configtx:/usr/share/nginx/html/configtx
 
 networks:
   default:

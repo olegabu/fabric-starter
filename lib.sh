@@ -4,6 +4,7 @@
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
 : ${WWW_PORT:=8081}
+: ${FABRIC_STARTER_HOME:=.}
 
 function printUsage() {
    usageMsg=$1
@@ -13,26 +14,57 @@ function printUsage() {
 
 }
 
+function runCLIOverride() {
+    local composeTemplateFile=${1:?Docker-compose file must be specififed}
+    local service=${2:?Service must be specififed}
+    local composeCommand=$3
+    local command=$4
+
+    if [ -n "${DOCKER_HOST}" ]; then
+        [ -n "$EXECUTE_BY_ORDERER" ] && overrideTemplateParam=" -f $FABRIC_STARTER_HOME/orderer-virtualbox.yaml " \
+        || overrideTemplateParam=" -f $FABRIC_STARTER_HOME/virtualbox.yaml "
+    fi
+
+   [ -n "$command" ] && detach="" || detach=' -d  '
+
+   echo -e "\x1b[32mExecute: docker-compose -f ${composeTemplateFile} ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c \"$command\"\033[0m"
+   if [ -n "$command" ]; then
+    docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c "${command}"
+   else
+    docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service}
+   fi
+}
+
+
 function runCLI() {
-   command="$1"
+   local command="$1"
 
    if [ -n "$EXECUTE_BY_ORDERER" ]; then
-        composeTemplateFile="docker-compose-orderer.yaml"
+        composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml"
         service="cli.orderer"
    else
-        composeTemplateFile="docker-compose.yaml"
+        composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
         service="cli.peer"
    fi
 
    [ -n "$EXECUTE_BY_ORDERER" ] && checkContainer="cli.$DOMAIN" || checkContainer="cli.$ORG.$DOMAIN"
    cliId=`docker ps --filter name=$checkContainer -q`
-   #TODO getting error No such command: run __rm
-   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run --rm"
-   echo -e "\x1b[32mExecute: docker-compose -f $composeTemplateFile ${COMPOSE_FLAGS} $composeCommand $service bash -c \"$command\"\033[0m"
 
-   [ -n "${COMPOSE_FLAGS}" ] && docker-compose -f "${composeTemplateFile}" "${COMPOSE_FLAGS}" ${composeCommand} ${service} bash -c "$command" \
-   || docker-compose -f "${composeTemplateFile}" ${composeCommand} ${service} bash -c "$command"
+   [ -z "$cliId" ] && runCLIOverride $composeTemplateFile $service up
+
+    runCLIOverride "$composeTemplateFile" "$service" exec "$command"
 }
+
+function envSubst() {
+   inputFile=${1:?Input file required}
+   outputFile=${2:?Output file required}
+
+   dir=$(dirname "${inputFile}")
+   if [ "$dir" = "templates" ]; then inputFile="$FABRIC_STARTER_HOME/$inputFile"; fi
+
+   runCLI "envsubst <$inputFile >$outputFile"
+}
+
 
 function downloadMSP() {
     org=$1
@@ -43,9 +75,9 @@ function downloadMSP() {
     else
         [ -n "$org" ] && mspSubPath="$org.$DOMAIN" orgSubPath="peerOrganizations" || mspSubPath="$DOMAIN" orgSubPath="ordererOrganizations"
     fi
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}:${WWW_PORT}/msp/admincerts/Admin@${mspSubPath}-cert.pem"
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}:${WWW_PORT}/msp/cacerts/ca.${mspSubPath}-cert.pem"
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}:${WWW_PORT}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
     runCLI "mkdir -p crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ \
     && cp crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ca.crt"
 }
@@ -78,9 +110,8 @@ function updateChannelGroupConfigForOrg() {
     exportEnvironment=$3
     exportEnvironment="export NEWORG=${org} ${exportEnvironment:+&&} ${exportEnvironment}"
 
-    runCLI "${exportEnvironment} \
-    && envsubst < ${templateFileOfUpdate} > crypto-config/configtx/new_config_${org}.json \
-    && jq -s '.[0] * {\"channel_group\":{\"groups\":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json"
+    envSubst "${templateFileOfUpdate}" "crypto-config/configtx/new_config_${org}.json"
+    runCLI "${exportEnvironment} && jq -s '.[0] * {\"channel_group\":{\"groups\":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json"
 }
 
 

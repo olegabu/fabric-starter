@@ -6,7 +6,6 @@ version: '2.1'
 
 volumes:
   orderer:
-  peer0.OrdererAdmin:
 
 services:
 
@@ -29,8 +28,8 @@ services:
     ports:
       - 7050:7050
     volumes:
-      - ${PWD}/crypto-config/configtx:/etc/hyperledger/configtx
-      - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/configtx:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
 
   cli.orderer:
@@ -56,10 +55,10 @@ services:
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
     working_dir: /etc/hyperledger
     volumes:
-    - ${PWD}/crypto-config:/etc/hyperledger/crypto-config
-    - ${PWD}/templates:/etc/hyperledger/templates
-    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
-    - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+    - ./crypto-config:/etc/hyperledger/crypto-config
+    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
+    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 
   # http serves certificates
   www.orderer:
@@ -70,4 +69,4 @@ services:
     ports:
       - ${WWW_PORT:-8080}:80
     volumes:
-      - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp

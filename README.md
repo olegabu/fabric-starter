@@ -177,8 +177,14 @@ Generate and start *org2*.
 ```bash
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
-export API_PORT=4001
+```
+In case running on local machine:
+```bash
+export API_PORT=4001 WWW_PORT=8082 CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058
+```
 
+Then start the peer
+```bash
 ./generate-peer.sh
 
 docker-compose up
@@ -407,7 +413,7 @@ docker-machine scp -r chaincode org1:/home/docker/chaincode
 ```
 
 Set extra docker compose file `virtualbox.yaml` and generate crypto material for member organization *org1*.
-
+TODO
 ```bash
 export COMPOSE_FLAGS="-fvirtualbox.yaml"
 
