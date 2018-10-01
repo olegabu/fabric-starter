@@ -347,3 +347,100 @@ Note the path to the source code is inside `cli` docker container and is mapped 
 ./chaincode-install.sh fabric-chaincode-example /opt/chaincode/java/fabric-chaincode-example-gradle java
 ./chaincode-instantiate.sh fabric-chaincode-example common '["init","a","10","b","0"]'
 ```
+
+# Multi host deployment with docker-machine and VirtualBox
+
+Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) 
+and follow [instructions to install docker-machine](https://docs.docker.com/machine/get-started/).
+
+## Create orderer machine
+
+Create and start `orderer` docker host as a virtual machine.
+```bash
+docker-machine create --driver virtualbox orderer
+```
+
+Connect to `orderer` machine by setting env variables.
+```bash
+eval "$(docker-machine env orderer)"
+```
+
+Copy local template files to `orderer` home directory `/home/docker`.
+```bash
+docker-machine scp -r templates orderer:/home/docker/templates
+```
+
+Now template files are on the `orderer` host and we can run `./generate-orderer.sh` but with a flag 
+`COMPOSE_FLAGS` which adds an extra docker-compose file `virtualbox-orderer.yaml` on top of the base 
+`docker-compose-orderer.yaml`. This file redefines volume mappings from `${PWD}` local to your host machine to 
+working directory `/home/docker` on the virtual host `orderer`; as well as adds `extra_hosts` section to be able to 
+access containers running on other virtual hosts by their ips.
+
+```bash
+export COMPOSE_FLAGS="-forderer-virtualbox.yaml"
+
+./generate-orderer.sh
+``` 
+
+Start *Orderer* containers on `orderer` machine.
+```bash
+docker-compose -f docker-compose-orderer.yaml $COMPOSE_FLAGS up
+```
+
+## Create org1 machine
+
+Create and start `org1` docker host as a virtual machine.
+```bash
+docker-machine create --driver virtualbox org1
+```
+
+Connect to `org1` machine by setting env variables.
+```bash
+eval "$(docker-machine env org1)"
+```
+
+Copy local template and chaincode files to `org1` home directory `/home/docker`.
+```bash
+docker-machine scp -r templates org1:/home/docker/templates
+
+docker-machine scp -r chaincode org1:/home/docker/chaincode
+```
+
+Set extra docker compose file `virtualbox.yaml` and generate crypto material for member organization *org1*.
+
+```bash
+export COMPOSE_FLAGS="-fvirtualbox.yaml"
+
+./generate-peer.sh
+``` 
+
+Start *org1* containers on `org1` machine.
+```bash
+docker-compose -f docker-compose.yaml $COMPOSE_FLAGS up
+``` 
+
+## Add org1 to the consortium as Orderer
+
+Now `org1` machine is up and running a web container serving root certificates of *org1*. The orderer can access it
+via a `extra_hosts` mapping, download certs and add *org1*.
+
+Connect to `orderer` machine by setting env variables. Run local script to add to the consortium.
+```bash
+eval "$(docker-machine env orderer)"
+
+export COMPOSE_FLAGS="-forderer-virtualbox.yaml"
+
+./consortium-add-org.sh org1
+```
+
+## Create channels, deploy chaincodes as org1
+
+Connect to `org1` machine by setting env variables. Run local scripts to create and join channels.
+```bash
+eval "$(docker-machine env org1)"
+
+export COMPOSE_FLAGS="-fvirtualbox.yaml" WWW_PORT=8080
+
+./channel-create.sh common
+```
+
