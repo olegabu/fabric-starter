@@ -27,10 +27,11 @@ function runCLI() {
    [ -n "$EXECUTE_BY_ORDERER" ] && checkContainer="cli.$DOMAIN" || checkContainer="cli.$ORG.$DOMAIN"
    cliId=`docker ps --filter name=$checkContainer -q`
    #TODO getting error No such command: run __rm
-   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run"
-   echo -e "\x1b[32mExecute:docker-compose -f $composeTemplateFile ${COMPOSE_FLAGS} $composeCommand $service bash -c \"$command\"\033[0m"
+   [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run --rm"
+   echo -e "\x1b[32mExecute: docker-compose -f $composeTemplateFile ${COMPOSE_FLAGS} $composeCommand $service bash -c \"$command\"\033[0m"
 
-   docker-compose -f "${composeTemplateFile}" "${COMPOSE_FLAGS}" ${composeCommand} ${service} bash -c "$command"
+   [ -n "${COMPOSE_FLAGS}" ] && docker-compose -f "${composeTemplateFile}" "${COMPOSE_FLAGS}" ${composeCommand} ${service} bash -c "$command" \
+   || docker-compose -f "${composeTemplateFile}" ${composeCommand} ${service} bash -c "$command"
 }
 
 function downloadMSP() {
