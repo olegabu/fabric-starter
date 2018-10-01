@@ -1,0 +1,60 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '2.1'
+
+services:
+
+  ca:
+    volumes:
+      - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+
+  peer0:
+    volumes:
+        - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    extra_hosts:
+      - "orderer.example.com:192.168.99.100"
+
+  peer1:
+    volumes:
+        - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    extra_hosts:
+      - "orderer.example.com:192.168.99.100"
+
+  cli.peer:
+    volumes:
+    - /home/docker/crypto-config:/etc/hyperledger/artifacts
+    - /home/docker/chaincode:/opt/chaincode
+    - /home/docker/chaincode/go:/opt/gopath/src
+    - /home/docker/crypto-config:/etc/hyperledger/crypto-config
+    - /home/docker/templates:/etc/hyperledger/templates
+    - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+    - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
+    - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
+    - /home/docker/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+    - /home/docker/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    extra_hosts:
+      - "orderer.example.com:192.168.99.100"
+      - "www.example.com:192.168.99.100"
+
+  # fabric-rest api server
+  api:
+#    environment:
+#      - P=/home/docker
+    volumes:
+      - /home/docker/crypto-config:/usr/src/app/crypto-config
+      - /home/docker/webapp:/usr/src/app/webapp
+    extra_hosts:
+      - "orderer.example.com:192.168.99.100"
+
+  # simple http server to disseminate certificates
+  www.peer:
+    volumes:
+      - /home/docker/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - /home/docker/crypto-config/configtx:/usr/share/nginx/html/configtx
+
+networks:
+  default:
+#    external:
+#      name: fabric-starter_default

@@ -60,10 +60,6 @@ services:
     - ${PWD}/templates:/etc/hyperledger/templates
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
     - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-#    extra_hosts:
-#    - "peer0.org1.example.com:192.168.56.1"
-#    - "www.org1.example.com:192.168.56.1"
-
 
   # http serves certificates
   www.orderer:
@@ -75,11 +71,3 @@ services:
       - ${WWW_PORT:-8080}:80
     volumes:
       - ${PWD}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-
-#  member orgs also serve their certificates so orderer can download them when creating config tx to add to consortium or create channels
-#  and point `MSPDir: crypto/org1/msp` in configtx.yaml to the respective msp directories where certs were downloaded to:
-#
-#  use port 80 within docker network or the port exposed to the host ${WWW_PORT:-8081} in docker-compose-peer
-#  wget --directory-prefix crypto/org1/msp/cacerts http://www.org1.example.com/msp/cacerts/ca.org1.example.com-cert.pem
-#  wget --directory-prefix crypto/org1/msp/tlscacerts http://www.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
-#  wget --directory-prefix crypto/org1/msp/admincerts http://www.org1.example.com/msp/admincerts/Admin\@org1.example.com-cert.pem

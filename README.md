@@ -19,8 +19,6 @@ See also
 - [fabric-starter-web](https://github.com/olegabu/fabric-starter-web) 
 - [chaincode-node-storage](https://github.com/olegabu/chaincode-node-storage) 
 
-Most of the plumbing work is taken care of by this starter.
-
 # Install
 
 Install prerequisites: `docker` and `docker-compose`. This instruction is for Ubuntu 18:

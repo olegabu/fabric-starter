@@ -1,0 +1,27 @@
+# 
+# Copyright . All Rights Reserved.
+# 
+
+version: '2.1'
+
+services:
+
+  orderer:
+    volumes:
+      - /home/docker/crypto-config/configtx:/etc/hyperledger/configtx
+      - /home/docker/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+
+  cli.orderer:
+    volumes:
+    - /home/docker/crypto-config:/etc/hyperledger/crypto-config
+    - /home/docker/templates:/etc/hyperledger/templates
+    - /home/docker/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - /home/docker/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+    extra_hosts:
+    - "peer0.org1.example.com:192.168.99.101"
+    - "www.org1.example.com:192.168.99.101"
+
+  # http serves certificates
+  www.orderer:
+    volumes:
+      - /home/docker/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
