@@ -28,9 +28,9 @@ function runCLI() {
    cliId=`docker ps --filter name=$checkContainer -q`
    #TODO getting error No such command: run __rm
    [ -n "$cliId" ] && composeCommand="exec" || composeCommand="run"
-   echo -e "\x1b[32mExecute:docker-compose -f $composeTemplateFile $composeCommand $service bash -c \"$command\"\033[0m"
+   echo -e "\x1b[32mExecute:docker-compose -f $composeTemplateFile ${COMPOSE_FLAGS} $composeCommand $service bash -c \"$command\"\033[0m"
 
-   docker-compose --file ${composeTemplateFile} ${composeCommand} ${service} bash -c "$command"
+   docker-compose -f "${composeTemplateFile}" "${COMPOSE_FLAGS}" ${composeCommand} ${service} bash -c "$command"
 }
 
 function downloadMSP() {
@@ -42,9 +42,9 @@ function downloadMSP() {
     else
         [ -n "$org" ] && mspSubPath="$org.$DOMAIN" orgSubPath="peerOrganizations" || mspSubPath="$DOMAIN" orgSubPath="ordererOrganizations"
     fi
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem"
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem"
-    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}:${WWW_PORT}/msp/admincerts/Admin@${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}:${WWW_PORT}/msp/cacerts/ca.${mspSubPath}-cert.pem"
+    runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}:${WWW_PORT}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
     runCLI "mkdir -p crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ \
     && cp crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ca.crt"
 }
