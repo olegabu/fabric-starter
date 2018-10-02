@@ -58,12 +58,12 @@ function runCLI() {
 function envSubst() {
    inputFile=${1:?Input file required}
    outputFile=${2:?Output file required}
-   extraEnvironment=$3
+   extraEnvironment=${3:-true}
 
    dir=$(dirname "${inputFile}")
    if [ "$dir" = "templates" ]; then inputFile="$FABRIC_STARTER_HOME/$inputFile"; fi
 
-   runCLI "$3 && envsubst <$inputFile >$outputFile"
+   runCLI "$extraEnvironment && envsubst <$inputFile >$outputFile"
 }
 
 
