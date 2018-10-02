@@ -50,19 +50,20 @@ function runCLI() {
    [ -n "$EXECUTE_BY_ORDERER" ] && checkContainer="cli.$DOMAIN" || checkContainer="cli.$ORG.$DOMAIN"
    cliId=`docker ps --filter name=$checkContainer -q`
 
-   [ -z "$cliId" ] && runCLIOverride $composeTemplateFile $service up
+   [ -n "$cliId" ] && composeCommand="exec" || composeCommand=" run --rm "
 
-    runCLIOverride "$composeTemplateFile" "$service" exec "$command"
+    runCLIOverride "$composeTemplateFile" "$service" "${composeCommand}" "$command"
 }
 
 function envSubst() {
    inputFile=${1:?Input file required}
    outputFile=${2:?Output file required}
+   extraEnvironment=$3
 
    dir=$(dirname "${inputFile}")
    if [ "$dir" = "templates" ]; then inputFile="$FABRIC_STARTER_HOME/$inputFile"; fi
 
-   runCLI "envsubst <$inputFile >$outputFile"
+   runCLI "$3 && envsubst <$inputFile >$outputFile"
 }
 
 
@@ -110,8 +111,8 @@ function updateChannelGroupConfigForOrg() {
     exportEnvironment=$3
     exportEnvironment="export NEWORG=${org} ${exportEnvironment:+&&} ${exportEnvironment}"
 
-    envSubst "${templateFileOfUpdate}" "crypto-config/configtx/new_config_${org}.json"
-    runCLI "${exportEnvironment} && jq -s '.[0] * {\"channel_group\":{\"groups\":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json"
+    envSubst "${templateFileOfUpdate}" "crypto-config/configtx/new_config_${org}.json" "$exportEnvironment"
+    runCLI " jq -s '.[0] * {\"channel_group\":{\"groups\":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json"
 }
 
 

@@ -9,5 +9,5 @@ consortiumName=${2:-"SampleConsortium"}
 
 echo "Add $NEWORG to consortium $consortiumName"
 EXECUTE_BY_ORDERER=1 downloadMSP ${NEWORG}
-EXECUTE_BY_ORDERER=1 txTranslateChannelConfigBlock "orderer-system-channel"
+#EXECUTE_BY_ORDERER=1 txTranslateChannelConfigBlock "orderer-system-channel"
 EXECUTE_BY_ORDERER=1 updateConsortium $NEWORG "orderer-system-channel"
