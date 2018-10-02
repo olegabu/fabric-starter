@@ -21,18 +21,20 @@ function runCLIOverride() {
     local command=$4
 
     if [ -n "${DOCKER_HOST}" ]; then
-        [ -n "$EXECUTE_BY_ORDERER" ] && overrideTemplateParam=" -f $FABRIC_STARTER_HOME/orderer-virtualbox.yaml " \
-        || overrideTemplateParam=" -f $FABRIC_STARTER_HOME/virtualbox.yaml "
+        [ -n "$EXECUTE_BY_ORDERER" ] && overrideTemplateParam="-forderer-multihost.yaml" \
+        || overrideTemplateParam="-fmultihost.yaml"
     fi
 
    [ -n "$command" ] && detach="" || detach=' -d  '
 
    echo -e "\x1b[32mExecute: docker-compose -f ${composeTemplateFile} ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c \"$command\"\033[0m"
+#   set -x
    if [ -n "$command" ]; then
-    docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c "${command}"
+       docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c "${command}"
    else
     docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service}
    fi
+#   set +x
 }
 
 

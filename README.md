@@ -178,7 +178,7 @@ Generate and start *org2*.
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
 ```
-In case running on local machine:
+When running on local machine:
 ```bash
 export API_PORT=4001 WWW_PORT=8082 CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058
 ```
@@ -371,31 +371,39 @@ Connect to `orderer` machine by setting env variables.
 eval "$(docker-machine env orderer)"
 ```
 
-Copy local template files to `orderer` home directory `/home/docker`.
+Start docker swarm on `orderer` machine. Replace ip address `192.168.99.102` with the actual ip of the remote host interface.
 ```bash
-docker-machine scp -r templates orderer:/home/docker/templates
+docker swarm init --advertise-addr 192.168.99.102
+```
+will output a command to join the swarm by other hosts; this is an example, use the actual token and ip.  
+```bash
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
+```
+
+Copy local template files to `orderer` home directory (`/home/docker` on VirtualBox or `/home/ubuntu` on AWS EC2).
+```bash
+docker-machine scp -r templates orderer:templates
 ```
 
 Now template files are on the `orderer` host and we can run `./generate-orderer.sh` but with a flag 
-`COMPOSE_FLAGS` which adds an extra docker-compose file `virtualbox-orderer.yaml` on top of the base 
+`COMPOSE_FLAGS` which adds an extra docker-compose file `orderer-multihost.yaml` on top of the base 
 `docker-compose-orderer.yaml`. This file redefines volume mappings from `${PWD}` local to your host machine to 
-working directory `/home/docker` on the virtual host `orderer`; as well as adds `extra_hosts` section to be able to 
-access containers running on other virtual hosts by their ips.
+directory on remote host specified by `WORK_DIR` (defaulted to VirtualBox's home `/home/docker`; 
+for AWS EC2 do `export WORK_DIR=/home/ubuntu`).
 
 ```bash
-export COMPOSE_FLAGS="-forderer-virtualbox.yaml"
-
 ./generate-orderer.sh
 ``` 
 
 Start *Orderer* containers on `orderer` machine.
 ```bash
-docker-compose -f docker-compose-orderer.yaml $COMPOSE_FLAGS up
+docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up
 ```
 
 ## Create org1 machine
 
-Create and start `org1` docker host as a virtual machine.
+Create and start `org1` docker host as a virtual machine with VirtualBox. 
+For AWS EC2 use `--driver amazonec2` and `export WORK_DIR=/home/ubuntu`.
 ```bash
 docker-machine create --driver virtualbox org1
 ```
@@ -405,36 +413,42 @@ Connect to `org1` machine by setting env variables.
 eval "$(docker-machine env org1)"
 ```
 
-Copy local template and chaincode files to `org1` home directory `/home/docker`.
+Join swarm; this is an example, use the actual command output by `orderer`.
 ```bash
-docker-machine scp -r templates org1:/home/docker/templates
-
-docker-machine scp -r chaincode org1:/home/docker/chaincode
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
 ```
 
-Set extra docker compose file `virtualbox.yaml` and generate crypto material for member organization *org1*.
-TODO
+Need to run a dummy container to force join overlay network.
 ```bash
-export COMPOSE_FLAGS="-fvirtualbox.yaml"
+docker run -dit --name alpine2 --network fabric-overlay alpine
+```
 
+Copy local template and chaincode files to `org1` machine.
+```bash
+docker-machine scp -r templates org1:templates
+
+docker-machine scp -r chaincode org1:chaincode
+```
+
+Generate crypto material for member organization *org1*.
+
+```bash
 ./generate-peer.sh
 ``` 
 
 Start *org1* containers on `org1` machine.
 ```bash
-docker-compose -f docker-compose.yaml $COMPOSE_FLAGS up
+docker-compose -f docker-compose.yaml -f multihost.yaml up
 ``` 
 
 ## Add org1 to the consortium as Orderer
 
 Now `org1` machine is up and running a web container serving root certificates of *org1*. The orderer can access it
-via a `extra_hosts` mapping, download certs and add *org1*.
+via an overlay network, download certs and add *org1*.
 
 Connect to `orderer` machine by setting env variables. Run local script to add to the consortium.
 ```bash
 eval "$(docker-machine env orderer)"
-
-export COMPOSE_FLAGS="-forderer-virtualbox.yaml"
 
 ./consortium-add-org.sh org1
 ```
@@ -444,8 +458,6 @@ export COMPOSE_FLAGS="-forderer-virtualbox.yaml"
 Connect to `org1` machine by setting env variables. Run local scripts to create and join channels.
 ```bash
 eval "$(docker-machine env org1)"
-
-export COMPOSE_FLAGS="-fvirtualbox.yaml" WWW_PORT=8080
 
 ./channel-create.sh common
 ```

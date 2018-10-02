@@ -1,0 +1,37 @@
+# 
+# Copyright . All Rights Reserved.
+#
+# export COMPOSE_FLAGS="-forderer-multihost.yaml"
+#
+# fow AWS machine
+# export WORK_DIR=/home/ubuntu
+# ./generate-orderer.sh
+
+version: '2.1'
+
+services:
+
+  orderer:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/configtx:/etc/hyperledger/configtx
+      - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+
+  cli.orderer:
+    volumes:
+    - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+    - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates
+    - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+#    extra_hosts:
+#    - "peer0.org1.example.com:192.168.99.101"
+#    - "www.org1.example.com:192.168.99.101"
+
+  # http serves certificates
+  www.orderer:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+
+networks:
+  default:
+    name: fabric-overlay
+    driver: overlay
