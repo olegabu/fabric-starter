@@ -45,7 +45,7 @@ function runCLIWithComposerOverrides() {
       && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} bash -c "${command}" \
       || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service}
 
-   [ "$?" != "0" ] && printRedYellow "Error happened. See console output above." && exit 1
+   [ $? -ne 0 ] && printRedYellow "Error happened. See console output above." && exit 1
 }
 
 
