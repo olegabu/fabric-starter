@@ -28,18 +28,22 @@ function printUsage() {
 }
 
 function runCLIWithComposerOverrides() {
-    local composeTemplateFile=${1:?Docker-compose file must be specififed}
-    local service=${2:?Service must be specififed}
-    local composeCommand=${3:?Compose command must be specified}
-    local command=${4:?Command to execute must be specified}
+    local composeCommand=${1:?Compose command must be specified}
+    local service=${2}
+    local command=${3}
+
+    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
 
     if [ -n "${DOCKER_HOST}" ]; then
-        [ -n "$EXECUTE_BY_ORDERER" ] && machineOverrideParam="-forderer-multihost.yaml" || machineOverrideParam="-fmultihost.yaml"
+        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
     fi
-    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBTemplateParam="-fdocker-compose-couchdb.yaml"
 
-   printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${service} bash -c \"$command\""
-   docker-compose -f "${composeTemplateFile}" ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${service} bash -c "${command}"
+    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
+
+   printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
+   [ -n "$command" ] \
+      && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} bash -c "${command}" \
+      || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service}
 
    [ "$?" != "0" ] && printRedYellow "Error happened. See console output above." && exit 1
 }
@@ -49,11 +53,9 @@ function runCLI() {
    local command="$1"
 
    if [ -n "$EXECUTE_BY_ORDERER" ]; then
-        composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml"
         service="cli.orderer"
         checkContainer="cli.$DOMAIN"
    else
-        composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
         service="cli.peer"
         checkContainer="cli.$ORG.$DOMAIN"
    fi
@@ -62,7 +64,7 @@ function runCLI() {
 
    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
 
-    runCLIWithComposerOverrides "$composeTemplateFile" "$service" "${composeCommand}" "$command"
+    runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
 
 function envSubst() {
