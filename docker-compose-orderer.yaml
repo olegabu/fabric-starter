@@ -56,7 +56,7 @@ services:
     working_dir: /etc/hyperledger
     volumes:
     - ./crypto-config:/etc/hyperledger/crypto-config
-    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
+    - ./templates:/etc/hyperledger/templates
     - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
     - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 

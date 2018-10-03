@@ -25,7 +25,6 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d --ca.name default'
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
-#      - ../artifacts/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
     container_name: peer0.${ORG:-org1}.${DOMAIN:-example.com}
@@ -85,7 +84,6 @@ services:
     working_dir: /etc/hyperledger
     volumes:
     - /var/run/:/host/var/run/
-    - ./crypto-config:/etc/hyperledger/artifacts
     - ./chaincode:/opt/chaincode
     - ./chaincode/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
@@ -93,8 +91,7 @@ services:
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
-    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
 
   # fabric-rest api server
   api:
@@ -132,7 +129,6 @@ services:
       - ${WWW_PORT:-8081}:80
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-#      - crypto-config/configtx:/usr/share/nginx/html/configtx
 
 networks:
   default:

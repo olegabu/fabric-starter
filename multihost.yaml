@@ -29,7 +29,6 @@ services:
 
   cli.peer:
     volumes:
-    - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/artifacts
     - ${WORK_DIR-/home/docker}/chaincode:/opt/chaincode
     - ${WORK_DIR-/home/docker}/chaincode/go:/opt/gopath/src
     - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
@@ -37,8 +36,7 @@ services:
     - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
     - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
     - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
-    - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-    - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+    - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
 #    extra_hosts:
 #      - "orderer.example.com:192.168.99.100"
 #      - "www.example.com:192.168.99.100"
