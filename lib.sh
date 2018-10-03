@@ -13,7 +13,7 @@ function printInColor() {
   message1=$2
   color2=$3
   message2=$4
-  echo -e "\e[${color1}m${message1}\e[m\e[${color2}m$message2\e[m"
+  echo -e "\033[${color1}m${message1}\033[m\033[${color2}m$message2\033[m"
 }
 
 function printRedYellow() {
