@@ -21,18 +21,20 @@ function runCLIOverride() {
     local command=$4
 
     if [ -n "${DOCKER_HOST}" ]; then
-        [ -n "$EXECUTE_BY_ORDERER" ] && overrideTemplateParam="-forderer-multihost.yaml" \
-        || overrideTemplateParam="-fmultihost.yaml"
+        [ -n "$EXECUTE_BY_ORDERER" ] && machineOverrideParam="-forderer-multihost.yaml" \
+        || machineOverrideParam="-fmultihost.yaml"
     fi
+    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBTemplateParam="-fdocker-compose-couchdb.yaml"
+
 
    [ -n "$command" ] && detach="" || detach=' -d  '
 
-   echo -e "\x1b[32mExecute: docker-compose -f ${composeTemplateFile} ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c \"$command\"\033[0m"
+   echo -e "\x1b[32mExecute: docker-compose -f ${composeTemplateFile} ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${detach} ${service} bash -c \"$command\"\033[0m"
 #   set -x
    if [ -n "$command" ]; then
-       docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service} bash -c "${command}"
+       docker-compose -f "${composeTemplateFile}" ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${detach} ${service} bash -c "${command}"
    else
-    docker-compose -f "${composeTemplateFile}" ${overrideTemplateParam} ${composeCommand} ${detach} ${service}
+    docker-compose -f "${composeTemplateFile}" ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${detach} ${service}
    fi
 #   set +x
 }
