@@ -9,22 +9,22 @@
 export DOMAIN ORG
 
 function printInColor() {
-  color1=$1
-  message1=$2
-  color2=$3
-  message2=$4
-  echo -e "\033[${color1}m${message1}\033[m\033[${color2}m$message2\033[m"
+    color1=$1
+    message1=$2
+    color2=$3
+    message2=$4
+    echo -e "\033[${color1}m${message1}\033[m\033[${color2}m$message2\033[m"
 }
 
 function printRedYellow() {
-  printInColor "1;31" "$1" "1;33" "$2"
+    printInColor "1;31" "$1" "1;33" "$2"
 }
 
 function printUsage() {
-  usageMsg=$1
-  exampleMsg=$2
-  printRedYellow "\nUsage:" "$usageMsg"
-  printRedYellow "Example:" "$exampleMsg"
+    usageMsg=$1
+    exampleMsg=$2
+    printRedYellow "\nUsage:" "$usageMsg"
+    printRedYellow "Example:" "$exampleMsg"
 }
 
 function runCLIWithComposerOverrides() {
@@ -40,39 +40,39 @@ function runCLIWithComposerOverrides() {
 
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
 
-   printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
-   [ -n "$command" ] \
-      && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} bash -c "${command}" \
-      || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service}
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
+    [ -n "$command" ] \
+ && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} bash -c "${command}" \
+ || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service}
 
-   [ $? -ne 0 ] && printRedYellow "Error happened. See console output above." && exit 1
+    [ $? -ne 0 ] && printRedYellow "Error happened. See console output above." && exit 1
 }
 
 
 function runCLI() {
-   local command="$1"
+    local command="$1"
 
-   if [ -n "$EXECUTE_BY_ORDERER" ]; then
+    if [ -n "$EXECUTE_BY_ORDERER" ]; then
         service="cli.orderer"
         checkContainer="cli.$DOMAIN"
-   else
+    else
         service="cli.peer"
         checkContainer="cli.$ORG.$DOMAIN"
-   fi
+    fi
 
-   cliContainerId=`docker ps --filter name=$checkContainer -q`
+    cliContainerId=`docker ps --filter name=$checkContainer -q`
 
-   [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
+    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
 
 function envSubst() {
-   inputFile=${1:?Input file required}
-   outputFile=${2:?Output file required}
-   local extraEnvironment=${3:-true}
+    inputFile=${1:?Input file required}
+    outputFile=${2:?Output file required}
+    local extraEnvironment=${3:-true}
 
-   runCLI "$extraEnvironment && envsubst <$inputFile >$outputFile"
+    runCLI "$extraEnvironment && envsubst <$inputFile >$outputFile"
 }
 
 
@@ -88,30 +88,30 @@ function downloadMSP() {
     runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem"
     runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem"
     runCLI "wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem"
-    runCLI "mkdir -p crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ \
+    [ -z "$EXECUTE_BY_ORDERER" ] && runCLI "mkdir -p crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ \
     && cp crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ca.crt"
 }
 
 function certificationsToEnv() {
-  org=$1
-  echo "export ORG_ADMIN_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/admincerts/Admin@${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
-  && export ORG_ROOT_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/cacerts/ca.${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
-  && export ORG_TLS_ROOT_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\`"
+    org=$1
+    echo "export ORG_ADMIN_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/admincerts/Admin@${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
+      && export ORG_ROOT_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/cacerts/ca.${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
+      && export ORG_TLS_ROOT_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/tlscacerts/tlsca.${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\`"
 }
 
 function fetchChannelConfigBlock() {
-  channel=${1:?"Channel name must be specified"}
-  blockNum=${2:-config}
-  runCLI "peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
+    channel=${1:?"Channel name must be specified"}
+    blockNum=${2:-config}
+    runCLI "peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
      --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown $UID -R crypto-config/"
 }
 
 function txTranslateChannelConfigBlock() {
-  channel=$1
-  fetchChannelConfigBlock $channel
-  runCLI "configtxlator proto_decode --type 'common.Block' --input=crypto-config/configtx/${channel}.pb --output=crypto-config/configtx/${channel}.json \
-     &&  chown $UID crypto-config/configtx/${channel}.json \
-     && jq .data.data[0].payload.data.config crypto-config/configtx/${channel}.json > crypto-config/configtx/config.json"
+    channel=$1
+    fetchChannelConfigBlock $channel
+    runCLI "configtxlator proto_decode --type 'common.Block' --input=crypto-config/configtx/${channel}.pb --output=crypto-config/configtx/${channel}.json \
+    &&  chown $UID crypto-config/configtx/${channel}.json \
+    && jq .data.data[0].payload.data.config crypto-config/configtx/${channel}.json > crypto-config/configtx/config.json"
 }
 
 function updateChannelGroupConfigForOrg() {
@@ -126,64 +126,64 @@ function updateChannelGroupConfigForOrg() {
 
 
 function createConfigUpdateEnvelope() {
- channel=$1
- configJson=${2:-'crypto-config/configtx/config.json'}
- updatedConfigJson=${3:-'crypto-config/configtx/updated_config.json'}
+    channel=$1
+    configJson=${2:-'crypto-config/configtx/config.json'}
+    updatedConfigJson=${3:-'crypto-config/configtx/updated_config.json'}
 
- echo " >> Prepare config update from $org for channel $channel"
- runCLI "configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
+    echo " >> Prepare config update from $org for channel $channel"
+    runCLI "configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
     && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
     && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
     && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=crypto-config/configtx/update.json && chown $UID crypto-config/configtx/update.json"
-  runCLI "echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat crypto-config/configtx/update.json\`'}}}' | jq . > crypto-config/configtx/update_in_envelope.json"
-  runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb"
-  echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
-  runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat crypto-config/configtx/update.json\`'}}}' | jq . > crypto-config/configtx/update_in_envelope.json"
+    runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb"
+    echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
+    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
 
 function updateChannelConfig() {
-  org=${1:?Org to be updated must be specified}
-  channel=${2:?Channel to be updated must be specified}
-  templateFile=${3:?template file must be specified}
-  exportEnv=$4
+    org=${1:?Org to be updated must be specified}
+    channel=${2:?Channel to be updated must be specified}
+    templateFile=${3:?template file must be specified}
+    exportEnv=$4
 
-  txTranslateChannelConfigBlock "$channel"
-  updateChannelGroupConfigForOrg "$org" "$templateFile" "$exportEnv"
-  createConfigUpdateEnvelope $channel
+    txTranslateChannelConfigBlock "$channel"
+    updateChannelGroupConfigForOrg "$org" "$templateFile" "$exportEnv"
+    createConfigUpdateEnvelope $channel
 }
 
 function updateConsortium() {
-  org=${1:?Org to be added to consortium must be specified}
-  channel=${2:?System channel must be specified}
-  consortiumName=${3:-SampleConsortium}
+    org=${1:?Org to be added to consortium must be specified}
+    channel=${2:?System channel must be specified}
+    consortiumName=${3:-SampleConsortium}
 
-  exportEnv="export CONSORTIUM_NAME=${consortiumName} && $(certificationsToEnv $org)"
-  updateChannelConfig $org $channel ./templates/Consortium.json "$exportEnv"
+    exportEnv="export CONSORTIUM_NAME=${consortiumName} && $(certificationsToEnv $org)"
+    updateChannelConfig $org $channel ./templates/Consortium.json "$exportEnv"
 }
 
 function updateChannelModificationPolicy() {
-  channel=${1:?"Channel must be specified"}
-  updateChannelConfig $ORG $channel ./templates/ModPolicyOrgOnly.json
+    channel=${1:?"Channel must be specified"}
+    updateChannelConfig $ORG $channel ./templates/ModPolicyOrgOnly.json
 }
 
 function addOrgToChannel() {
-  org=${1:?"New Org must be specified"}
-  channel=${2:?"Channel must be specified"}
+    org=${1:?"New Org must be specified"}
+    channel=${2:?"Channel must be specified"}
 
-  echo " >> Add new org '$org' to channel $channel"
-  updateChannelConfig $org $channel ./templates/NewOrg.json "$(certificationsToEnv $org)"
+    echo " >> Add new org '$org' to channel $channel"
+    updateChannelConfig $org $channel ./templates/NewOrg.json "$(certificationsToEnv $org)"
 }
 
 function joinChannel() {
-  channel=${1:?Channel name must be specified}
+    channel=${1:?Channel name must be specified}
 
-  echo "Join $ORG to channel $channel"
-  fetchChannelConfigBlock $channel "0"
-  runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
-  runCLI "CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
+    echo "Join $ORG to channel $channel"
+    fetchChannelConfigBlock $channel "0"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
+    runCLI "CORE_PEER_ADDRESS=peer1.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb"
 }
 
-function updateAnchorPeers (){
+function updateAnchorPeers() {
     channel=${1:?Channel name must be specified}
     updateChannelConfig $ORG $channel ./templates/AnchorPeers.json
 }
@@ -223,7 +223,9 @@ function upgradeChaincode() {
     initArguments=${3:-[]}
     chaincodeVersion=${4:-1.0}
     policy=${5}
-    if [ -n "$policy" ]; then policy="-P \"$policy\""; fi
+    if [ -n "$policy" ]; then
+        policy="-P \"$policy\"";
+    fi
 
     arguments="{\"Args\":$initArguments}"
     echo "Upgrade chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion '$policy'"
@@ -243,6 +245,7 @@ function callChaincode() {
 function queryChaincode() {
     callChaincode $@ query
 }
+
 function invokeChaincode() {
     callChaincode $@ invoke
 }
