@@ -25,7 +25,6 @@ function printUsage() {
   exampleMsg=$2
   printRedYellow "\nUsage:" "$usageMsg"
   printRedYellow "Example:" "$exampleMsg"
-
 }
 
 function runCLIWithComposerOverrides() {
@@ -39,10 +38,9 @@ function runCLIWithComposerOverrides() {
     fi
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBTemplateParam="-fdocker-compose-couchdb.yaml"
 
-
-   echo -e "\x1b[32mExecute: docker-compose -f ${composeTemplateFile} ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${service} bash -c \"$command\"\033[0m"
-
+   printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${service} bash -c \"$command\""
    docker-compose -f "${composeTemplateFile}" ${machineOverrideParam} ${couchDBTemplateParam} ${composeCommand} ${service} bash -c "${command}"
+
    [ "$?" != "0" ] && printRedYellow "Error happened. See console output above." && exit 1
 }
 
@@ -62,7 +60,7 @@ function runCLI() {
 
    cliContainerId=`docker ps --filter name=$checkContainer -q`
 
-   [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand=" run --rm "
+   [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
 
     runCLIWithComposerOverrides "$composeTemplateFile" "$service" "${composeCommand}" "$command"
 }
@@ -92,7 +90,7 @@ function downloadMSP() {
     && cp crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem crypto-config/${orgSubPath}/${mspSubPath}/msp/tls/ca.crt"
 }
 
-function certificationsEnv() {
+function certificationsToEnv() {
   org=$1
   echo "export ORG_ADMIN_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/admincerts/Admin@${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
   && export ORG_ROOT_CERT=\`cat crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp/cacerts/ca.${org}.${DOMAIN:-example.com}-cert.pem | base64 -w 0\` \
@@ -157,7 +155,7 @@ function updateConsortium() {
   channel=${2:?System channel must be specified}
   consortiumName=${3:-SampleConsortium}
 
-  exportEnv="export CONSORTIUM_NAME=${consortiumName} && $(certificationsEnv $org)"
+  exportEnv="export CONSORTIUM_NAME=${consortiumName} && $(certificationsToEnv $org)"
   updateChannelConfig $org $channel ./templates/Consortium.json "$exportEnv"
 }
 
@@ -171,7 +169,7 @@ function addOrgToChannel() {
   channel=${2:?"Channel must be specified"}
 
   echo " >> Add new org '$org' to channel $channel"
-  updateChannelConfig $org $channel ./templates/NewOrg.json "$(certificationsEnv $org)"
+  updateChannelConfig $org $channel ./templates/NewOrg.json "$(certificationsToEnv $org)"
 }
 
 function joinChannel() {
