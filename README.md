@@ -513,6 +513,6 @@ The above steps are collected into a single script that creates a machine, gener
 containers on a remote or virtual host for a new org. This example is for *org3*; replace swarm token and manager ip 
 with your own from `docker swarm join-token worker`.
 ```bash
-./machine-peer-create.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
+./machine-create-peer.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
 ```
 
