@@ -2,15 +2,9 @@
 # Copyright . All Rights Reserved.
 #
 
-version: '2.1'
-
-volumes:
-  peer0:
-  peer1:
+version: '3.7'
 
 services:
-
-
   peer0:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
@@ -46,9 +40,3 @@ services:
     - COUCHDB_PASSWORD=
     ports:
     - ${PEER1_COUCHDB_PORT:-5085}:5984
-
-
-networks:
-  default:
-    external:
-      name: fabric-starter_default
