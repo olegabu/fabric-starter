@@ -7,4 +7,4 @@ docker rm -f $(docker ps -aq)
 docker volume prune -f
 docker rmi -f $(docker images -q -f "reference=dev-*")
 #docker rmi -f $(docker images -q -f "reference=olegabu/fabric-starter-client")
-docker network rm `(docker network ls -q)`
+#docker network rm `(docker network ls -q)`

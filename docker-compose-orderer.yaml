@@ -2,7 +2,7 @@
 # Copyright . All Rights Reserved.
 # 
 
-version: '2.1'
+version: '3.7'
 
 volumes:
   orderer:
@@ -25,8 +25,8 @@ services:
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
     command: orderer
-    ports:
-      - 7050:7050
+#    ports:
+#      - 7050:7050
     volumes:
       - ./crypto-config/configtx:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
@@ -34,9 +34,8 @@ services:
 
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
-    extends:
-      file: base.yaml
-      service: cli-base
+    build: ./fabric-tools-extended
+    image: fabric-starter/fabric-tools-extended
     tty: true
     environment:
     - DOMAIN=${DOMAIN:-example.com}
@@ -62,11 +61,9 @@ services:
 
   # http serves certificates
   www.orderer:
-    extends:
-      file: base.yaml
-      service: www-base
+    image: nginx
     container_name: www.${DOMAIN:-example.com}
-    ports:
-      - ${WWW_PORT:-8080}:80
+#    ports:
+#      - ${WWW_PORT:-8080}:80
     volumes:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp

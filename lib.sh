@@ -63,7 +63,7 @@ function runCLI() {
     cliContainerId=`docker ps --filter name=$checkContainer -q`
 
     # TODO No such command: run __rm when composeCommand="run --rm"
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run"
+    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }

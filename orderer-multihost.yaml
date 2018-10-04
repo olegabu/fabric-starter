@@ -7,7 +7,7 @@
 # export WORK_DIR=/home/ubuntu
 # ./generate-orderer.sh
 
-version: '2.1'
+version: '3.7'
 
 services:
 

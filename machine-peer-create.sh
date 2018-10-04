@@ -21,6 +21,8 @@ docker swarm join --token ${swarmToken} ${swarmManagerIp}:2377
 docker run -dit --name alpine --network fabric-overlay alpine
 docker-machine scp -r templates ${ORG}:templates
 docker-machine scp -r chaincode ${ORG}:chaincode
+
+./clean.sh
 ./generate-peer.sh
 docker-compose -f docker-compose.yaml -f multihost.yaml up
 

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 source lib.sh
 
+## Workaround until docker-compose issue 4601 is solved
+# https://github.com/docker/compose/issues/4601
+docker run -dit --name alpine --network fabric-overlay alpine
+
 envSubst "templates/cryptogen-peer-template.yaml" "crypto-config/cryptogen-$ORG.yaml"
 runCLI "rm -rf crypto-config/peerOrganizations/$ORG.$DOMAIN \
     && cryptogen generate --config=crypto-config/cryptogen-$ORG.yaml \
