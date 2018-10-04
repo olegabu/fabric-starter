@@ -45,7 +45,7 @@ function runCLIWithComposerOverrides() {
  && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} bash -c "${command}" \
  || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service}
 
-    [ $? -ne 0 ] && printRedYellow "Error happened. See console output above." && exit 1
+    [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }
 
 
@@ -62,7 +62,8 @@ function runCLI() {
 
     cliContainerId=`docker ps --filter name=$checkContainer -q`
 
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
+    # TODO No such command: run __rm when composeCommand="run --rm"
+    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }

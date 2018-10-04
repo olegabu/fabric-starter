@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
+source lib.sh
+usageMsg="$0 chaincodeName channelName [init args='[]'] [path to chaincode=/opt/chaincode/node/<chaincodeName>] [lang=node]"
+exampleMsg="$0 reference common"
 
-n=$1
-k=$2
+IFS=
+chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
+channelName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
+
+chaincodeName=$1
+channelName=$2
 a=$3
 p=$4
 l=$5
 v="1.$RANDOM"
 
-./chaincode-install.sh $n $v $p $l
-./chaincode-upgrade.sh $n $k $v $a
+./chaincode-install.sh $chaincodeName $v $p $l
+./chaincode-upgrade.sh $chaincodeName $channelName $v $a
 
-echo -e "\e[1;35mUpgraded to version:\e[m \e[1;32m$v\e[m"
+[ $? == 1 ] && printInColor "1;32" "Upgraded to version $v"
+
+
+
