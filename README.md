@@ -109,6 +109,7 @@ Query chaincode functions *list* and *get*.
 Now you can make changes to your chaincode, install a new version `1.1` and upgrade to it.
 ```bash
 ./chaincode-install.sh reference 1.1
+
 ./chaincode-upgrade.sh reference common 1.1
 ```
 
@@ -125,6 +126,7 @@ Source code is in local `./chaincode/go/chaincode_example02` mapped to `/opt/gop
 inside `cli` container.
 ```bash
 ./chaincode-install.sh example02 1.0 chaincode_example02 golang
+
 ./chaincode-instantiate.sh example02 common '["init","a","10","b","0"]'
 ```
 
@@ -362,6 +364,7 @@ and follow [instructions to install docker-machine](https://docs.docker.com/mach
 ## Create orderer machine
 
 Create and start `orderer` docker host as a virtual machine.
+For AWS EC2 use `--driver amazonec2` and `export WORK_DIR=/home/ubuntu`.
 ```bash
 docker-machine create --driver virtualbox orderer
 ```
@@ -403,7 +406,6 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up
 ## Create org1 machine
 
 Create and start `org1` docker host as a virtual machine with VirtualBox. 
-For AWS EC2 use `--driver amazonec2` and `export WORK_DIR=/home/ubuntu`.
 ```bash
 docker-machine create --driver virtualbox org1
 ```
@@ -418,9 +420,10 @@ Join swarm; this is an example, use the actual command output by `orderer`.
 docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
 ```
 
-Need to run a dummy container to force join overlay network.
+Need to run a dummy container on this new host `org1` to force join overlay network `fabric-overlay` 
+created by docker-compose on `orderer` host. 
 ```bash
-docker run -dit --name alpine2 --network fabric-overlay alpine
+docker run -dit --name alpine --network fabric-overlay alpine
 ```
 
 Copy local template and chaincode files to `org1` machine.
@@ -453,12 +456,52 @@ eval "$(docker-machine env orderer)"
 ./consortium-add-org.sh org1
 ```
 
-## Create channels, deploy chaincodes as org1
+## Create a channel and deploy chaincode as org1
 
 Connect to `org1` machine by setting env variables. Run local scripts to create and join channels.
 ```bash
 eval "$(docker-machine env org1)"
 
 ./channel-create.sh common
+
+./channel-join.sh common
+
+./chaincode-install.sh reference
+
+./chaincode-instantiate.sh reference common
+```
+
+## Create org2 machine
+
+```bash
+export ORG=org2
+export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
+docker-machine create --driver virtualbox org2
+eval "$(docker-machine env org2)"
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
+docker run -dit --name alpine --network fabric-overlay alpine
+docker-machine scp -r templates org2:templates
+docker-machine scp -r chaincode org2:chaincode
+./generate-peer.sh
+docker-compose -f docker-compose.yaml -f multihost.yaml up
+```
+
+Move to `org1` machine to add org2 to the channel.
+```bash
+eval "$(docker-machine env org1)"
+./channel-add-org.sh org2 common
+```
+
+Back to `org2` machine to join channel.
+```bash
+export ORG=org2
+eval "$(docker-machine env org2)"
+./channel-join.sh common
+```
+
+Install chaincode (no need to instantiate) and query.
+```bash
+./chaincode-install.sh reference
+./chaincode-query.sh reference common '["list","account"]'
 ```
 
