@@ -15,9 +15,9 @@ and user interface as a single page web app that you can serve by by placing the
 
 See also
 
-- [fabric-starter-rest](https://github.com/olegabu/fabric-starter-rest)
-- [fabric-starter-web](https://github.com/olegabu/fabric-starter-web) 
-- [chaincode-node-storage](https://github.com/olegabu/chaincode-node-storage) 
+- [fabric-starter-rest](https://github.com/olegabu/fabric-starter-rest) REST API server and client built with NodeJS SDK
+- [fabric-starter-web](https://github.com/olegabu/fabric-starter-web) Starter web application to work with the REST API
+- [chaincode-node-storage](https://github.com/olegabu/chaincode-node-storage) Base class for node.js chaincodes with CRUD functionality
 
 # Install
 
@@ -126,8 +126,10 @@ Source code is in local `./chaincode/go/chaincode_example02` mapped to `/opt/gop
 inside `cli` container.
 ```bash
 ./chaincode-install.sh example02 1.0 chaincode_example02 golang
-
 ./chaincode-instantiate.sh example02 common '["init","a","10","b","0"]'
+./chaincode-invoke.sh example02 common '["move","a","b","1"]'
+./chaincode-invoke.sh example02 common '["move","a","b","1"]'
+./chaincode-query.sh example02 common '["query","a"]'
 ```
 
 Reload *golang* chaincode.
@@ -359,7 +361,7 @@ Note the path to the source code is inside `cli` docker container and is mapped 
 # Multi host deployment with docker-machine and VirtualBox
 
 Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) 
-and follow [instructions to install docker-machine](https://docs.docker.com/machine/get-started/).
+and [docker-machine](https://docs.docker.com/machine/get-started/).
 
 ## Create orderer machine
 
@@ -380,7 +382,7 @@ docker swarm init --advertise-addr 192.168.99.102
 ```
 will output a command to join the swarm by other hosts; this is an example, use the actual token and ip.  
 ```bash
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102:2377
 ```
 
 Copy local template files to `orderer` home directory (`/home/docker` on VirtualBox or `/home/ubuntu` on AWS EC2).
@@ -417,7 +419,7 @@ eval "$(docker-machine env org1)"
 
 Join swarm; this is an example, use the actual command output by `orderer`.
 ```bash
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102:2377
 ```
 
 Need to run a dummy container on this new host `org1` to force join overlay network `fabric-overlay` 
@@ -478,7 +480,7 @@ export ORG=org2
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
 docker-machine create --driver virtualbox org2
 eval "$(docker-machine env org2)"
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-8kusamcjwvu2aau6lw15ev5se 192.168.99.102:2377
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102:2377
 docker run -dit --name alpine --network fabric-overlay alpine
 docker-machine scp -r templates org2:templates
 docker-machine scp -r chaincode org2:chaincode
@@ -486,7 +488,7 @@ docker-machine scp -r chaincode org2:chaincode
 docker-compose -f docker-compose.yaml -f multihost.yaml up
 ```
 
-Move to `org1` machine to add org2 to the channel.
+Move to `org1` machine to add *org2* to the channel.
 ```bash
 eval "$(docker-machine env org1)"
 ./channel-add-org.sh org2 common
@@ -503,5 +505,14 @@ Install chaincode (no need to instantiate) and query.
 ```bash
 ./chaincode-install.sh reference
 ./chaincode-query.sh reference common '["list","account"]'
+```
+
+## Create machines for other organizations
+
+The above steps are collected into a single script that creates a machine, generates crypto material and starts 
+containers on a remote or virtual host for a new org. This example is for *org3*; replace swarm token and manager ip 
+with your own from `docker swarm join-token worker`.
+```bash
+./machine-create.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
 ```
 
