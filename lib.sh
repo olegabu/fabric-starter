@@ -143,8 +143,8 @@ function createConfigUpdateEnvelope() {
 }
 
 function updateChannelConfig() {
-    org=${1:?Org to be updated must be specified}
-    channel=${2:?Channel to be updated must be specified}
+    channel=${1:?Channel to be updated must be specified}
+    org=${2:?Org to be updated must be specified}
     templateFile=${3:?template file must be specified}
     exportEnv=$4
 
@@ -159,20 +159,20 @@ function updateConsortium() {
     consortiumName=${3:-SampleConsortium}
 
     exportEnv="export CONSORTIUM_NAME=${consortiumName} && $(certificationsToEnv $org)"
-    updateChannelConfig $org $channel ./templates/Consortium.json "$exportEnv"
+    updateChannelConfig $channel $org ./templates/Consortium.json "$exportEnv"
 }
 
 function updateChannelModificationPolicy() {
     channel=${1:?"Channel must be specified"}
-    updateChannelConfig $ORG $channel ./templates/ModPolicyOrgOnly.json
+    updateChannelConfig $channel $ORG ./templates/ModPolicyOrgOnly.json
 }
 
 function addOrgToChannel() {
-    org=${1:?"New Org must be specified"}
-    channel=${2:?"Channel must be specified"}
+    channel=${1:?"Channel must be specified"}
+    org=${2:?"New Org must be specified"}
 
     echo " >> Add new org '$org' to channel $channel"
-    updateChannelConfig $org $channel ./templates/NewOrg.json "$(certificationsToEnv $org)"
+    updateChannelConfig $channel $org ./templates/NewOrg.json "$(certificationsToEnv $org)"
 }
 
 function joinChannel() {
@@ -186,7 +186,7 @@ function joinChannel() {
 
 function updateAnchorPeers() {
     channel=${1:?Channel name must be specified}
-    updateChannelConfig $ORG $channel ./templates/AnchorPeers.json
+    updateChannelConfig $channel $ORG ./templates/AnchorPeers.json
 }
 
 
