@@ -222,15 +222,15 @@ Open another console where we'll become *org1* again. We'll create channel *comm
 and join our peers to the channel:
 ```bash
 ./channel-create.sh common
-./channel-add-org.sh org2 common
-./channel-add-org.sh org3 common
+./channel-add-org.sh common org2 
+./channel-add-org.sh common org3 
 ./channel-join.sh common
 ``` 
 
 Let's create a bilateral channel between *org1* and *org2* and join to it:
 ```bash
 ./channel-create.sh org1-org2
-./channel-add-org.sh org2 org1-org2
+./channel-add-org.sh org1-org2 org2 
 ./channel-join.sh org1-org2
 ```
 
@@ -491,7 +491,7 @@ docker-compose -f docker-compose.yaml -f multihost.yaml up
 Move to `org1` machine to add *org2* to the channel.
 ```bash
 eval "$(docker-machine env org1)"
-./channel-add-org.sh org2 common
+./channel-add-org.sh common org2 
 ```
 
 Back to `org2` machine to join channel.
@@ -513,6 +513,6 @@ The above steps are collected into a single script that creates a machine, gener
 containers on a remote or virtual host for a new org. This example is for *org3*; replace swarm token and manager ip 
 with your own from `docker swarm join-token worker`.
 ```bash
-./machine-create.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
+./machine-peer-create.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
 ```
 
