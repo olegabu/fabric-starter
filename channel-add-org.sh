@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source lib.sh
-usageMsg="$0 newOrg channelName"
-exampleMsg="$0 org2 common "
+usageMsg="$0 channelName newOrg"
+exampleMsg="$0 common org2"
 
 IFS=
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
