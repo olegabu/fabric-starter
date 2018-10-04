@@ -7,4 +7,5 @@ IFS=
 newOrg=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 channelName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 
+downloadMSP ${newOrg}
 addOrgToChannel $newOrg $channelName
