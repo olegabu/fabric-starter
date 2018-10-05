@@ -21,18 +21,25 @@ See also
 
 # Install
 
-Install prerequisites: `docker` and `docker-compose`. This instruction is for Ubuntu 18:
+Install prerequisites: `docker >=18.06.1` and `docker-compose >=1.22.0`.
+
+Instruction is for Ubuntu 18:
 ```bash
 sudo apt update
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 sudo apt update
-sudo apt install docker-ce docker-compose
+sudo apt-get install docker-ce
+sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 # add yourself to the docker group and re-login
 sudo usermod -aG docker ${USER}
 ```
-
+Installing `docker ce` and `docker compose` by [brew](https://brew.sh/) package manager for MAC OSX:
+```bash
+brew install docker 
+```
 # Create a network with 1 organization for development
 
 ## Generate and start orderer

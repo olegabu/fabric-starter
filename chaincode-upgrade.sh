@@ -4,9 +4,9 @@ usageMsg="$0 chaincodeName channelName [init args='[]'] [version=1.0] [endorseme
 exampleMsg="$0 chaincode1 common '[\"Init\",\"arg1\",\"val1\"]' 2.0 \"OR ('org1.member', 'org2.member')\""
 
 IFS=
-chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
-channelName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
-chaincodeVersion=${3}
-initArguments=${4:'[]'}
+channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
+chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
+initArguments=${3:-'[]'}
+chaincodeVersion=${4}
 
 upgradeChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion"
