@@ -219,8 +219,8 @@ function instantiateChaincode() {
 
 function upgradeChaincode() {
     channelName=${1:?Channel name must be specified}
-    initArguments=${3:-[]}
     chaincodeName=${2:?Chaincode name must be specified}
+    initArguments=${3:-[]}
     chaincodeVersion=${4:-1.0}
     policy=${5}
     if [ -n "$policy" ]; then

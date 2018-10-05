@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source lib.sh
-usageMsg="$0 chaincodeName channelName [init args='[]'] [version=1.0]"
-exampleMsg="$0 chaincode1 common '[\"Init\",\"a\",\"10\", \"b\", \"0\"]'"
+usageMsg="$0 channelName chaincodeName [init args='[]'] [version=1.0]"
+exampleMsg="$0 common chaincode1 '[\"Init\",\"a\",\"10\", \"b\", \"0\"]'"
 
 IFS=
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
