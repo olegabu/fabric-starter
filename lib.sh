@@ -207,10 +207,9 @@ function instantiateChaincode() {
     chaincodeName=${2:?Chaincode name must be specified}
     initArguments=${3:-[]}
     chaincodeVersion=${4:-1.0}
-    privateCollection=${5}
-    privateCollectionPath=${6}
+    privateCollectionPath=${5}
 
-    [ -n "$privateCollection" ] && privateCollectionParam=" --collections-config ${privateCollectionPath}/${privateCollection}.json "
+    [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config /opt/chaincode/${privateCollectionPath}"
 
     arguments="{\"Args\":$initArguments}"
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion"
@@ -220,8 +219,8 @@ function instantiateChaincode() {
 
 function upgradeChaincode() {
     channelName=${1:?Channel name must be specified}
-    chaincodeName=${2:?Chaincode name must be specified}
     initArguments=${3:-[]}
+    chaincodeName=${2:?Chaincode name must be specified}
     chaincodeVersion=${4:-1.0}
     policy=${5}
     if [ -n "$policy" ]; then
@@ -229,7 +228,7 @@ function upgradeChaincode() {
     fi
 
     arguments="{\"Args\":$initArguments}"
-    echo "Upgrade chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion '$policy'"
+
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName "$policy" --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
 
@@ -239,7 +238,7 @@ function callChaincode() {
     arguments=${3:-[]}
     arguments="{\"Args\":$arguments}"
     action=${4:-query}
-
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
 
