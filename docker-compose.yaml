@@ -36,6 +36,7 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d --ca.name default'
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
     << : *peer-defaults

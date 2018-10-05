@@ -6,6 +6,7 @@ source lib.sh
 [ -n "${DOCKER_HOST}" ] && docker run -dit --name alpine --network fabric-overlay alpine
 
 envSubst "templates/cryptogen-peer-template.yaml" "crypto-config/cryptogen-$ORG.yaml"
+envSubst "templates/fabric-ca-server-template.yaml" "crypto-config/fabric-ca-server-config-$ORG.yaml"
 runCLI "rm -rf crypto-config/peerOrganizations/$ORG.$DOMAIN \
     && cryptogen generate --config=crypto-config/cryptogen-$ORG.yaml \
     && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem \
