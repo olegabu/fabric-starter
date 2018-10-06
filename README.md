@@ -23,7 +23,8 @@ See also
 
 Install prerequisites: `docker >=18.06.1` and `docker-compose >=1.22.0`.
 
-Instruction is for Ubuntu 18:
+## Ubuntu 18
+
 ```bash
 sudo apt update
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
@@ -31,15 +32,21 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 sudo apt update
 sudo apt-get install docker-ce
+
 sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+
 # add yourself to the docker group and re-login
 sudo usermod -aG docker ${USER}
 ```
-Installing `docker ce` and `docker compose` by [brew](https://brew.sh/) package manager for MAC OSX:
+
+## Mac OSX
+
+Install `docker ce` and `docker compose` by [brew](https://brew.sh/).
 ```bash
 brew install docker 
 ```
+
 # Create a network with 1 organization for development
 
 ## Generate and start orderer
@@ -89,7 +96,7 @@ Note the path to the source code is inside `cli` docker container and is mapped 
 ```bash
 ./chaincode-install.sh reference
 
-./chaincode-instantiate.sh reference common
+./chaincode-instantiate.sh common reference
 ```
 
 ## Invoke chaincode
@@ -99,16 +106,16 @@ which provides CRUD functionality.
 
 Invoke chaincode to save entities of type *account*.
 ```bash
-./chaincode-invoke.sh reference common '["put","account","1","{\"name\":\"one\"}"]'
+./chaincode-invoke.sh common reference '["put","account","1","{\"name\":\"one\"}"]'
 
-./chaincode-invoke.sh reference common '["put","account","2","{\"name\":\"two\"}"]'
+./chaincode-invoke.sh common reference '["put","account","2","{\"name\":\"two\"}"]'
 ```
 
 Query chaincode functions *list* and *get*.
 ```bash
-./chaincode-query.sh reference common '["list","account"]'
+./chaincode-query.sh common reference '["list","account"]'
 
-./chaincode-query.sh reference common '["get","account","1"]'
+./chaincode-query.sh common reference '["get","account","1"]'
 ```
 
 ## Upgrade chaincode 
@@ -117,7 +124,7 @@ Now you can make changes to your chaincode, install a new version `1.1` and upgr
 ```bash
 ./chaincode-install.sh reference 1.1
 
-./chaincode-upgrade.sh reference common 1.1
+./chaincode-upgrade.sh common reference 1.1 []
 ```
 
 When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
@@ -133,10 +140,9 @@ Source code is in local `./chaincode/go/chaincode_example02` mapped to `/opt/gop
 inside `cli` container.
 ```bash
 ./chaincode-install.sh example02 1.0 chaincode_example02 golang
-./chaincode-instantiate.sh example02 common '["init","a","10","b","0"]'
-./chaincode-invoke.sh example02 common '["move","a","b","1"]'
-./chaincode-invoke.sh example02 common '["move","a","b","1"]'
-./chaincode-query.sh example02 common '["query","a"]'
+./chaincode-instantiate.sh common example02 '["init","a","10","b","0"]'
+./chaincode-invoke.sh common example02 '["move","a","b","1"]'
+./chaincode-query.sh common example02 '["query","a"]'
 ```
 
 Reload *golang* chaincode.
@@ -245,13 +251,13 @@ Install and instantiate chaincode *reference* on channel *common*. Note the path
 docker container and is mapped to the local  `./chaincode/node/reference`
 ```bash
 ./chaincode-install.sh reference
-./chaincode-instantiate.sh reference common
+./chaincode-instantiate.sh common reference 
 ```
 
 Install and instantiate chaincode *relationship* on channel *org1-org2*:
 ```bash
 ./chaincode-install.sh relationship
-./chaincode-instantiate.sh relationship org1-org2 '["init","a","10","b","0"]'
+./chaincode-instantiate.sh org1-org2 relationship '["init","a","10","b","0"]'
 ```
 
 Open another console where we'll become *org2* to install chaincodes *reference* and  *relationship* 
@@ -362,7 +368,7 @@ Note the path to the source code is inside `cli` docker container and is mapped 
 `./chaincode/java/fabric-chaincode-example-gradle`
 ```bash
 ./chaincode-install.sh fabric-chaincode-example /opt/chaincode/java/fabric-chaincode-example-gradle java
-./chaincode-instantiate.sh fabric-chaincode-example common '["init","a","10","b","0"]'
+./chaincode-instantiate.sh common fabric-chaincode-example '["init","a","10","b","0"]'
 ```
 
 # Multi host deployment with docker-machine and VirtualBox
@@ -477,7 +483,7 @@ eval "$(docker-machine env org1)"
 
 ./chaincode-install.sh reference
 
-./chaincode-instantiate.sh reference common
+./chaincode-instantiate.sh common reference 
 ```
 
 ## Create org2 machine
@@ -511,7 +517,7 @@ eval "$(docker-machine env org2)"
 Install chaincode (no need to instantiate) and query.
 ```bash
 ./chaincode-install.sh reference
-./chaincode-query.sh reference common '["list","account"]'
+./chaincode-query.sh common reference '["list","account"]'
 ```
 
 ## Create machines for other organizations
