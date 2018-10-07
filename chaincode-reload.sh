@@ -14,7 +14,7 @@ p=$4
 l=$5
 v="1.$RANDOM"
 
-./chaincode-install.sh $chaincodeName $p $v $l
+./chaincode-install.sh $chaincodeName $v $p  $l
 ./chaincode-upgrade.sh $channelName $chaincodeName $a $v
 
 printInColor "1;32" "Upgraded to version $v"

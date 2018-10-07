@@ -164,7 +164,7 @@ services:
       - ./crypto-config:/usr/src/app/crypto-config
       - ./webapp:/usr/src/app/webapp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
-    command: sh -c "npm start"
+    command: sh -c "sleep 20 && npm start"
 
   # simple http server to disseminate certificates
   www.peer:
