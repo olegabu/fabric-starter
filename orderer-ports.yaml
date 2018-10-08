@@ -8,7 +8,3 @@ services:
   orderer:
     ports:
       - 7050:7050
-
-  www.orderer:
-    ports:
-      - ${WWW_PORT:-8080}:80

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source lib.sh
-usageMsg="$0 org=org1 [swarmToken] [swarmManagerIp] [domain=example.com]"
+usageMsg="$0 org [swarmToken] [swarmManagerIp] [domain=example.com]"
 exampleMsg="$0 org3 SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.100"
 
 IFS=
@@ -22,7 +22,6 @@ if [ -z "$swarmToken" ]; then
     [ $? -ne 0 ] && printRedYellow "'orderer' machine is not available. Create 'orderer' machine first or specify swarmToken and swarmManagerIp to join to." && exit 1
 fi
 
-
 export ORGS="{\"$ORG\":\"peer0.$ORG.$DOMAIN:7051\"}" CAS="{\"$ORG\":\"ca.$ORG.$DOMAIN:7054\"}"
 docker-machine create --driver virtualbox ${ORG}
 eval "$(docker-machine env ${ORG})"
@@ -37,6 +36,3 @@ docker-machine scp -r chaincode ${ORG}:chaincode
 docker-compose -f docker-compose.yaml -f multihost.yaml up
 
 printInColor "1;32" "Created machine $ORG"
-
-
-
