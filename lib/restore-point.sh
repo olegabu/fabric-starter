@@ -22,10 +22,7 @@ docker run --name tempCopy --detach -v /var/lib/docker:/docker -v ${backupDir}:/
 
 printInColor "1;32" "\nRestoring files"
 docker exec -t tempCopy bash -c "rm -rf /docker/volumes/*"
-#docker exec -t tempCopy bash -c "mkdir /tempwork"
 docker exec -t tempCopy bash -c "cp -r -a -f /backup/volumes /docker"
-#docker exec -t tempCopy bash -c "ls -l /tempwrok/volumes "
-#docker exec -t tempCopy bash -c "cp -r -a -f /tempwork/volumes /docker"
 docker exec -t tempCopy bash -c "ls /docker/volumes"
 docker rm -f tempCopy 1>/dev/null
 

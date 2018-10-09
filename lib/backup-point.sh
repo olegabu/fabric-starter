@@ -5,11 +5,6 @@ exampleMsg="$0 1"
 
 backupLabel=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 
-
-#cliContainerId=`docker ps --filter name="orderer.${DOMAIN}" -q`
-#[ -z "$cliContainerId" ] && printRedYellow "Network is not started" && exit 1
-
-
 cd ..
 
 backupDir="$PWD/backup/$backupLabel"
