@@ -12,7 +12,7 @@ backupLabel=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 
 cd ..
 
-backupDir="backup/$backupLabel"
+backupDir="$PWD/backup/$backupLabel"
 
 sudo rm -r -f "$backupDir"
 mkdir -p "$backupDir"
@@ -21,8 +21,8 @@ echo; printInColor "1;32" "Stopping containers"
 docker stop $(docker ps -aq)
 
 echo; printInColor "1;32" "Backuping files"
-sudo cp -R /var/lib/docker/volumes $backupDir
-sudo cp -R crypto-config $backupDir
+docker run --rm -v /var/lib/docker:/docker -v ${backupDir}:/backup fabric-starter/fabric-tools-extended bash -c "cp -r -a /docker/volumes /backup"
+sudo cp -r -a crypto-config ${backupDir}
 
 echo; printInColor "1;32" "Starting containers up"
 docker start $(docker ps -aq)
