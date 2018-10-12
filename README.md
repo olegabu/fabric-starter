@@ -529,3 +529,8 @@ with your own from `docker swarm join-token worker`.
 ./machine-create-peer.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
 ```
 
+
+
+# LDAP Configuration
+
+See [README-ldap.md](README-ldap.md)

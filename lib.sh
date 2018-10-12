@@ -24,7 +24,7 @@ function printUsage() {
     usageMsg=$1
     exampleMsg=$2
     printRedYellow "\nUsage:" "$usageMsg"
-    printRedYellow "Example:" "$exampleMsg"
+    printRedYellow "\nExample:" "$exampleMsg"
 }
 
 function runCLIWithComposerOverrides() {
@@ -39,11 +39,12 @@ function runCLIWithComposerOverrides() {
     fi
 
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
+    [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
     [ -n "$command" ] \
- && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service} bash -c "${command}" \
- || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${composeCommand} ${service}
+ && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
+ || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }
@@ -73,7 +74,7 @@ function envSubst() {
     outputFile=${2:?Output file required}
     local extraEnvironment=${3:-true}
 
-    runCLI "$extraEnvironment && envsubst <$inputFile >$outputFile"
+    runCLI "$extraEnvironment && echo $LDAP_BASE_DN && envsubst <$inputFile >$outputFile && chown $UID $outputFile"
 }
 
 

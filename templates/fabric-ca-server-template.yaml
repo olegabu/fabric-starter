@@ -106,8 +106,8 @@ registry:
 
     # Contains identity information which is used when LDAP is disabled
     identities:
-    - name: admin
-      pass: adminpw
+    - name: ${ENROLL_ID}
+      pass: ${ENROLL_SECRET}
       type: client
       affiliation: ""
       maxenrollments: -1
@@ -148,9 +148,9 @@ db:
 ldap:
     # Enables or disables the LDAP client (default: false)
     # If this is set to true, the "registry" section is ignored.
-    enabled: false
+    enabled: ${LDAP_ENABLED}
     # The URL of the LDAP server
-    url: ldap://<adminDN>:<adminPassword>@<host>:<port>/<base>
+    url: ldap://cn=admin,${LDAP_BASE_DN}:${ENROLL_SECRET}@ldap.${DOMAIN}:389/${LDAP_BASE_DN} #ldap://<adminDN>:<adminPassword>@<host>:<port>/<base>
     tls:
         certfiles:
         - ldap-server-cert.pem
