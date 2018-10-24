@@ -130,7 +130,7 @@ Now you can make changes to your chaincode, install a new version `1.1` and upgr
 When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
 new random version
 ```bash
-./chaincode-reload.sh reference common
+./chaincode-reload.sh common reference
 ``` 
 
 ## Golang chaincode 
@@ -147,7 +147,7 @@ inside `cli` container.
 
 Reload *golang* chaincode.
 ```bash
-./chaincode-reload.sh example02 common '["init","a","10","b","0"]' chaincode_example02 golang
+./chaincode-reload.sh common example02 '["init","a","10","b","0"]' chaincode_example02 golang
 ```
 
 # Example with a network of 3 organizations
