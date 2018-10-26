@@ -74,7 +74,7 @@ function envSubst() {
     outputFile=${2:?Output file required}
     local extraEnvironment=${3:-true}
 
-    runCLI "$extraEnvironment && echo $LDAP_BASE_DN && envsubst <$inputFile >$outputFile && chown $UID $outputFile"
+    runCLI "$extraEnvironment && envsubst <$inputFile >$outputFile && chown $UID $outputFile"
 }
 
 

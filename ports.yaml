@@ -13,3 +13,7 @@ services:
     ports:
       - ${PEER0_PORT:-7051}:7051
       - ${PEER0_EVENT_PORT:-7053}:7053
+
+  api:
+    ports:
+      - ${WWW_PORT:-8080}:80

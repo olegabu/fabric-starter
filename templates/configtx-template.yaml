@@ -92,3 +92,16 @@ Profiles:
             - *firstOrg
             Capabilities:
                 <<: *ApplicationCapabilities
+            Policies:
+              Readers:
+                Type: ImplicitMeta
+                Rule: "ANY Readers"
+              Writers:
+                  Type: ImplicitMeta
+                  Rule: "ANY Writers"
+              Admins:
+                Type: Signature
+                Rule: "OutOf('1','${ORG}.admin')"
+#              Admins:
+#                  Type: ImplicitMeta
+#                  Rule: "MAJORITY Admins"
