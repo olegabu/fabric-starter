@@ -306,69 +306,14 @@ curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/block
 
 Invoke function `put` of chaincode *reference* on channel *common* to save entity of type `account` and id `1`:
 ```bash
-curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
+curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
 http://localhost:4000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"]}'
 ```
 
 Query function `list` of chaincode *reference* on channel *common* with args `["account"]`:
 ```bash
-curl -H "Authorization: Bearer $JWT" --header "Content-Type: application/json" \
+curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
 'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
-```
-
-# Build Fabric with support for chaincodes in Java
-
-This excercise has been tested with the following versions:
-```bash
-docker --version && java -version && go version
-```
-
-- Docker version 17.12.1-ce, build 7390fc6
-- java version "1.8.0_181"
-- go version go1.10.1 linux/amd64
-
-
-Clean up. Delete all docker containers and images.
-```bash
-docker rm -f `(docker ps -aq)`
-docker rmi -f `(docker images -aq)`
-```
-
-Create directories, environment and clone the latest source of Hyperledger Fabric from `master`.
-```bash
-mkdir -p ~/go
-export GOPATH=~/go
-mkdir -p $GOPATH/src/github.com/hyperledger
-cd $GOPATH/src/github.com/hyperledger
-git clone https://github.com/hyperledger/fabric
-cd fabric
-```
-
-Build docker images with java enabled via `EXPERIMENTAL` flag.
-```bash
-export EXPERIMENTAL=true
-make docker
-```
-
-Clone the latest source of java chaincode support.
-```bash
-cd $GOPATH/src/github.com/hyperledger
-git clone https://github.com/hyperledger/fabric-chaincode-java 
-cd fabric-chaincode-java
-```
-
-Build docker image for java chaincode `fabric-javaenv` and java `shim` for chaincode development.
-```bash
-./gradlew buildImage
-./gradlew publishToMavenLocal
-```
-
-Install and instantiate *java* chaincode *fabric-chaincode-example* on channel *common*. 
-Note the path to the source code is inside `cli` docker container and is mapped to the local 
-`./chaincode/java/fabric-chaincode-example-gradle`
-```bash
-./chaincode-install.sh fabric-chaincode-example /opt/chaincode/java/fabric-chaincode-example-gradle java
-./chaincode-instantiate.sh common fabric-chaincode-example '["init","a","10","b","0"]'
 ```
 
 # Multi host deployment with docker-machine and VirtualBox
@@ -384,18 +329,28 @@ For AWS EC2 use `--driver amazonec2` and `export WORK_DIR=/home/ubuntu`.
 docker-machine create --driver virtualbox orderer
 ```
 
+See the ip address of the created VM.
+```bash
+docker-machine ls
+```
+Returns
+```
+NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
+orderer   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.06.1-ce 
+```
+
 Connect to `orderer` machine by setting env variables.
 ```bash
 eval "$(docker-machine env orderer)"
 ```
 
-Start docker swarm on `orderer` machine. Replace ip address `192.168.99.102` with the actual ip of the remote host interface.
+Start docker swarm on `orderer` machine. Replace ip address `192.168.99.100` with the actual ip of the remote host interface.
 ```bash
-docker swarm init --advertise-addr 192.168.99.102
+docker swarm init --advertise-addr 192.168.99.100
 ```
 will output a command to join the swarm by other hosts; this is an example, use the actual token and ip.  
 ```bash
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102:2377
+docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.100:2377
 ```
 
 Copy local template files to `orderer` home directory (`/home/docker` on VirtualBox or `/home/ubuntu` on AWS EC2).
@@ -415,7 +370,7 @@ for AWS EC2 do `export WORK_DIR=/home/ubuntu`).
 
 Start *Orderer* containers on `orderer` machine.
 ```bash
-docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up
+docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 ```
 
 ## Create org1 machine
@@ -430,9 +385,13 @@ Connect to `org1` machine by setting env variables.
 eval "$(docker-machine env org1)"
 ```
 
-Join swarm; this is an example, use the actual command output by `orderer`.
+Join swarm; this is an example, use the actual command output by `orderer`. In orderer console get the command:
 ```bash
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102:2377
+docker swarm join-token worker
+```
+Execute the output command in `org1` console.
+```bash
+docker swarm join --token SWMTKN-1-4rzq6pyg3z2kw7eqhqdnc86isjpwo6t69t1q0ooy84csioieyc-ajcb0rdg3l15ronhytmldc59s 192.168.99.100:2377
 ```
 
 Need to run a dummy container on this new host `org1` to force join overlay network `fabric-overlay` 
@@ -446,6 +405,8 @@ Copy local template and chaincode files to `org1` machine.
 docker-machine scp -r templates org1:templates
 
 docker-machine scp -r chaincode org1:chaincode
+
+docker-machine scp -r webapp org1:webapp
 ```
 
 Generate crypto material for member organization *org1*.
@@ -456,7 +417,7 @@ Generate crypto material for member organization *org1*.
 
 Start *org1* containers on `org1` machine.
 ```bash
-docker-compose -f docker-compose.yaml -f multihost.yaml up
+docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ``` 
 
 ## Add org1 to the consortium as Orderer
@@ -529,8 +490,6 @@ with your own from `docker swarm join-token worker`.
 ./machine-create-peer.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
 ```
 
-
-
 # LDAP Configuration
 
-See [README-ldap.md](README-ldap.md)
+See [ldap.md](ldap.md)
