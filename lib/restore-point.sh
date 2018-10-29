@@ -17,7 +17,7 @@ printInColor "1;32" "\nStopping containers"
 
 docker stop $(docker ps -aq)
 docker rm -f tempCopy 2>/dev/null
-docker run --name tempCopy --detach -v /var/lib/docker:/docker -v ${backupDir}:/backup fabric-starter/fabric-tools-extended bash -c "tail -f /var/log/dpkg.log"
+docker run --name tempCopy --detach -v /var/lib/docker:/docker -v ${backupDir}:/backup olegabu/fabric-tools-extended bash -c "tail -f /var/log/dpkg.log"
 
 
 printInColor "1;32" "\nRestoring files"
