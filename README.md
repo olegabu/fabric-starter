@@ -304,7 +304,7 @@ curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/orgs
 curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/blocks/2
 ```
 
-Invoke function `put` of chaincode *reference* on channel *common* to save entity of type `account` and id `1`:
+Invoke function `put` of chaincode *reference* on channel *common* with `["targets"]` to save entity of type `account` and id `1`:
 ```bash
 curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
 http://localhost:4000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"],"targets":["peer0.org2.example.com","peer1.org2.example.com:7051"]}'
