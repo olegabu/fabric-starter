@@ -313,7 +313,7 @@ http://localhost:4000/channels/common/chaincodes/reference -d '{"fcn":"put","arg
 Query function `list` of chaincode *reference* on channel *common* with args `["account"]` and `["targets"]`:
 ```bash
 curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
-'http://localhost:4001/channels/common/chaincodes/reference?channelId=common&chaincodeId=reference&fcn=list&args=%5B%22account%22%5D&targets=%5B%22peer0.org2.example.com%22%2C%22peer1.org2.example.com%3A7051%22%5D'
+'http://localhost:4000/channels/common/chaincodes/reference?channelId=common&chaincodeId=reference&fcn=list&args=%5B%22account%22%5D&targets=%5B%22peer0.org2.example.com%22%2C%22peer1.org2.example.com%3A7051%22%5D'
 ```
 
 # Multi host deployment with docker-machine and VirtualBox
