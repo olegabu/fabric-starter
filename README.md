@@ -47,6 +47,13 @@ Install `docker ce` and `docker compose` by [brew](https://brew.sh/).
 brew install docker 
 ```
 
+## Using particular version of Hyperldger Fabric
+
+To deploy network in a particular version of HL Fabric framework export desired version in the FABRIC_VERSION environment variable:
+```bash
+export FABRIC_VERSION=1.2.0
+```
+
 # Create a network with 1 organization for development
 
 ## Generate and start orderer
