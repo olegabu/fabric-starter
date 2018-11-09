@@ -23,7 +23,7 @@ services:
 
   ca:
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
-    image: hyperledger/fabric-ca
+    image: hyperledger/fabric-ca:${FABRIC_VERSION:-latest}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
@@ -107,7 +107,10 @@ services:
 
   cli.peer:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
-#    build: ./fabric-tools-extended
+#    build:
+#      args:
+#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
+#      context: ./fabric-tools-extended
     image: olegabu/fabric-tools-extended
     tty: true
     environment:
