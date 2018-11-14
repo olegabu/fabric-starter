@@ -325,7 +325,8 @@ curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
 
 # Multi host deployment
 
-There are two approaches for deploing network on multiple hosts - manual deployment and using docker-machine functionality.
+There are two approaches for deploying blockchain network on multiple hosts - manual deployment and using docker-machine functionality.
+
 
 ## Prepare multi host environment for manual deployment
 
@@ -338,8 +339,9 @@ export WORK_DIR=/home/ubuntu/fabric-starter
 ```
 
 Start Swarm manager and join nodes as described in [swarm.md](swarm.md)
+If it's undesirable to use Swarm because of security reasons, configure DNS service(s) as described in [dns.md](dns.md)
 
-Deploy multihost network in multihost environment as described below.
+Deploy multi-host network in multihost environment as described below.
 
 
 ## Preparing multi host deployment with docker-machine
