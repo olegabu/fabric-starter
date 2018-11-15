@@ -135,12 +135,9 @@ sudo nano /etc/hosts
 
 Add:
 ```
-10.50.154.2 orderer.example.com
-10.50.154.2 www.example.com
+10.50.154.2 orderer.example.com www.example.com
 
-10.50.154.4 peer0.org1.example.com
-10.50.154.4 peer1.org1.example.com
-10.50.154.4 www.org1.example.com
+10.50.154.4 peer0.org1.example.com peer1.org1.example.com www.org1.example.com
 ```
 
 The IP addresses of the host names will be immediately resolvable in containers:
@@ -149,4 +146,4 @@ docker run --rm hyperledger/fabric-tools bash -c "wget peer0.org1.example.com"
 ```
 
 --2018-11-14 16:47:40--  `http://peer0.org1.example.com/`
-Resolving peer0.org1.example.com (peer0.org1.example.com)... `127.0.0.1`
+Resolving peer0.org1.example.com (peer0.org1.example.com)... `10.50.154.4`
