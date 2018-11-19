@@ -56,7 +56,7 @@ services:
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
-    - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
+    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
@@ -90,7 +90,7 @@ services:
     - CORE_CHAINCODE_LOGGING_SHIM=debug
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
+    # Don't particiapte in external gossip- CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
     - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS

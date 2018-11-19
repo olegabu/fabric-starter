@@ -123,6 +123,7 @@ By default `dnsmasq` accepts dns-requests only from localhost (127.0.0.1) client
 To allow it accepting requests from docker containers adjust `docker-bridge.conf` file:
 
 ```
+sudo mkdir -p /etc/NetworkManager/dnsmasq.d
 sudo nano /etc/NetworkManager/dnsmasq.d/docker-bridge.conf
 ```
 
@@ -136,7 +137,7 @@ listen-address=172.18.0.1
 
 Restart network manager:
 ```
-sudo service network-manager restart
+sudo service dnsmasq restart
 ```
 
 

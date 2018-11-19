@@ -104,7 +104,7 @@ function certificationsToEnv() {
 function fetchChannelConfigBlock() {
     channel=${1:?"Channel name must be specified"}
     blockNum=${2:-config}
-    runCLI "peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
+    runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
      --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown $UID -R crypto-config/"
 }
 
