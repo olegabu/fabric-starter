@@ -80,8 +80,21 @@ ip addr | grep docker0
 ```
 
 *Result*:
-  docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> ...
-    inet `172.17.0.1`/16
+  **docker0**: <BROADCAST,MULTICAST,UP,LOWER_UP>
+  ...
+    inet **`172.17.0.1`**/16
+
+
+
+Sometimes docker also has a bridge network:
+
+**br-4d38cc4d0184**: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:66:1d:95:b5 brd ff:ff:ff:ff:ff:ff
+    inet **`172.18.0.1`**/16 brd 172.18.255.255 scope global br-4d38cc4d0184
+       valid_lft forever preferred_lft forever
+
+
+Both addresses should be added to the following configuration files:
 
 
 ```
@@ -89,11 +102,11 @@ sudo nano /etc/docker/daemon.json
 ```
 
 
-Add configuration (use the address reported above):
+Add configuration (use the addresses reported above):
 
 ```
 {
-    "dns": ["172.17.0.1", "8.8.8.8", "8.8.4.4"]
+    "dns": ["172.17.0.1", "172.18.0.1", "8.8.8.8", "8.8.4.4"]
 }
 ```
 
@@ -112,10 +125,12 @@ To allow it accepting requests from docker containers adjust `docker-bridge.conf
 ```
 sudo nano /etc/NetworkManager/dnsmasq.d/docker-bridge.conf
 ```
-Add:
+
+Add the same addresses found out in previous section:
 
 ```
 listen-address=172.17.0.1
+listen-address=172.18.0.1
 ```
 
 
@@ -147,3 +162,19 @@ docker run --rm hyperledger/fabric-tools bash -c "wget peer0.org1.example.com"
 
 --2018-11-14 16:47:40--  `http://peer0.org1.example.com/`
 Resolving peer0.org1.example.com (peer0.org1.example.com)... `10.50.154.4`
+
+
+# Deploying network along with DNS service
+
+If you use DNS service (not Swarm) then nodes must be started exposing
+Fabric related ports in order to make them accessible through external network (Internet):
+
+Orderer:
+```bash
+docker-compose -f docker-compose-orderer.yaml -f orderer-ports.yaml up
+```
+
+Nodes:
+```bash
+docker-compose -f docker-compose.yaml -f ports.yaml up
+```
