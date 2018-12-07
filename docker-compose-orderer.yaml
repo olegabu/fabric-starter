@@ -96,7 +96,7 @@ services:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 
-    command: sh -c "sleep 3 && nodemon --inspect-brk=0.0.0.0:9229 app.js"
+    command: sh -c "sleep 3 && npm start"
     privileged: true
 
   # http serves certificates
