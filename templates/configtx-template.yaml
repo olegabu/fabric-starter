@@ -3,7 +3,7 @@ Organizations:
 
     - &OrdererOrg
         Name: Orderer
-        ID: Orderer
+        ID: orderer
         MSPDir: ordererOrganizations/${DOMAIN}/msp
 
     - &firstOrg

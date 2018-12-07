@@ -25,4 +25,4 @@ runCLI "rm -rf crypto-config/peerOrganizations/$ORG.$DOMAIN \
     && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem \
     && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem \
     && cp -r crypto-config/ordererOrganizations/$DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null \
-    || chown $UID -R crypto-config/"
+    && chown $UID -R crypto-config/ || chown $UID -R crypto-config/"

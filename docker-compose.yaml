@@ -165,9 +165,10 @@ services:
       - peer1
     volumes:
       - ./crypto-config:/usr/src/app/crypto-config
+      - ./templates:/usr/src/app/templates
       - ./webapp:/usr/src/app/webapp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
-    command: sh -c "sleep 10 && npm start"
+    command: sh -c "sleep 1 && nodemon --inspect=0.0.0.0:9229 app.js"
 
   # simple http server to disseminate certificates
   www.peer:
