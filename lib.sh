@@ -34,7 +34,7 @@ function runCLIWithComposerOverrides() {
 
     [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
 
-    if ["${MULTIHOST}" ]; then
+    if [ "${MULTIHOST}" ]; then
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
     fi
 

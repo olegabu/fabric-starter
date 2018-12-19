@@ -64,10 +64,10 @@ services:
 
 # need to run before to force join overlay network
 #  docker run -dit --name alpine2 --network fabric-overlay alpine
-networks:
-  default:
-    external:
-      name: fabric-overlay
+#networks:
+#  default:
+#    external:
+#      name: fabric-overlay
 
 #networks:
 #  default:

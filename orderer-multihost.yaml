@@ -31,7 +31,7 @@ services:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 
-networks:
-  default:
-    name: fabric-overlay
-    driver: overlay
+#networks:
+#  default:
+#    name: fabric-overlay
+#    driver: overlay
