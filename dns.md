@@ -179,3 +179,20 @@ Nodes:
 ```bash
 docker-compose -f docker-compose.yaml -f ports.yaml up
 ```
+
+# Configuration with master DNS server
+
+A central or master DNS server can be configured for a particular blockchain network.
+This allows all organizations to avoid reconfiguration of their `/etc/hosts` file individually and use the central server DNS configuration automatically.
+
+To configure organizations' (child) DNS services (after performing the previous configuration steps) adjust the `/etc/dnsmasq.conf` and specify the DNS server address:
+
+```
+server=x.x.x.x
+```
+
+The master server DNS server doesn't need an additional configuring except of the steps described in the previous sections.
+Now IP addresses of newly added organizations have to be specified only in master's `/etc/hosts` file. Restart of `dnsmasq` is required after that.
+
+Note, port 53 has to be enabled on firewalls both at the child and the master servers in order to allow dns-requests.
+
