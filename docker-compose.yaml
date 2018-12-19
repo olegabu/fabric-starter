@@ -71,39 +71,39 @@ services:
     - peer0:/var/hyperledger/production
     - /var/run/:/host/var/run/
 
-  peer1:
-    << : *peer-defaults
-    container_name: peer1.${ORG:-org1}.${DOMAIN:-example.com}
-    environment:
-    - CORE_PEER_ID=peer1.${ORG:-org1}.${DOMAIN:-example.com}
-    - CORE_PEER_LOCALMSPID=${ORG:-org1}
-    - CORE_PEER_ADDRESS=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
-
-    - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-    # the following setting starts chaincode containers on the same
-    # bridge network as the peers
-    # https://docs.docker.com/compose/networking/
-    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-starter_default
-    - CORE_VM_DOCKER_ATTACHSTDOUT=true
-#    - CORE_LOGGING_LEVEL=DEBUG
-    - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
-    - CORE_CHAINCODE_LOGGING_SHIM=debug
-    - CORE_PEER_GOSSIP_USELEADERELECTION=false
-    - CORE_PEER_GOSSIP_ORGLEADER=false
-    # Don't particiapte in external gossip- CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
-    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
-    # The following setting skips the gossip handshake since we are
-    # are not doing mutual TLS
-    - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
-    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peer/msp
-    - CORE_PEER_TLS_ENABLED=true
-    - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
-    - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
-    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
-    volumes:
-    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-    - peer1:/var/hyperledger/production
-    - /var/run/:/host/var/run/
+#  peer1:
+#    << : *peer-defaults
+#    container_name: peer1.${ORG:-org1}.${DOMAIN:-example.com}
+#    environment:
+#    - CORE_PEER_ID=peer1.${ORG:-org1}.${DOMAIN:-example.com}
+#    - CORE_PEER_LOCALMSPID=${ORG:-org1}
+#    - CORE_PEER_ADDRESS=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
+#
+#    - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+#    # the following setting starts chaincode containers on the same
+#    # bridge network as the peers
+#    # https://docs.docker.com/compose/networking/
+#    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-starter_default
+#    - CORE_VM_DOCKER_ATTACHSTDOUT=true
+##    - CORE_LOGGING_LEVEL=DEBUG
+#    - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+#    - CORE_CHAINCODE_LOGGING_SHIM=debug
+#    - CORE_PEER_GOSSIP_USELEADERELECTION=false
+#    - CORE_PEER_GOSSIP_ORGLEADER=false
+#    # Don't particiapte in external gossip- CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${ORG:-org1}.${DOMAIN:-example.com}:7051
+#    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
+#    # The following setting skips the gossip handshake since we are
+#    # are not doing mutual TLS
+#    - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+#    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peer/msp
+#    - CORE_PEER_TLS_ENABLED=true
+#    - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
+#    - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
+#    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
+#    volumes:
+#    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+#    - peer1:/var/hyperledger/production
+#    - /var/run/:/host/var/run/
 
   cli.peer:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
@@ -162,7 +162,7 @@ services:
       - P=${PWD}
     depends_on:
       - peer0
-      - peer1
+#      - peer1
     volumes:
       - ./crypto-config:/usr/src/app/crypto-config
       - ./templates:/usr/src/app/templates

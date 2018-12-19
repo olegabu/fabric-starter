@@ -202,9 +202,9 @@ Generate and start *org2*.
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 
 export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
 ```
-When running on local machine:
+When running on local machine redefine the api port mapped to the host:
 ```bash
-export API_PORT=4001 WWW_PORT=8082 CA_PORT=8054 PEER0_PORT=8051 PEER0_EVENT_PORT=8053 PEER1_PORT=8056 PEER1_EVENT_PORT=8058
+export API_PORT=4001
 ```
 
 Then start the peer
@@ -463,8 +463,6 @@ Start *org1* containers on `org1` machine.
 ```bash
 docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ``` 
-
-
 
 ### Add org1 to the consortium as Orderer
 
