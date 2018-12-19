@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source lib.sh
-usageMsg="$0 channelName chaincodeName [init args='[]'] [version=1.0]"
+usageMsg="$0 channelName chaincodeName [init args='[]'] [version=1.0] [privateCollectionPath] [endorsementPolicy]"
 exampleMsg="$0 common chaincode1 '[\"Init\",\"a\",\"10\", \"b\", \"0\"]'"
 
 IFS=
@@ -9,6 +9,6 @@ chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 initArguments=${3-'[]'}
 chaincodeVersion=${4-1.0}
 privateCollectionPath=${5}
+endorsementPolicy=${6}
 
-
-instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$privateCollectionPath"
+instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$privateCollectionPath" "$endorsementPolicy"
