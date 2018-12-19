@@ -132,8 +132,8 @@ services:
     working_dir: /etc/hyperledger
     volumes:
     - /var/run/:/host/var/run/
-    - ./chaincode:/opt/chaincode
-    - ./chaincode/go:/opt/gopath/src
+    - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
+    - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
     - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
