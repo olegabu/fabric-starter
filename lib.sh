@@ -34,7 +34,7 @@ function runCLIWithComposerOverrides() {
 
     [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
 
-    if [[ -n "${DOCKER_HOST}" || -n "${MULTIHOST}" ]]; then
+    if [ "${MULTIHOST}" ]; then
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
     fi
 
@@ -105,7 +105,7 @@ function fetchChannelConfigBlock() {
     channel=${1:?"Channel name must be specified"}
     blockNum=${2:-config}
     runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
-     --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown $UID -R crypto-config/"
+     --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown -R $UID crypto-config/"
 }
 
 function txTranslateChannelConfigBlock() {
