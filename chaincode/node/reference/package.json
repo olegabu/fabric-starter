@@ -13,8 +13,6 @@
 	"license": "Apache-2.0",
 	"dependencies": {
 		"chaincode-node-storage": "git+https://git@github.com/olegabu/chaincode-node-storage.git",
-		"rosreestr-mortgage-parser": "git+https://deploy-token:x9y3MxVnjht3DzoC4e4s@labdlt.ru/dds2/rosreestr-mortgage-parser.git",
-		"fabric-shim": "^1.2.0",
-		"lodash": "4.17.10"
+		"fabric-shim": "^1.2.0"
 	}
 }
