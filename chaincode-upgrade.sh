@@ -8,5 +8,6 @@ channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 initArguments=${3:-'[]'}
 chaincodeVersion=${4}
+endorsementPolicy=${5}
 
-upgradeChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion"
+upgradeChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$endorsementPolicy"
