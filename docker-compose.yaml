@@ -154,6 +154,8 @@ services:
       - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
       - WEBAPP_DIR=/usr/src/app/webapp
       - MSP_DIR=/usr/src/app/msp
+      - CORE_PEER_LOCALMSPID=${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
       - ORGS=${ORGS:-"org1":"peer0.org1.example.com:7051"}
       - CAS=${CAS:-"org1":"ca.org1.example.com:7054"}
       - DISCOVER_AS_LOCALHOST=false
@@ -168,6 +170,8 @@ services:
       - ./templates:/usr/src/app/templates
       - ./webapp:/usr/src/app/webapp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+
     command: sh -c "sleep 1 && npm start"
 
   # simple http server to disseminate certificates
