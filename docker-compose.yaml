@@ -162,6 +162,7 @@ services:
       - ENROLL_ID
       - ENROLL_SECRET
       - P=${PWD}
+      - HFC_LOGGING={"debug":"console","info":"console"}
     depends_on:
       - peer0
 #      - peer1
