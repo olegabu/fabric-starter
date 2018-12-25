@@ -86,23 +86,15 @@ ip addr | grep docker0
 
 
 
-Sometimes docker also has a bridge network:
 
-**br-4d38cc4d0184**: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
-    link/ether 02:42:66:1d:95:b5 brd ff:ff:ff:ff:ff:ff
-    inet **`172.18.0.1`**/16 brd 172.18.255.255 scope global br-4d38cc4d0184
-       valid_lft forever preferred_lft forever
-
-
-Both addresses should be added to the following configuration files:
-
+The address should be added to the following configuration files:
 
 ```
 sudo nano /etc/docker/daemon.json
 ```
 
 
-Add configuration (use the addresses reported above):
+Add configuration (use the address reported above):
 
 ```
 {
@@ -111,9 +103,26 @@ Add configuration (use the addresses reported above):
 ```
 
 
-Restart Docker:
+After starting blockchain network docker can create extra bridge networks:
+
+**br-4d38cc4d0184**: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:66:1d:95:b5 brd ff:ff:ff:ff:ff:ff
+    inet **`172.18.0.1`**/16 brd 172.18.255.255 scope global br-4d38cc4d0184
+       valid_lft forever preferred_lft forever
+
+They all should be added to the docker configuration file:
+```
+{
+    "dns": ["172.17.0.1", "172.18.0.1", "172.19.0.1", "172.20.0.1", "172.21.0.1", "8.8.8.8", "8.8.4.4"]
+}
+```
+
+
+Then restart Docker engine and restart containers if networ had already been started:
 ```
 sudo service docker restart
+
+docker start $(docker ps -aq)
 ```
 
 
