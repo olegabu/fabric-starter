@@ -99,6 +99,22 @@ services:
 #    command: sh -c "sleep 3 && npm start"
 #    privileged: true
 
+
+  dns.orderer:
+    container_name: dns.${DOMAIN:-example.com}
+    image: defreitas/dns-proxy-server
+    ports:
+      - 54:53
+      - 5380:5380
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+#    - /etc/resolv.conf:/etc/resolv.conf
+    #      - /var/run/systemd/resolve/resolv.conf:/etc/resolv.conf
+    - /home/docker/templates:/app/conf
+#    command: bash -c '/app/dns-proxy-server -conf-path conf/dns-conf.json'
+
+
+
   # http serves certificates
   www.orderer:
     image: nginx

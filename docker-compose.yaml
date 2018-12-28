@@ -184,6 +184,20 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 
+
+  dns.peer:
+    container_name: dns.${ORG:-org1}.${DOMAIN:-example.com}
+    image: defreitas/dns-proxy-server
+    ports:
+      - 5380:5380
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+#      - /etc/resolv.conf:/etc/resolv.conf
+#      - /var/run/systemd/resolve/resolv.conf:/etc/resolv.conf
+      - /home/docker/templates:/app/conf
+    command: bash -c '/app/dns-proxy-server -conf-path conf/dns-conf.json'
+
+
 networks:
   default:
     external:
