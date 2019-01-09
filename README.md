@@ -131,7 +131,7 @@ Now you can make changes to your chaincode, install a new version `1.1` and upgr
 ```bash
 ./chaincode-install.sh reference 1.1
 
-./chaincode-upgrade.sh common reference 1.1 []
+./chaincode-upgrade.sh common reference [] 1.1
 ```
 
 When you develop and need to push your changes frequently, this shortcut script will install and instantiate with a 
