@@ -1,11 +1,6 @@
 # 
 # Copyright . All Rights Reserved.
 #
-# export COMPOSE_FLAGS="-forderer-multihost.yaml"
-#
-# fow AWS machine
-# export WORK_DIR=/home/ubuntu
-# ./generate-orderer.sh
 
 version: '3.7'
 
