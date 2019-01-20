@@ -1,11 +1,6 @@
 # 
 # Copyright . All Rights Reserved.
 #
-# export COMPOSE_FLAGS="-forderer-multihost.yaml"
-#
-# fow AWS machine
-# export WORK_DIR=/home/ubuntu
-# ./generate-orderer.sh
 
 version: '3.7'
 
@@ -22,9 +17,11 @@ services:
     - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates
     - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
     - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-#    extra_hosts:
-#    - "peer0.org1.example.com:192.168.99.101"
-#    - "www.org1.example.com:192.168.99.101"
+    extra_hosts:
+    - "peer0.org1.example.com:${IP1:192.168.99.101}"
+    - "www.org1.example.com:${IP1:192.168.99.101}"
+    - "peer0.org2.example.com:${IP2:192.168.99.102}"
+    - "www.org2.example.com:${IP2:192.168.99.102}"
 
   # http serves certificates
   www.orderer:

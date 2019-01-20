@@ -1,11 +1,6 @@
 #
 # Copyright . All Rights Reserved.
 #
-# export COMPOSE_FLAGS="-fmultihost.yaml"
-#
-# fow AWS machine
-# export WORK_DIR=/home/ubuntu
-# ./generate-peer.sh
 
 version: '3.7'
 
