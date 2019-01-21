@@ -157,7 +157,7 @@ Reload *golang* chaincode.
 ./chaincode-reload.sh common example02 '["init","a","10","b","0"]' chaincode_example02 golang
 ```
 
-# Example with a network of 3 organizations
+# Create a local network of 3 organizations
 
 You can replace default DOMAIN *example.com* and *org1*, *org2* with the names of your organizations. 
 Define them via environment variables either in shell or `.env` file. 
@@ -330,7 +330,18 @@ curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
 Install [docker-machine](https://docs.docker.com/machine/get-started/).
 To run multiple (virtual) hosts on one dev machine install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
-### Create host machines
+## Quick start
+
+Use script [network-create-docker-machine.sh](./network-create-docker-machine.sh) to create a network with arbitrary 
+number of member organizations each running in its own virtual host.
+```bash
+./network-create-docker-machine.sh org1 org2 org3
+```
+
+To understand the script please read the below step by step instructions for the network 
+of two member organizations org1 and org2.
+
+## Create host machines
 
 Create 3 hosts: orderer and member organizations org1 and org2.
 ```bash
@@ -339,7 +350,7 @@ docker-machine create org1
 docker-machine create org2
 ```
 
-### Create orderer organization
+## Create orderer organization
 
 Tell the scripts to use extra multihost docker-compose yaml files.
 ```bash
@@ -371,7 +382,7 @@ Generate crypto material for the orderer organization and start its docker conta
 docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 ```
 
-### Create member organizations
+## Create member organizations
 
 Open a new console. Use env variables to tell the scripts to use multihost config yaml and to name your organization.
 ```bash
@@ -402,7 +413,7 @@ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 To create other organizations repeat the above steps in separate consoles 
 and giving them names by `export ORG=org2` in the first step.
 
-### Add member organizations to the consortium
+## Add member organizations to the consortium
 
 Return to the *orderer* console.
 
@@ -413,7 +424,7 @@ The orderer host can download them to add to the consortium definition.
 ./consortium-add-org.sh org2
 ```
 
-### Create a channel and a chaincode
+## Create a channel and a chaincode
 
 Return to the *org1* console.
 
@@ -436,7 +447,7 @@ Add other organizations to channel *common*.
  ./channel-add-org.sh common org2
 ```
 
-### Have other organizations join the channel
+## Have other organizations join the channel
 
 Return to *org2* console.
 

@@ -12,18 +12,17 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
-    #    environment:
-    #      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-overlay
     volumes:
+      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     ports:
       - ${PEER0_PORT:-7051}:7051
-    extra_hosts:
-      - "orderer.example.com:${ORDERER_IP:-192.168.99.100}"
+#    extra_hosts:
+#      - "orderer.example.com:${ORDERER_IP:-192.168.99.100}"
 
   #  peer1:
-  #    environment:
-  #      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-overlay
+#      environment:
+#        - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-starter_default
   #    volumes:
   #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
   #    extra_hosts:
@@ -31,6 +30,7 @@ services:
 
   cli.peer:
     volumes:
+      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/chaincode:/opt/chaincode
       - ${WORK_DIR-/home/docker}/chaincode/go:/opt/gopath/src
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
@@ -39,22 +39,23 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
       #    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
       - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
-    extra_hosts:
-      - "orderer.example.com:${ORDERER_IP:-192.168.99.100}"
-      - "www.example.com:${ORDERER_IP:-192.168.99.100}"
-      - "www.org1.example.com:${ORG1_IP:-192.168.99.101}"
-      - "www.org2.example.com:${ORG2_IP:-192.168.99.102}"
-      - "www.org3.example.com:${ORG3_IP:-192.168.99.103}"
+#    extra_hosts:
+#      - "orderer.example.com:${ORDERER_IP:-192.168.99.100}"
+#      - "www.example.com:${ORDERER_IP:-192.168.99.100}"
+#      - "www.org1.example.com:${ORG1_IP:-192.168.99.101}"
+#      - "www.org2.example.com:${ORG2_IP:-192.168.99.102}"
+#      - "www.org3.example.com:${ORG3_IP:-192.168.99.103}"
 
   # fabric-rest api server
   api:
     #    environment:
     #      - P=${WORK_DIR-/home/docker}
     volumes:
+      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
       - ${WORK_DIR-/home/docker}/webapp:/usr/src/app/webapp
-    extra_hosts:
-      - "orderer.example.com:${ORDERER_IP:-192.168.99.100}"
+#    extra_hosts:
+#      - "orderer.example.com:${ORDERER_IP:-192.168.99.100}"
 
   # simple http server to disseminate certificates
   www.peer:
@@ -82,4 +83,9 @@ services:
 
 networks:
   default:
+    external: false
     name: fabric-starter_default
+
+#networks:
+#  default:
+#    driver: host
