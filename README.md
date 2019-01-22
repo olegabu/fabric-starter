@@ -3,7 +3,7 @@
 Create a network to jump start development of your decentralized application on 
 [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) platform.
 
-The network can be deployed to multiple docker containers on one host for development or to multiple hosts for testing 
+The network is run by docker containers and can be deployed to one host for development or to multiple hosts for testing 
 or production.
 
 Scripts of this starter generate crypto material and config files, start the network and deploy your chaincodes. 
@@ -47,9 +47,10 @@ Install `docker ce` and `docker compose` by [brew](https://brew.sh/).
 brew install docker 
 ```
 
-## Using particular version of Hyperledger Fabric
+## Using a particular version of Hyperledger Fabric
 
-To deploy network in a particular version of HL Fabric framework export desired version in the FABRIC_VERSION environment variable:
+To deploy network with a particular version of HL Fabric framework export desired version in the 
+FABRIC_VERSION environment variable. The `latest` docker image tag is used by default.
 ```bash
 export FABRIC_VERSION=1.2.0
 ```
@@ -58,12 +59,12 @@ export FABRIC_VERSION=1.2.0
 
 ## Generate and start orderer
 
-Generate crypto material and the genesis block for the *Orderer* organization. Using default *example.com* DOMAIN. 
+Generate crypto material and the genesis block for the *orderer* organization. Using default *example.com* DOMAIN. 
 ```bash
 ./generate-orderer.sh
 ```
 
-Start docker containers for *Orderer*.
+Start docker containers for *orderer*.
 ```bash
 docker-compose -f docker-compose-orderer.yaml up
 ```
@@ -82,7 +83,7 @@ docker-compose up
 
 ## Add organization to the consortium and create a channel
 
-Open another console. Add *org1* to the consortium as *Admin* of the *Orderer* organization:
+Open another console. Add *org1* to the consortium as *Admin* of the *orderer* organization:
 ```bash
 ./consortium-add-org.sh org1
 ``` 
@@ -98,8 +99,8 @@ Create channel *common* as *Admin* of *org1* and join our peers to the channel:
 
 Install and instantiate *nodejs* chaincode *reference* on channel *common*. 
 Using defaults: language `node`, version `1.0`, empty args `[]`.
-Note the path to the source code is inside `cli` docker container and is mapped to the local 
-`./chaincode/node/reference`. 
+Note the path to the source code is inside `cli` docker container and is mapped to the local folder 
+[./chaincode/node/reference](./chaincode/node/reference). 
 ```bash
 ./chaincode-install.sh reference
 
@@ -157,53 +158,57 @@ Reload *golang* chaincode.
 ./chaincode-reload.sh common example02 '["init","a","10","b","0"]' chaincode_example02 golang
 ```
 
-# Example with a network of 3 organizations
+# Create a local network of 3 organizations
 
-You can replace default DOMAIN *example.com* and *org1*, *org2* with the names of your organizations. 
-Define them via environment variables either in shell or `.env` file. 
+## Quick start
+
+Use script [network-create-local.sh](./network-create-local.sh) to create a network with an arbitrary 
+number of member organizations running in docker containers on the local machine.
 ```bash
-export DOMAIN=example.com ORG=org1
+./network-create-local.sh org1 org2 org3
 ```
 
-You can also extend this example by adding more than 3 organizations and any number of channels with various membership.
+This will create a network with `example.com` domain and container names like `peer0.org1.example.com`, 
+`api.org2.example.com` and API ports 4000, 4001, 4002.
 
-## Create organizations and add them to the consortium
+You can redefine your network and organization names and the starting API port.  
+```bash
+DOMAIN=mynetwork.org API_PORT=5000 ./network-create-local.sh a b c d
+```
+
+To understand the script please read the below step by step instructions for the network 
+of three member organizations org1, org2, org3.
+
+You can also extend this example by manually adding more than 3 organizations and any number of channels 
+with various membership.
+
+## Create orderer and member organizations and add them to the consortium
 
 Clean up. Remove all containers, delete local crypto material:
 ```bash
 ./clean.sh
 ```
 
-Generate crypto material and start docker containers of the *Orderer* organization:
+Generate crypto material and start docker containers of the *orderer* organization:
 ```bash
 ./generate-orderer.sh
 
 docker-compose -f docker-compose-orderer.yaml up
 ```
 
-Open another shell. Set environment variables `ORGS` and `CAS` that define how this org's client will connect to other 
-organizations' peers and certificate authorities. When moving to multi host deployment they will be need 
-to be redefined.
-
-Generate and start *org1*.
+Open another shell. Generate and start *org1*.
 ```bash
-export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org1":"ca.org1.example.com:7054"}'
-
 ./generate-peer.sh
 
 docker-compose up
 ```
 
 Open another shell. Note since we're reusing the same `docker-compose.yaml` file we need to redefine `COMPOSE_PROJECT_NAME`.
-Also the ports open to host machine need to be redefined to avoid collision.
+Redefine the api port mapped to the host to avoid collision with api.org1.
 
 Generate and start *org2*.
 ```bash
 export COMPOSE_PROJECT_NAME=org2 ORG=org2 
-export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
-```
-When running on local machine redefine the api port mapped to the host:
-```bash
 export API_PORT=4001
 ```
 
@@ -217,7 +222,6 @@ docker-compose up
 Generate and start *org3* in another shell:
 ```bash
 export COMPOSE_PROJECT_NAME=org3 ORG=org3 
-export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051","org3":"peer0.org3.example.com:7051"}' CAS='{"org3":"ca.org2.example.com:7054"}'
 export API_PORT=4002
 
 ./generate-peer.sh
@@ -225,9 +229,9 @@ export API_PORT=4002
 docker-compose up
 ```
 
-Now you should have 4 console windows running containers of *Orderer*, *org1*, *org2*, *org3* organizations.
+Now you should have 4 console windows running containers of *orderer*, *org1*, *org2*, *org3* organizations.
 
-Open another console where we'll become an *Admin* user of the *Orderer* organization. We'll add orgs to the consortium:
+Open another console where we'll become an *Admin* user of the *orderer* organization. We'll add orgs to the consortium:
 ```bash
 ./consortium-add-org.sh org1
 ./consortium-add-org.sh org2
@@ -323,223 +327,172 @@ curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
 'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
 ```
 
-# Multi host deployment
+# Multi host deployment with docker-machine
 
-There are two approaches for deploying blockchain network on multiple hosts - manual deployment and using docker-machine functionality.
-
-
-## Prepare multi host environment for manual deployment
-
-On each node including orderer clone *fabric-starter* project and export multi-host related flag and
-WORK_DIR variable specifying absolute path to fabric-starter folder:
-
-```bash
-export MULTIHOST=1
-export WORK_DIR=/home/ubuntu/fabric-starter
-```
-
-Start Swarm manager and join nodes as described in [swarm.md](swarm.md)
-If it's undesirable to use Swarm because of security reasons, configure DNS service(s) as described in [dns.md](dns.md)
-
-Deploy multi-host network in multihost environment as described below.
-
-
-## Preparing multi host deployment with docker-machine
+## Prerequisites
 
 Install [docker-machine](https://docs.docker.com/machine/get-started/).
-For local deployment install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
+## Quick start with virtual hosts on local dev machine
 
-### Create orderer machine
+Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
-Create and start `orderer` docker host as a virtual machine.
-For AWS EC2 use `--driver amazonec2` and `export WORK_DIR=/home/ubuntu`.
+Use script [network-create-docker-machine.sh](./network-create-docker-machine.sh) to create a network with an arbitrary 
+number of member organizations each running in its own virtual host.
 ```bash
-docker-machine create --driver virtualbox orderer
+./network-create-docker-machine.sh org1 org2 org3
 ```
 
-See the ip address of the created VM.
+You can redefine your network and organization names.  
 ```bash
-docker-machine ls
-```
-Returns
-```
-NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
-orderer   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.06.1-ce 
+DOMAIN=mynetwork.org ./network-create-docker-machine.sh a b c d
 ```
 
-Connect to `orderer` machine by setting env variables.
+## Quick start with remote hosts on AWS EC2
+
+Define `amazonec2` driver for docker-machine and open ports in `docker-machine` security group.
+Make sure your AWS credentials are saved in env variables or `~/.aws/credentials`.
+More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
 ```bash
-eval "$(docker-machine env orderer)"
+DOCKER_MACHINE_FLAGS="--driver amazonec2 --amazonec2-open-port 80 --amazonec2-open-port 7050 --amazonec2-open-port 7051 --amazonec2-open-port 4000" \
+./network-create-docker-machine.sh org1 org2 org3
 ```
 
-Start docker swarm on `orderer` machine. Replace ip address `192.168.99.100` with the actual ip of the remote host interface.
+## Quick start with remote hosts on Microsoft Azure
+
+Define `azure` driver for docker-machine and open ports in network security groups. 
+Give your subscription id (the one looking like `deadbeef-8bad-f00d-989d-5fbe969ccb9e`) and the script will prompt you
+to login to your Microsoft account and authorize `Docker Machine for Azure` application to manage your Azure instances. 
+More settings are described on the [driver page](https://docs.docker.com/machine/drivers/azure/).
 ```bash
-docker swarm init --advertise-addr 192.168.99.100
+DOCKER_MACHINE_FLAGS="--driver azure --azure-size Standard_A1 --azure-subscription-id <your subs-id> --azure-open-port 80 --azure-open-port 7050 --azure-open-port 7051 --azure-open-port 4000" \
+./network-create-docker-machine.sh org1 org2
 ```
-will output a command to join the swarm by other hosts;
 
-The other hosts will be join to the swarm by the following command (this is an example, use the actual token and ip):
+## Drill down
+
+To understand the script please read the below step by step instructions for the network 
+of two member organizations org1 and org2.
+
+### Create host machines
+
+Create 3 hosts: orderer and member organizations org1 and org2.
 ```bash
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.100:2377
+docker-machine create orderer
+docker-machine create org1
+docker-machine create org2
 ```
 
-Copy local template files to `orderer` home directory (`/home/docker` on VirtualBox or `/home/ubuntu` on AWS EC2).
+### Create orderer organization
+
+Tell the scripts to use extra multihost docker-compose yaml files.
+```bash
+export MULTIHOST=true
+```
+
+Copy config templates to the orderer host.
 ```bash
 docker-machine scp -r templates orderer:templates
 ```
 
-Now template files are on the `orderer` host and we can run `./generate-orderer.sh` but with a flag 
-`COMPOSE_FLAGS` which adds an extra docker-compose file `orderer-multihost.yaml` on top of the base 
-`docker-compose-orderer.yaml`. This file redefines volume mappings from `${PWD}` local to your host machine to 
-directory on remote host specified by `WORK_DIR` (defaulted to VirtualBox's home `/home/docker`; 
-for AWS EC2 do `export WORK_DIR=/home/ubuntu`).
-
-Later docker-machine allows to "connect" to created machines by invoking `docker-machine env` command for specified machine name (org1):
-```bash
-eval "$(docker-machine env org1)"
-```
-
-After that docker commands running in local console will actually be executed in the (remote) machine.
-
-
-# Deploy network on multiple nodes
-
-Connect to orderer machine (with *ssh* for manual or *docker-machine env* command for docker machine):
-```bash
-./generate-orderer.sh
-``` 
-
-Start *Orderer* containers on `orderer` machine.
-```bash
-docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
-```
-
-### Create org1 machine
-
-For docker-machine deployment create and start `org1` docker host as a virtual machine with VirtualBox.
-```bash
-docker-machine create --driver virtualbox org1
-```
-
-and connect to `org1` machine by setting env variables.
-```bash
-eval "$(docker-machine env org1)"
-```
-
-Or connect to `org1` machine by ssh for manual mode.
-
-Join swarm; this is an example, use the actual command output by `orderer`. In orderer console get the command:
-```bash
-docker swarm join-token worker
-```
-Execute the output command in `org1` console.
-```bash
-docker swarm join --token SWMTKN-1-4rzq6pyg3z2kw7eqhqdnc86isjpwo6t69t1q0ooy84csioieyc-ajcb0rdg3l15ronhytmldc59s 192.168.99.100:2377
-```
-
-Need to run a dummy container on this new host `org1` to force join overlay network `fabric-overlay` 
-created by docker-compose on `orderer` host. 
-```bash
-docker run -dit --name alpine --network fabric-overlay alpine
-```
-
-Copy local template and chaincode files to `org1` machine.
-```bash
-docker-machine scp -r templates org1:templates
-
-docker-machine scp -r chaincode org1:chaincode
-
-docker-machine scp -r webapp org1:webapp
-```
-
-Generate crypto material for member organization *org1*.
-
-```bash
-./generate-peer.sh
-``` 
-
-Start *org1* containers on `org1` machine.
-```bash
-docker-compose -f docker-compose.yaml -f multihost.yaml up -d
-``` 
-
-### Add org1 to the consortium as Orderer
-
-Now `org1` machine is up and running a web container serving root certificates of *org1*. The orderer can access it
-via an overlay network, download certs and add *org1*.
-
-Connect to `orderer` machine by setting env variables or by SSH.
+Connect docker client to the orderer host. 
+The docker commands that follow will be executed on the host not local machine.
 ```bash
 eval "$(docker-machine env orderer)"
 ```
 
-Run local script to add to the consortium.
-```
-./consortium-add-org.sh org1
-```
-
-### Create a channel and deploy chaincode as org1
-
-Connect to `org1` machine by setting env variables.
-```bash
-eval "$(docker-machine env org1)"
-```
-
-Run local scripts to create and join channels.
-```
-./channel-create.sh common
-
-./channel-join.sh common
-
-./chaincode-install.sh reference
-
-./chaincode-instantiate.sh common reference 
-```
-
-### Create org2 machine
+Inspect created hosts' IPs and collect them into `hosts` file to copy to the hosts. This file will be mapped to the
+docker containers' `/etc/hosts` to resolve names to IPs.
+This is better done by the script.
+Alternatively, edit `extra_hosts` in `multihost.yaml` and `orderer-multihost.yaml` to specify host IPs directly.
 
 ```bash
-export ORG=org2
-export ORGS='{"org1":"peer0.org1.example.com:7051","org2":"peer0.org2.example.com:7051"}' CAS='{"org2":"ca.org2.example.com:7054"}'
-docker-machine create --driver virtualbox org2
-eval "$(docker-machine env org2)"
-docker swarm join --token SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102:2377
-docker run -dit --name alpine --network fabric-overlay alpine
-docker-machine scp -r templates org2:templates
-docker-machine scp -r chaincode org2:chaincode
+docker-machine ip orderer
+docker-machine ip org1
+docker-machine ip org2
+```
+
+Generate crypto material for the orderer organization and start its docker containers.
+```bash
+./generate-orderer.sh
+docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+```
+
+### Create member organizations
+
+Open a new console. Use env variables to tell the scripts to use multihost config yaml and to name your organization.
+```bash
+export MULTIHOST=true && export ORG=org1
+```
+
+Copy templates, chaincode and webapp folders to the host.
+```bash
+docker-machine scp -r templates $ORG:templates && docker-machine scp -r chaincode $ORG:chaincode && docker-machine scp -r webapp $ORG:webapp
+```
+
+Connect docker client to the organization host.
+```bash
+eval "$(docker-machine env $ORG)"
+```
+
+Generate crypto material for the org and start its docker containers.
+```bash
 ./generate-peer.sh
-docker-compose -f docker-compose.yaml -f multihost.yaml up
+docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ```
 
-Return to `org1` machine to add *org2* to the channel.
+To create other organizations repeat the above steps in separate consoles 
+and giving them names by `export ORG=org2` in the first step.
+
+### Add member organizations to the consortium
+
+Return to the *orderer* console.
+
+Now the member organizations are up and serving their certificates. 
+The orderer host can download them to add to the consortium definition. 
 ```bash
-eval "$(docker-machine env org1)"
-./channel-add-org.sh common org2 
+./consortium-add-org.sh org1
+./consortium-add-org.sh org2
 ```
 
-Back to `org2` machine to join channel.
+### Create a channel and a chaincode
+
+Return to the *org1* console.
+
+The first organization creates channel *common* and joins to it.
 ```bash
-export ORG=org2
-eval "$(docker-machine env org2)"
+./channel-create.sh common
 ./channel-join.sh common
 ```
 
-Install chaincode (no need to instantiate) and query.
+And adds other organizations to channel *common*.
+```bash
+ ./channel-add-org.sh common org2
+```
+
+And installs and instantiates chaincode *reference*.
 ```bash
 ./chaincode-install.sh reference
+./chaincode-instantiate.sh common reference
+```
+
+Test the chaincode by invoke and query.
+```bash
+./chaincode-invoke.sh common reference '["put","account","1","{\"name\":\"one\"}"]'
 ./chaincode-query.sh common reference '["list","account"]'
 ```
 
-### Create machines for other organizations
+### Have other organizations join the channel
 
-The above steps are collected into a single script that creates a machine, generates crypto material and starts 
-containers on a remote or virtual host for a new org. This example is for *org3*; replace swarm token and manager ip 
-with your own from `docker swarm join-token worker`.
+Return to *org2* console.
+
+Join *common* and install *reference*.
 ```bash
-./machine-create-peer.sh SWMTKN-1-4fbasgnyfz5uqhybbesr9gbhg0lqlcj5luotclhij87owzd4ve-4k16civlmj3hfz1q715csr8lf 192.168.99.102 org3
+./channel-join.sh common
+./chaincode-install.sh reference
+``` 
+
+Test the chaincode by a query by *org2*.
+```bash
+./chaincode-query.sh common reference '["list","account"]'
 ```
-
-# LDAP Configuration
-
-See [ldap.md](ldap.md)
