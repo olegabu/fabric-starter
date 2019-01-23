@@ -46,7 +46,7 @@ for org in "$@"
 do
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
-    sed -i "/.*${org}.*/d" org_hosts
+    sed -i.bak "/.*${org}.*/d" org_hosts
     docker-machine scp org_hosts ${org}:hosts
     rm org_hosts
 done
