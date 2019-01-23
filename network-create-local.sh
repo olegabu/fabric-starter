@@ -6,10 +6,18 @@ function info() {
 
 export DOMAIN=${DOMAIN-example.com}
 
+orgs=${@:-org1}
+first_org=${1:-org1}
+
+channel=${CHANNEL:-common}
+chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
+chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
+
 # Clean up. Remove all containers, delete local crypto material
 
 info "Cleaning up"
 ./clean.sh
+unset ORG COMPOSE_PROJECT_NAME
 
 # Create orderer organization
 
@@ -21,7 +29,7 @@ docker-compose -f docker-compose-orderer.yaml up -d
 
 api_port=${API_PORT-4000}
 
-for org in "$@"
+for org in ${orgs}
 do
     export ORG=${org} API_PORT=${api_port}
     export COMPOSE_PROJECT_NAME=${ORG}
@@ -34,34 +42,34 @@ done
 
 # Add member organizations to the consortium
 
-for org in "$@"
+for org in ${orgs}
 do
     info "Adding $org to the consortium"
     ./consortium-add-org.sh ${org}
 done
 
-# First organization creates common channel
+# First organization creates the channel
 
-export ORG=${1}
+export ORG=${first_org}
 export COMPOSE_PROJECT_NAME=${ORG}
 
-info "Creating channel by $ORG"
-./channel-create.sh common
-./channel-join.sh common
+info "Creating channel ${channel} by $ORG"
+./channel-create.sh ${channel}
+./channel-join.sh ${channel}
 
 # First organization adds other organizations to the channel
 
 for org in "${@:2}"
 do
-    info "Adding $org to the channel"
-    ./channel-add-org.sh common ${org}
+    info "Adding $org to channel ${channel}"
+    ./channel-add-org.sh ${channel} ${org}
 done
 
-# First organization creates reference chaincode
+# First organization creates the chaincode
 
-info "Creating chaincode by $ORG"
-./chaincode-install.sh reference
-./chaincode-instantiate.sh common reference
+info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
+./chaincode-install.sh ${chaincode_install_args}
+./chaincode-instantiate.sh ${chaincode_instantiate_args}
 
 # Other organizations join the channel
 
@@ -69,8 +77,8 @@ for org in "${@:2}"
 do
     export ORG=${org}
     export COMPOSE_PROJECT_NAME=${ORG}
-    info "Joining $org to the channel"
-    ./channel-join.sh common
-    ./chaincode-install.sh reference
+    info "Joining $org to channel ${channel}"
+    ./channel-join.sh ${channel}
+    ./chaincode-install.sh ${chaincode_install_args}
     unset ORG COMPOSE_PROJECT_NAME
 done

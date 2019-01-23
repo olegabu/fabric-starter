@@ -169,11 +169,17 @@ number of member organizations running in docker containers on the local machine
 ```
 
 This will create a network with `example.com` domain and container names like `peer0.org1.example.com`, 
-`api.org2.example.com` and API ports 4000, 4001, 4002.
+`api.org2.example.com` and API ports 4000, 4001, 4002; will create a channel named *common* 
+and nodejs chaincode *reference* with its source in this repo [./chaincode/node/reference](./chaincode/node/reference). 
 
-You can redefine your network and organization names and the starting API port.  
+You can give a name to your network, set starting API port, channel name and the chaincode location, 
+install and instantiate arguments.
 ```bash
-DOMAIN=mynetwork.org API_PORT=5000 ./network-create-local.sh a b c d
+CHANNEL=a-b \
+CHAINCODE_HOME=/home/oleg/chaincode \
+CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' \
+CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
+./network-create-local.sh a b
 ```
 
 To understand the script please read the below step by step instructions for the network 
