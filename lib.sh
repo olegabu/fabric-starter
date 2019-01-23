@@ -214,7 +214,7 @@ function instantiateChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
 
     arguments="{\"Args\":$initArguments}"
-    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion"
+    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt $privateCollectionParam $endorsementPolicyParam"
 }
 
