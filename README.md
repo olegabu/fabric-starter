@@ -176,6 +176,7 @@ You can give a name to your network, set starting API port, channel name and the
 install and instantiate arguments.
 ```bash
 CHANNEL=a-b \
+WEBAPP_HOME=/home/oleg/webapp \
 CHAINCODE_HOME=/home/oleg/chaincode \
 CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' \
 CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
@@ -349,9 +350,14 @@ number of member organizations each running in its own virtual host.
 ./network-create-docker-machine.sh org1 org2 org3
 ```
 
-You can redefine your network and organization names.  
+Of course you can override the defaults with env variables.
 ```bash
-DOMAIN=mynetwork.org ./network-create-docker-machine.sh a b c d
+CHANNEL=a-b \
+WEBAPP_HOME=/home/oleg/webapp \
+CHAINCODE_HOME=/home/oleg/chaincode \
+CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' \
+CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
+./network-create-docker-machine.sh a b
 ```
 
 ## Quick start with remote hosts on AWS EC2

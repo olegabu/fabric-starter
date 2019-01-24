@@ -171,7 +171,7 @@ services:
     volumes:
       - ./crypto-config:/usr/src/app/crypto-config
       - ./templates:/usr/src/app/templates
-      - ./webapp:/usr/src/app/webapp
+      - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
 
