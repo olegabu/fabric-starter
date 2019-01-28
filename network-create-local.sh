@@ -12,6 +12,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml}
 
 # Clean up. Remove all containers, delete local crypto material
 
@@ -27,7 +28,7 @@ docker-compose -f docker-compose-orderer.yaml up -d
 
 # Create member organizations
 
-api_port=${API_PORT-4000}
+api_port=${API_PORT:-4000}
 
 for org in ${orgs}
 do
@@ -35,7 +36,7 @@ do
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     ./generate-peer.sh
-    docker-compose up -d
+    docker-compose ${docker_compose_args} up -d
     api_port=$((api_port + 1))
     unset ORG COMPOSE_PROJECT_NAME API_PORT
 done

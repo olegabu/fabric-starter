@@ -172,9 +172,17 @@ This will create a network with `example.com` domain and container names like `p
 `api.org2.example.com` and API ports 4000, 4001, 4002; will create a channel named *common* 
 and nodejs chaincode *reference* with its source in this repo [./chaincode/node/reference](./chaincode/node/reference). 
 
-You can give a name to your network, set starting API port, channel name and the chaincode location, 
+Member organization's docker containers are started with default docker-compose config files 
+`-f docker-compose.yaml -f couchdb.yaml`. You can override them by setting env variable `DOCKER_COMPOSE_ARGS`; for
+example to start without a CouchDb container to use LevelDb for storage:
+```bash
+DOCKER_COMPOSE_ARGS="-f docker-compose.yaml" ./network-create-local.sh
+```
+ 
+You can give your network and channel names, set starting API port, override chaincode location, 
 install and instantiate arguments.
 ```bash
+DOMAIN=mynetwork.org \
 CHANNEL=a-b \
 WEBAPP_HOME=/home/oleg/webapp \
 CHAINCODE_HOME=/home/oleg/chaincode \
@@ -352,6 +360,7 @@ number of member organizations each running in its own virtual host.
 
 Of course you can override the defaults with env variables.
 ```bash
+DOMAIN=mynetwork.org \
 CHANNEL=a-b \
 WEBAPP_HOME=/home/oleg/webapp \
 CHAINCODE_HOME=/home/oleg/chaincode \
@@ -360,10 +369,18 @@ CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.
 ./network-create-docker-machine.sh a b
 ```
 
+The script [network-create-docker-machine.sh](./network-create-docker-machine.sh) combines
+[host-create.sh](./host-create.sh) to create host machines with `docker-machine` and
+[network-create.sh](./network-create.sh) to create container with `docker-compose`.
+
+If you don't want to recreate hosts every time you can re-run `./network-create.sh` with the same arguments and 
+env variables to recreate the network on the same remote hosts by clearing and creating containers.   
+
 ## Quick start with remote hosts on AWS EC2
 
 Define `amazonec2` driver for docker-machine and open ports in `docker-machine` security group.
-Make sure your AWS credentials are saved in env variables or `~/.aws/credentials`.
+Make sure your AWS credentials are saved in env variables or `~/.aws/credentials` or passed as arguments
+`--amazonec2-access-key` and `--amazonec2-secret-key`. 
 More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
 ```bash
 DOCKER_MACHINE_FLAGS="--driver amazonec2 --amazonec2-open-port 80 --amazonec2-open-port 7050 --amazonec2-open-port 7051 --amazonec2-open-port 4000" \
@@ -379,6 +396,31 @@ More settings are described on the [driver page](https://docs.docker.com/machine
 ```bash
 DOCKER_MACHINE_FLAGS="--driver azure --azure-size Standard_A1 --azure-subscription-id <your subs-id> --azure-open-port 80 --azure-open-port 7050 --azure-open-port 7051 --azure-open-port 4000" \
 ./network-create-docker-machine.sh org1 org2
+```
+
+## Quick start with existing remote hosts
+
+If you have already created remote hosts in the cloud or on premises you can connect docker-machine to these hosts and 
+operate with the same scripts and commands.
+
+Make sure the remote hosts have open inbound ports for Fabric network: 80, 4000, 7050, 7051 and for docker: 2376.
+
+Connect via [generic](https://docs.docker.com/machine/drivers/generic/) driver 
+to hosts *orderer*, *a* and *b* at specified public IPs with ssh private key `~/docker-machine.pem`.
+```bash
+docker-machine create --driver generic --generic-ssh-key ~/docker-machine.pem --generic-ssh-user ubuntu \
+--generic-ip-address 34.227.123.456 orderer
+docker-machine create --driver generic --generic-ssh-key ~/docker-machine.pem --generic-ssh-user ubuntu \
+--generic-ip-address 54.173.123.457 a
+docker-machine create --driver generic --generic-ssh-key ~/docker-machine.pem --generic-ssh-user ubuntu \
+--generic-ip-address 54.152.123.458 b
+```
+
+Now the hosts are known to docker-machine and you can run `network-create.sh` script to create 
+docker containers running the network and create organizations, channel and chaincode.
+```bash
+DOMAIN=mynetwork.org CHANNEL=a-b WEBAPP_HOME=/home/oleg/webapp CHAINCODE_HOME=/home/oleg/chaincode CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
+./network-create.sh a b
 ```
 
 ## Drill down
