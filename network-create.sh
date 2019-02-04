@@ -33,7 +33,7 @@ done
 
 echo -e "${hosts}" > hosts
 
-info "Using WORK_DIR=$WORK_DIR on remote host. Hosts created:"
+info "Using WORK_DIR=$WORK_DIR on remote host; CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
 
 # Copy generated hosts file to the host machines
@@ -67,9 +67,23 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 for org in ${orgs}
 do
     export ORG=${org}
-    docker-machine scp -r templates ${ORG}:templates
-    docker-machine scp -r ${CHAINCODE_HOME:-chaincode} ${ORG}:chaincode
-    docker-machine scp -r ${WEBAPP_HOME:-webapp} ${ORG}:webapp
+    dest=${WORK_DIR}/templates
+    info "Copying templates to remote host ${ORG}:${dest}"
+    docker-machine ssh ${ORG} rm -rf ${dest}
+    docker-machine scp -r templates ${ORG}:${dest}
+
+    dest=${WORK_DIR}/chaincode
+    chaincode_home=${CHAINCODE_HOME:-chaincode}
+    info "Copying $chaincode_home to remote host ${ORG}:${dest}"
+    docker-machine ssh ${ORG} rm -rf ${dest}
+    docker-machine scp -r ${chaincode_home} ${ORG}:${dest}
+
+    dest=${WORK_DIR}/webapp
+    webapp_home=${WEBAPP_HOME:-webapp}
+    info "Copying $webapp_home to remote host ${ORG}:${dest}"
+    docker-machine ssh ${ORG} rm -rf ${dest}
+    docker-machine scp -r ${webapp_home} ${ORG}:${dest}
+    
     eval "$(docker-machine env ${ORG})"
     info "Creating member organization $ORG"
     ./clean.sh
