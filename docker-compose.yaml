@@ -156,20 +156,26 @@ services:
       - MSP_DIR=/usr/src/app/msp
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
-      - ORGS=${ORGS:-"org1":"peer0.org1.example.com:7051"}
-      - CAS=${CAS:-"org1":"ca.org1.example.com:7054"}
+#      - ORGS=${ORGS:-"org1":"peer0.org1.example.com:7051"}
+#      - CAS=${CAS:-"org1":"ca.org1.example.com:7054"}
+      - ORGS="${ORG-org1}":"peer0.${ORG-org1}.${DOMAIN-example.com}:7051"
+      - CAS="${ORG-org1}":"ca.${ORG-org1}.${DOMAIN-example.com}:7054"
       - DISCOVER_AS_LOCALHOST=false
       - ENROLL_ID
       - ENROLL_SECRET
       - P=${PWD}
       - HFC_LOGGING={"debug":"console","info":"console"}
+      - INVOKE_RETRY_COUNT=3
+# to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
+#      - GRPC_VERBOSITY=DEBUG
+#      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
     depends_on:
       - peer0
 #      - peer1
     volumes:
       - ./crypto-config:/usr/src/app/crypto-config
       - ./templates:/usr/src/app/templates
-      - ./webapp:/usr/src/app/webapp
+      - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
 

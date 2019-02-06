@@ -29,8 +29,8 @@ services:
     environment:
     - COUCHDB_USER=
     - COUCHDB_PASSWORD=
-    ports:
-    - ${PEER0_COUCHDB_PORT:-5084}:5984
+#    ports:
+#    - ${PEER0_COUCHDB_PORT:-5084}:5984
 
 #  couchdb.peer1:
 #    container_name: couchdb.peer1.${ORG:-org1}.${DOMAIN:-example.com}

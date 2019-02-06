@@ -1,0 +1,16 @@
+[
+  {
+    "name": "collectionMarbles",
+    "policy": "OR('a.member', 'b.member')",
+    "requiredPeerCount": 0,
+    "maxPeerCount": 3,
+    "blockToLive":1000000
+  },
+  {
+    "name": "collectionMarblePrivateDetails",
+    "policy": "OR('a.member')",
+    "requiredPeerCount": 0,
+    "maxPeerCount": 3,
+    "blockToLive":3
+  }
+]

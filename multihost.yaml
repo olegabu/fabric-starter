@@ -1,11 +1,6 @@
 #
 # Copyright . All Rights Reserved.
 #
-# export COMPOSE_FLAGS="-fmultihost.yaml"
-#
-# fow AWS machine
-# export WORK_DIR=/home/ubuntu
-# ./generate-peer.sh
 
 version: '3.7'
 
@@ -17,63 +12,42 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
-    environment:
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-overlay
     volumes:
+      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-#  extra_hosts:
-#      - "orderer.example.com:192.168.99.100"
-
-#  peer1:
-#    environment:
-#      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-overlay
-#    volumes:
-#      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-#    extra_hosts:
-#      - "orderer.example.com:192.168.99.100"
+    ports:
+      - ${PEER0_PORT:-7051}:7051
 
   cli.peer:
     volumes:
-    - ${WORK_DIR-/home/docker}/chaincode:/opt/chaincode
-    - ${WORK_DIR-/home/docker}/chaincode/go:/opt/gopath/src
-    - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
-    - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates
-    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
-    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
-#    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
-    - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
-#    extra_hosts:
-#      - "orderer.example.com:192.168.99.100"
-#      - "www.example.com:192.168.99.100"
+      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
+      - ${WORK_DIR-/home/docker}/chaincode:/opt/chaincode
+      - ${WORK_DIR-/home/docker}/chaincode/go:/opt/gopath/src
+      - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates
+      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
+      #    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
+      - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
 
   # fabric-rest api server
   api:
-#    environment:
-#      - P=${WORK_DIR-/home/docker}
+    #    environment:
+    #      - P=${WORK_DIR-/home/docker}
     volumes:
+      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
       - ${WORK_DIR-/home/docker}/webapp:/usr/src/app/webapp
-#    extra_hosts:
-#      - "orderer.example.com:192.168.99.100"
 
   # simple http server to disseminate certificates
   www.peer:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ${WORK_DIR-/home/docker}/crypto-config/configtx:/usr/share/nginx/html/configtx
+    ports:
+      - ${WWW_PORT:-80}:80
 
-# need to run before to force join overlay network
-#  docker run -dit --name alpine2 --network fabric-overlay alpine
-#networks:
-#  default:
-#    external:
-#      name: fabric-overlay
-
-#networks:
-#  default:
-#    name: fabric-overlay
-
-#networks:
-#  default:
-#    name: fabric-overlay
-#    driver: overlay
+networks:
+  default:
+    external: false
+    name: fabric-starter_default

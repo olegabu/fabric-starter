@@ -38,7 +38,7 @@ function runCLIWithComposerOverrides() {
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
     fi
 
-    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
+    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fcouchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
     printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
@@ -200,6 +200,23 @@ function installChaincode() {
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang"
 }
 
+function installChaincodePackage() {
+    chaincodeName=${1:?Chaincode package must be specified}
+
+    echo "Install chaincode package $chaincodeName"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install $chaincodeName"
+}
+
+function createChaincodePackage() {
+    chaincodeName=${1:?Chaincode name must be specified}
+    chaincodePath=${2:?Chaincode path must be specified}
+    chaincodeLang=${3:?Chaincode lang must be specified}
+    chaincodeVersion=${4:?Chaincode version must be specified}
+    chaincodePackageName=${5:?Chaincode PackageName must be specified}
+
+    echo "Packaging chaincode $chaincodePath to $chaincodeName"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName"
+}
 
 function instantiateChaincode() {
     channelName=${1:?Channel name must be specified}
@@ -214,7 +231,7 @@ function instantiateChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
 
     arguments="{\"Args\":$initArguments}"
-    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion"
+    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt $privateCollectionParam $endorsementPolicyParam"
 }
 
