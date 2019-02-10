@@ -561,7 +561,10 @@ Note, the Hyperledger Fabric version which the snapshot is based on is defined i
 The _master_ branch as well as potentially _feature branches_ are used for development.
 `Master` is assigned to the _latest_ version of Fabric.
 
-Currently issued branches are:
+***Currently issued branches are:***
 
-- snapshot-0.1-1.4
-- master(development)
+
+- `snapshot-0.2-1.4`
+    - avoid root user in clean.sh
+- `snapshot-0.1-1.4`
+- `master(development)`
