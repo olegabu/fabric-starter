@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 source lib.sh
 
+[ -d "crypto-config/ordererOrganizations/$DOMAIN" ] && exit
 
 EXECUTE_BY_ORDERER=1 envSubst "templates/cryptogen-orderer-template.yaml" "crypto-config/cryptogen-orderer.yaml"
 EXECUTE_BY_ORDERER=1 runCLI "rm -rf crypto-config/ordererOrganizations && cryptogen generate --config=crypto-config/cryptogen-orderer.yaml && chown $UID -R crypto-config/"
