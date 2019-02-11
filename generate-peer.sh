@@ -5,7 +5,7 @@ source lib.sh
 # https://github.com/docker/compose/issues/4601
 #[ -n "${DOCKER_HOST}" ] && docker run -dit --name alpine --network fabric-overlay alpine
 
-[ -d "crypto-config/peerOrganizations/$ORG.$DOMAIN" ] && exit
+#[ -d "crypto-config/peerOrganizations/$ORG.$DOMAIN" ] && exit TODO: adjust for docker-machine
 
 IFS='.' read -r -a subDomains <<< ${DOMAIN}
 
