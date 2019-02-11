@@ -556,7 +556,7 @@ Test the chaincode by a query by *org2*.
 
 As this project doesn't have a defined release cycle yet we create `snapshot-{version}-{fabric-version}` branches
 when we see code is stable enough or before introducing major changes\new features.
-Note, the Hyperledger Fabric version which the snapshot is based on is defined in the `.env` file.
+Note, the Hyperledger Fabric version which the snapshot depends on is defined in the `.env` file.
 
 The _master_ branch as well as potentially _feature branches_ are used for development.
 `Master` is assigned to the _latest_ version of Fabric.
