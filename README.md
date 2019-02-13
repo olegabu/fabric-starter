@@ -554,14 +554,25 @@ Test the chaincode by a query by *org2*.
 
 # Releases\Snapshots flow
 
-As this project doesn't have a defined release cycle yet we create `snapshot-{version}-{fabric-version}` branches
-when we see code is stable enough or before introducing major changes\new features.
-Note, the Hyperledger Fabric version which the snapshot depends on is defined in the `.env` file.
+As this project doesn't have a defined release cycle yet we create 
+`snapshot-{version}-{fabric-version}` branches  
+when we see code is stable enough or before introducing major changes\new features.  
 
-The _master_ branch as well as potentially _feature branches_ are used for development.
-`Master` is assigned to the _latest_ version of Fabric.
+`Note`, the Hyperledger Fabric version which the snapshot depends on is defined in the `.env` file.  
+Also this project uses _olegabu/fabric-starter-rest_ docker image which has 
+the same versioning approach but even updated docker image with the same label (e.g. latest)
+won't be pulled automatically if it exists in the local docker registry.   
+You have to remove the old image manually (by `docker rmi -f olegabu/fabric-starter-rest`).    
 
-Currently issued branches are:
 
-- snapshot-0.1-1.4
+The _`master`_ branch as well as potentially _`feature branches`_ are used for development.  
+`Master` is assigned to the _`latest`_ version of Fabric.
+
+
+#### Currently issued branches are:
+
 - master(development)
+- snapshot-0.2-1.4
+    - use _fabric-starter-rest:snapshot-0.2-1.4_
+- snapshot-0.1-1.4
+    - start snapshot branching
