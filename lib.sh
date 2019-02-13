@@ -38,13 +38,17 @@ function runCLIWithComposerOverrides() {
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
     fi
 
+#    if [ "${PORTS}" ]; then
+#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fports.yaml"
+#    fi
+
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fcouchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
     printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
     [ -n "$command" ] \
- && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
- || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
+ && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
+ || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }

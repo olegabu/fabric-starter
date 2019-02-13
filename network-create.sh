@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+VM_NAME_PREFIX=${VM_NAME_PREFIX:-?Set environment variable VM_NAME_PREFIX to use for the VM names}
+
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
@@ -16,18 +18,19 @@ chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
 docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml}
 
 # Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
-
-orderer_ip=`(docker-machine ip orderer)`
+ordererMachineName=${VM_NAME_PREFIX}orderer
+orderer_ip=`(docker-machine ip ${ordererMachineName})`
 hosts="127.0.0.1 localhost localhost.local\n${orderer_ip} www.${DOMAIN}\n${orderer_ip} orderer.${DOMAIN}"
 
-export WORK_DIR=`(docker-machine ssh orderer pwd)`
+export WORK_DIR=`(docker-machine ssh ${ordererMachineName} pwd)`
 
 ## Create member organizations host machines
 
 for org in ${orgs}
 do
     # collect ip into the hosts file
-    ip=`(docker-machine ip ${org})`
+    orgMachineName=${VM_NAME_PREFIX}${org}
+    ip=`(docker-machine ip ${orgMachineName})`
     hosts="${hosts}\n${ip} www.${org}.${DOMAIN}\n${ip} peer0.${org}.${DOMAIN}"
 done
 
@@ -38,14 +41,15 @@ cat hosts
 
 # Copy generated hosts file to the host machines
 
-docker-machine scp hosts orderer:hosts
+docker-machine scp hosts ${ordererMachineName}:hosts
 
 for org in ${orgs}
 do
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
     sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
-    docker-machine scp org_hosts ${org}:hosts
+    orgMachineName=${VM_NAME_PREFIX}${org}
+    docker-machine scp org_hosts ${orgMachineName}:hosts
     rm org_hosts.bak org_hosts
 done
 
@@ -56,8 +60,8 @@ done
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-docker-machine scp -r templates orderer:templates
-eval "$(docker-machine env orderer)"
+docker-machine scp -r templates ${ordererMachineName}:templates
+eval "$(docker-machine env ${ordererMachineName})"
 ./clean.sh
 ./generate-orderer.sh
 docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
@@ -67,24 +71,25 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 for org in ${orgs}
 do
     export ORG=${org}
+    orgMachineName=${VM_NAME_PREFIX}${org}
     dest=${WORK_DIR}/templates
-    info "Copying templates to remote host ${ORG}:${dest}"
-    docker-machine ssh ${ORG} rm -rf ${dest}
-    docker-machine scp -r templates ${ORG}:${dest}
+    info "Copying templates to remote host ${orgMachineName}:${dest}"
+    docker-machine ssh ${orgMachineName} rm -rf ${dest}
+    docker-machine scp -r templates ${orgMachineName}:${dest}
 
     dest=${WORK_DIR}/chaincode
     chaincode_home=${CHAINCODE_HOME:-chaincode}
-    info "Copying $chaincode_home to remote host ${ORG}:${dest}"
-    docker-machine ssh ${ORG} rm -rf ${dest}
-    docker-machine scp -r ${chaincode_home} ${ORG}:${dest}
+    info "Copying $chaincode_home to remote host ${orgMachineName}:${dest}"
+    docker-machine ssh ${orgMachineName} rm -rf ${dest}
+    docker-machine scp -r ${chaincode_home} ${orgMachineName}:${dest}
 
     dest=${WORK_DIR}/webapp
     webapp_home=${WEBAPP_HOME:-webapp}
     info "Copying $webapp_home to remote host ${ORG}:${dest}"
-    docker-machine ssh ${ORG} rm -rf ${dest}
-    docker-machine scp -r ${webapp_home} ${ORG}:${dest}
-    
-    eval "$(docker-machine env ${ORG})"
+    docker-machine ssh ${orgMachineName} rm -rf ${dest}
+    docker-machine scp -r ${webapp_home} ${orgMachineName}:${dest}
+
+    eval "$(docker-machine env ${orgMachineName})"
     info "Creating member organization $ORG"
     ./clean.sh
     ./generate-peer.sh
@@ -94,7 +99,7 @@ done
 
 # Add member organizations to the consortium
 
-eval "$(docker-machine env orderer)"
+eval "$(docker-machine env ${ordererMachineName})"
 
 for org in ${orgs}
 do
@@ -104,7 +109,7 @@ done
 
 # First organization creates the channel
 
-eval "$(docker-machine env ${first_org})"
+eval "$(docker-machine env ${VM_NAME_PREFIX}${first_org})"
 export ORG=${first_org}
 
 info "Creating channel ${channel} by $ORG"
@@ -117,6 +122,7 @@ for org in "${@:2}"
 do
     info "Adding $org to channel ${channel}"
     ./channel-add-org.sh ${channel} ${org}
+
 done
 
 # First organization creates the chaincode
@@ -130,7 +136,8 @@ info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instanti
 for org in "${@:2}"
 do
     export ORG=${org}
-    eval "$(docker-machine env ${ORG})"
+    orgMachineName=${VM_NAME_PREFIX}${org}
+    eval "$(docker-machine env ${orgMachineName})"
     info "Joining $org to channel ${channel}"
     ./channel-join.sh ${channel}
     ./chaincode-install.sh ${chaincode_install_args}
