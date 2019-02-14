@@ -146,8 +146,6 @@ services:
 #    build: ../fabric-starter-rest
     image: olegabu/fabric-starter-rest:${FABRIC_STARTER_REST_VERSION:-latest}
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
-    ports:
-      - ${API_PORT:-4000}:3000
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -165,7 +163,6 @@ services:
       - ENROLL_SECRET
       - P=${PWD}
       - HFC_LOGGING={"debug":"console","info":"console"}
-      - INVOKE_RETRY_COUNT=3
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
@@ -185,8 +182,6 @@ services:
   www.peer:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: nginx
-#    ports:
-#      - ${WWW_PORT:-8081}:80
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 
