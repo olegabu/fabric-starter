@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VM_NAME_PREFIX=${VM_NAME_PREFIX:-?Set environment variable VM_NAME_PREFIX to use for the VM names}
+VM_NAME_PREFIX=${VM_NAME_PREFIX?:-Set environment variable VM_NAME_PREFIX to use for the VM names}
 
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
@@ -15,7 +15,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml -f ports.yaml}
 
 # Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
 ordererMachineName=${VM_NAME_PREFIX}orderer
