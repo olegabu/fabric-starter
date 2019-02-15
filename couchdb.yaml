@@ -24,6 +24,7 @@ services:
 #      - couchdb.peer0
 
   couchdb.peer0:
+    restart: always
     container_name: couchdb.peer0.${ORG:-org1}.${DOMAIN:-example.com}
     image: hyperledger/fabric-couchdb
     environment:
