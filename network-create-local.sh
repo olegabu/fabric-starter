@@ -12,7 +12,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f ports.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f docker-compose-api-port.yaml}
 
 # Clean up. Remove all containers, delete local crypto material
 
