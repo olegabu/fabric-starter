@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VM_NAME_PREFIX=${VM_NAME_PREFIX?:-Set environment variable VM_NAME_PREFIX to use for the VM names}
+#VM_NAME_PREFIX=${VM_NAME_PREFIX?:-Set environment variable VM_NAME_PREFIX to use for the VM names}
 
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
