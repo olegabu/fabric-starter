@@ -25,7 +25,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml -f ports.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f docker-compose-listener.yaml -f multihost.yaml -f ports.yaml}
 
 # Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
 ordererMachineName=${VM_NAME_PREFIX}orderer
@@ -132,6 +132,8 @@ done
 info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
 ./chaincode-install.sh ${chaincode_install_args}
 ./chaincode-instantiate.sh ${chaincode_instantiate_args}
+./chaincode-install.sh dns
+./chaincode-instantiate.sh common dns
 
 # Other organizations join the channel
 
@@ -143,5 +145,6 @@ do
     info "Joining $org to channel ${channel}"
     ./channel-join.sh ${channel}
     ./chaincode-install.sh ${chaincode_install_args}
+    ./chaincode-install.sh dns
     unset ORG
 done
