@@ -90,6 +90,8 @@ The _`master`_ branch as well as potentially _`feature branches`_ are used for d
 
 - master(development)
     - ssl/https support for API\WebUI 
+- snapshot-0.3-1.4
+    - use _fabric-starter-rest:snapshot-0.3-1.4_
 - snapshot-0.2-1.4
     - use _fabric-starter-rest:snapshot-0.2-1.4_
 - snapshot-0.1-1.4
