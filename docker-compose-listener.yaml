@@ -1,0 +1,30 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+services:
+  # block event listener
+  listener:
+    build: listener
+    image: olegabu/fabric-starter-listener:${FABRIC_STARTER_REST_VERSION:-latest}
+#    restart: always
+    container_name: listener.${ORG:-org1}.${DOMAIN:-example.com}
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
+      - MSP_DIR=/usr/src/app/msp
+      - CORE_PEER_LOCALMSPID=${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
+      - DISCOVER_AS_LOCALHOST=false
+      - ENROLL_ID
+      - ENROLL_SECRET
+      - P=${PWD}
+      - HFC_LOGGING={"debug":"console","info":"console"}
+    volumes:
+      - ./crypto-config:/usr/src/app/crypto-config
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+    command: sh -c "sleep 5 && npm start"
