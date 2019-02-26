@@ -3,39 +3,33 @@ const FabricStarterClient = require('fabric-starter-rest');
 const fabricStarterClient = new FabricStarterClient();
 
 const channel = process.env.CHANNEL || 'common';
+const username = process.env.USERNAME || 'listener';
+const password = process.env.PASSWORD || 'pass';
+const worker = require(process.env.WORKER || './debug.js');
 
 async function start() {
     await fabricStarterClient.init();
 
-    try {
-        await fabricStarterClient.loginOrRegister('listener');
-    } catch(e) {
-        logger.error('loginOrRegister', e);
-    }
+    await fabricStarterClient.loginOrRegister(username, password);
 
-    fabricStarterClient.registerBlockEvent(channel, block => {
+    const channels = await fabricStarterClient.queryChannels();
+    logger.info('channels', channels);
+
+    await fabricStarterClient.registerBlockEvent(channel, block => {
         logger.debug(`block ${block.number} on ${block.channel_id}`);
+
+        worker(block, fabricStarterClient);
     }, e => {
         logger.error('registerBlockEvent', e);
     });
 
     logger.info(`registered for block event on ${channel}`);
-
-    const channels = await fabricStarterClient.queryChannels();
-
-    logger.info('channels', channels);
 }
 
-function sleep(n) {
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
-}
-
-function halt() {
-    // sleep(600000);
-
+function wait() {
     setInterval(() => {
-        logger.trace('interval');
-    }, 60000)
+        logger.trace('waiting');
+    }, 60000);
 }
 
 start().then(() => {
@@ -44,5 +38,5 @@ start().then(() => {
     logger.error('cannot start', e);
 });
 
-halt();
+wait();
 

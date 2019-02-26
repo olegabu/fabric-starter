@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:8-alpine
 
 MAINTAINER olegabu
 
@@ -13,6 +13,6 @@ RUN apk add --no-cache git python make g++
 RUN npm install
 
 # add project files (see .dockerignore for a list of excluded files)
-COPY . .
+COPY "*.js" "./"
 
 CMD [ "npm", "start" ]
