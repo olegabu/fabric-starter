@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
-VM_NAME_PREFIX=${VM_NAME_PREFIX:-?Set environment variable VM_NAME_PREFIX to use for the VM names}
+#VM_NAME_PREFIX=${VM_NAME_PREFIX?:-Set environment variable VM_NAME_PREFIX to use for the VM names}
 
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
+}
+
+function copyDirToMachine() {
+    machine=$1
+    src=$2
+    dest=$3
+
+    info "Copying ${src} to remote host ${machine}:${dest}"
+    docker-machine ssh ${machine} sudo rm -rf ${dest}
+    docker-machine scp -r ${src} ${machine}:${dest}
 }
 
 export MULTIHOST=true
@@ -15,7 +25,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml -f ports.yaml}
 
 # Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
 ordererMachineName=${VM_NAME_PREFIX}orderer
@@ -60,7 +70,9 @@ done
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-docker-machine scp -r templates ${ordererMachineName}:templates
+
+copyDirToMachine ${ordererMachineName} templates ${WORK_DIR}/templates
+
 eval "$(docker-machine env ${ordererMachineName})"
 ./clean.sh
 ./generate-orderer.sh
@@ -71,29 +83,19 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 for org in ${orgs}
 do
     export ORG=${org}
+
     orgMachineName=${VM_NAME_PREFIX}${org}
-    dest=${WORK_DIR}/templates
-    info "Copying templates to remote host ${orgMachineName}:${dest}"
-    docker-machine ssh ${orgMachineName} rm -rf ${dest}
-    docker-machine scp -r templates ${orgMachineName}:${dest}
 
-    dest=${WORK_DIR}/chaincode
-    chaincode_home=${CHAINCODE_HOME:-chaincode}
-    info "Copying $chaincode_home to remote host ${orgMachineName}:${dest}"
-    docker-machine ssh ${orgMachineName} rm -rf ${dest}
-    docker-machine scp -r ${chaincode_home} ${orgMachineName}:${dest}
-
-    dest=${WORK_DIR}/webapp
-    webapp_home=${WEBAPP_HOME:-webapp}
-    info "Copying $webapp_home to remote host ${ORG}:${dest}"
-    docker-machine ssh ${orgMachineName} rm -rf ${dest}
-    docker-machine scp -r ${webapp_home} ${orgMachineName}:${dest}
+    copyDirToMachine ${orgMachineName} templates ${WORK_DIR}/templates
+    copyDirToMachine ${orgMachineName} ${CHAINCODE_HOME:-chaincode} ${WORK_DIR}/chaincode
+    copyDirToMachine ${orgMachineName} ${WEBAPP_HOME:-webapp} ${WORK_DIR}/webapp
 
     eval "$(docker-machine env ${orgMachineName})"
-    info "Creating member organization $ORG"
+    info "Creating member organization $org"
     ./clean.sh
     ./generate-peer.sh
     docker-compose ${docker_compose_args} up -d
+
     unset ORG
 done
 

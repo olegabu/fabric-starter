@@ -1,0 +1,11 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+services:
+
+  api:
+    ports:
+      - ${API_PORT:-4000}:3000
