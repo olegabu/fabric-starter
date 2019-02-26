@@ -12,7 +12,7 @@ services:
   orderer:
     container_name: orderer.${DOMAIN:-example.com}
     restart: always
-    image: hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
+    image: ${DOCKER_REGISTRY}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -34,7 +34,7 @@ services:
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
     #    build: ./fabric-tools-extended
-    image: olegabu/fabric-tools-extended
+    image: ${DOCKER_REGISTRY}/olegabu/fabric-tools-extended
     tty: true
     environment:
       - DOMAIN=${DOMAIN:-example.com}
@@ -102,7 +102,7 @@ services:
 
   # http serves certificates
   www.orderer:
-    image: nginx
+    image: ${DOCKER_REGISTRY}/nginx
     container_name: www.${DOMAIN:-example.com}
     #    ports:
     #      - ${WWW_PORT:-8080}:80

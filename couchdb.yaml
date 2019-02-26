@@ -26,7 +26,7 @@ services:
   couchdb.peer0:
     restart: always
     container_name: couchdb.peer0.${ORG:-org1}.${DOMAIN:-example.com}
-    image: hyperledger/fabric-couchdb
+    image: ${DOCKER_REGISTRY}/hyperledger/fabric-couchdb
     environment:
     - COUCHDB_USER=
     - COUCHDB_PASSWORD=
