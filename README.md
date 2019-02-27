@@ -104,14 +104,14 @@ Query function `list` of chaincode *reference* on channel *common* with args `["
 
 With `["targets"]`:
 ```bash
-curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
-'http://localhost:4000/channels/common/chaincodes/reference?channelId=common&chaincodeId=reference&fcn=list&args=%5B%22account%22%5D&targets=%5B%22peer0.org1.example.com%22%2C%22peer1.org1.example.com%3A7051%22%5D'
+curl -H "Authorization: Bearer $JWT" \
+'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D&targets=%5B%22peer0.org1.example.com%22%2C%22peer1.org1.example.com%3A7051%22%5D'
 ```
 
 Without `["targets"]`:
 ```bash
-curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
-'http://localhost:4000/channels/common/chaincodes/reference?channelId=common&chaincodeId=reference&fcn=list&args=%5B%22account%22%5D'
+curl -H "Authorization: Bearer $JWT" \
+'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
 ```
 
 
