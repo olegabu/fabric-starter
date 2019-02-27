@@ -30,18 +30,18 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.ya
 # Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
 ordererMachineName=${VM_NAME_PREFIX}orderer
 orderer_ip=`(docker-machine ip ${ordererMachineName})`
-hosts="127.0.0.1 localhost localhost.local\n${orderer_ip} www.${DOMAIN}\n${orderer_ip} orderer.${DOMAIN}"
+hosts="# created by network-create.sh\n${orderer_ip} www.${DOMAIN} orderer.${DOMAIN}"
 
 export WORK_DIR=`(docker-machine ssh ${ordererMachineName} pwd)`
 
-## Create member organizations host machines
+# Create member organizations host machines
 
+# Collect ip into the hosts file
 for org in ${orgs}
 do
-    # collect ip into the hosts file
     orgMachineName=${VM_NAME_PREFIX}${org}
     ip=`(docker-machine ip ${orgMachineName})`
-    hosts="${hosts}\n${ip} www.${org}.${DOMAIN}\n${ip} peer0.${org}.${DOMAIN}"
+    hosts="${hosts}\n${ip} www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}"
 done
 
 echo -e "${hosts}" > hosts
@@ -109,7 +109,7 @@ do
     ./consortium-add-org.sh ${org}
 done
 
-# First organization creates the channel
+# First organization creates application channel
 
 eval "$(docker-machine env ${VM_NAME_PREFIX}${first_org})"
 export ORG=${first_org}
@@ -127,11 +127,15 @@ do
 
 done
 
-# First organization creates the chaincode
+# First organization creates application chaincode
 
-info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
+info "Creating application chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
 ./chaincode-install.sh ${chaincode_install_args}
 ./chaincode-instantiate.sh ${chaincode_instantiate_args}
+
+# First organization creates dns chaincode
+
+info "Creating dns chaincode by $ORG"
 ./chaincode-install.sh dns
 ./chaincode-instantiate.sh common dns
 
@@ -147,4 +151,17 @@ do
     ./chaincode-install.sh ${chaincode_install_args}
     ./chaincode-install.sh dns
     unset ORG
+done
+
+# First organization creates entries in dns chaincode
+
+eval "$(docker-machine env ${first_org})"
+export ORG=${first_org}
+
+./chaincode-invoke.sh common dns "[\"put\",\"$orderer_ip\",\"www.${DOMAIN} orderer.${DOMAIN}\"]"
+
+for org in ${orgs}
+do
+    ip=`(docker-machine ip ${org})`
+    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}\"]"
 done
