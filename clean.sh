@@ -3,9 +3,15 @@ source lib/util/util.sh
 source lib.sh
 
 localRegistryStarted=`runningDockerContainer docker-registry`
-killContainers=`docker ps -aq | sed -e "s/${localRegistryStarted}/ /"`
 
-docker rm -f ${killContainers}
+if [ -z "$localRegistryStarted" ] ; then
+    docker rm -f $(docker ps -aq)
+else
+    echo "localRegistryStarted=$localRegistryStarted"
+    killContainers=`docker ps -aq | sed -e "s/${localRegistryStarted}/ /"`
+    echo "killContainers=$killContainers"
+    docker rm -f ${killContainers}
+fi
 
 #TODO [ "${DOCKER_MACHINE_NAME}" == "orderer" ]  && EXECUTE_BY_ORDERER=1 runCLIWithComposerOverrides down || runCLIWithComposerOverrides down
 
