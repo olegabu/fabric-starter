@@ -213,4 +213,6 @@ ip=$(getMachineIp ${first_org})
 jwt=`(curl -d '{"username":"user1","password":"pass"}' -H "Content-Type: application/json" http://${ip}:4000/users | tr -d '"')`
 curl -H "Authorization: Bearer $jwt" "http://$ip:4000/channels/common/chaincodes/dns?fcn=range&unescape=true"
 
+echo
+
 info "Network created"
