@@ -18,3 +18,7 @@ services:
   api:
     ports:
     - ${WWW_PORT:-8080}:80
+
+  www.peer:
+    ports:
+      - ${WWW_PORT:-80}:80

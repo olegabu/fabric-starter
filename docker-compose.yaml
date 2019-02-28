@@ -16,10 +16,31 @@ x-peer:
   volumes:
   - /var/run/:/host/var/run/
   depends_on:
-  - ca
+    - peer.generate
+    - ca
 
 
 services:
+
+  peer.generate:
+    container_name: generate.${ORG:-org1}.${DOMAIN:-example.com}
+#    build:
+#      args:
+#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
+#      dockerfile: ./fabric-tools-extended/Dockerfile
+#      context: ./
+    image: ${DOCKER_REGISTRY}/olegabu/fabric-tools-extended
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - LDAP_ENABLED
+      - LDAP_BASE_DN
+    working_dir: /etc/hyperledger
+    command: scripts/container-peer.sh
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+#      - ./templates:/etc/hyperledger/templates
+#      - ./scripts:/etc/hyperledger/scripts # for local debug
 
   ca:
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
@@ -33,6 +54,8 @@ services:
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
     command: sh -c 'fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
+    depends_on:
+      - peer.generate
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
@@ -52,7 +75,7 @@ services:
     # https://docs.docker.com/compose/networking/
     - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-starter_default
     - CORE_VM_DOCKER_ATTACHSTDOUT=true
-#    - CORE_LOGGING_LEVEL=DEBUG
+#    - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
     - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
     - CORE_CHAINCODE_LOGGING_SHIM=debug
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
@@ -87,7 +110,7 @@ services:
 #    # https://docs.docker.com/compose/networking/
 #    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-starter_default
 #    - CORE_VM_DOCKER_ATTACHSTDOUT=true
-##    - CORE_LOGGING_LEVEL=DEBUG
+##    - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
 #    - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
 #    - CORE_CHAINCODE_LOGGING_SHIM=debug
 #    - CORE_PEER_GOSSIP_USELEADERELECTION=false
@@ -109,10 +132,6 @@ services:
 
   cli.peer:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
-#    build:
-#      args:
-#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
-#      context: ./fabric-tools-extended
     image: ${DOCKER_REGISTRY}/olegabu/fabric-tools-extended
     tty: true
     environment:
@@ -126,12 +145,14 @@ services:
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
       - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
-      - CORE_LOGGING_LEVEL=DEBUG
+      - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
     working_dir: /etc/hyperledger
+    depends_on:
+      - peer.generate
     volumes:
     - /var/run/:/host/var/run/
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
@@ -166,6 +187,7 @@ services:
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
     depends_on:
+      - peer.generate
       - peer0
 #      - peer1
     volumes:
@@ -183,6 +205,8 @@ services:
     image: ${DOCKER_REGISTRY}/nginx
     ports:
       - 80:80
+    depends_on:
+      - peer.generate
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 

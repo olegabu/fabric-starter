@@ -6,6 +6,10 @@ version: '3.7'
 
 services:
 
+  peer.generate:
+    volumes:
+      - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+
   ca:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
