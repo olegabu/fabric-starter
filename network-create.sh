@@ -205,3 +205,12 @@ do
     ip=$(getMachineIp ${org})
     ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}\"]"
 done
+
+info "Smoke test queries dns chaincode via rest api"
+sleep 5
+
+ip=$(getMachineIp ${first_org})
+jwt=`(curl -d '{"username":"user1","password":"pass"}' -H "Content-Type: application/json" http://${ip}:4000/users | tr -d '"')`
+curl -H "Authorization: Bearer $jwt" "http://$ip:4000/channels/common/chaincodes/dns?fcn=range&unescape=true"
+
+info "Network created"
