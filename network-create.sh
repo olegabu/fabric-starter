@@ -27,6 +27,8 @@ function copyFileToMachine() {
 
 function connectMachine() {
     machine="$1.$DOMAIN"
+
+    info "Connecting to remote machine $machine"
     eval "$(docker-machine env ${machine})"
     export ORG=${1}
 }
@@ -101,7 +103,7 @@ done
 
 echo -e "${hosts}" > hosts
 
-info "Using WORK_DIR=$WORK_DIR on remote host; CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
+info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
 
 # Copy generated hosts file to the host machines
@@ -123,7 +125,7 @@ done
 
 # Create orderer organization
 
-info "Creating orderer organization for $DOMAIN"
+info "Creating orderer organization"
 
 copyDirToMachine orderer templates ${WORK_DIR}/templates
 
