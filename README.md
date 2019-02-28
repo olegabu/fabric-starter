@@ -29,7 +29,6 @@ The following sections describe Fabric Starter possibilites in more details:
 - [Several organizations on one (local) host in multiple docker containers.](#example3org)
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
-- [SSL\Https connection](#sslhttps)
 - [Development\Release cycle](#releasecycle)
 
 
@@ -62,104 +61,12 @@ See [Three local Orgs Network](docs/network-three-org.md)
 
 <a name="restapi"></a>
 ## Use REST API to query and invoke chaincodes
-
-Login into *org1* as *user1* and save returned token into env variable `JWT` which we'll use to identify our user 
-in subsequent requests:
-```bash
-JWT=`(curl -d '{"username":"user1","password":"pass"}' --header "Content-Type: application/json" http://localhost:4000/users | tr -d '"')`
-```
-
-Query channels *org1* has joined
-```bash
-curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels
-```
-returns
-```json
-[{"channel_id":"common"},{"channel_id":"org1-org2"}]
-``` 
-
-Query status, orgs, instantiated chaincodes and block 2 of channel *common*:
-```bash
-curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common
-curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/chaincodes
-curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/orgs
-curl -H "Authorization: Bearer $JWT" http://localhost:4000/channels/common/blocks/2
-```
-
-Invoke function `put` of chaincode *reference* on channel *common* to save entity of type `account` and id `1`:
-
-With `["targets"]`:
-```bash
-curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
-http://localhost:4000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"],"targets":["peer0.org1.example.com","peer1.org1.example.com:7051"]}'
-```
-Without `["targets"]`:
-```bash
-curl -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
-http://localhost:4000/channels/common/chaincodes/reference -d '{"fcn":"put","args":["account","1","{name:\"one\"}"]}'
-```
-
-
-Query function `list` of chaincode *reference* on channel *common* with args `["account"]`:
-
-With `["targets"]`:
-```bash
-curl -H "Authorization: Bearer $JWT" \
-'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D&targets=%5B%22peer0.org1.example.com%22%2C%22peer1.org1.example.com%3A7051%22%5D'
-```
-
-Without `["targets"]`:
-```bash
-curl -H "Authorization: Bearer $JWT" \
-'http://localhost:4000/channels/common/chaincodes/reference?fcn=list&args=%5B%22account%22%5D'
-```
-
+See [Use REST Api](docs/rest-api.md)
 
  <a name="multihost"></a>
 ## Multi host deployment
 See [Multi host deployment](docs/multihost.md)
 
-
-<a name="sslhttps"></a>
-## SSL\Https connection to API
-
-You can configure Fabric Starter to serve API requests and WebUI at `https://` endpoint.
-If an organization has own SSL-certificate it can be used in its web\rest communications (see below).  
-
-Otherwise a self-signed certificate will be generated with `openssl` during first run of the network. 
-The certificate's attributes for the auto-generated certificate may be adjusted by environment variables. 
-
-
-### Use existing organization's certificate:
-In order to apply existing certificates:  
-
-- copy the certificate and the private key files into `ssl-certs` folder  
-OR
-- specify the path to the folder with the certificate in *SSL_CERTS_PATH* environment variable  
-Then
-- rename the certificate file to `public.crt` 
-- rename the private key file to `private.key`
-
-Start node with the `docker-compose` as described in previous chapters 
-but specify additional docker-compose _override_ file parameter: `-f docker-compose-ssl.yaml` 
-(and exclude `-f ports.yaml` as ports area changed)  
-
-```bash
-docker-compose -f docker-compose.yaml -f docker-compose-ssl.yaml up
-```
-
-### Define properties for the auto-generated certificate
-
-To adjust certificates's parameters export necessary variables before _up_ the node:
-
-```bash 
-export CERT_COUNTRY="US" CERT_STATE="N/A" CERT_ORG="$ORG.$DOMAIN" CERT_ORGANIZATIONAL_UNIT="Hyperledger Fabric Blockchain" CERT_COMMON_NAME="Fabric-Starter-Rest-API"
-```
-
-If you use `network-create.sh` scripts export DOCKER_COMPOSE_ARGS variable 
-```bash 
-${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml -f docker-compose-ssl.yaml}
-```
 
 <a name="releasecycle"></a>
 ## Releases\Snapshots cycle
@@ -182,7 +89,8 @@ The _`master`_ branch as well as potentially _`feature branches`_ are used for d
 #### Currently issued branches are:
 
 - master(development)
-    - ssl/https support for API\WebUI 
+- snapshot-0.3-1.4
+    - use _fabric-starter-rest:snapshot-0.3-1.4_
 - snapshot-0.2-1.4
     - use _fabric-starter-rest:snapshot-0.2-1.4_
 - snapshot-0.1-1.4
