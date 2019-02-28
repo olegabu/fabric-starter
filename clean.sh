@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
+source lib/util/util.sh
 source lib.sh
 
-docker rm -f $(docker ps -aq)
+localRegistryStarted=`runningDockerContainer docker-registry`
+killContainers=`docker ps -aq | sed -e "s/${localRegistryStarted}/ /"`
+
+docker rm -f ${killContainers}
+
 #TODO [ "${DOCKER_MACHINE_NAME}" == "orderer" ]  && EXECUTE_BY_ORDERER=1 runCLIWithComposerOverrides down || runCLIWithComposerOverrides down
 
 docker volume prune -f

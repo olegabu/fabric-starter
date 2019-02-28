@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [ -n "$DOCKER_REGISTRY" ]; then
+    DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY "
+    echo "Using docker-registry: $DOCKER_REGISTRY"
+fi
+
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
@@ -15,7 +20,7 @@ orgs=${@:-org1}
 
 ordererMachineName="orderer.$DOMAIN"
 
-info "Creating $ordererMachineName host $DOCKER_MACHINE_FLAGS"
+info "Creating $ordererMachineName, Options: $DOCKER_MACHINE_FLAGS"
 
 docker-machine rm ${ordererMachineName} --force
 docker-machine create ${DOCKER_MACHINE_FLAGS} ${ordererMachineName}
@@ -25,7 +30,7 @@ docker-machine create ${DOCKER_MACHINE_FLAGS} ${ordererMachineName}
 for org in ${orgs}
 do
     orgMachineName="${org}.$DOMAIN"
-    info "Creating member organization host $orgMachineName"
+    info "Creating member organization machine: $orgMachineName with flags: $DOCKER_MACHINE_FLAGS"
     docker-machine rm ${orgMachineName} --force
     docker-machine create ${DOCKER_MACHINE_FLAGS} ${orgMachineName}
 done
