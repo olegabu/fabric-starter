@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#VM_NAME_PREFIX=${VM_NAME_PREFIX?:-Set environment variable VM_NAME_PREFIX to use for the VM names}
-
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 #    read -n1 -r -p "Press any key to continue" key
@@ -9,7 +7,7 @@ function info() {
 }
 
 function copyDirToMachine() {
-    machine=$1
+    machine="$1.$DOMAIN"
     src=$2
     dest=$3
 
@@ -19,7 +17,7 @@ function copyDirToMachine() {
 }
 
 function copyFileToMachine() {
-    machine=$1
+    machine="$1.$DOMAIN"
     src=$2
     dest=$3
 
@@ -28,18 +26,19 @@ function copyFileToMachine() {
 }
 
 function connectMachine() {
-    o=$1
-    eval "$(docker-machine env ${VM_NAME_PREFIX}${o})"
-    export ORG=${o}
+    machine="$1.$DOMAIN"
+    eval "$(docker-machine env ${machine})"
+    export ORG=${1}
 }
 
 function getMachineIp() {
-    o=$1
-    echo `(docker-machine ip ${VM_NAME_PREFIX}${o})`
+    machine="$1.$DOMAIN"
+    echo `(docker-machine ip ${machine})`
 }
 
 function setMachineWorkDir() {
-    export WORK_DIR=`(docker-machine ssh orderer pwd)`
+    machine="orderer.$DOMAIN"
+    export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
 }
 
 function createChannelAndAddOthers() {
