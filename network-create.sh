@@ -13,6 +13,7 @@ function copyDirToMachine() {
 
     info "Copying ${src} to remote machine ${machine}:${dest}"
     docker-machine ssh ${machine} sudo rm -rf ${dest}
+#    docker-machine ssh ${machine} sudo mkdir -p ${dest}
     docker-machine scp -r ${src} ${machine}:${dest}
 }
 
@@ -142,6 +143,11 @@ do
     copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
     copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
 
+    info "Copying dns chaincode to remote machine ${machine}"
+    machine="$org.$DOMAIN"
+    docker-machine ssh ${machine} mkdir -p ${WORK_DIR}/chaincode/node
+    docker-machine scp -r chaincode/node/dns ${machine}:${WORK_DIR}/chaincode/node
+
     info "Creating member organization $org"
     connectMachine ${org}
     ./clean.sh
@@ -169,15 +175,13 @@ if [[ ${CHANNEL} != common ]]; then
     createChannelAndAddOthers common
 fi
 
-# All organizations install application and dns chaincode
+# All organizations install application chaincode
 
 for org in ${orgs}
 do
     connectMachine ${org}
     info "Installing chaincode to $ORG: $CHAINCODE_INSTALL_ARGS"
     ./chaincode-install.sh ${CHAINCODE_INSTALL_ARGS}
-    info "Installing chaincode to $ORG: dns"
-    ./chaincode-install.sh dns
 done
 
 # First organization instantiates application chaincode
@@ -187,7 +191,19 @@ connectMachine ${first_org}
 info "Instantiating application chaincode by $ORG: $CHAINCODE_INSTANTIATE_ARGS"
 ./chaincode-instantiate.sh ${CHAINCODE_INSTANTIATE_ARGS}
 
+# All organizations install dns chaincode from local dir .../fabric-starter/chaincode
+
+unset CHAINCODE_INSTALL_ARGS
+for org in ${orgs}
+do
+    connectMachine ${org}
+    info "Installing chaincode to $ORG: dns"
+    ./chaincode-install.sh dns
+done
+
 # First organization instantiates dns chaincode
+
+connectMachine ${first_org}
 
 info "Instantiating dns chaincode by $ORG"
 ./chaincode-instantiate.sh common dns
@@ -214,5 +230,3 @@ jwt=`(curl -d '{"username":"user1","password":"pass"}' -H "Content-Type: applica
 curl -H "Authorization: Bearer $jwt" "http://$ip:4000/channels/common/chaincodes/dns?fcn=range&unescape=true"
 
 echo
-
-info "Network created"
