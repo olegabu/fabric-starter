@@ -181,7 +181,7 @@ Fabric related ports in order to make them accessible through external network (
 
 Orderer:
 ```bash
-docker-compose -f docker-compose-orderer.yaml -f orderer-ports.yaml up
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up
 ```
 
 Nodes:

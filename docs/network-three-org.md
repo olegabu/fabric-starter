@@ -13,7 +13,7 @@ This will create a network with `example.com` domain and container names like `p
 and nodejs chaincode *reference* with its source in this repo [./chaincode/node/reference](./chaincode/node/reference). 
 
 Member organization's docker containers are started with default docker-compose config files 
-`-f docker-compose.yaml -f couchdb.yaml`. You can override them by setting env variable `DOCKER_COMPOSE_ARGS`; for
+`-f docker-compose.yaml -f docker-compose-couchdb.yaml`. You can override them by setting env variable `DOCKER_COMPOSE_ARGS`; for
 example to start without a CouchDb container to use LevelDb for storage:
 ```bash
 DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f ports.yaml" ./network-create-local.sh

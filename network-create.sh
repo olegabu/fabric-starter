@@ -79,7 +79,7 @@ export DOMAIN=${DOMAIN-example.com}
 : ${CHANNEL:=common}
 : ${CHAINCODE_INSTALL_ARGS:=reference}
 : ${CHAINCODE_INSTANTIATE_ARGS:=common reference}
-: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f couchdb.yaml -f docker-compose-listener.yaml -f multihost.yaml -f ports.yaml}
+: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-listener.yaml -f multihost.yaml -f ports.yaml}
 : ${CHAINCODE_HOME:=chaincode}
 : ${WEBAPP_HOME:=webapp}
 

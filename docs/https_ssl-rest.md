@@ -38,5 +38,5 @@ export CERT_COUNTRY="US" CERT_STATE="N/A" CERT_ORG="$ORG.$DOMAIN" CERT_ORGANIZAT
 
 If you use `network-create.sh` scripts export DOCKER_COMPOSE_ARGS variable 
 ```bash 
-${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f couchdb.yaml -f multihost.yaml -f docker-compose-ssl.yaml}
+${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f multihost.yaml -f docker-compose-ssl.yaml}
 ```
