@@ -5,6 +5,11 @@ RUN apt-get update && apt-get install -y \
     gettext-base \
     jq \
     tree \
+    telnet \
+    iputils-ping \
   && rm -rf /var/lib/apt/lists/*
 
+COPY templates /etc/hyperledger/templates
+COPY scripts /etc/hyperledger/scripts
+COPY docker-compose*.yaml /etc/hyperledger/
 

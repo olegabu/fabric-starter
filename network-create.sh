@@ -132,7 +132,6 @@ copyDirToMachine orderer templates ${WORK_DIR}/templates
 
 connectMachine orderer
 ./clean.sh
-./generate-orderer.sh
 docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 
 # Create member organizations
@@ -151,7 +150,6 @@ do
     info "Creating member organization $org"
     connectMachine ${org}
     ./clean.sh
-    ./generate-peer.sh
     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
 done
 

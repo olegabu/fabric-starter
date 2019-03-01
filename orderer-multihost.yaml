@@ -6,6 +6,10 @@ version: '3.7'
 
 services:
 
+  orderer.generate:
+    volumes:
+      - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+
   orderer:
     volumes:
       - ${WORK_DIR:-/home/docker}/hosts:/etc/hosts

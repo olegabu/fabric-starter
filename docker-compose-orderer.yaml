@@ -9,6 +9,26 @@ volumes:
 
 services:
 
+  orderer.generate:
+    container_name: generate.${DOMAIN:-example.com}
+#    build:
+#      args:
+#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
+#      dockerfile: ./fabric-tools-extended/Dockerfile
+#      context: ./
+    image: ${DOCKER_REGISTRY}/olegabu/fabric-tools-extended
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - LDAP_ENABLED
+      - LDAP_BASE_DN
+    working_dir: /etc/hyperledger
+    command: scripts/container-orderer.sh
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+#      - ./templates:/etc/hyperledger/templates
+#      - ./scripts:/etc/hyperledger/scripts # for local debug
+
   orderer:
     container_name: orderer.${DOMAIN:-example.com}
     restart: always
@@ -24,16 +44,18 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+    working_dir: /etc/hyperledger
     command: orderer
     volumes:
+      - ./templates:/etc/hyperledger/templates
       - ./crypto-config/configtx:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
+    depends_on:
+      - orderer.generate
 
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
-    #    build: ./fabric-tools-extended
     image: ${DOCKER_REGISTRY}/olegabu/fabric-tools-extended
     tty: true
     environment:
@@ -52,6 +74,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
     working_dir: /etc/hyperledger
+    depends_on:
+      - orderer.generate
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./templates:/etc/hyperledger/templates
@@ -108,3 +132,5 @@ services:
     #      - ${WWW_PORT:-8080}:80
     volumes:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+    depends_on:
+    - orderer.generate

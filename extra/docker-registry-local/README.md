@@ -28,3 +28,17 @@ extra/docker-registry-local/start-docker-registry-local.sh
 ```
 
 - Re-execute the `start-docker-registry-local.sh ` script if images were changed at Docker hub to renew them.
+
+## Apply locally built images 
+
+If you build images on local machine for debug or test purposes and are not going to push them to docker's repository 
+you can them by pushing to the local registry:
+
+```bash
+    docker build -t new/image ...
+    docker tag new/image localhost:5000/new/image
+    docker push localhost:5000/new/image
+```  
+
+`Do not re-execute` the _start-docker-registry-local.sh_ to prevent pulling and overriding the new image
+by old image from the remote repository.   
