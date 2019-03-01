@@ -23,7 +23,6 @@ unset ORG COMPOSE_PROJECT_NAME
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-./generate-orderer.sh
 docker-compose -f docker-compose-orderer.yaml up -d
 
 # Create member organizations
@@ -35,7 +34,6 @@ do
     export ORG=${org} API_PORT=${api_port}
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
-    ./generate-peer.sh
     docker-compose ${docker_compose_args} up -d
     api_port=$((api_port + 1))
     unset ORG COMPOSE_PROJECT_NAME API_PORT
