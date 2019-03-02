@@ -186,7 +186,7 @@ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.ya
 
 Nodes:
 ```bash
-docker-compose -f docker-compose.yaml -f ports.yaml up
+docker-compose -f docker-compose.yaml -f docker-compose-ports.yaml up
 ```
 
 # Configuration with master DNS server

@@ -22,7 +22,7 @@ Then
 
 Start node with the `docker-compose` as described in previous chapters 
 but specify additional docker-compose _override_ file parameter: `-f docker-compose-ssl.yaml` 
-(and exclude `-f ports.yaml` as ports area changed)  
+(and exclude `-f docker-compose-ports.yaml` as ports area changed)  
 
 ```bash
 docker-compose -f docker-compose.yaml -f docker-compose-ssl.yaml up

@@ -33,13 +33,15 @@ services:
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - ENROLL_ID
+      - ENROLL_SECRET
       - LDAP_ENABLED
       - LDAP_BASE_DN
     working_dir: /etc/hyperledger
     command: scripts/container-peer.sh
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ./templates:/etc/hyperledger/templates
+#      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./scripts:/etc/hyperledger/scripts # for local debug
 
   ca:

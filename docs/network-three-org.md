@@ -16,7 +16,7 @@ Member organization's docker containers are started with default docker-compose 
 `-f docker-compose.yaml -f docker-compose-couchdb.yaml`. You can override them by setting env variable `DOCKER_COMPOSE_ARGS`; for
 example to start without a CouchDb container to use LevelDb for storage:
 ```bash
-DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f ports.yaml" ./network-create-local.sh
+DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-ports.yaml" ./network-create-local.sh
 ```
  
 You can give your network and channel names, set starting API port, override chaincode location, 

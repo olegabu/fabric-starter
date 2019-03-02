@@ -39,7 +39,7 @@ function runCLIWithComposerOverrides() {
     fi
 
 #    if [ "${PORTS}" ]; then
-#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fports.yaml"
+#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
 #    fi
 
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
