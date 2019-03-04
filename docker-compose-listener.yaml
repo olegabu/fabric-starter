@@ -10,7 +10,7 @@ services:
 
   dns.listener:
 #    build: listener
-    image: ${DOCKER_REGISTRY}/olegabu/fabric-starter-listener:${FABRIC_STARTER_REST_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-listener:${FABRIC_STARTER_REST_VERSION:-latest}
     restart: always
     container_name: dns.listener.${ORG:-org1}.${DOMAIN:-example.com}
     environment:

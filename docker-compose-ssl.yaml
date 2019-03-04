@@ -9,7 +9,7 @@ services:
 
 
   certs.generate:
-    image: ${DOCKER_REGISTRY}/olegabu/fabric-starter-rest:${FABRIC_STARTER_REST_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_REST_VERSION:-latest}
     container_name: certs.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
       - CERT_ORG=${ORG:-org1}.${DOMAIN:-example.com}
