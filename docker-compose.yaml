@@ -205,8 +205,8 @@ services:
   www.peer:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY}/nginx
-    ports:
-      - 80:80
+#    ports:
+#      - 80:80
     depends_on:
       - peer.generate
     volumes:
