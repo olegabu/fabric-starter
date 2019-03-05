@@ -9,33 +9,31 @@ const hostsFile = '/etc/hosts';
 // docker exec api.org1.example.com wget peer0.org2.example.com
 
 module.exports = async function(block, fabricStarterClient) {
-    logger.debug(block);
+  logger.debug(block);
 
-    const queryResponses = await fabricStarterClient.query(block.channel_id, 'dns', 'range', '[]', {});
-    logger.debug('queryResponses', queryResponses);
+  const queryResponses = await fabricStarterClient.query(block.channel_id, 'dns', 'range', '[]', {});
+  logger.debug('queryResponses', queryResponses);
 
-    const ret = queryResponses[0];
+  const ret = queryResponses[0];
 
-    if(ret) {
-        const list = JSON.parse(ret);
+  if(ret) {
+    const list = JSON.parse(ret);
 
-        if(!list.length) {
-            logger.debug('no dns records found on chain');
+    if(!list.length) {
+      logger.debug('no dns records found on chain');
+    } else {
+      let h = `# replaced by dns listener at new block ${block.number} on ${block.channel_id}\n`;
+      list.forEach(o => {
+        h = h.concat(o.key, ' ', o.value, '\n');
+      });
+
+      fs.writeFile(hostsFile, h, err => {
+        if(err) {
+          logger.error(`cannot writeFile ${hostsFile}`, err);
+        } else {
+          logger.info(`wrote ${hostsFile}`, h);
         }
-        else {
-            let h = `# replaced by dns listener at new block ${block.number} on ${block.channel_id}\n`;
-            list.forEach(o => {
-                h = h.concat(o.key, ' ', o.value, '\n');
-            });
-
-            fs.writeFile(hostsFile, h, err => {
-                if(err) {
-                    logger.error(`cannot writeFile ${hostsFile}`, err);
-                }
-                else {
-                    logger.info(`wrote ${hostsFile}`, h);
-                }
-            });
-        }
+      });
     }
+  }
 };
