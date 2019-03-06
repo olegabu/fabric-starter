@@ -16,13 +16,13 @@ x-peer:
   volumes:
   - /var/run/:/host/var/run/
   depends_on:
-    - peer.generate
+    - generate.peer
     - ca
 
 
 services:
 
-  peer.generate:
+  generate.peer:
     container_name: generate.${ORG:-org1}.${DOMAIN:-example.com}
 #    build:
 #      args:
@@ -38,11 +38,11 @@ services:
       - LDAP_ENABLED
       - LDAP_BASE_DN
     working_dir: /etc/hyperledger
-    command: scripts/container-peer.sh
+    command: container-scripts/container-peer.sh
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./scripts:/etc/hyperledger/scripts # for local debug
+#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
   ca:
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
@@ -57,7 +57,7 @@ services:
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
     command: sh -c 'fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
     depends_on:
-      - peer.generate
+      - generate.peer
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
@@ -153,13 +153,14 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
     working_dir: /etc/hyperledger
     depends_on:
-      - peer.generate
+      - generate.peer
     volumes:
     - /var/run/:/host/var/run/
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
     - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
+    - ${FABRIC_STARTER_HOME:-.}/scripts:/etc/hyperledger/scripts
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
 #    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
@@ -188,7 +189,7 @@ services:
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
     depends_on:
-      - peer.generate
+      - generate.peer
       - peer0
 #      - peer1
     volumes:
@@ -205,7 +206,7 @@ services:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     depends_on:
-      - peer.generate
+      - generate.peer
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
 

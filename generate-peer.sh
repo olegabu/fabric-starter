@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+############################################################
+#                  DEPRECATED
+#               see inside-container scripts
+############################################################
 source lib.sh
 
 ## Workaround until docker-compose issue 4601 is solved

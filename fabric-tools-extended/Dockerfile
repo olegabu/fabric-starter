@@ -12,6 +12,6 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 COPY templates /etc/hyperledger/templates
-COPY scripts /etc/hyperledger/scripts
+COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
 

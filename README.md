@@ -29,6 +29,7 @@ The following sections describe Fabric Starter possibilites in more details:
 - [Several organizations on one (local) host in multiple docker containers.](#example3org)
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
+- [Consortium Types. Invite-based and Majority-based Governance](#consortiumtypes)
 - [Development\Release cycle](#releasecycle)
 
 
@@ -63,9 +64,23 @@ See [Three local Orgs Network](docs/network-three-org.md)
 ## Use REST API to query and invoke chaincodes
 See [Use REST Api](docs/rest-api.md)
 
- <a name="multihost"></a>
+<a name="multihost"></a>
 ## Multi host deployment
 See [Multi host deployment](docs/multihost.md)
+
+<a name="consortiumtypes"></a>
+## Consortium Types. Invite-based and Majority-based Governance
+
+So now our network can be governed by itself (or to say it right by the netwrk's members). 
+The first type of network-governance is `Invite-based`. With this type of deployment 
+any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
+
+To deploy such type of network export environment variable
+```bash
+CONSORTIUM_CONFIG=InviteConsortiumPolicy
+``` 
+
+`Majority` type of governance is coming.       
 
 
 <a name="releasecycle"></a>

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+############################################################
+#                  DEPRECATED
+#               see inside-container scripts
+############################################################
 source lib.sh
 
 #[ -d "crypto-config/ordererOrganizations/$DOMAIN" ] && exit TODO: adjust for docker-machine

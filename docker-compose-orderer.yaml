@@ -7,34 +7,51 @@ version: '3.7'
 volumes:
   orderer:
 
+
+x-generate:
+  &generate-defaults
+#  build:
+#    args:
+#      FABRIC_VERSION: ${FABRIC_VERSION:-latest}
+#    dockerfile: ./fabric-tools-extended/Dockerfile
+#    context: ./
+  image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+  environment:
+    - DOMAIN=${DOMAIN:-example.com}
+    - CONSORTIUM_CONFIG
+    - LDAP_ENABLED
+    - LDAP_BASE_DN
+    - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+    - CORE_PEER_LOCALMSPID=orderer
+    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
+  working_dir: /etc/hyperledger
+  volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+#      - ./templates:/etc/hyperledger/templates # for local debug
+#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+
+
 services:
 
-  orderer.generate:
+  generate.orderer:
     container_name: generate.${DOMAIN:-example.com}
-#    build:
-#      args:
-#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
-#      dockerfile: ./fabric-tools-extended/Dockerfile
-#      context: ./
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
-    environment:
-      - ORG=${ORG:-org1}
-      - DOMAIN=${DOMAIN:-example.com}
-      - LDAP_ENABLED
-      - LDAP_BASE_DN
-    working_dir: /etc/hyperledger
-    command: scripts/container-orderer.sh
-    volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ./templates:/etc/hyperledger/templates
-#      - ./scripts:/etc/hyperledger/scripts # for local debug
+    << : *generate-defaults
+    command: container-scripts/container-orderer.sh
+
+  generate.post-orderer:
+    container_name: generate.post-${DOMAIN:-example.com}
+    << : *generate-defaults
+    command: container-scripts/consortium-reconfigure.sh
+    depends_on:
+      - orderer
 
   orderer:
     container_name: orderer.${DOMAIN:-example.com}
     restart: always
     image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=debug
+      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
@@ -52,7 +69,7 @@ services:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
     depends_on:
-      - orderer.generate
+      - generate.orderer
 
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
@@ -75,10 +92,11 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
     working_dir: /etc/hyperledger
     depends_on:
-      - orderer.generate
+      - generate.post-orderer
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./templates:/etc/hyperledger/templates
+      - ./container-scripts/:/etc/hyperledger/container-scripts
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 
@@ -133,4 +151,4 @@ services:
     volumes:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
     depends_on:
-    - orderer.generate
+    - generate.post-orderer
