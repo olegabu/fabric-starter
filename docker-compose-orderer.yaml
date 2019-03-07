@@ -27,7 +27,6 @@ x-generate:
   working_dir: /etc/hyperledger
   volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
