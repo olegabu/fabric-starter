@@ -149,5 +149,6 @@ services:
     #      - ${WWW_PORT:-8080}:80
     volumes:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
     - generate.post-orderer
