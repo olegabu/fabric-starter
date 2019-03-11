@@ -1,11 +1,11 @@
 #!/usr/bin/env groovy
 
 pipeline {
-    agent any
-    node {
-        def sc = checkout scm
-        sc.each{ k, v -> println "${k}:${v}" }
-    }
+    agent
+        node {
+            def sc = checkout scm
+            sc.each{ k, v -> println "${k}:${v}" }
+        }
     stages {
         stage('Build') {
             steps {
