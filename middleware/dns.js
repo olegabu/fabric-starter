@@ -46,7 +46,7 @@ module.exports = async app => {
 
   async function processEvent() {
     if(skip) {
-      logger.debug('skipping event');
+      logger.info('skipping event');
       return;
     }
 
