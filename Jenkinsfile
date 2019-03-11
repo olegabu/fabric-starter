@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 
 pipeline {
+    agent any
     node {
         def sc = checkout scm
         sc.each{ k, v -> println "${k}:${v}" }
