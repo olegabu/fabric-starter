@@ -82,6 +82,7 @@ export DOMAIN=${DOMAIN-example.com}
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-listener.yaml -f multihost.yaml -f docker-compose-ports.yaml}
 : ${CHAINCODE_HOME:=chaincode}
 : ${WEBAPP_HOME:=webapp}
+: ${MIDDLEWARE_HOME:=middleware}
 
 orgs=${@:-org1}
 first_org=${1:-org1}
@@ -139,8 +140,9 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 for org in ${orgs}
 do
     copyDirToMachine ${org} templates ${WORK_DIR}/templates
-    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
-    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
+    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/${CHAINCODE_HOME}
+    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/${WEBAPP_HOME}
+    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/${MIDDLEWARE_HOME}
 
     info "Copying dns chaincode to remote machine ${machine}"
     machine="$org.$DOMAIN"
