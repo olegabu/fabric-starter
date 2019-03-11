@@ -150,7 +150,7 @@ ldap:
     # If this is set to true, the "registry" section is ignored.
     enabled: ${LDAP_ENABLED}
     # The URL of the LDAP server
-    url: ldap://cn=admin,${LDAP_BASE_DN}:${ENROLL_SECRET}@ldap.${DOMAIN}:389/${LDAP_BASE_DN} #ldap://<adminDN>:<adminPassword>@<host>:<port>/<base>
+    url: ldap://cn=admin,${LDAP_BASE_DN}:${ENROLL_SECRET}@ldap.${ORG}.${DOMAIN}:389/${LDAP_BASE_DN} #ldap://<adminDN>:<adminPassword>@<host>:<port>/<base>
     tls:
         certfiles:
         - ldap-server-cert.pem
