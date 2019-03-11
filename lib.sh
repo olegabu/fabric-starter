@@ -267,9 +267,20 @@ function callChaincode() {
 }
 
 function queryChaincode() {
-    callChaincode $@ query
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+    action=${4:-query}
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
 
 function invokeChaincode() {
-    callChaincode $@ invoke
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
