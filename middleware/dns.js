@@ -11,14 +11,46 @@ module.exports = async app => {
 
   const hostsFile = '/etc/hosts';
 
+  const channel = process.env.DNS_CHANNEL || 'common';
+  const username = process.env.DNS_USERNAME || 'dns';
+  const password = process.env.DNS_PASSWORD || 'pass';
+  const skip = !process.env.MULTIHOST;
+  const period = process.env.DNS_PERIOD || 60000;
+
   await fabricStarterClient.init();
 
-  await fabricStarterClient.registerBlockEvent('common', async block => {
+  await fabricStarterClient.loginOrRegister(username, password);
+
+  logger.info(`logged in as ${username}`);
+
+  await fabricStarterClient.registerBlockEvent(channel, async block => {
     logger.debug(`block ${block.number} on ${block.channel_id}`);
 
-    logger.debug(block);
+    await processEvent();
+  }, e => {
+    logger.error('registerBlockEvent', e);
+  });
 
-    const queryResponses = await fabricStarterClient.query(block.channel_id, 'dns', 'range', '[]', {});
+  logger.info(`registered for block events on ${channel}`);
+
+  // app.get('/block-logger', (req, res) => {
+  //   res.status(200).send(`Welcome to block-logger. Channels: ${channels}`);
+  // });
+
+  logger.info('started');
+
+  setInterval(async () => {
+    logger.info(`periodically query every ${period} msec for dns entries and update ${hostsFile}`);
+    await processEvent();
+  }, period);
+
+  async function processEvent() {
+    if(skip) {
+      logger.debug('skipping event');
+      return;
+    }
+
+    const queryResponses = await fabricStarterClient.query(channel, 'dns', 'range', '[]', {});
     logger.debug('queryResponses', queryResponses);
 
     const ret = queryResponses[0];
@@ -29,7 +61,7 @@ module.exports = async app => {
       if(!list.length) {
         logger.debug('no dns records found on chain');
       } else {
-        let h = `# replaced by dns listener at new block ${block.number} on ${block.channel_id}\n`;
+        let h = `# replaced by dns listener on ${channel}\n`;
         list.forEach(o => {
           h = h.concat(o.key, ' ', o.value, '\n');
         });
@@ -43,15 +75,5 @@ module.exports = async app => {
         });
       }
     }
-  }, e => {
-    logger.error('registerBlockEvent', e);
-  });
-
-  logger.info(`registered for block event on ${o.channel_id}`);
-
-  // app.get('/block-logger', (req, res) => {
-  //   res.status(200).send(`Welcome to block-logger. Channels: ${channels}`);
-  // });
-
-  logger.info('started');
+  }
 };
