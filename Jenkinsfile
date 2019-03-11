@@ -5,6 +5,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                def sc = checkout scm
+                sc.each{ k, v -> println "${k}:${v}" }
                 sh 'pwd'
                 sh 'ls ..'
             }
