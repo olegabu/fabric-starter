@@ -9,7 +9,7 @@ pipeline {
                 sh 'ls'
             }
         }
-        stage('Test') {
+/*        stage('Test') {
             steps {
                 //
             }
@@ -18,6 +18,6 @@ pipeline {
             steps {
                 //
             }
-        }
+        }*/
     }
 }
