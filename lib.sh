@@ -284,3 +284,76 @@ function invokeChaincode() {
 	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments'"
     runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
 }
+
+function info() {
+    echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
+#    read -n1 -r -p "Press any key to continue" key
+#    echo
+}
+
+function copyDirToMachine() {
+    machine="$1.$DOMAIN"
+    src=$2
+    dest=$3
+
+    info "Copying ${src} to remote machine ${machine}:${dest}"
+    docker-machine ssh ${machine} sudo rm -rf ${dest}
+#    docker-machine ssh ${machine} sudo mkdir -p ${dest}
+    docker-machine scp -r ${src} ${machine}:${dest}
+}
+
+function copyFileToMachine() {
+    machine="$1.$DOMAIN"
+    src=$2
+    dest=$3
+
+    info "Copying ${src} to remote machine ${machine}:${dest}"
+    docker-machine scp ${src} ${machine}:${dest}
+}
+
+function connectMachine() {
+    machine="$1.$DOMAIN"
+
+    info "Connecting to remote machine $machine"
+    eval "$(docker-machine env ${machine})"
+    export ORG=${1}
+}
+
+function getMachineIp() {
+    machine="$1.$DOMAIN"
+    echo `(docker-machine ip ${machine})`
+}
+
+function setMachineWorkDir() {
+    machine="orderer.$DOMAIN"
+    export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
+}
+
+function createChannelAndAddOthers() {
+    c=$1
+
+    connectMachine ${first_org}
+
+    info "Creating channel $c by $ORG"
+    ./channel-create.sh ${c}
+
+    # First organization adds other organizations to the channel
+    for org in ${orgs}
+    do
+        if [[ ${org} = ${first_org} ]]; then
+            continue
+        fi
+        info "Adding $org to channel $c"
+        ./channel-add-org.sh ${c} ${org}
+    done
+
+    # All organizations join the channel
+    for org in ${orgs}
+    do
+        info "Joining $org to channel $c"
+        connectMachine ${org}
+        ./channel-join.sh ${c}
+    done
+
+    connectMachine ${first_org}
+}
