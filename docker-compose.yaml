@@ -201,8 +201,7 @@ services:
       - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
-
-    command: sh -c "sleep 20 && npm start"
+    command: sh -c "sleep 60 && npm start"
 
   # simple http server to disseminate certificates
   www.peer:
