@@ -19,7 +19,6 @@ x-peer:
     - generate.peer
     - ca
 
-
 services:
 
   generate.peer:
@@ -79,6 +78,8 @@ services:
 #    - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
     - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
     - CORE_CHAINCODE_LOGGING_SHIM=debug
+#    - CORE_CHAINCODE_STARTUPTIMEOUT=600000
+#    - CORE_CHAINCODE_DEPLOYTIMEOUT=600000
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}:7051
@@ -201,7 +202,7 @@ services:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
 
-    command: sh -c "sleep 1 && npm start"
+    command: sh -c "sleep 20 && npm start"
 
   # simple http server to disseminate certificates
   www.peer:
