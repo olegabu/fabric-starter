@@ -73,10 +73,11 @@ do
     copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/${WEBAPP_HOME}
     copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/${MIDDLEWARE_HOME}
 
-    info "Copying dns chaincode to remote machine ${machine}"
+    info "Copying dns chaincode and middleware to remote machine ${machine}"
     machine="$org.$DOMAIN"
     docker-machine ssh ${machine} mkdir -p ${WORK_DIR}/chaincode/node
     docker-machine scp -r chaincode/node/dns ${machine}:${WORK_DIR}/chaincode/node
+    docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/${MIDDLEWARE_HOME}/dns.js
 
     info "Creating member organization $org"
     connectMachine ${org}
@@ -151,11 +152,8 @@ do
     ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}\"]"
 done
 
-info "Smoke test queries dns chaincode via rest api"
-sleep 5
+sleep 10
 
-ip=$(getMachineIp ${first_org})
-jwt=`(curl -d '{"username":"user1","password":"pass"}' -H "Content-Type: application/json" http://${ip}:4000/users | tr -d '"')`
-curl -H "Authorization: Bearer $jwt" "http://$ip:4000/channels/common/chaincodes/dns?fcn=range&unescape=true"
+./smoke-test.sh ${first_org}
 
 echo
