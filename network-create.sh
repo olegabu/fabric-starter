@@ -42,17 +42,6 @@ cat hosts
 #docker-machine scp hosts ${ordererMachineName}:hosts
 copyFileToMachine orderer hosts hosts
 
-for org in ${orgs}
-do
-    cp hosts org_hosts
-    # remove entry of your own ip not to confuse docker and chaincode networking
-    sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
-    copyFileToMachine ${org} org_hosts hosts
-    rm org_hosts.bak org_hosts
-done
-
-# you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
-# sudo cat hosts >> /etc/hosts
 
 # Create orderer organization
 
@@ -69,19 +58,22 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 for org in ${orgs}
 do
     copyDirToMachine ${org} templates ${WORK_DIR}/templates
-    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/${CHAINCODE_HOME}
-    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/${WEBAPP_HOME}
-    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/${MIDDLEWARE_HOME}
+    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
+    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
+    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
+    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
+
 
     info "Copying dns chaincode and middleware to remote machine ${machine}"
     machine="$org.$DOMAIN"
     docker-machine ssh ${machine} mkdir -p ${WORK_DIR}/chaincode/node
     docker-machine scp -r chaincode/node/dns ${machine}:${WORK_DIR}/chaincode/node
-    docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/${MIDDLEWARE_HOME}/dns.js
+    docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/middleware/dns.js
 
     info "Creating member organization $org"
     connectMachine ${org}
     ./clean.sh
+    createHostsFileInOrg $org
     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
 done
 

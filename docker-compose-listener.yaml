@@ -24,7 +24,7 @@ services:
       - CHANNEL=common
       - WORKER=./dns.js
     volumes:
-      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
     command: sh -c "sleep 60 && npm start"
 

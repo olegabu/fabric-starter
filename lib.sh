@@ -329,6 +329,27 @@ function setMachineWorkDir() {
     export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
 }
 
+function createDirInMachine() {
+    local machine=${1:?Org must be specified}.${DOMAIN}
+    local dir=${2:?Specify directory to create}
+    info "Create directory $dir on $machine"
+    docker-machine ssh ${machine} mkdir -p "$dir"
+}
+
+function createHostsFileInOrg() {
+    local org=${1:?Org must be specified}
+
+    cp hosts org_hosts
+    # remove entry of your own ip not to confuse docker and chaincode networking
+    sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
+    createDirInMachine $org crypto-config
+    copyFileToMachine ${org} org_hosts crypto-config/hosts_${org}
+    rm org_hosts.bak org_hosts
+
+    # you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
+    # sudo cat hosts >> /etc/hosts
+}
+
 function createChannelAndAddOthers() {
     c=$1
 

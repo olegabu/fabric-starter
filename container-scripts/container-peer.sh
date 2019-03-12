@@ -29,5 +29,15 @@ if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN
     cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
     cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
 else
-    echo "$ORG MSP exists. Generation skipped".
+    echo "$ORG MSP exists. Generation skipped."
+fi
+
+if [ -n "$BOOTSTRAP_IP" ]; then
+    if [ ! -f "crypto-config/hosts_$ORG" ]; then
+        echo "Generating crypto-config/hosts_$ORG"
+        echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\torderer.${DOMAIN} www.${DOMAIN} api.${DOMAIN} ${DOMAIN}" > crypto-config/hosts_$ORG
+    else
+        echo "crypto-config/hosts_$ORG file exists. Generation skipped."
+    fi
+    cat crypto-config/hosts
 fi
