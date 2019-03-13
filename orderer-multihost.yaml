@@ -10,6 +10,10 @@ services:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
 
+  generate.post-orderer:
+    volumes:
+      - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+
   orderer:
     volumes:
       - ${WORK_DIR:-/home/docker}/hosts:/etc/hosts
