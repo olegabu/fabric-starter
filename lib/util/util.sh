@@ -43,6 +43,16 @@ function localHostRunningDockerContainer() {
     echo `runningDockerContainer $@`
 }
 
+function setDocker_LocalRegistryEnv() {
+    if [ -z "$DOCKER_MACHINE_FLAGS" ]; then
+        localRegistryRunning=`localHostRunningDockerContainer docker-registry`
+        if [ -n "$localRegistryRunning" ]; then
+            export DOCKER_REGISTRY=${DOCKER_REGISTRY-"`virtualboxHostIpAddr`:5000"};
+        fi
+    fi
+}
+
+
 function cutSubstr() {
     local str=$1
     local subStr=$2
