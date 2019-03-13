@@ -60,7 +60,7 @@ do
 
     info "Copying dns chaincode and middleware to remote machine ${machine}"
     machine="$org.$DOMAIN"
-    copyDirToMachine ${org} chaincode chaincode
+    docker-machine scp -r chaincode/ ${machine}:${WORK_DIR}
     docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/middleware/dns.js
     copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
 
