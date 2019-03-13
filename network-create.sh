@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+source lib/util/util.sh
 source lib.sh
+
+setDocker_LocalRegistryEnv
 
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
+export CONSORTIUM_CONFIG=InviteConsortiumPolicy
 
 : ${CHANNEL:=common}
 : ${CHAINCODE_INSTALL_ARGS:=reference}
@@ -48,6 +52,7 @@ copyFileToMachine orderer hosts hosts
 info "Creating orderer organization"
 
 copyDirToMachine orderer templates ${WORK_DIR}/templates
+copyDirToMachine orderer container-scripts ${WORK_DIR}/container-scripts
 
 connectMachine orderer
 ./clean.sh

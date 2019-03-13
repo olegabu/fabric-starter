@@ -90,7 +90,7 @@ any organization ((and not a central system administrator)) - member of the bloc
 
 To deploy such type of network export environment variable
 ```bash
-CONSORTIUM_CONFIG=InviteConsortiumPolicy
+export CONSORTIUM_CONFIG=InviteConsortiumPolicy
 ``` 
 
 `Majority` type of governance is coming.       

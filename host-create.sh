@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+source lib/util/util.sh
+
+setDocker_LocalRegistryEnv
 
 if [ -n "$DOCKER_REGISTRY" ]; then
     DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY "
