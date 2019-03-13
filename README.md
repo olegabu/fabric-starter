@@ -29,6 +29,7 @@ The following sections describe Fabric Starter possibilites in more details:
 - [Several organizations on one (local) host in multiple docker containers.](#example3org)
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
+- [Join to an External Network](#joinexternal)
 - [Consortium Types. Invite-based and Majority-based Governance](#consortiumtypes)
 - [Development\Release cycle](#releasecycle)
 
@@ -67,6 +68,18 @@ See [Use REST Api](docs/rest-api.md)
 <a name="multihost"></a>
 ## Multi host deployment
 See [Multi host deployment](docs/multihost.md)
+
+
+<a name="joinexternal"></a>
+## Join to an External Network
+For `invite-based` blockchain-networks (see next chapter) new organization can be added to the consortium by a member of this network.
+The new organization need to obtain the BOOTSRAP_IP (currently it's the IP of the _orderer_ node) and deploy its own node with this IP.  
+```bash
+export BOOTSTRAP_IP=192.168.0.1
+#ORG=... DOMAIN=... docker-compose up
+```
+Then the new organization passes the ip address of the newly deployed node to the network's member and this member adds the organization to Consortium by it's administration dashboard.
+After that the new organization can create own channels, add other organizations to the own channels and even invite more organizations to the network itself.     
 
 <a name="consortiumtypes"></a>
 ## Consortium Types. Invite-based and Majority-based Governance
