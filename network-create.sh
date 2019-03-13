@@ -57,18 +57,18 @@ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
 
 for org in ${orgs}
 do
+
+    info "Copying dns chaincode and middleware to remote machine ${machine}"
+    machine="$org.$DOMAIN"
+    copyDirToMachine ${org} chaincode chaincode
+    docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/middleware/dns.js
+    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
+
+    info "Copying custom chaincodes and middleware to remote machine ${machine}"
     copyDirToMachine ${org} templates ${WORK_DIR}/templates
     copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
     copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
     copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
-    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
-
-
-    info "Copying dns chaincode and middleware to remote machine ${machine}"
-    machine="$org.$DOMAIN"
-    docker-machine ssh ${machine} mkdir -p ${WORK_DIR}/chaincode/node
-    docker-machine scp -r chaincode/node/dns ${machine}:${WORK_DIR}/chaincode/node
-    docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/middleware/dns.js
 
     info "Creating member organization $org"
     connectMachine ${org}
@@ -111,7 +111,7 @@ done
 connectMachine ${first_org}
 
 info "Instantiating application chaincode by $ORG: $CHAINCODE_INSTANTIATE_ARGS"
-./chaincode-instantiate.sh ${CHAINCODE_INSTANTIATE_ARGS}
+#./chaincode-instantiate.sh ${CHAINCODE_INSTANTIATE_ARGS}
 
 # All organizations install dns chaincode from local dir .../fabric-starter/chaincode
 
