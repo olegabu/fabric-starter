@@ -7,6 +7,8 @@ version: '3.7'
 volumes:
   peer0:
 #  peer1:
+  webapps:
+  routes:
 
 x-peer:
   &peer-defaults
@@ -199,9 +201,11 @@ services:
       - ./crypto-config:/usr/src/app/crypto-config
 #      - ./templates:/etc/hyperledger/templates
       - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
-      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+      - webapps:/usr/src/app/webapps
+      - routes:/usr/src/app/routes
+#      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
     command: sh -c "sleep 60 && npm start"
 
   # simple http server to disseminate certificates
