@@ -6,6 +6,9 @@
 : ${WWW_PORT:=8081}
 : ${FABRIC_STARTER_HOME:=.}
 
+: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+
+
 export DOMAIN ORG
 
 function printInColor() {
@@ -109,7 +112,7 @@ function fetchChannelConfigBlock() {
     channel=${1:?"Channel name must be specified"}
     blockNum=${2:-config}
     runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
-     --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown -R $UID crypto-config/"
+     ${ORDERER_TLSCA_CERT_OPTS} && chown -R $UID crypto-config/"
 }
 
 function txTranslateChannelConfigBlock() {
@@ -144,7 +147,7 @@ function createConfigUpdateEnvelope() {
     runCLI "echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat crypto-config/configtx/update.json\`'}}}' | jq . > crypto-config/configtx/update_in_envelope.json"
     runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb"
     echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
-    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function updateChannelConfig() {
@@ -237,7 +240,7 @@ function instantiateChaincode() {
 
     arguments="{\"Args\":$initArguments}"
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt $privateCollectionParam $endorsementPolicyParam"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam"
 }
 
 
@@ -253,7 +256,7 @@ function upgradeChaincode() {
 
     arguments="{\"Args\":$initArguments}"
 
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName "$policy" --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName '$policy' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function callChaincode() {
@@ -263,7 +266,7 @@ function callChaincode() {
     arguments="{\"Args\":$arguments}"
     action=${4:-query}
 	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function queryChaincode() {
@@ -273,7 +276,7 @@ function queryChaincode() {
     arguments="{\"Args\":$arguments}"
     action=${4:-query}
 	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments'"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function invokeChaincode() {
@@ -282,7 +285,7 @@ function invokeChaincode() {
     arguments=${3:-[]}
     arguments="{\"Args\":$arguments}"
 	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments'"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function info() {

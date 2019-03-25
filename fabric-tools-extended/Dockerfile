@@ -16,6 +16,8 @@ COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
 
 COPY middleware/ /usr/src/app/routes
+COPY chaincode/ /opt/chaincode
+COPY chaincode/go /opt/gopath/src
 
 
 

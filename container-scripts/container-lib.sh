@@ -4,11 +4,26 @@
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
+: ${WGET_OPTS:="--verbose -N"}
 
 export ORG DOMAIN SYSTEM_CHANNEL_ID
 
 : ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
 
+function downloadMSP() {
+    local org=$1
+
+    if [ -z "$org" ]; then
+        mspSubPath="$DOMAIN"
+        orgSubPath="ordererOrganizations"
+    else
+        mspSubPath="$org.$DOMAIN"
+        orgSubPath="peerOrganizations"
+    fi
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+}
 
 function certificationsToEnv() {
     local org=$1
@@ -40,11 +55,9 @@ function txTranslateChannelConfigBlock() {
 function updateChannelGroupConfigForOrg() {
     local org=$1
     local templateFileOfUpdate=$2
-    local exportEnvironment=$3
-    local exportEnvironment="export NEWORG=${org} ${exportEnvironment:+&&} ${exportEnvironment}"
 
     export NEWORG=${org}
-    envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json" # TODO: check where "$exportEnvironment" used and apply as needed
+    envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
 }
 
@@ -70,19 +83,72 @@ function updateChannelConfig() {
     local channel=${1:?Channel to be updated must be specified}
     local org=${2:?Org to be updated must be specified}
     local templateFile=${3:?template file must be specified}
-    local exportEnv=$4
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile" "$exportEnv"
+    updateChannelGroupConfigForOrg "$org" "$templateFile"
     createConfigUpdateEnvelope $channel
 }
-
 
 function updateConsortium() {
     local org=${1:?Org to be added to consortium must be specified}
     local channel=${2:?System channel must be specified}
     local updateTemplateFile=${3:-./templates/Consortium.json}
     local consortiumName=${4:-SampleConsortium}
+    export CONSORTIUM_NAME=${consortiumName}
+    certificationsToEnv $org
+    updateChannelConfig $channel $org "$updateTemplateFile"
+}
 
-    export CONSORTIUM_NAME=${consortiumName} && $(certificationsToEnv $org)
-    updateChannelConfig $channel $org "$updateTemplateFile" "$exportEnv"
+function updateAnchorPeers() {
+    local org=${1:?Org to be configured must be specified}
+    local channel=${2:?Channel name must be specified}
+    updateChannelConfig $channel $org ./templates/AnchorPeers.json
+}
+
+function createChannel() {
+    local channelName=${1:?Channel name must be specified}
+    echo "Create channel $ORG $channelName"
+    downloadMSP
+    mkdir -p crypto-config/configtx
+    envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
+    configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+    peer channel create -o orderer.$DOMAIN:7050 -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
+
+    updateAnchorPeers "$ORG" "$channelName"
+}
+
+function joinChannel() {
+    local channel=${1:?Channel name must be specified}
+
+    echo "Join $ORG to channel $channel"
+    fetchChannelConfigBlock $channel "0"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer channel join -b crypto-config/configtx/$channel.pb
+}
+
+function installChaincode {
+    local chaincodeName=${1:?Chaincode name must be specified}
+    local chaincodePath=${2:-$chaincodeName}
+    local lang=${3:-golang}
+    local chaincodeVersion=${4:-1.0}
+
+    echo "Install chaincode $chaincodeName  $chaincodePath $lang $chaincodeVersion"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
+}
+
+
+function instantiateChaincode() {
+    local channelName=${1:?Channel name must be specified}
+    local chaincodeName=${2:?Chaincode name must be specified}
+    local initArguments=${3:-[]}
+    local chaincodeVersion=${4:-1.0}
+    local privateCollectionPath=${5}
+    local endorsementPolicy=${6}
+    local arguments="{\"Args\":$initArguments}"
+
+    if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
+    [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config /opt/chaincode/${privateCollectionPath}"
+
+    [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
+
+    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c "'"${arguments}"'" -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
 }

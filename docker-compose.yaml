@@ -16,35 +16,42 @@ x-peer:
   working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
   command: peer node start
   volumes:
-  - /var/run/:/host/var/run/
+    - /var/run/:/host/var/run/
   depends_on:
-    - generate.peer
+    - pre-install
     - ca
 
 services:
 
-  generate.peer:
-    container_name: generate.${ORG:-org1}.${DOMAIN:-example.com}
-#    build:
-#      args:
-#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
-#      dockerfile: ./fabric-tools-extended/Dockerfile
-#      context: ./
+  pre-install:
+    container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
-      - DOMAIN=${DOMAIN:-example.com}
       - BOOTSTRAP_IP
       - ENROLL_ID
       - ENROLL_SECRET
-      - LDAP_ENABLED
-      - LDAP_BASE_DN
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
+      - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+
+  post-install:
+    container_name: post-install.${ORG:-org1}.${DOMAIN:-example.com}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    environment:
+      - ORG=${ORG:-org1}
+      - DNS_CHANNEL=${DNS_CHANNEL:-common}
+      - CORE_PEER_LOCALMSPID=${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+    working_dir: /etc/hyperledger
+    #    command: container-scripts/install-default-chaincodes.sh
+    depends_on:
+      - pre-install
+      - peer0
 
   ca:
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
@@ -59,7 +66,7 @@ services:
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
     command: sh -c 'fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
     depends_on:
-      - generate.peer
+      - pre-install
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
@@ -164,7 +171,7 @@ services:
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
     - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
-    - ${FABRIC_STARTER_HOME:-.}/scripts:/etc/hyperledger/scripts
+    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
 #    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
@@ -194,8 +201,8 @@ services:
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
     depends_on:
-      - generate.peer
-      - peer0
+      - pre-install
+      - post-install
 #      - peer1
     volumes:
       - ./crypto-config:/usr/src/app/crypto-config
@@ -213,7 +220,7 @@ services:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     depends_on:
-      - generate.peer
+      - pre-install
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known

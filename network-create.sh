@@ -12,7 +12,7 @@ export CONSORTIUM_CONFIG=InviteConsortiumPolicy
 : ${CHANNEL:=common}
 : ${CHAINCODE_INSTALL_ARGS:=reference}
 : ${CHAINCODE_INSTANTIATE_ARGS:=common reference}
-: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f multihost.yaml -f docker-compose-ports.yaml}
+: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-open-net.yaml -f multihost.yaml }
 : ${CHAINCODE_HOME:=chaincode}
 : ${WEBAPP_HOME:=webapp}
 : ${MIDDLEWARE_HOME:=middleware}
@@ -56,7 +56,7 @@ copyDirToMachine orderer container-scripts ${WORK_DIR}/container-scripts
 
 connectMachine orderer
 ./clean.sh
-docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
 
 # Create member organizations
 
@@ -89,12 +89,12 @@ connectMachine orderer
 for org in ${orgs}
 do
     info "Adding $org to the consortium"
-    ./consortium-add-org.sh ${org}
+#    ./consortium-add-org.sh ${org}
 done
 
 # First organization creates application channel
 
-createChannelAndAddOthers ${CHANNEL}
+#createChannelAndAddOthers ${CHANNEL}
 
 # First organization creates common channel if it's not the default application channel
 
@@ -102,35 +102,21 @@ if [[ ${CHANNEL} != common ]]; then
     createChannelAndAddOthers common
 fi
 
-# All organizations install application chaincode
-
-for org in ${orgs}
-do
-    connectMachine ${org}
-    info "Installing chaincode to $ORG: $CHAINCODE_INSTALL_ARGS"
-    ./chaincode-install.sh ${CHAINCODE_INSTALL_ARGS}
-done
-
-# First organization instantiates application chaincode
-
-connectMachine ${first_org}
-
-info "Instantiating application chaincode by $ORG: $CHAINCODE_INSTANTIATE_ARGS"
-#./chaincode-instantiate.sh ${CHAINCODE_INSTANTIATE_ARGS}
-
-# All organizations install dns chaincode from local dir .../fabric-starter/chaincode
+# All organizations install dns chaincode
 
 unset CHAINCODE_INSTALL_ARGS
 for org in ${orgs}
 do
     connectMachine ${org}
     info "Installing chaincode to $ORG: dns"
-    ./chaincode-install.sh dns
+#    ./chaincode-install.sh dns
 done
 
 # First organization instantiates dns chaincode
 
 connectMachine ${first_org}
+
+sleep 10
 
 info "Instantiating dns chaincode by $ORG"
 ./chaincode-instantiate.sh common dns
