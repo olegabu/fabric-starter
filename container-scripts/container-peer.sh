@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+source ./container-lib.sh 2>/dev/null # for IDE code completion
+source $(dirname "$0")/container-lib.sh
 
 tree crypto-config
 
@@ -39,5 +41,5 @@ if [ -n "$BOOTSTRAP_IP" ]; then
     else
         echo "crypto-config/hosts_$ORG file exists. Generation skipped."
     fi
-    cat crypto-config/hosts
+    cat crypto-config/hosts_$ORG
 fi

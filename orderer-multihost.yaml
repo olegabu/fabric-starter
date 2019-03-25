@@ -6,12 +6,13 @@ version: '3.7'
 
 services:
 
-  generate.orderer:
+  pre-install:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
 
-  generate.post-orderer:
+  post-install:
     volumes:
+      - ${WORK_DIR:-/home/docker}/hosts:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
 
   orderer:

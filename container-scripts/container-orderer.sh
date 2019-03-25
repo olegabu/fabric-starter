@@ -26,3 +26,10 @@ else
     echo "Genesis configtx exists. Generation skipped".
 fi
 
+if [ ! -f "crypto-config/hosts" ]; then
+    echo "Generating crypto-config/hosts"
+    echo -e "#generated at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts
+else
+    echo "crypto-config/hosts file exists. Generation skipped."
+fi
+cat crypto-config/hosts

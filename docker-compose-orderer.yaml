@@ -8,40 +8,30 @@ volumes:
   orderer:
 
 
-x-generate:
-  &generate-defaults
-#  build:
-#    args:
-#      FABRIC_VERSION: ${FABRIC_VERSION:-latest}
-#    dockerfile: ./fabric-tools-extended/Dockerfile
-#    context: ./
-  image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
-  environment:
-    - DOMAIN=${DOMAIN:-example.com}
-    - CONSORTIUM_CONFIG
-    - LDAP_ENABLED
-    - LDAP_BASE_DN
-    - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
-    - CORE_PEER_LOCALMSPID=orderer
-    - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
-  working_dir: /etc/hyperledger
-  volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
-
-
 services:
 
-  generate.orderer:
-    container_name: generate.${DOMAIN:-example.com}
-    << : *generate-defaults
+  pre-install:
+    container_name: pre-install.${DOMAIN:-example.com}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    environment:
+      - ORDERER=true
+      - DOMAIN=${DOMAIN:-example.com}
+    working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config:/etc/hyperledger/crypto-config
 
-  generate.post-orderer:
-    container_name: generate.post-${DOMAIN:-example.com}
-    << : *generate-defaults
-    command: container-scripts/consortium-reconfigure.sh
+  post-install:
+    container_name:  post-install.${DOMAIN:-example.com}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    environment:
+      - ORDERER=true
+      - CONSORTIUM_CONFIG
+      - CORE_PEER_LOCALMSPID=orderer
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
+    working_dir: /etc/hyperledger
+    #    command: container-scripts/consortium-reconfigure.sh
     depends_on:
       - orderer
 
@@ -62,13 +52,13 @@ services:
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
     working_dir: /etc/hyperledger
     command: orderer
+    depends_on:
+      - pre-install
     volumes:
-      - ./templates:/etc/hyperledger/templates
       - ./crypto-config/configtx:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
-    depends_on:
-      - generate.orderer
+
 
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
@@ -91,7 +81,8 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
     working_dir: /etc/hyperledger
     depends_on:
-      - generate.post-orderer
+      - pre-install
+      - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./templates:/etc/hyperledger/templates
@@ -151,4 +142,4 @@ services:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
-    - generate.post-orderer
+    - post-install
