@@ -28,6 +28,7 @@ services:
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
       - BOOTSTRAP_IP
       - ENROLL_ID
       - ENROLL_SECRET
