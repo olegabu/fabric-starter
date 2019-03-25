@@ -31,6 +31,9 @@ services:
       - BOOTSTRAP_IP
       - ENROLL_ID
       - ENROLL_SECRET
+      - LDAP_ENABLED
+      - LDAP_BASE_DN
+      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
