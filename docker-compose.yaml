@@ -47,12 +47,14 @@ services:
     environment:
       - ORG=${ORG:-org1}
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
+      - BOOTSTRAP_IP
+      - ORG_IP
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
     working_dir: /etc/hyperledger
-    #    command: container-scripts/install-default-chaincodes.sh
+    command: container-scripts/install-default-chaincodes.sh
     depends_on:
       - pre-install
       - peer0
@@ -199,6 +201,7 @@ services:
       - DISCOVER_AS_LOCALHOST=false
       - ENROLL_ID
       - ENROLL_SECRET
+      - UI_LISTEN_BLOCK_OPTS
       - P=${PWD}
       - HFC_LOGGING={"debug":"console","info":"console"}
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md

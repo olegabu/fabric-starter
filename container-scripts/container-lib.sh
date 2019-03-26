@@ -10,6 +10,10 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID
 
 : ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
 
+function downloadOrdererMSP() {
+    downloadMSP
+}
+
 function downloadMSP() {
     local org=$1
 
@@ -56,6 +60,7 @@ function updateChannelGroupConfigForOrg() {
     local org=$1
     local templateFileOfUpdate=$2
 
+    certificationsToEnv $org
     export NEWORG=${org}
     envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
@@ -150,5 +155,24 @@ function instantiateChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
 
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c "'"${arguments}"'" -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
+}
+
+
+function callChaincode() {
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+    action=${4:-query}
+    echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" ${ORDERER_TLSCA_CERT_OPTS}
+}
+
+function queryChaincode() {
+    callChaincode "$1" "$2" "$3" query
+}
+
+function invokeChaincode() {
+    callChaincode "$1" "$2" "$3" invoke
 }

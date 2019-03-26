@@ -14,6 +14,7 @@ services:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
       - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
+#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
   ca:
     volumes:
