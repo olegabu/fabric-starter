@@ -16,6 +16,7 @@ module.exports = async app => {
   const password = process.env.DNS_PASSWORD || 'pass';
   const skip = !process.env.MULTIHOST;
   const period = process.env.DNS_PERIOD || 60000;
+  const queryTarget = `peer0.${process.env.ORG}.${process.env.DOMAIN}:7051`;
 
   await fabricStarterClient.init();
 
@@ -50,7 +51,7 @@ module.exports = async app => {
       return;
     }
 
-    const queryResponses = await fabricStarterClient.query(channel, 'dns', 'range', '[]', {});
+    const queryResponses = await fabricStarterClient.query(channel, 'dns', 'range', '[]', {targets: queryTarget});
     logger.debug('queryResponses', queryResponses);
 
     const ret = queryResponses[0];
