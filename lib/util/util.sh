@@ -29,7 +29,8 @@ function virtualboxHostIpAddr() {
         echo ""
         exit
     fi
-    local vboxAddrLine=`VBoxManage list hostonlyifs | grep -m 1 IPAddress`
+    local vboxNetworkName=`VBoxManage list dhcpservers | grep -B 6 "Enabled:        Yes" | grep "NetworkName" | awk '{print $2}'`
+    local vboxAddrLine=`VBoxManage list hostonlyifs | grep -B 12 "$vboxNetworkName" | grep -m 1 IPAddress`
     echo `grepIpAddr "$vboxAddrLine"`
 }
 
@@ -48,6 +49,7 @@ function setDocker_LocalRegistryEnv() {
         localRegistryRunning=`localHostRunningDockerContainer docker-registry`
         if [ -n "$localRegistryRunning" ]; then
             export DOCKER_REGISTRY=${DOCKER_REGISTRY-"`virtualboxHostIpAddr`:5000"};
+            echo -e "\n\nUse DOCKER_REGISTRTY=$DOCKER_REGISTRY\n\n"
         fi
     fi
 }
