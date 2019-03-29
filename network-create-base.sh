@@ -42,10 +42,8 @@ echo -e "${hosts}" > hosts
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
 
-# Copy generated hosts file to the host machines
-
 #docker-machine scp hosts ${ordererMachineName}:hosts
-copyFileToMachine orderer hosts hosts
+#copyFileToMachine orderer hosts ${WORK_DIR}/hosts
 
 
 # Create orderer organization
@@ -57,6 +55,8 @@ copyDirToMachine orderer container-scripts ${WORK_DIR}/container-scripts
 
 connectMachine orderer
 ./clean.sh
+# Copy generated hosts file to the host machines
+createHostsFileInOrg orderer
 docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
 
 # Create member organizations
@@ -79,7 +79,6 @@ do
     info "Creating member organization $org"
     connectMachine ${org}
     export ORG_IP=$(getMachineIp ${org})
-
     ./clean.sh
     createHostsFileInOrg $org
     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
