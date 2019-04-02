@@ -46,6 +46,7 @@ services:
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
       - BOOTSTRAP_IP
       - ORG_IP
