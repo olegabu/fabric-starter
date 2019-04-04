@@ -16,11 +16,16 @@ services:
     environment:
       - ORDERER=true
       - DOMAIN=${DOMAIN:-example.com}
+      - ORDERERS_COUNT=4
+      - ORDERER_CRYPTO_TEMPLATE
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
+      - ./templates:/etc/hyperledger/templates
+      - ./container-scripts:/etc/hyperledger/container-scripts
+
 
   post-install:
     container_name:  post-install.${DOMAIN:-example.com}

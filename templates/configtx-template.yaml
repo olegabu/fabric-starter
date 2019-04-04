@@ -6,6 +6,24 @@ Organizations:
         ID: orderer
         MSPDir: ordererOrganizations/${DOMAIN}/msp
 
+    - &OrdererFrontend
+      Name: OrdererFrontend
+      ID: OrdererFrontend
+      MSPDir: ordererOrganizations/${DOMAIN}/msp
+
+      Policies:
+        Readers:
+          Type: Signature
+          Rule: "OR('FrontendsMSP.member')"
+
+        Writers:
+          Type: Signature
+          Rule: "OR('FrontendsMSP.member')"
+
+        Admins:
+          Type: Signature
+          Rule: "OR('FrontendsMSP.admin')"
+
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}
@@ -18,12 +36,12 @@ Organizations:
           Port: 7051
 
 Capabilities:
-  Global: &ChannelCapabilities
-    V1_1: true
+  Channel: &ChannelCapabilities
+    V1_3: true
   Orderer: &OrdererCapabilities
     V1_1: true
   Application: &ApplicationCapabilities
-    V1_2: true
+    V1_3: true
 
 
 
@@ -82,11 +100,30 @@ Profiles:
                     - *OrdererOrg
 
 
+    BFTGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            OrdererType: bftsmart
+            Addresses: [${ORDERER_FRONTEND_ADDRESSES}]
+            Organizations:
+                - *OrdererOrg
+                - *OrdererFrontend
+            Capabilities:
+                <<: *OrdererCapabilities
+
+        Consortiums:
+            BFTConsortium:
+                Organizations:
+                    - *OrdererOrg
+
+
     CHANNEL:
         Orderer:
             Organizations:
             - *OrdererOrg
-        Consortium: SampleConsortium
+        Consortium: BFTConsortium
         Application:
             Organizations:
             - *firstOrg

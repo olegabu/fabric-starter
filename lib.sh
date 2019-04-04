@@ -6,7 +6,7 @@
 : ${WWW_PORT:=8081}
 : ${FABRIC_STARTER_HOME:=.}
 
-: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+: ${ORDERER_TLSCA_CERT_OPTS:=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
 
 
 export DOMAIN ORG
