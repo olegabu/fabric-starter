@@ -21,7 +21,98 @@ services:
   cli.bft:
     container_name: bft.cli.${ORG:-org1}
     image: ${DOCKER_REGISTRY:-docker.io}/bftsmart/fabric-tools:amd64-${FABRIC_VERSION:-1.3.0}
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_DOMAIN=${ORDERER_NAME:-orderer}.${ORG:-org1}.${DOMIAN:-example.com}
+      - CORE_PEER_LOCALMSPID=frontend.${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/orderer/msp
+
+#      - FABRIC_CFG_PATH=/bft-fabric
+      - ORDERER_GENERAL_LOCALMSPID=frontend.${ORG:-org1}
+#      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/ordereradmin/msp
+      - ORDERER_GENERAL_GENESISFILE=/bft-config/genesisblock
+      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+
+#      - ORDERER_GENERAL_LOCALMSPID=orderer
+#      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
     working_dir: /etc/hyperledger
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./templates:/etc/hyperledger/templates
+
+  cli.bft.cli:
+    container_name: bft.cli.${ORG:-org1}
+    image: ${DOCKER_REGISTRY:-docker.io}/bftsmart/fabric-tools:amd64-${FABRIC_VERSION:-1.3.0}
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_DOMAIN=${ORDERER_NAME:-orderer}.${ORG:-org1}.${DOMIAN:-example.com}
+      - CORE_PEER_LOCALMSPID=frontend.${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/orderer/msp
+
+#      - FABRIC_CFG_PATH=/bft-fabric
+      - ORDERER_GENERAL_LOCALMSPID=frontend.${ORG:-org1}
+#      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/ordereradmin/msp
+      - ORDERER_GENERAL_GENESISFILE=/bft-config/genesisblock
+      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+
+#      - ORDERER_GENERAL_LOCALMSPID=orderer
+#      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+    working_dir: /etc/hyperledger
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+
+      - ./crypto-config/bft/${ORG:-org1}-frontend/fabric:/bft-fabric
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
+      - ./templates:/etc/hyperledger/templates
+
+
+  cli.orderer:
+    container_name: cli.orderer.${ORG:-org1}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+#    image: ${DOCKER_REGISTRY:-docker.io}/bftsmart/fabric-tools:amd64-${FABRIC_VERSION:-1.3.0}
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_DOMAIN=${ORDERER_NAME:-orderer}.${ORG:-org1}.${DOMIAN:-example.com}
+      - CORE_PEER_LOCALMSPID=frontend.${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
+      - ORDERER_GENERAL_LOCALMSPID=frontend.${ORG:-org1}
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/ordereradmin/msp
+    working_dir: /etc/hyperledger
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ./crypto-config/ordererOrganizations/frontend.${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@frontend.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/ordereradmin
+      - ./templates:/etc/hyperledger/templates
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+
+  cli.peer:
+    container_name: cli.peer.${ORG:-org1}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+#    image: ${DOCKER_REGISTRY:-docker.io}/bftsmart/fabric-tools:amd64-${FABRIC_VERSION:-1.3.0}
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_DOMAIN=${ORDERER_NAME:-orderer}.${ORG:-org1}.${DOMIAN:-example.com}
+      - CORE_PEER_LOCALMSPID=frontend.${ORG:-org1}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
+      - ORDERER_GENERAL_LOCALMSPID=frontend.${ORG:-org1}
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/peeradmin/msp
+    working_dir: /etc/hyperledger
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ./crypto-config/ordererOrganizations/frontend.${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@frontend.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/ordereradmin
+      - ./templates:/etc/hyperledger/templates
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+
+networks:
+  default:
+    external:
+      name: fabric-starter_default
+

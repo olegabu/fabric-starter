@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
+: ${ORDERER_CRYPTO_TEMPLATE:=cryptogen-orderer-template.yaml}
+: ${ORDERERS_COUNT:=1}
+: ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
+: ${ORDERER_NAME:=orderer}
 
 tree crypto-config
 
-if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/orderer.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem" ]; then
-    echo "Generation orderer MSP."
+if [ ! -f "crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@${ORDERER_DOMAIN}-cert.pem" ]; then
+    echo "Generation orderer MSP using templates/${ORDERER_CRYPTO_TEMPLATE}"
 
-    envsubst < "templates/cryptogen-orderer-template.yaml" > "crypto-config/cryptogen-orderer.yaml"
+    envsubst < "templates/${ORDERER_CRYPTO_TEMPLATE}" > "crypto-config/cryptogen-orderer.yaml"
     rm -rf crypto-config/ordererOrganizations
     cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
 
-    mkdir -p crypto-config/ordererOrganizations/$DOMAIN/msp/well-known
-    cp crypto-config/ordererOrganizations/$DOMAIN/msp/tlscacerts/tlsca.$DOMAIN-cert.pem crypto-config/ordererOrganizations/$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
-    cp crypto-config/ordererOrganizations/$DOMAIN/msp/tlscacerts/tlsca.$DOMAIN-cert.pem crypto-config/ordererOrganizations/$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
+    mkdir -p crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/well-known
+    cp crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/well-known/msp-admin.pem 2>/dev/null
+    cp crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/well-known/tlsca-cert.pem 2>/dev/null
 else
-    echo "Orderer MSP exists. Generation skipped".
+    echo "Orderer MSP for domain ${ORDERER_DOMAIN} exists. Generation skipped".
 fi
 
 if [ ! -f "crypto-config/configtx/genesis.pb" ]; then

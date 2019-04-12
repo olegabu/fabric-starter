@@ -9,11 +9,13 @@ volumes:
 
 services:
   orderer:
-    container_name: orderer.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: orderer.orderer.${ORG:-org1}.${DOMAIN:-example.com}
     restart: always
     image: ${DOCKER_REGISTRY:-docker.io}/bftsmart/fabric-orderingnode:amd64-${FABRIC_VERSION:-1.3.0}
     environment:
-      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+      - NODE_CONFIG_DIR=/bft-config
+      - ORDERER_DOMAIN=orderer.${ORG:-org1}.${DOMAIN:-example.com}
+#      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
 #      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
 #      - ORDERER_GENERAL_GENESISMETHOD=file
 #      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/bft-config/genesisblock
@@ -23,15 +25,18 @@ services:
 #      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
 #      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
 #      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
-
-      - NODE_CONFIG_DIR=/bft-config
     command: ${ORDERER_NODE_ID:-0}
 #    depends_on:
 #      - pre-install
+#    ports:
+#      - ${BFT_ORDERER_PORT_1:-11000}:11000
+#      - ${BFT_ORDERER_PORT_2:-11001}:11001
+#      - ${BFT_ORDERER_PORT_3:-11002}:11002
     volumes:
       - ./crypto-config/bft/${ORG:-org1}-orderer/config:/bft-config
-      - ./crypto-config/configtx:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+      - ./templates:/etc/hyperledger/templates
+#      - ./crypto-config/configtx:/etc/hyperledger/configtx
+#      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
 
 

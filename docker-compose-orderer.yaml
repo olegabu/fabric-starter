@@ -71,6 +71,7 @@ services:
     tty: true
     environment:
       - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
@@ -148,3 +149,9 @@ services:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
     - post-install
+
+
+networks:
+  default:
+    external:
+      name: fabric-starter_default

@@ -6,7 +6,13 @@
 : ${WWW_PORT:=8081}
 : ${FABRIC_STARTER_HOME:=.}
 
-: ${ORDERER_TLSCA_CERT_OPTS:=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+: ${ORDERER_NAME:=orderer}
+: ${ORDERER_DOMAIN:=${DOMAIN}}
+
+: ${ORDERER_TLSCA_CERT_OPTS:=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
+: ${ORDERER_OPTS:=" -o $ORDERER_NAME.${ORDERER_DOMAIN}:7050"}
+
+echo $ORDERER_OPTS
 
 
 export DOMAIN ORG
@@ -31,11 +37,13 @@ function printUsage() {
 }
 
 function runCLIWithComposerOverrides() {
+
     local composeCommand=${1:?Compose command must be specified}
     local service=${2}
     local command=${3}
+    IFS=' ' composeCommandSplitted=($composeCommand)
 
-    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
+    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-util.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-util.yaml"
 
     if [ "${MULTIHOST}" ]; then
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
@@ -48,10 +56,12 @@ function runCLIWithComposerOverrides() {
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
-    [ -n "$command" ] \
- && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
- || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
+    if [ -n "$command" ]; then
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
+    else
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
+    fi
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }
@@ -111,7 +121,7 @@ function certificationsToEnv() {
 function fetchChannelConfigBlock() {
     channel=${1:?"Channel name must be specified"}
     blockNum=${2:-config}
-    runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
+    runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb ${ORDERER_OPTS} -c ${channel}  \
      ${ORDERER_TLSCA_CERT_OPTS} && chown -R $UID crypto-config/"
 }
 
@@ -145,9 +155,10 @@ function createConfigUpdateEnvelope() {
     && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
     && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=crypto-config/configtx/update.json && chown $UID crypto-config/configtx/update.json"
     runCLI "echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat crypto-config/configtx/update.json\`'}}}' | jq . > crypto-config/configtx/update_in_envelope.json"
-    runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb"
-    echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
-    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 ${ORDERER_TLSCA_CERT_OPTS}"
+    runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=crypto-config/update_in_envelope.pb"
+sleep 2
+    echo " >> $org is sending channel update crypto-config/update_in_envelope.pb with $d by $command"
+    runCLI "peer channel update -f crypto-config/update_in_envelope.pb -c $channel ${ORDERER_OPTS} ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function updateChannelConfig() {
@@ -158,6 +169,7 @@ function updateChannelConfig() {
 
     txTranslateChannelConfigBlock "$channel"
     updateChannelGroupConfigForOrg "$org" "$templateFile" "$exportEnv"
+sleep 2
     createConfigUpdateEnvelope $channel
 }
 

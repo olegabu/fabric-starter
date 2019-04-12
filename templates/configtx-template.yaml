@@ -6,23 +6,28 @@ Organizations:
         ID: orderer
         MSPDir: ordererOrganizations/${DOMAIN}/msp
 
+    - &OrdererNodeOrg
+        Name: OrdererNode
+        ID: orderer.${ORG}
+        MSPDir: ordererOrganizations/orderer.${ORG}.${DOMAIN}/orderers/orderer.orderer.${ORG}.${DOMAIN}/msp
+
     - &OrdererFrontend
-      Name: OrdererFrontend
-      ID: OrdererFrontend
-      MSPDir: ordererOrganizations/${DOMAIN}/msp
+        Name: OrdererFrontend
+        ID: frontend.${ORG}
+        MSPDir: ordererOrganizations/frontend.${ORG}.${DOMAIN}/orderers/frontend.frontend.${ORG}.${DOMAIN}/msp
 
-      Policies:
-        Readers:
-          Type: Signature
-          Rule: "OR('FrontendsMSP.member')"
+        Policies:
+          Readers:
+            Type: Signature
+            Rule: "OR('frontend.${ORG}.member')"
 
-        Writers:
-          Type: Signature
-          Rule: "OR('FrontendsMSP.member')"
+          Writers:
+            Type: Signature
+            Rule: "OR('frontend.${ORG}.member')"
 
-        Admins:
-          Type: Signature
-          Rule: "OR('FrontendsMSP.admin')"
+          Admins:
+            Type: Signature
+            Rule: "OR('frontend.${ORG}.admin')"
 
     - &firstOrg
         Name: ${ORG}
@@ -108,21 +113,37 @@ Profiles:
             OrdererType: bftsmart
             Addresses: [${ORDERER_FRONTEND_ADDRESSES}]
             Organizations:
-                - *OrdererOrg
+                - *OrdererNodeOrg
                 - *OrdererFrontend
+            Policies:
+              Readers:
+                Type: Signature
+                Rule: "OR('frontend.${ORG}.member')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
+              Writers:
+                Type: Signature
+                Rule: "OR('frontend.${ORG}.member')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
+              Admins:
+                Type: Signature
+                Rule: "OR('frontend.${ORG}.admin','frontend.${ORG}.member')"
             Capabilities:
                 <<: *OrdererCapabilities
 
         Consortiums:
             BFTConsortium:
                 Organizations:
-                    - *OrdererOrg
+                  - *firstOrg
 
 
     CHANNEL:
         Orderer:
             Organizations:
-            - *OrdererOrg
+            - *OrdererFrontend
         Consortium: BFTConsortium
         Application:
             Organizations:

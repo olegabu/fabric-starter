@@ -7,20 +7,53 @@ OrdererOrgs:
   # Orderer
   # ---------------------------------------------------------------------------
   - Name: OrdererNode
-    Domain: ${DOMAIN}
-
+    Domain: orderer.${ORG}.${DOMAIN}
     # ---------------------------------------------------------------------------
     # "Specs" - See PeerOrgs below for complete description
     # ---------------------------------------------------------------------------
     Specs:
-      - Hostname: orderer.${ORG}
+      - Hostname: orderer
 
 
   # ---------------------------------------------------------------------------
   # Orderer service frontend
   # ---------------------------------------------------------------------------
   - Name: OrdererFrontend
-    Domain: ${DOMAIN}
-
+    Domain: frontend.${ORG}.${DOMAIN}
     Specs:
-      - Hostname: frontend.${ORG}
+      - Hostname: frontend
+
+
+  - Name: OrdererNode2
+    Domain: orderer.org2.${DOMAIN}
+    Specs:
+      - Hostname: orderer
+
+
+  - Name: OrdererFrontend2
+    Domain: frontend.org2.${DOMAIN}
+    Specs:
+      - Hostname: frontend
+
+  - Name: OrdererNode3
+    Domain: orderer.org3.${DOMAIN}
+    Specs:
+      - Hostname: orderer
+
+
+  - Name: OrdererFrontend3
+    Domain: frontend.org3.${DOMAIN}
+    Specs:
+      - Hostname: frontend
+
+  - Name: OrdererNode4
+    Domain: orderer.org4.${DOMAIN}
+    Specs:
+      - Hostname: orderer
+
+
+  - Name: OrdererFrontend4
+    Domain: frontend.org4.${DOMAIN}
+    Specs:
+      - Hostname: frontend
+

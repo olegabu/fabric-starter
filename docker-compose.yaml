@@ -38,7 +38,6 @@ services:
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
-      - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
 
   post-install:
@@ -58,6 +57,8 @@ services:
     depends_on:
       - pre-install
       - peer0
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
 
   ca:
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
@@ -104,10 +105,10 @@ services:
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
     - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peer/msp
-    - CORE_PEER_TLS_ENABLED=true
-    - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
-    - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
-    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
+#    - CORE_PEER_TLS_ENABLED=true
+#    - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
+#    - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
+#    - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
 
     volumes:
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer

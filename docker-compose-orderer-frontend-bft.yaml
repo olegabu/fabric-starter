@@ -1,0 +1,48 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+volumes:
+  orderer-frontend:
+
+services:
+  orderer-frontend:
+    container_name: frontend.frontend.${ORG:-org1}.${DOMAIN:-example.com}
+    restart: always
+    image: ${DOCKER_REGISTRY:-docker.io}/bftsmart/fabric-frontend:amd64-${FABRIC_VERSION:-1.3.0}
+    environment:
+      - ORDERER_NAME=frontend
+      - ORDERER_DOMAIN=frontend.${ORG:-org1}.${DOMAIN:-example.com}
+      - FRONTEND_CONFIG_DIR=/bft-config
+      - FABRIC_CFG_PATH=/bft-fabric
+      - ORDERER_GENERAL_LOCALMSPID=frontend.${ORG:-org1}
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/ordereradmin/msp
+      - ORDERER_GENERAL_GENESISFILE=/bft-config/genesisblock
+      - ORDERER_GENERAL_LISTENPORT=${ORDERER_LISTEN_PORT:-7050}
+      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+    command: ${FRONTEND_NODE_ID:-1000} ${RECV_PORT} $DEBG
+#    depends_on:
+#      - pre-install
+#    ports:
+#      - ${BFT_FRONTEND_PORT_1:-32000}:11000
+#      - ${BFT_FRONTEND_PORT_2:-32001}:11001
+#      - ${BFT_FRONTEND_PORT_3:-32002}:11002
+    volumes:
+      - ./crypto-config/bft/${ORG:-org1}-frontend/config:/bft-config
+      - ./crypto-config/bft/${ORG:-org1}-frontend/fabric:/bft-fabric
+      - ./templates:/etc/hyperledger/templates
+#      - ./crypto-config/configtx:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/frontend.${ORG:-org1}.${DOMAIN:-example.com}/orderers/frontend.frontend.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+#      - ./crypto-config/ordererOrganizations/frontend.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/ordererOrganizations/frontend.${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@frontend.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/ordereradmin
+
+      - orderer-frontend:/var/hyperledger/production/orderer
+
+
+networks:
+  default:
+    external:
+      name: fabric-starter_default
+
