@@ -3,9 +3,12 @@
 source lib.sh
 
 export MULTIHOST=true
-export DOMAIN=${DOMAIN-example.com}
+export DOMAIN=${DOMAIN:-example.com}
 
-first_org=${1:-org1}
+declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
+orgs=(`getCurrentOrganizationsList`)
+first_org=${orgs[0]:-org1}
+
 ip=$(getMachineIp ${first_org})
 
 info "Smoke test logs into $first_org at $ip and queries dns chaincode via rest api"

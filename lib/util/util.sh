@@ -54,9 +54,3 @@ function setDocker_LocalRegistryEnv() {
     fi
 }
 
-
-function cutSubstr() {
-    local str=$1
-    local subStr=$2
-
-}

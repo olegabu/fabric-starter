@@ -85,8 +85,8 @@ services:
       - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./templates:/etc/hyperledger/templates
-      - ./container-scripts/:/etc/hyperledger/container-scripts
+#      - ./templates:/etc/hyperledger/templates
+#      - ./container-scripts/:/etc/hyperledger/container-scripts
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 

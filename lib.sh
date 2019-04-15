@@ -3,7 +3,6 @@
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
-: ${WWW_PORT:=8081}
 : ${FABRIC_STARTER_HOME:=.}
 
 : ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
@@ -34,6 +33,7 @@ function runCLIWithComposerOverrides() {
     local composeCommand=${1:?Compose command must be specified}
     local service=${2}
     local command=${3}
+    IFS=' ' composeCommandSplitted=($composeCommand)
 
     [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
 
@@ -48,10 +48,12 @@ function runCLIWithComposerOverrides() {
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
-    [ -n "$command" ] \
- && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
- || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
+    if [ -n "$command" ]; then
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
+    else
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
+    fi
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }
@@ -294,10 +296,36 @@ function info() {
 #    echo
 }
 
+function parseOrganizationsForDockerMachine() {
+    #   excpecting external variable is declared by: declare -A -g ORGS_MAP
+    local orgsArg=${@:?List of organizations is expected}
+    local orgs=()
+    for orgMachineParam in $orgsArg; do
+        local orgMachineArray=($(IFS=':'; echo ${orgMachineParam}))
+        local org=${orgMachineArray[0]};
+        orgs+=($org)
+        ORGS_MAP["$org"]="${orgMachineArray[1]}"
+    done
+    ORGS_MAP["organizationList"]=${orgs[@]}
+    #  note: implicitly returning ORGS_MAP
+}
+
+function getCurrentOrganizationsList() {
+    echo ${ORGS_MAP["organizationList"]}
+}
+
+function getDockerMachineName() {
+    local org=${1:?Org name must be specified}
+    if [ -n "${ORGS_MAP[$org]}" ]; then
+        org=${ORGS_MAP[$org]}
+    fi
+    echo "$org.$DOMAIN"
+}
+
 function copyDirToMachine() {
-    machine="$1.$DOMAIN"
-    src=$2
-    dest=$3
+    local machine=`getDockerMachineName $1`
+    local src=$2
+    local dest=$3
 
     info "Copying ${src} to remote machine ${machine}:${dest}"
     docker-machine ssh ${machine} sudo rm -rf ${dest}
@@ -306,34 +334,33 @@ function copyDirToMachine() {
 }
 
 function copyFileToMachine() {
-    machine="$1.$DOMAIN"
-    src=$2
-    dest=$3
-
+    local machine=`getDockerMachineName $1`
+    local src=$2
+    local dest=$3
     info "Copying ${src} to remote machine ${machine}:${dest}"
     docker-machine scp ${src} ${machine}:${dest}
 }
 
 function connectMachine() {
-    machine="$1.$DOMAIN"
+    local machine=`getDockerMachineName $1`
 
-    info "Connecting to remote machine $machine"
+    info "Connecting to org $1 in remote machine $machine"
     eval "$(docker-machine env ${machine})"
     export ORG=${1}
 }
 
 function getMachineIp() {
-    machine="$1.$DOMAIN"
+    local machine=`getDockerMachineName $1`
     echo `(docker-machine ip ${machine})`
 }
 
 function setMachineWorkDir() {
-    machine="orderer.$DOMAIN"
+    local machine=`getDockerMachineName $1`
     export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
 }
 
 function createDirInMachine() {
-    local machine=${1:?Org must be specified}.${DOMAIN}
+    local machine=`getDockerMachineName $1`
     local dir=${2:?Specify directory to create}
     info "Create directory $dir on $machine"
     docker-machine ssh ${machine} mkdir -p "$dir"
@@ -345,6 +372,15 @@ function createHostsFileInOrg() {
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
     sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
+
+    for hostOrg in `getCurrentOrganizationsList`; do
+        local siblingOrg="${ORGS_MAP[$hostOrg]}"
+        if [ -n "$siblingOrg" ]; then
+            sed -i.bak "/.*\.$hostOrg\.$DOMAIN*/d" org_hosts
+            sed -i.bak "/.*\.$siblingOrg\.$DOMAIN*/d" org_hosts
+        fi
+    done
+
     createDirInMachine $org crypto-config
     copyFileToMachine ${org} org_hosts crypto-config/hosts_${org}
     rm org_hosts.bak org_hosts
@@ -354,7 +390,7 @@ function createHostsFileInOrg() {
 }
 
 function createChannelAndAddOthers() {
-    c=$1
+    local c=$1
 
     connectMachine ${first_org}
 
@@ -378,6 +414,4 @@ function createChannelAndAddOthers() {
         connectMachine ${org}
         ./channel-join.sh ${c}
     done
-
-    connectMachine ${first_org}
 }

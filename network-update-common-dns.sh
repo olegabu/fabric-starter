@@ -3,13 +3,15 @@
 source lib/util/util.sh
 source lib.sh
 
+export MULTIHOST=true
 : ${CHANNEL:=common}
 
-orgs=${@:-org1}
-first_org=${1:-org1}
+declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
+orgs=(`getCurrentOrganizationsList`)
+first_org=${orgs[0]:-org1}
 
 # Set WORK_DIR as home dir on remote machine
-setMachineWorkDir
+setMachineWorkDir $first_org
 
 # Add member organizations to the consortium
 connectMachine orderer
@@ -46,11 +48,11 @@ ip=$(getMachineIp orderer)
 for org in ${orgs}
 do
     ip=$(getMachineIp ${org})
-    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}\"]"
+    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]"
 done
 
 sleep 10
 
-./smoke-test.sh ${first_org}
+./smoke-test.sh ${@}
 
 echo
