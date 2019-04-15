@@ -367,17 +367,25 @@ function createDirInMachine() {
 }
 
 function createHostsFileInOrg() {
+
     local org=${1:?Org must be specified}
 
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
     sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
+    local orgs=`getCurrentOrganizationsList`
 
-    for hostOrg in `getCurrentOrganizationsList`; do
+    local siblingOrg="${ORGS_MAP[$org]}"
+    if [ -n "$siblingOrg" ]; then
+        sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
+    fi
+    for hostOrg in ${orgs}; do
         local siblingOrg="${ORGS_MAP[$hostOrg]}"
-        if [ -n "$siblingOrg" ]; then
+        echo "Check $hostOrg:$siblingOrg"
+        if [ "$siblingOrg" == "$org" ]; then
+            echo "Exclude record from hosts for $hostOrg:$siblingOrg"
             sed -i.bak "/.*\.$hostOrg\.$DOMAIN*/d" org_hosts
-            sed -i.bak "/.*\.$siblingOrg\.$DOMAIN*/d" org_hosts
+            sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
         fi
     done
 

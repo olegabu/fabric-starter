@@ -6,7 +6,7 @@ Create a network to jump start development of your decentralized application on
 The network is run by docker containers and can be deployed to one host for development or to multiple hosts for testing 
 or production.
 
-Scripts of this starter generate crypto material and config orgs=(`getCurrentOrganizationsList`)s, start the network and deploy your chaincodes. 
+Scripts of this starter generate crypto material and config files, start the network and deploy your chaincodes. 
 Developers can use [REST API](https://github.com/olegabu/fabric-starter-rest) to invoke and query chaincodes, 
 explore blocks and transactions.
 

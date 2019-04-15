@@ -17,8 +17,8 @@ export DOMAIN=${DOMAIN-example.com}
 : ${MIDDLEWARE_HOME:=middleware}
 
 declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
-orgs=(`getCurrentOrganizationsList`)
-first_org=${orgs[0]:-org1}
+orgs=`getCurrentOrganizationsList`
+first_org=${orgs%% *}
 
 # Set WORK_DIR as home dir on remote machine
 setMachineWorkDir orderer
@@ -33,7 +33,6 @@ for org in ${orgs}; do
     hosts="${hosts}\n${ip} www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}"
 done
 
-echo -e "${hosts}" > hosts
 
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
@@ -52,6 +51,7 @@ copyDirToMachine orderer container-scripts ${WORK_DIR}/container-scripts
 connectMachine orderer
 ./clean.sh
 # Copy generated hosts file to the host machines
+echo -e "${hosts}" > hosts
 createHostsFileInOrg orderer
 
 [ -z "${ORGS_MAP[orderer]}" ] && ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1)); echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
@@ -79,7 +79,9 @@ do
     connectMachine ${org}
     export ORG_IP=$(getMachineIp ${org})
     [ -z "${ORGS_MAP[$org]}" ] && ./clean.sh
+    echo -e "${hosts}" > hosts
     createHostsFileInOrg $org
+
     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
 done
 

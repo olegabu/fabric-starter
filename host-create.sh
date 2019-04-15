@@ -5,7 +5,7 @@ source lib.sh
 setDocker_LocalRegistryEnv
 
 if [ -n "$DOCKER_REGISTRY" ]; then
-    DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY "
+    DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY  --virtualbox-cpu-count 2"
     echo "Using docker-registry: $DOCKER_REGISTRY"
 fi
 
@@ -19,8 +19,10 @@ info "Create Network with vm names prefix: $VM_NAME_PREFIX"
 : ${DOMAIN:=example.com}
 
 declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
-orgs=(`getCurrentOrganizationsList`)
-first_org=${orgs[0]:-org1}
+orgs=`getCurrentOrganizationsList`
+first_org=${orgs%% *}
+
+echo "Organizations: ${orgs[@]}. First: $first_org"
 
 # Create orderer host machine
 ordererMachineName="orderer.$DOMAIN"

@@ -114,7 +114,9 @@ module.exports = async app => {
         list = filterOutOrgByPattern(list, `orderer.${process.env.DOMAIN}`);
       }
 
-      let hostsFileContent = generateHostsRecords(list, orgDomain);
+      logger.debug("DNS after filtering", list);
+
+      let hostsFileContent = generateHostsRecords(list);
 
       writeFile(NODE_HOSTS_FILE, hostsFileContent);
       writeFile(ORDERER_HOSTS_FILE, hostsFileContent);

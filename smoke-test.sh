@@ -6,8 +6,8 @@ export MULTIHOST=true
 export DOMAIN=${DOMAIN:-example.com}
 
 declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
-orgs=(`getCurrentOrganizationsList`)
-first_org=${orgs[0]:-org1}
+orgs=`getCurrentOrganizationsList`
+first_org=${orgs%% *}
 
 ip=$(getMachineIp ${first_org})
 

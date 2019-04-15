@@ -7,8 +7,8 @@ export MULTIHOST=true
 : ${CHANNEL:=common}
 
 declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
-orgs=(`getCurrentOrganizationsList`)
-first_org=${orgs[0]:-org1}
+orgs=`getCurrentOrganizationsList`
+first_org=${orgs%% *}
 
 # Set WORK_DIR as home dir on remote machine
 setMachineWorkDir $first_org
@@ -48,7 +48,13 @@ ip=$(getMachineIp orderer)
 for org in ${orgs}
 do
     ip=$(getMachineIp ${org})
-    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]"
+#    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" // TODO: update registerOrg
+    value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
+    [ -n "${ORGS_MAP[$org]}" ] && value="$value www.${DOMAIN} orderer.${DOMAIN}"
+    value="$value\""
+
+    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
+
 done
 
 sleep 10
