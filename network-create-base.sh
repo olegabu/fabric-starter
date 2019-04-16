@@ -16,9 +16,11 @@ export DOMAIN=${DOMAIN-example.com}
 : ${WEBAPP_HOME:=webapp}
 : ${MIDDLEWARE_HOME:=middleware}
 
-declare -A -g ORGS_MAP; parseOrganizationsForDockerMachine ${@:-org1}
-orgs=`getCurrentOrganizationsList`
+
+declare -a -g ORGS_MAP=${@:-org1}
+orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
 first_org=${orgs%% *}
+
 
 # Set WORK_DIR as home dir on remote machine
 setMachineWorkDir orderer
@@ -54,7 +56,7 @@ connectMachine orderer
 echo -e "${hosts}" > hosts
 createHostsFileInOrg orderer
 
-[ -z "${ORGS_MAP[orderer]}" ] && ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1)); echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
+[ -z `getHostOrgForOrg orderer` ] && ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1)); echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
 
 WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
 
@@ -78,7 +80,7 @@ do
     info "Creating member organization $org"
     connectMachine ${org}
     export ORG_IP=$(getMachineIp ${org})
-    [ -z "${ORGS_MAP[$org]}" ] && ./clean.sh
+    [ -z `getHostOrgForOrg $org` ] && ./clean.sh
     echo -e "${hosts}" > hosts
     createHostsFileInOrg $org
 

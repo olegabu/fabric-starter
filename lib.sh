@@ -304,22 +304,30 @@ function parseOrganizationsForDockerMachine() {
         local orgMachineArray=($(IFS=':'; echo ${orgMachineParam}))
         local org=${orgMachineArray[0]};
         orgs+=($org)
-        ORGS_MAP["$org"]="${orgMachineArray[1]}"
+#        ORGS_MAP["$org"]="${orgMachineArray[1]}"
     done
-    ORGS_MAP["organizationList"]=${orgs[@]}
+    echo "${orgs[@]}"
     #  note: implicitly returning ORGS_MAP
 }
 
-function getCurrentOrganizationsList() {
-    echo ${ORGS_MAP["organizationList"]}
+function getHostOrgForOrg() {
+    local org=${1:?Org name is expected}
+    for org_Machine in $ORGS_MAP; do
+        local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
+        if [ "${org}" == "${orgMachineArray[0]}" ]; then
+            echo ${orgMachineArray[1]}
+        fi
+    done
 }
 
 function getDockerMachineName() {
-    local org=${1:?Org name must be specified}
-    if [ -n "${ORGS_MAP[$org]}" ]; then
-        org=${ORGS_MAP[$org]}
+    local org=${1:?Org name is expected}
+    local hostOrg=`getHostOrgForOrg $1`
+    if [ -n "$hostOrg" ]; then
+        local org=`getHostOrgForOrg $1`
     fi
     echo "$org.$DOMAIN"
+
 }
 
 function copyDirToMachine() {
@@ -373,14 +381,14 @@ function createHostsFileInOrg() {
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
     sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
-    local orgs=`getCurrentOrganizationsList`
+    orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
 
-    local siblingOrg="${ORGS_MAP[$org]}"
+    local siblingOrg=`getHostOrgForOrg $org`
     if [ -n "$siblingOrg" ]; then
         sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
     fi
     for hostOrg in ${orgs}; do
-        local siblingOrg="${ORGS_MAP[$hostOrg]}"
+        local siblingOrg=`getHostOrgForOrg $hostOrg`
         echo "Check $hostOrg:$siblingOrg"
         if [ "$siblingOrg" == "$org" ]; then
             echo "Exclude record from hosts for $hostOrg:$siblingOrg"
