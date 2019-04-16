@@ -18,7 +18,7 @@ info "Create Network with vm names prefix: $VM_NAME_PREFIX"
 
 : ${DOMAIN:=example.com}
 
-declare -a -g ORGS_MAP=${@:-org1}
+declare -a ORGS_MAP=${@:-org1}
 orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
 first_org=${orgs%% *}
 
@@ -37,9 +37,7 @@ for org in ${orgs}
 do
     orgMachineName=`getDockerMachineName $org`
     info "Creating member organization $org on machine: $orgMachineName with flags: $DOCKER_MACHINE_FLAGS"
-set -x
     [ -z `getHostOrgForOrg $org` ] && docker-machine rm ${orgMachineName} --force
-set +x
     docker-machine create ${DOCKER_MACHINE_FLAGS} ${orgMachineName}
 done
 

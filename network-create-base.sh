@@ -17,7 +17,7 @@ export DOMAIN=${DOMAIN-example.com}
 : ${MIDDLEWARE_HOME:=middleware}
 
 
-declare -a -g ORGS_MAP=${@:-org1}
+declare -a ORGS_MAP=${@:-org1}
 orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
 first_org=${orgs%% *}
 

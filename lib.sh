@@ -297,7 +297,7 @@ function info() {
 }
 
 function parseOrganizationsForDockerMachine() {
-    #   excpecting external variable is declared by: declare -A -g ORGS_MAP
+    #   excpecting external variable is declared by: declare -a ORGS_MAP
     local orgsArg=${@:?List of organizations is expected}
     local orgs=()
     for orgMachineParam in $orgsArg; do
@@ -311,11 +311,15 @@ function parseOrganizationsForDockerMachine() {
 }
 
 function getHostOrgForOrg() {
+    set -x
     local org=${1:?Org name is expected}
+    set +x
     for org_Machine in $ORGS_MAP; do
         local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
         if [ "${org}" == "${orgMachineArray[0]}" ]; then
+            set -x
             echo ${orgMachineArray[1]}
+            set +x
         fi
     done
 }
@@ -327,7 +331,6 @@ function getDockerMachineName() {
         local org=`getHostOrgForOrg $1`
     fi
     echo "$org.$DOMAIN"
-
 }
 
 function copyDirToMachine() {
@@ -375,7 +378,6 @@ function createDirInMachine() {
 }
 
 function createHostsFileInOrg() {
-
     local org=${1:?Org must be specified}
 
     cp hosts org_hosts

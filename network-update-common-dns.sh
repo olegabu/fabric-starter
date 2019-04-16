@@ -6,7 +6,7 @@ source lib.sh
 export MULTIHOST=true
 : ${CHANNEL:=common}
 
-declare -a -g ORGS_MAP=${@:-org1}
+declare -a ORGS_MAP=${@:-org1}
 orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
 first_org=${orgs%% *}
 
@@ -33,8 +33,8 @@ fi
 # First organization instantiates dns chaincode
 connectMachine ${first_org}
 
-sleep 10
 info "Instantiating dns chaincode by $ORG"
+sleep 10
 ./chaincode-instantiate.sh common dns
 
 info "Waiting for dns chaincode to build"
@@ -50,7 +50,8 @@ do
     ip=$(getMachineIp ${org})
 #    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" // TODO: update registerOrg
     value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
-    [ -n `getHostOrgForOrg $org` ] && value="$value www.${DOMAIN} orderer.${DOMAIN}"
+    hostOrg=`getHostOrgForOrg $org`
+    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} orderer.${DOMAIN}"
     value="$value\""
 
     ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
