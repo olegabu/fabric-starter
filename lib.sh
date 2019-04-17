@@ -311,15 +311,12 @@ function parseOrganizationsForDockerMachine() {
 }
 
 function getHostOrgForOrg() {
-    set -x
     local org=${1:?Org name is expected}
     set +x
     for org_Machine in $ORGS_MAP; do
         local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
         if [ "${org}" == "${orgMachineArray[0]}" ]; then
-            set -x
             echo ${orgMachineArray[1]}
-            set +x
         fi
     done
 }
