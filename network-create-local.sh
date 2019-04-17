@@ -28,14 +28,22 @@ docker-compose -f docker-compose-orderer.yaml up -d
 # Create member organizations
 
 api_port=${API_PORT:-4000}
+#dev:
+www_port=${WWW_PORT:-81}
+ca_port=${CA_PORT:-7054}
+peer0_port=${PEER0_PORT:-7051}
+#
 
 for org in ${orgs}
 do
-    export ORG=${org} API_PORT=${api_port}
+    export ORG=${org} API_PORT=${api_port} WWW_PORT=${www_port} PEER0_PORT=${peer0_port} CA_PORT=${ca_port}
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     docker-compose ${docker_compose_args} up -d
     api_port=$((api_port + 1))
+    www_port=$((www_port + 1))
+    ca_port=$((ca_port + 1))
+    peer0_port=$((peer0_port + 1000))
     unset ORG COMPOSE_PROJECT_NAME API_PORT
 done
 
