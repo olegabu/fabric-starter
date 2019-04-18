@@ -17,7 +17,7 @@ module.exports = async app => {
     const username = process.env.DNS_USERNAME || 'dns';
     const password = process.env.DNS_PASSWORD || 'pass';
     const skip = !process.env.MULTIHOST;
-    const period = process.env.DNS_PERIOD || 5000;
+    const period = process.env.DNS_PERIOD || 60000;
     const orgDomain = `${process.env.ORG}.${process.env.DOMAIN}`;
     const queryTarget = process.env.DNS_QUERY_TARGET || `peer0.${orgDomain}:7051`;
 
