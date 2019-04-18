@@ -44,7 +44,7 @@ do
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))
     peer0_port=$((peer0_port + 1000))
-    unset ORG COMPOSE_PROJECT_NAME API_PORT
+    unset ORG COMPOSE_PROJECT_NAME API_PORT WWW_PORT PEER0_PORT CA_PORT
 done
 
 # Add member organizations to the consortium
