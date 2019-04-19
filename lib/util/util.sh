@@ -49,7 +49,7 @@ function setDocker_LocalRegistryEnv() {
         localRegistryRunning=`localHostRunningDockerContainer docker-registry`
         if [ -n "$localRegistryRunning" ]; then
             export DOCKER_REGISTRY=${DOCKER_REGISTRY-"`virtualboxHostIpAddr`:5000"};
-            echo -e "\n\nUse DOCKER_REGISTRTY=$DOCKER_REGISTRY\n\n"
+            echo -e "\n\nUse DOCKER_REGISTRY=$DOCKER_REGISTRY\n\n"
         fi
     fi
 }
