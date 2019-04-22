@@ -116,9 +116,9 @@ export DOCKER_REGISTRY=192.168.99.1:5000
     ORG=org1 MULTIHOST=true docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ```
 
-#####org2(, org3...) machine:
+dd#####org2(,org3...) machine:
 ```bash
-    BOOTSTRAP_IP=192.168.99.134 ORG=org2 MULTIHOST=true docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ```
 
 #####orderer machine again:
@@ -132,9 +132,9 @@ export DOCKER_REGISTRY=192.168.99.1:5000
 - add channel "common"
 - instantiate chaincode: "dns"
 - invoke dns.put ("192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com")
-- invoke dns.registerOrg  ("org2.example.com" "org2-IP")
+- invoke dns.registerOrg  ("org2.example.com" "192.168.99.yy")
 - organizations: add organization to channel "org2"
-- invoke dns.registerOrg  ("org3.example.com" "org3-IP")
+- invoke dns.registerOrg  ("org3.example.com" "192.168.99.zz")
 - 
 - organizations: add organization to channel "org3"
 - install custom chaincode

@@ -6,7 +6,6 @@ setDocker_LocalRegistryEnv
 
 if [ -n "$DOCKER_REGISTRY" ]; then
     DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY  "
-    echo "Using docker-registry: $DOCKER_REGISTRY"
 fi
 
 function info() {
@@ -29,7 +28,7 @@ ordererMachineName="orderer.$DOMAIN"
 info "Creating $ordererMachineName, Options: $DOCKER_MACHINE_FLAGS"
 
 docker-machine rm ${ordererMachineName} --force
-#docker-machine create ${DOCKER_MACHINE_FLAGS} ${ordererMachineName}
+docker-machine create ${DOCKER_MACHINE_FLAGS} ${ordererMachineName}
 
 # Create member organizations host machines
 

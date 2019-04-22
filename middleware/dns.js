@@ -108,7 +108,7 @@ module.exports = async app => {
                 await login();
                 dnsUserLoggedin = true;
             } catch (e) {
-                logger.error("Can't start DNS block listener", e);
+                logger.warn("Can't start DNS block listener", e);
                 return;
             }
         }
@@ -119,7 +119,7 @@ module.exports = async app => {
                 await startBlockListener();
                 blockListenerStarted = true;
             } catch (e) {
-                logger.error("Can't start DNS block listener", e);
+                logger.warn("Can't start DNS block listener", e);
                 return;
             }
         }
@@ -136,7 +136,7 @@ module.exports = async app => {
             try {
                 list = JSON.parse(ret);
             } catch (e) {
-                logger.error("Unparseable dns-records: \n", ret);
+                logger.warn("Unparseable dns-records: \n", ret);
             }
 
             if (!list.length) {

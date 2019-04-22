@@ -38,7 +38,7 @@ sleep 10
 ./chaincode-instantiate.sh common dns
 
 info "Waiting for dns chaincode to build"
-sleep 20
+sleep 5
 
 # First organization creates entries in dns chaincode
 

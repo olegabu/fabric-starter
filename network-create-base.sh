@@ -56,7 +56,10 @@ connectMachine orderer
 echo -e "${hosts}" > hosts
 createHostsFileInOrg orderer
 
-[ -z `getHostOrgForOrg orderer` ] && ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1)); echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
+if [ -n "`getHostOrgForOrg ${first_org}`" ]; then
+    ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
+    echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
+fi
 
 WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
 
