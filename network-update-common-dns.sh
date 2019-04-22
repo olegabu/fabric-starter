@@ -55,10 +55,10 @@ do
     value="$value\""
 
     ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
-
+    sleep 10
 done
 
-sleep 10
+sleep 20
 
 ./smoke-test.sh ${@}
 
