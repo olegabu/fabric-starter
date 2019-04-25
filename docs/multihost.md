@@ -112,13 +112,13 @@ export DOCKER_REGISTRY=192.168.99.1:5000
  
 #####orderer (and org1) machine:
 ```bash
-    WWW_PORT=81 docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
-    ORG=org1 MULTIHOST=true docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+    WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ```
 
 dd#####org2(,org3...) machine:
 ```bash
-    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
 ```
 
 #####orderer machine again:
@@ -147,6 +147,30 @@ dd#####org2(,org3...) machine:
 #####org3-IP:4000/admin:
 - join channel "common"
 - install custom chaincode
+
+
+<a name="consortiumtypes"></a>
+## Consortium Types. Invite-based and Majority-based Governance
+
+So now our network can be governed by itself (or to say it right by the netwrk's members). 
+The first type of network-governance is `Invite-based`. With this type of deployment 
+any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
+
+To deploy such type of network export environment variable
+```bash
+export CONSORTIUM_CONFIG=InviteConsortiumPolicy
+```
+Start orderer:
+```bash
+WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+```
+
+Then start an organization
+```bash
+ORG_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d 
+```
+
+`Majority` type of governance is coming.       
 
 
 
