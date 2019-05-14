@@ -6,9 +6,20 @@ version: '3.7'
 
 services:
 
+  pre-install:
+    volumes:
+      - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+
+  post-install:
+    volumes:
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+
+
   orderer:
     volumes:
-      - ${WORK_DIR:-/home/docker}/hosts:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config/configtx:/etc/hyperledger/configtx
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
     ports:
@@ -16,9 +27,9 @@ services:
 
   cli.orderer:
     volumes:
-      - ${WORK_DIR:-/home/docker}/hosts:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
-      - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates
+#      - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 

@@ -3,8 +3,10 @@
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
-: ${WWW_PORT:=8081}
 : ${FABRIC_STARTER_HOME:=.}
+
+: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+
 
 export DOMAIN ORG
 
@@ -31,6 +33,7 @@ function runCLIWithComposerOverrides() {
     local composeCommand=${1:?Compose command must be specified}
     local service=${2}
     local command=${3}
+    IFS=' ' composeCommandSplitted=($composeCommand)
 
     [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
 
@@ -39,16 +42,18 @@ function runCLIWithComposerOverrides() {
     fi
 
 #    if [ "${PORTS}" ]; then
-#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fports.yaml"
+#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
 #    fi
 
-    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fcouchdb.yaml"
+    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
-    [ -n "$command" ] \
- && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
- || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
+    if [ -n "$command" ]; then
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
+    else
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
+    fi
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }
@@ -109,7 +114,7 @@ function fetchChannelConfigBlock() {
     channel=${1:?"Channel name must be specified"}
     blockNum=${2:-config}
     runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
-     --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown -R $UID crypto-config/"
+     ${ORDERER_TLSCA_CERT_OPTS} && chown -R $UID crypto-config/"
 }
 
 function txTranslateChannelConfigBlock() {
@@ -144,7 +149,7 @@ function createConfigUpdateEnvelope() {
     runCLI "echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat crypto-config/configtx/update.json\`'}}}' | jq . > crypto-config/configtx/update_in_envelope.json"
     runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb"
     echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
-    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function updateChannelConfig() {
@@ -237,7 +242,7 @@ function instantiateChaincode() {
 
     arguments="{\"Args\":$initArguments}"
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt $privateCollectionParam $endorsementPolicyParam"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam"
 }
 
 
@@ -253,7 +258,7 @@ function upgradeChaincode() {
 
     arguments="{\"Args\":$initArguments}"
 
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName "$policy" --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName '$policy' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function callChaincode() {
@@ -263,13 +268,165 @@ function callChaincode() {
     arguments="{\"Args\":$arguments}"
     action=${4:-query}
 	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function queryChaincode() {
-    callChaincode $@ query
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+    action=${4:-query}
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function invokeChaincode() {
-    callChaincode $@ invoke
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
+}
+
+function info() {
+    echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
+#    read -n1 -r -p "Press any key to continue" key
+#    echo
+}
+
+function parseOrganizationsForDockerMachine() {
+    #   excpecting external variable is declared by: declare -a ORGS_MAP
+    local orgsArg=${@:?List of organizations is expected}
+    local orgs=()
+    for orgMachineParam in $orgsArg; do
+        local orgMachineArray=($(IFS=':'; echo ${orgMachineParam}))
+        local org=${orgMachineArray[0]};
+        orgs+=($org)
+#        ORGS_MAP["$org"]="${orgMachineArray[1]}"
+    done
+    echo "${orgs[@]}"
+    #  note: implicitly returning ORGS_MAP
+}
+
+function getHostOrgForOrg() {
+    local org=${1:?Org name is expected}
+    set +x
+    for org_Machine in $ORGS_MAP; do
+        local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
+        if [ "${org}" == "${orgMachineArray[0]}" ]; then
+            echo ${orgMachineArray[1]}
+        fi
+    done
+}
+
+function getDockerMachineName() {
+    local org=${1:?Org name is expected}
+    local hostOrg=`getHostOrgForOrg $1`
+    if [ -n "$hostOrg" ]; then
+        local org=`getHostOrgForOrg $1`
+    fi
+    echo "$org.$DOMAIN"
+}
+
+function copyDirToMachine() {
+    local machine=`getDockerMachineName $1`
+    local src=$2
+    local dest=$3
+
+    info "Copying ${src} to remote machine ${machine}:${dest}"
+    docker-machine ssh ${machine} sudo rm -rf ${dest}
+#    docker-machine ssh ${machine} sudo mkdir -p ${dest}
+    docker-machine scp -r ${src} ${machine}:${dest}
+}
+
+function copyFileToMachine() {
+    local machine=`getDockerMachineName $1`
+    local src=$2
+    local dest=$3
+    info "Copying ${src} to remote machine ${machine}:${dest}"
+    docker-machine scp ${src} ${machine}:${dest}
+}
+
+function connectMachine() {
+    local machine=`getDockerMachineName $1`
+
+    info "Connecting to org $1 in remote machine $machine"
+    eval "$(docker-machine env ${machine})"
+    export ORG=${1}
+}
+
+function getMachineIp() {
+    local machine=`getDockerMachineName $1`
+    echo `(docker-machine ip ${machine})`
+}
+
+function setMachineWorkDir() {
+    local machine=`getDockerMachineName $1`
+    export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
+}
+
+function createDirInMachine() {
+    local machine=`getDockerMachineName $1`
+    local dir=${2:?Specify directory to create}
+    info "Create directory $dir on $machine"
+    docker-machine ssh ${machine} mkdir -p "$dir"
+}
+
+function createHostsFileInOrg() {
+    local org=${1:?Org must be specified}
+
+    cp hosts org_hosts
+    # remove entry of your own ip not to confuse docker and chaincode networking
+    sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
+    orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
+
+    local siblingOrg=`getHostOrgForOrg $org`
+    if [ -n "$siblingOrg" ]; then
+        sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
+    fi
+    for hostOrg in ${orgs}; do
+        local siblingOrg=`getHostOrgForOrg $hostOrg`
+        echo "Check $hostOrg:$siblingOrg"
+        if [ "$siblingOrg" == "$org" ]; then
+            echo "Exclude record from hosts for $hostOrg:$siblingOrg"
+            sed -i.bak "/.*\.$hostOrg\.$DOMAIN*/d" org_hosts
+            sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
+        fi
+    done
+
+    createDirInMachine $org crypto-config
+    copyFileToMachine ${org} org_hosts crypto-config/hosts_${org}
+    rm org_hosts.bak org_hosts
+
+    # you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
+    # sudo cat hosts >> /etc/hosts
+}
+
+function createChannelAndAddOthers() {
+    local c=$1
+
+    connectMachine ${first_org}
+
+    info "Creating channel $c by $ORG"
+    ./channel-create.sh ${c}
+
+    # First organization adds other organizations to the channel
+    for org in ${orgs}
+    do
+        if [[ ${org} = ${first_org} ]]; then
+            continue
+        fi
+        info "Adding $org to channel $c"
+        ./channel-add-org.sh ${c} ${org}
+    done
+
+    # All organizations join the channel
+    for org in ${orgs}
+    do
+        info "Joining $org to channel $c"
+        connectMachine ${org}
+        ./channel-join.sh ${c}
+    done
 }

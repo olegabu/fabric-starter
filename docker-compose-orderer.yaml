@@ -7,14 +7,40 @@ version: '3.7'
 volumes:
   orderer:
 
+
 services:
+
+  pre-install:
+    container_name: pre-install.${DOMAIN:-example.com}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    environment:
+      - ORDERER=true
+      - DOMAIN=${DOMAIN:-example.com}
+    working_dir: /etc/hyperledger
+    command: container-scripts/container-orderer.sh
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config:/etc/hyperledger/crypto-config
+
+  post-install:
+    container_name:  post-install.${DOMAIN:-example.com}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    environment:
+      - ORDERER=true
+      - CONSORTIUM_CONFIG
+      - CORE_PEER_LOCALMSPID=orderer
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
+    working_dir: /etc/hyperledger
+    #    command: container-scripts/consortium-reconfigure.sh
+    depends_on:
+      - orderer
 
   orderer:
     container_name: orderer.${DOMAIN:-example.com}
     restart: always
-    image: hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=debug
+      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
@@ -24,17 +50,22 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderers
+      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9090
+      - ORDERER_OPERATIONS_TLS_ENABLED=false
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /etc/hyperledger
     command: orderer
+    depends_on:
+      - pre-install
     volumes:
       - ./crypto-config/configtx:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
 
+
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
-    #    build: ./fabric-tools-extended
-    image: olegabu/fabric-tools-extended
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
     tty: true
     environment:
       - DOMAIN=${DOMAIN:-example.com}
@@ -52,9 +83,13 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
     working_dir: /etc/hyperledger
+    depends_on:
+      - pre-install
+      - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./templates:/etc/hyperledger/templates
+#      - ./templates:/etc/hyperledger/templates
+#      - ./container-scripts/:/etc/hyperledger/container-scripts
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 
@@ -102,9 +137,12 @@ services:
 
   # http serves certificates
   www.orderer:
-    image: nginx
+    image: ${DOCKER_REGISTRY:-docker.io}/nginx
     container_name: www.${DOMAIN:-example.com}
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+    depends_on:
+    - post-install
