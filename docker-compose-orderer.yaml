@@ -12,7 +12,7 @@ services:
 
   pre-install:
     container_name: pre-install.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORDERER=true
       - DOMAIN=${DOMAIN:-example.com}
@@ -24,7 +24,7 @@ services:
 
   post-install:
     container_name:  post-install.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORDERER=true
       - CONSORTIUM_CONFIG
@@ -65,7 +65,7 @@ services:
 
   cli.orderer:
     container_name: cli.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     tty: true
     environment:
       - DOMAIN=${DOMAIN:-example.com}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 : ${FABRIC_VERSION:="latest"}
-: ${FABRIC_STARTER_REST_VERSION:="latest"}
+: ${FABRIC_STARTER_VERSION:="latest"}
 
 : ${DOCKER_REGISTRY_LOCAL:=localhost:5000}
 echo "Using local docker registry address: $DOCKER_REGISTRY_LOCAL"
@@ -23,8 +23,8 @@ dockerImages=(\
     "hyperledger/fabric-ca:${FABRIC_VERSION}" \
     "hyperledger/fabric-couchdb" \
     "nginx" \
-    "olegabu/fabric-starter-rest:${FABRIC_STARTER_REST_VERSION}" \
-    "olegabu/fabric-tools-extended:${FABRIC_VERSION:-latest}" \
+    "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}" \
+    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}" \
     "olegabu/fabric-starter-listener"
     )
 

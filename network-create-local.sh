@@ -23,7 +23,7 @@ unset ORG COMPOSE_PROJECT_NAME
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-docker-compose -f docker-compose-orderer.yaml up -d
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Create member organizations
 
