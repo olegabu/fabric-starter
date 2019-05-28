@@ -1,4 +1,3 @@
-#! /usr/bin/env groovy
 
 node {
 
@@ -23,16 +22,18 @@ node {
                 def newBranch="${branchPrefix}-${ver0}.${v1+1}-${fabricVersion}"
                 echo newBranch
 
-                def image
-                docker.withRegistry('https://docker.io', 'dockerhub') {
-                    image = docker.image('vrreality/fabric-starter-rest')
+                def newTag=newBranch.split("/")[1]
+                echo "New Tag:  ${newTag}"
+
+                docker.withRegistry('https://registry-1.docker.io/v2', 'dockerhub') {
+                    def image = docker.image('vrreality/fabric-starter-rest:latest')
                     image.pull()
-                    sh 'docker tag private-registry-1/my-image:tag private-registry-2/my-image:tag'
+                    sh "docker tag vrreality/fabric-starter-rest:latest vrreality/fabric-starter-rest:${newTag}"
+                    image = docker.image("vrreality/fabric-starter-rest:${newTag}")
+                    image.push()
                 }
-
-
+                sh "git checkout -b ${newTag}"
             }
-
         }
         stage('fabric-starter') {
             checkout([$class: 'GitSCM', branches: [[name: '*/master']],
