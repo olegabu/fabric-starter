@@ -201,6 +201,7 @@ services:
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
       - DISCOVER_AS_LOCALHOST=false
+      - DNS_CHANNEL=${DNS_CHANNEL:-common}
       - ENROLL_ID
       - ENROLL_SECRET
       - MULTIHOST
