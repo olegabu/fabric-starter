@@ -121,6 +121,15 @@ function createChannel() {
     updateAnchorPeers "$ORG" "$channelName"
 }
 
+function addOrgToChannel() {
+    local channel=${1:?"Channel must be specified"}
+    local org=${2:?"New Org must be specified"}
+
+    echo " >> Add new org '$org' to channel $channel"
+    certificationsToEnv $org
+    updateChannelConfig $channel $org ./templates/NewOrg.json
+}
+
 function joinChannel() {
     local channel=${1:?Channel name must be specified}
 
