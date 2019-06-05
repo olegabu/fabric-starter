@@ -83,15 +83,14 @@ module.exports = async app => {
 
     function writeFile(file, hostsFileContent) {
         if (existsAndIsFile(file)) {
-            fs.writeFile(file, hostsFileContent, err => {
-                if (err) {
-                    logger.error(`cannot writeFile ${file}`, err);
-                } else {
-                    logger.info(`wrote ${file}`, hostsFileContent);
-                }
-            });
+            try {
+                fs.writeFileSync(file, hostsFileContent);
+                logger.info(`written: ${file}\n`, hostsFileContent);
+            } catch (err) {
+                logger.error(`cannot writeFile ${file}`, err);
+            }
         } else {
-            logger.debug(`Can't open ${file}`);
+            logger.debug(`Skipping ${file}`);
         }
     }
 
