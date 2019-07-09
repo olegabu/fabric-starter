@@ -13,9 +13,27 @@ function printError() {
     printInColor "1;31" "$1"
 }
 
-function printRedYellow() {
-    printInColor "1;31" "$1" "1;33" "$2"
+function printGreen() {
+    printInColor "1;32" "$1"
 }
+
+function checkSoftwareComponentIsInstalled() {
+    local component=${1?:Expect component}
+    local expectedVersion=${2?:Expect minimal version}
+    local referenceUrl=${3}
+    command $component >> /dev/null 2>&1
+    [ $? -ne 0 ] && printError "$component is not installed. Check ${referenceUrl}" && exit
+    local version=`$component --version | grep -oP "[0-9]{0,2}\.[0-9]{0,2}\.[0-9]{0,2}"`
+    [[ "$expectedVersion" > "$version" ]] && printError "$component version $version. Expected version $expectedVersion or above. See ${referenceUrl}" && exit
+    printGreen "`$component --version`"
+}
+
+function checkDockerComponentsAreInstalled() {
+    checkSoftwareComponentIsInstalled "docker" "18.09.7" "https://docs.docker.com/install/"
+    checkSoftwareComponentIsInstalled "docker-compose" "1.22.0" "https://docs.docker.com/compose/install/"
+    checkSoftwareComponentIsInstalled "docker-machine" "0.16.0" "https://docs.docker.com/machine/install-machine/"
+}
+
 
 function grepIpAddr() {
     local text=$1
