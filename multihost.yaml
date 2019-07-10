@@ -49,6 +49,7 @@ services:
       - ${API_PORT:-4000}:3000
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts_orderer
       - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
       - ${WORK_DIR-/home/docker}/webapp:/usr/src/app/webapp
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp

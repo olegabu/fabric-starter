@@ -24,11 +24,17 @@ Install [docker-machine](https://docs.docker.com/machine/get-started/).
 Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
 
-Use script [network-create-docker-machine.sh](./network-create-docker-machine.sh) to create a network with an arbitrary 
+Use script [network-docker-machine-create.sh](./network-docker-machine-create.sh) to create a network with an arbitrary 
 number of member organizations each running in its own virtual host.
 ```bash
-./network-create-docker-machine.sh org1 org2 org3
+./network-docker-machine-create.sh org1 org2 org3
 ```
+
+There is an option to start orderer and the first organization nodes on the same host simultaneously:
+```bash
+./network-docker-machine-create.sh org1:orderer org2 org3
+```
+
 
 Of course you can override the defaults with env variables.
 ```bash
@@ -94,6 +100,80 @@ docker containers running the network and create organizations, channel and chai
 DOMAIN=mynetwork.org CHANNEL=a-b WEBAPP_HOME=/home/oleg/webapp CHAINCODE_HOME=/home/oleg/chaincode CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
 ./network-create.sh a b
 ```
+
+## Manual start using Web Admin Dashboard without docker-machine
+
+The first host is used for both orderer and org1 deployment.
+
+If you like to use local docker registry (on all machines):
+```bash
+export DOCKER_REGISTRY=192.168.99.1:5000
+``` 
+ 
+#####orderer (and org1) machine:
+```bash
+    WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+```
+
+dd#####org2(,org3...) machine:
+```bash
+    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+```
+
+#####orderer machine again:
+```bash 
+    ./consortium-add-org.sh org1
+    ./consortium-add-org.sh org2
+    ...
+```
+
+#####orderer-IP(org1-IP):4000/admin:    
+- add channel "common"
+- instantiate chaincode: "dns"
+- invoke dns.put ("192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com")
+- invoke dns.registerOrg  ("org2.example.com" "192.168.99.yy")
+- organizations: add organization to channel "org2"
+- invoke dns.registerOrg  ("org3.example.com" "192.168.99.zz")
+- 
+- organizations: add organization to channel "org3"
+- install custom chaincode
+- instantiate custom chaincode
+
+#####org2-IP:4000/admin:
+- join channel "common"
+- install custom chaincode
+
+#####org3-IP:4000/admin:
+- join channel "common"
+- install custom chaincode
+
+
+<a name="consortiumtypes"></a>
+## Consortium Types. Invite-based and Majority-based Governance
+
+So now our network can be governed by itself (or to say it right by the netwrk's members). 
+The first type of network-governance is `Invite-based`. With this type of deployment 
+any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
+
+To deploy such type of network export environment variable
+```bash
+export CONSORTIUM_CONFIG=InviteConsortiumPolicy
+```
+Start orderer:
+```bash
+export WWW_PORT=81 # if one host for orderer and the first org  
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
+```
+
+Then start an organization
+```bash
+ORG_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true docker-compose -f docker-compose.yaml -f docker-compose-open-net.yaml -f multihost.yaml up -d 
+```
+
+`Majority` type of governance is coming.       
+
+
 
 # Drill down
 

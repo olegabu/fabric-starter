@@ -3,13 +3,15 @@
 source lib/util/util.sh
 source lib.sh
 
+export MULTIHOST=true
 : ${CHANNEL:=common}
 
-orgs=${@:-org1}
-first_org=${1:-org1}
+declare -a ORGS_MAP=${@:-org1}
+orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
+first_org=${orgs%% *}
 
 # Set WORK_DIR as home dir on remote machine
-setMachineWorkDir
+setMachineWorkDir $first_org
 
 # Add member organizations to the consortium
 connectMachine orderer
@@ -31,12 +33,12 @@ fi
 # First organization instantiates dns chaincode
 connectMachine ${first_org}
 
-sleep 10
 info "Instantiating dns chaincode by $ORG"
+sleep 10
 ./chaincode-instantiate.sh common dns
 
 info "Waiting for dns chaincode to build"
-sleep 20
+sleep 5
 
 # First organization creates entries in dns chaincode
 
@@ -46,11 +48,18 @@ ip=$(getMachineIp orderer)
 for org in ${orgs}
 do
     ip=$(getMachineIp ${org})
-    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}\"]"
+#    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" // TODO: update registerOrg
+    value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
+    hostOrg=`getHostOrgForOrg $org`
+    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} orderer.${DOMAIN}"
+    value="$value\""
+
+    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
+    sleep 10
 done
 
-sleep 10
+sleep 20
 
-./smoke-test.sh ${first_org}
+./smoke-test.sh ${@}
 
 echo

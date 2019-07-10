@@ -10,13 +10,16 @@ downloadOrdererMSP
 updateConsortium ${ORG} orderer-system-channel
 sleep 3
 
-echo -e "\n\nTry to create channel common\n\n"
+echo -e "\n\nTrying to create channel common\n\n"
 
 createChannel common
-if [ $? -eq 0 ]; then
-    echo -e "\n\nChannel common created\n\n"
-    sleep 3
-    joinChannel common
+createResult=$?
+[ $createResult -eq 0 ] && echo -e "\n\nChannel common created\n\n" || echo -e "\n\nChannel common already existed\n\n"
+sleep 3
+echo -e "\n\nJoining channel 'common'\n\n"
+joinChannel common
+
+if [ $createResult -eq 0 ]; then
     sleep 3
     instantiateChaincode ${DNS_CHANNEL:-common} dns
     sleep 3
@@ -24,9 +27,10 @@ if [ $? -eq 0 ]; then
         echo -e "\n\nRegister BOOTSTRAP_IP\n\n"
         invokeChaincode common dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${DOMAIN} orderer.${DOMAIN}\"]"
     fi
-    sleep 3
-    if [ -n "$ORG_IP" ]; then
-        echo -e "\n\nRegister ORG_IP\n\n"
-        invokeChaincode common dns "[\"put\",\"$ORG_IP\",\"www.${ORG}.${DOMAIN} peer0.${ORG}.${DOMAIN}\"]"
-    fi
+fi
+
+sleep 3
+if [ -n "$ORG_IP" ]; then
+    echo -e "\n\nRegister ORG_IP\n\n"
+    invokeChaincode common dns "[\"put\",\"$ORG_IP\",\"www.${ORG}.${DOMAIN} peer0.${ORG}.${DOMAIN}\"]"
 fi

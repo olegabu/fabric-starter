@@ -16,28 +16,25 @@ export DOMAIN=${DOMAIN-example.com}
 : ${WEBAPP_HOME:=webapp}
 : ${MIDDLEWARE_HOME:=middleware}
 
-orgs=${@:-org1}
-first_org=${1:-org1}
+
+declare -a ORGS_MAP=${@:-org1}
+orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
+first_org=${orgs%% *}
+
 
 # Set WORK_DIR as home dir on remote machine
-setMachineWorkDir
+setMachineWorkDir orderer
 
-# Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
 BOOTSTRAP_IP=$(getMachineIp orderer)
-hosts="# created by network-create.sh\n${BOOTSTRAP_IP} www.${DOMAIN} orderer.${DOMAIN}"
-
 export BOOTSTRAP_IP
 
-# Create member organizations host machines
-
-# Collect ip into the hosts file
-for org in ${orgs}
-do
+hosts="# created by network-create.sh\n${BOOTSTRAP_IP} www.${DOMAIN} orderer.${DOMAIN}"
+# Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
+for org in ${orgs}; do
     ip=$(getMachineIp ${org})
     hosts="${hosts}\n${ip} www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}"
 done
 
-echo -e "${hosts}" > hosts
 
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
@@ -56,8 +53,15 @@ copyDirToMachine orderer container-scripts ${WORK_DIR}/container-scripts
 connectMachine orderer
 ./clean.sh
 # Copy generated hosts file to the host machines
+echo -e "${hosts}" > hosts
 createHostsFileInOrg orderer
-docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
+
+if [ -n "`getHostOrgForOrg ${first_org}`" ]; then
+    ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
+    echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
+fi
+
+WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
 
 # Create member organizations
 
@@ -71,16 +75,18 @@ do
     copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
 
     info "Copying dns chaincode and middleware to remote machine ${machine}"
-    machine="$org.$DOMAIN"
-    docker-machine scp -r chaincode ${machine}:${WORK_DIR}
-    docker-machine scp middleware/dns.js ${machine}:${WORK_DIR}/middleware/dns.js
+    orgMachineName=`getDockerMachineName $org`
+    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
+    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
     copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
 
     info "Creating member organization $org"
     connectMachine ${org}
     export ORG_IP=$(getMachineIp ${org})
-    ./clean.sh
+    [ -z `getHostOrgForOrg $org` ] && ./clean.sh
+    echo -e "${hosts}" > hosts
     createHostsFileInOrg $org
+
     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
 done
 

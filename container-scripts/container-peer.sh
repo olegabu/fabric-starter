@@ -34,12 +34,14 @@ else
     echo "$ORG MSP exists. Generation skipped."
 fi
 
-if [ -n "$BOOTSTRAP_IP" ]; then
-    if [ ! -f "crypto-config/hosts_$ORG" ]; then
+if [ ! -f "crypto-config/hosts_$ORG" ]; then
+    if [ -n "$BOOTSTRAP_IP" ]; then
         echo "Generating crypto-config/hosts_$ORG"
         echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\torderer.${DOMAIN} www.${DOMAIN} api.${DOMAIN} ${DOMAIN}" > crypto-config/hosts_$ORG
     else
-        echo "crypto-config/hosts_$ORG file exists. Generation skipped."
+        echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts_$ORG
     fi
-    cat crypto-config/hosts_$ORG
+else
+    echo "crypto-config/hosts_$ORG file exists. Generation skipped."
 fi
+    cat crypto-config/hosts_$ORG

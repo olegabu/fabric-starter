@@ -13,10 +13,11 @@ export DOMAIN=${DOMAIN-example.com}
 : ${WEBAPP_HOME:=webapp}
 : ${MIDDLEWARE_HOME:=middleware}
 
-# Set WORK_DIR as home dir on remote machine
-setMachineWorkDir
-
 org=${1}
+
+# Set WORK_DIR as home dir on remote machine
+setMachineWorkDir $org
+
 
 copyFileToMachine ${org} hosts hosts
 
