@@ -82,7 +82,7 @@ do
 
     info "Creating member organization $org"
     connectMachine ${org}
-    export ORG_IP=$(getMachineIp ${org})
+    export MY_IP=$(getMachineIp ${org})
     [ -z `getHostOrgForOrg $org` ] && ./clean.sh
     echo -e "${hosts}" > hosts
     createHostsFileInOrg $org

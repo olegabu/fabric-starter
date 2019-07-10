@@ -99,7 +99,7 @@ WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer
 
 Then start an organization
 ```bash
-ORG_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d 
+MY_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d 
 ```
 
 `Majority` type of governance is coming.       

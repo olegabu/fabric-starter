@@ -23,12 +23,12 @@ first_org=${orgs%% *}
 
 
 # Create orderer host machine
-ordererMachineName="orderer.$DOMAIN"
+##ordererMachineName="orderer.$DOMAIN"
 
-info "Creating $ordererMachineName, Options: $DOCKER_MACHINE_FLAGS"
+##info "Creating $ordererMachineName, Options: $DOCKER_MACHINE_FLAGS"
 
-docker-machine rm ${ordererMachineName} --force
-docker-machine create ${DOCKER_MACHINE_FLAGS} ${ordererMachineName}
+##docker-machine rm ${ordererMachineName} --force
+##docker-machine create ${DOCKER_MACHINE_FLAGS} ${ordererMachineName}
 
 # Create member organizations host machines
 

@@ -8,6 +8,7 @@ module.exports = async app => {
     const _ = require('lodash');
     const logger = require('log4js').getLogger('dns');
     const FabricStarterClient = require('../fabric-starter-client');
+    const restSocketServer = require('../rest-socket-server');
     const fabricStarterClient = new FabricStarterClient();
 
     const NODE_HOSTS_FILE = '/etc/hosts';
@@ -29,6 +30,8 @@ module.exports = async app => {
     // });
 
     logger.info('started');
+
+    await processEvent();
 
     setInterval(async () => {
         logger.info(`periodically query every ${period} msec for dns entries and update ${NODE_HOSTS_FILE}`);
@@ -80,15 +83,14 @@ module.exports = async app => {
 
     function writeFile(file, hostsFileContent) {
         if (existsAndIsFile(file)) {
-            fs.writeFile(file, hostsFileContent, err => {
-                if (err) {
-                    logger.error(`cannot writeFile ${file}`, err);
-                } else {
-                    logger.info(`wrote ${file}`, hostsFileContent);
-                }
-            });
+            try {
+                fs.writeFileSync(file, hostsFileContent);
+                logger.info(`written: ${file}\n`, hostsFileContent);
+            } catch (err) {
+                logger.error(`cannot writeFile ${file}`, err);
+            }
         } else {
-            logger.debug(`Can't open ${file}`);
+            logger.debug(`Skipping ${file}`);
         }
     }
 
@@ -139,7 +141,7 @@ module.exports = async app => {
                 logger.warn("Unparseable dns-records: \n", ret);
             }
 
-            if (!list.length) {
+            if (!list && !list.length) {
                 return logger.debug('no dns records found on chain');
             }
 
