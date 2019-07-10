@@ -27,7 +27,7 @@ function checkSoftwareComponentIsInstalled() {
     local referenceUrl=${3}
     command "$component" >> /dev/null 2>/dev/null
     [ $? -eq 127 ] && printError "$component is not installed. Check ${referenceUrl}" && exit 1
-    local version=`$component --version | grep -oP "[0-9]{0,2}\.[0-9]{0,2}\.[0-9]{0,2}"`
+    local version=`$component --version | grep -oE "[0-9]{0,2}\.[0-9]{0,2}\.[0-9]{0,2}"`
     [[ "$expectedVersion" > "$version" ]] && printError "$component version $version. Expected version $expectedVersion or above. See ${referenceUrl}" && exit 1
     printGreen "`$component --version`"
 }
