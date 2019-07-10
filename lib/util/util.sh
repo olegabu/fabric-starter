@@ -17,14 +17,18 @@ function printGreen() {
     printInColor "1;32" "$1"
 }
 
+function printYellow() {
+    printInColor "1;33" "$1"
+}
+
 function checkSoftwareComponentIsInstalled() {
     local component=${1?:Expect component}
     local expectedVersion=${2?:Expect minimal version}
     local referenceUrl=${3}
-    command $component >> /dev/null 2>&1
-    [ $? -ne 0 ] && printError "$component is not installed. Check ${referenceUrl}" && exit
+    command "$component" >> /dev/null 2>/dev/null
+    [ $? -eq 127 ] && printError "$component is not installed. Check ${referenceUrl}" && exit 1
     local version=`$component --version | grep -oP "[0-9]{0,2}\.[0-9]{0,2}\.[0-9]{0,2}"`
-    [[ "$expectedVersion" > "$version" ]] && printError "$component version $version. Expected version $expectedVersion or above. See ${referenceUrl}" && exit
+    [[ "$expectedVersion" > "$version" ]] && printError "$component version $version. Expected version $expectedVersion or above. See ${referenceUrl}" && exit 1
     printGreen "`$component --version`"
 }
 
