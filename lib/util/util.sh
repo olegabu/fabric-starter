@@ -108,10 +108,11 @@ function copyFileToMachine() {
 
 function connectMachine() {
     local machine=`getDockerMachineName $1`
-
+    sleep 1
     info "Connecting to org $1 in remote machine $machine"
     eval "$(docker-machine env ${machine})"
     export ORG=${1}
+    env | grep DOCKER
 }
 
 function getMachineIp() {

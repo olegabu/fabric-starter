@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source lib.sh
 usageMsg="$0 channelName chaincodeName [args='[]']"
-exampleMsg="$0 common chaincode1 '[\"invoke\",\"a\"]'"
+exampleMsg="$0 common reference '[\"put\",\"a\"]'"
 
 IFS=
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}

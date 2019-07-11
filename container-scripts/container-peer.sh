@@ -38,7 +38,7 @@ if [ ! -f "crypto-config/hosts_$ORG" ]; then
     if [ -n "$BOOTSTRAP_IP" ]; then
         echo "Generating crypto-config/hosts_$ORG"
         echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\torderer.${DOMAIN} www.${DOMAIN} api.${DOMAIN} ${DOMAIN}" > crypto-config/hosts_$ORG
-        echo "\n\nDownload orderer MSP envsfrom $BOOTSTRAP_IP\n\n"
+        echo "\n\nDownload orderer MSP envs from $BOOTSTRAP_IP\n\n"
         downloadOrdererMSP
     else
         echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts_$ORG
