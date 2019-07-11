@@ -76,3 +76,140 @@ function setDocker_LocalRegistryEnv() {
     fi
 }
 
+
+
+function getDockerMachineName() {
+    local org=${1:?Org name is expected}
+    local hostOrg=`getHostOrgForOrg $1`
+    if [ -n "$hostOrg" ]; then
+        local org=`getHostOrgForOrg $1`
+    fi
+    echo "$org.$DOMAIN"
+}
+
+function copyDirToMachine() {
+    local machine=`getDockerMachineName $1`
+    local src=$2
+    local dest=$3
+
+    info "Copying ${src} to remote machine ${machine}:${dest}"
+    docker-machine ssh ${machine} sudo rm -rf ${dest}
+#    docker-machine ssh ${machine} sudo mkdir -p ${dest}
+    docker-machine scp -r ${src} ${machine}:${dest}
+}
+
+function copyFileToMachine() {
+    local machine=`getDockerMachineName $1`
+    local src=$2
+    local dest=$3
+    info "Copying ${src} to remote machine ${machine}:${dest}"
+    docker-machine scp ${src} ${machine}:${dest}
+}
+
+function connectMachine() {
+    local machine=`getDockerMachineName $1`
+
+    info "Connecting to org $1 in remote machine $machine"
+    eval "$(docker-machine env ${machine})"
+    export ORG=${1}
+}
+
+function getMachineIp() {
+    local machine=`getDockerMachineName $1`
+    echo `(docker-machine ip ${machine})`
+}
+
+function setMachineWorkDir() {
+    local machine=`getDockerMachineName $1`
+    export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
+}
+
+function createDirInMachine() {
+    local machine=`getDockerMachineName $1`
+    local dir=${2:?Specify directory to create}
+    info "Create directory $dir on $machine"
+    docker-machine ssh ${machine} mkdir -p "$dir"
+}
+
+
+function parseOrganizationsForDockerMachine() {
+    #   excpecting external variable is declared by: declare -a ORGS_MAP
+    local orgsArg=${@:?List of organizations is expected}
+    local orgs=()
+    for orgMachineParam in $orgsArg; do
+        local orgMachineArray=($(IFS=':'; echo ${orgMachineParam}))
+        local org=${orgMachineArray[0]};
+        orgs+=($org)
+#        ORGS_MAP["$org"]="${orgMachineArray[1]}"
+    done
+    echo "${orgs[@]}"
+    #  note: implicitly returning ORGS_MAP
+}
+
+function getHostOrgForOrg() {
+    local org=${1:?Org name is expected}
+    set +x
+    for org_Machine in $ORGS_MAP; do
+        local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
+        if [ "${org}" == "${orgMachineArray[0]}" ]; then
+            echo ${orgMachineArray[1]}
+        fi
+    done
+}
+
+function createHostsFileInOrg() {
+    local org=${1:?Org must be specified}
+
+    cp hosts org_hosts
+    # remove entry of your own ip not to confuse docker and chaincode networking
+    sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
+    orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
+
+    local siblingOrg=`getHostOrgForOrg $org`
+    if [ -n "$siblingOrg" ]; then
+        sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
+    fi
+    for hostOrg in ${orgs}; do
+        local siblingOrg=`getHostOrgForOrg $hostOrg`
+        echo "Check $hostOrg:$siblingOrg"
+        if [ "$siblingOrg" == "$org" ]; then
+            echo "Exclude record from hosts for $hostOrg:$siblingOrg"
+            sed -i.bak "/.*\.$hostOrg\.$DOMAIN*/d" org_hosts
+            sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
+        fi
+    done
+
+    createDirInMachine $org crypto-config
+    copyFileToMachine ${org} org_hosts crypto-config/hosts_${org}
+    rm org_hosts.bak org_hosts
+
+    # you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
+    # sudo cat hosts >> /etc/hosts
+}
+
+function createChannelAndAddOthers() {
+    local c=$1
+
+    connectMachine ${first_org}
+
+    info "Creating channel $c by $ORG"
+    ./channel-create.sh ${c}
+
+    # First organization adds other organizations to the channel
+    for org in ${orgs}
+    do
+        if [[ ${org} = ${first_org} ]]; then
+            continue
+        fi
+        info "Adding $org to channel $c"
+        ./channel-add-org.sh ${c} ${org}
+    done
+
+    # All organizations join the channel
+    for org in ${orgs}
+    do
+        info "Joining $org to channel $c"
+        connectMachine ${org}
+        ./channel-join.sh ${c}
+    done
+}
