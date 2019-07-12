@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source lib.sh
+source lib/util/util.sh
 
 export MULTIHOST=true
 export DOMAIN=${DOMAIN:-example.com}

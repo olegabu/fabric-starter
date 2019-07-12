@@ -21,9 +21,13 @@ function printYellow() {
     printInColor "1;33" "$1"
 }
 
+function info() {
+    echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
+}
+
 function checkSoftwareComponentIsInstalled() {
-    local component=${1?:Expect component}
-    local expectedVersion=${2?:Expect minimal version}
+    local component=${1?:Component  is requreid}
+    local expectedVersion=${2?:Minimal version is requreid}
     local referenceUrl=${3}
     command "$component" >> /dev/null 2>/dev/null
     [ $? -eq 127 ] && printError "$component is not installed. Check ${referenceUrl}" && exit 1
@@ -77,15 +81,24 @@ function setDocker_LocalRegistryEnv() {
 }
 
 
-
 function getDockerMachineName() {
-    local org=${1:?Org name is expected}
+    local org=${1:?Org is required}
     local hostOrg=`getHostOrgForOrg $1`
     if [ -n "$hostOrg" ]; then
-        local org=`getHostOrgForOrg $1`
+        org=`getHostOrgForOrg $1`
     fi
     echo "$org.$DOMAIN"
 }
+
+
+function getDockerMachineNameFromColonDelimitedpair {
+    local org_MachinePair=${1:?org:Machine is requreid}
+    local orgMachineArray=($(IFS=':'; echo ${org_MachinePair}))
+    local org=$org_MachinePair
+    [[ -n "${orgMachineArray[1]}" ]] && org=${orgMachineArray[1]}
+    echo "$org"
+}
+
 
 function copyDirToMachine() {
     local machine=`getDockerMachineName $1`
@@ -135,7 +148,7 @@ function createDirInMachine() {
 
 function parseOrganizationsForDockerMachine() {
     #   excpecting external variable is declared by: declare -a ORGS_MAP
-    local orgsArg=${@:?List of organizations is expected}
+    local orgsArg=${@:?List of organizations is requreid}
     local orgs=()
     for orgMachineParam in $orgsArg; do
         local orgMachineArray=($(IFS=':'; echo ${orgMachineParam}))
@@ -148,10 +161,9 @@ function parseOrganizationsForDockerMachine() {
 }
 
 function getHostOrgForOrg() {
-    local org=${1:?Org name is expected}
-    set +x
-    for org_Machine in $ORGS_MAP; do
-        local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
+    local org=${1:?Org is required}
+    for org_MachinePair in $ORGS_MAP; do
+        local orgMachineArray=($(IFS=':'; echo ${org_MachinePair}))
         if [ "${org}" == "${orgMachineArray[0]}" ]; then
             echo ${orgMachineArray[1]}
         fi
@@ -159,7 +171,7 @@ function getHostOrgForOrg() {
 }
 
 function createHostsFileInOrg() {
-    local org=${1:?Org must be specified}
+    local org=${1:?Org is requreid}
 
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
@@ -189,28 +201,41 @@ function createHostsFileInOrg() {
 }
 
 function createChannelAndAddOthers() {
-    local c=$1
+    local channel=${1?-Channel is required}
+    local first_org=${2?-First org is required}
+    shift
+    shift
+    local orgs=$@
 
     connectMachine ${first_org}
 
-    info "Creating channel $c by $ORG"
-    ./channel-create.sh ${c}
+    info "Creating channel $channel by $ORG"
+    ORG=$first_org ./channel-create.sh ${channel}
 
+    addOrgsToChannel $channel $first_org $orgs
+}
+
+function addOrgsToChannel() {
+    local channel=${1?-Channel is required}
+    local first_org=${2?-First org is required}
+    shift
+    shift
+    local orgsToAdd=$@
     # First organization adds other organizations to the channel
-    for org in ${orgs}
+    for org in ${orgsToAdd}
     do
-        if [[ ${org} = ${first_org} ]]; then
-            continue
-        fi
-        info "Adding $org to channel $c"
-        ./channel-add-org.sh ${c} ${org}
+#        local orgIp=`getMachineIp $org`
+#        ORG=$first_org ./chaincode-invoke.sh common dns "[\"registerOrg\",\"${org}.${DOMAIN}\",\"$orgIp\"]"
+#        sleep 5
+        info "Adding $org to channel $channel"
+        ORG=$first_org ./channel-add-org.sh ${channel} ${org}
     done
 
     # All organizations join the channel
-    for org in ${orgs}
+    for org in ${orgsToAdd}
     do
-        info "Joining $org to channel $c"
+        info "Joining $org to channel $channel"
         connectMachine ${org}
-        ./channel-join.sh ${c}
+        ORG=${org} ./channel-join.sh ${channel}
     done
 }

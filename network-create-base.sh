@@ -8,9 +8,6 @@ setDocker_LocalRegistryEnv
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
 
-: ${CHANNEL:=common}
-: ${CHAINCODE_INSTALL_ARGS:=reference}
-: ${CHAINCODE_INSTANTIATE_ARGS:=common reference}
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f multihost.yaml }
 : ${CHAINCODE_HOME:=chaincode}
 : ${WEBAPP_HOME:=webapp}

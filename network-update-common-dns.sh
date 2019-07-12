@@ -26,11 +26,11 @@ do
 done
 
 # First organization creates application channel
-createChannelAndAddOthers ${CHANNEL}
+createChannelAndAddOthers ${CHANNEL} $first_org $orgs
 
 # First organization creates common channel if it's not the default application channel
 if [[ ${CHANNEL} != common ]]; then
-    createChannelAndAddOthers common
+    createChannelAndAddOthers common $first_org $orgs
 fi
 
 # First organization instantiates dns chaincode

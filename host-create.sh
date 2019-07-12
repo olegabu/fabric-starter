@@ -8,10 +8,6 @@ if [ -n "$DOCKER_REGISTRY" ]; then
     DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY  "
 fi
 
-function info() {
-    echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
-}
-
 info "Create Network with vm names prefix: $VM_NAME_PREFIX"
 #read -n1 -r -p "Press any key to continue..." key
 
