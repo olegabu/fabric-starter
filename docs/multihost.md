@@ -56,12 +56,27 @@ env variables to recreate the network on the same remote hosts by clearing and c
 
 ## Quick start with remote hosts on AWS EC2
 
-Define `amazonec2` driver for docker-machine and open ports in `docker-machine` security group.
-Make sure your AWS credentials are saved in env variables or `~/.aws/credentials` or passed as arguments
-`--amazonec2-access-key` and `--amazonec2-secret-key`. 
-More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
+* Define `amazonec2` driver for docker-machine and open ports in `docker-machine` security group.
+* Make sure your AWS credentials are saved in env variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) 
+or `~/.aws/credentials` or passed as arguments --amazonec2-access-key` and `--amazonec2-secret-key`.
+
+* Determine the AWS `region` (e.g. `us-east-1` or `us-west-1`) and find the `vpc_id` 
+corresponded to this region (or make sure the `region` has a default `vpc`)
+* Determine which AWS `instance types` you are going to use (instance types with at least 4Gb RAM are recommended, e.g. `c5.xlarge`) 
+* Provide AWS related flags environment for `docker-machine`:
+
 ```bash
-DOCKER_MACHINE_FLAGS="--driver amazonec2 --amazonec2-open-port 80 --amazonec2-open-port 7050 --amazonec2-open-port 7051 --amazonec2-open-port 4000" \
+export DOCKER_MACHINE_FLAGS="--driver amazonec2 \
+    --amazonec2-region us-east-1 \
+    --amazonec2-vpc-id vpc-0e3f0c2243772be49 \
+    --amazonec2-instance-type c5.xlarge \
+    --amazonec2-open-port 80 --amazonec2-open-port 7050 --amazonec2-open-port 7051 --amazonec2-open-port 4000"
+
+```
+More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
+
+* Then start the network:
+```bash
 ./network-create-docker-machine.sh org1 org2 org3
 ```
 
