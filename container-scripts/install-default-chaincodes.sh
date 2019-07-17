@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source ./container-lib.sh 2>/dev/null # for IDE code completion
+source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/container-lib.sh
 
 echo -e "\n\nInstall DNS chaincode\n\n"

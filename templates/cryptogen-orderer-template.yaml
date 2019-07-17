@@ -14,3 +14,10 @@ OrdererOrgs:
     # ---------------------------------------------------------------------------
     Specs:
       - Hostname: orderer
+
+    Template:
+      Count: 3
+      Start: 0
+      Hostname: "raft{{.Index}}.${ORG}"
+      SANS:
+        - "localhost"

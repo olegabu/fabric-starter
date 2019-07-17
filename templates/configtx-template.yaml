@@ -29,13 +29,6 @@ Capabilities:
 
 Orderer: &OrdererDefaults
 
-    # Orderer Type: The orderer implementation to start
-    # Available types are "solo" and "kafka"
-    OrdererType: solo
-
-    Addresses:
-        - orderer.${DOMAIN}:7050
-
     # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
 
@@ -66,11 +59,52 @@ Orderer: &OrdererDefaults
 
 Profiles:
 
-    OrdererGenesis:
+    SoloOrdererGenesis:
         Capabilities:
             <<: *ChannelCapabilities
         Orderer:
             <<: *OrdererDefaults
+            OrdererType: solo
+            Addresses:
+              - orderer.${DOMAIN}:7050
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *OrdererOrg
+
+    Raft3OrdererGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            OrdererType: etcdraft
+            Addresses: [raft0.${ORG}.${DOMAIN}:7050,raft1.${ORG}.${DOMAIN}:7050,raft2.${ORG}.${DOMAIN}:7050]
+            EtcdRaft:
+              # The set of Raft replicas for this network. For the etcd/raft-based
+              # implementation, we expect every replica to also be an OSN. Therefore,
+              # a subset of the host:port items enumerated in this list should be
+              # replicated under the Orderer.Addresses key above.
+              Consenters:
+                - Host: raft0.${ORG}.${DOMAIN}
+                  Port: 7050
+#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${ORG}.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${ORG}.${DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${ORG}.${DOMAIN}/tls/server.crt
+                - Host: raft1.${ORG}.${DOMAIN}
+                  Port: 7050
+#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft1.${ORG}.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft1.${ORG}.${DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft1.${ORG}.${DOMAIN}/tls/server.crt
+                - Host: raft2.${ORG}.${DOMAIN}
+                  Port: 7050
+#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft2.${ORG}.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft2.${ORG}.${DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft2.${ORG}.${DOMAIN}/tls/server.crt
             Organizations:
                 - *OrdererOrg
             Capabilities:

@@ -11,19 +11,24 @@ volumes:
 services:
 
   pre-install:
-    container_name: pre-install.${DOMAIN:-example.com}
+    container_name: pre-install.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORDERER=true
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_GENESIS_PROFILE=${ORDERER_GENESIS_PROFILE:-SoloOrdererGenesis}
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
+      - ./templates:/etc/hyperledger/templates # for local debug
+      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+
 
   post-install:
-    container_name:  post-install.${DOMAIN:-example.com}
+    container_name:  post-install.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORDERER=true
@@ -36,7 +41,7 @@ services:
       - orderer
 
   orderer:
-    container_name: orderer.${DOMAIN:-example.com}
+    container_name: ${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     restart: always
     image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
     environment:
@@ -53,21 +58,27 @@ services:
       - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9090
       - ORDERER_OPERATIONS_TLS_ENABLED=false
       - ORDERER_METRICS_PROVIDER=prometheus
+
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
     working_dir: /etc/hyperledger
     command: orderer
     depends_on:
       - pre-install
     volumes:
       - ./crypto-config/configtx:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
 
 
   cli.orderer:
-    container_name: cli.${DOMAIN:-example.com}
+    container_name: cli.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     tty: true
     environment:
+      - ORG=${ORG:-org1}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -88,10 +99,11 @@ services:
       - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ./templates:/etc/hyperledger/templates
-#      - ./container-scripts/:/etc/hyperledger/container-scripts
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ./templates:/etc/hyperledger/templates # for local debug
+      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+#      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 
 
   # fabric-rest api server
@@ -136,13 +148,18 @@ services:
   #    privileged: true
 
   # http serves certificates
-  www.orderer:
-    image: ${DOCKER_REGISTRY:-docker.io}/nginx
-    container_name: www.${DOMAIN:-example.com}
-    #    ports:
-    #      - ${WWW_PORT:-8080}:80
-    volumes:
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
-    depends_on:
-    - post-install
+#  www.orderer:
+#    image: ${DOCKER_REGISTRY:-docker.io}/nginx
+#    container_name: www.${DOMAIN:-example.com}
+#    #    ports:
+#    #      - ${WWW_PORT:-8080}:80
+#    volumes:
+#      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+#      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+#    depends_on:
+#    - post-install
+
+networks:
+  default:
+    external:
+      name: fabric-starter_default

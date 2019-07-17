@@ -201,8 +201,8 @@ function createHostsFileInOrg() {
 }
 
 function createChannelAndAddOthers() {
-    local channel=${1?-Channel is required}
-    local first_org=${2?-First org is required}
+    local channel=${1:?Channel is required}
+    local first_org=${2:?First org is required}
     shift
     shift
     local orgs=$@
@@ -216,8 +216,8 @@ function createChannelAndAddOthers() {
 }
 
 function addOrgsToChannel() {
-    local channel=${1?-Channel is required}
-    local first_org=${2?-First org is required}
+    local channel=${1:?Channel is required}
+    local first_org=${2:?First org is required}
     shift
     shift
     local orgsToAdd=$@
