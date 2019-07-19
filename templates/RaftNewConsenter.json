@@ -1,6 +1,0 @@
-{
-  "client_tls_cert": "${RAFT_NEW_CLIENT_TLS_CERT}",
-  "host": "${RAFT_NEW_HOST}",
-  "port": "${RAFT_NEW_PORT}",
-  "server_tls_cert": "${RAFT_NEW_SERVER_TLS_CERT}"
-}

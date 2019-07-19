@@ -3,39 +3,54 @@
 
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
+: ${ORDERER_NAME:="orderer"}
+: ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${WGET_OPTS:="--verbose -N"}
 
 export ORG DOMAIN SYSTEM_CHANNEL_ID
 
-: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+: ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+: ${ORDERER_ADDRESS="${ORDERER_NAME}.${DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
-    downloadMSP
+    local remoteOrdererName=${1}
+    local remoteOrdererDOMAIN=${2:-${DOMAIN}}
+    local mspSubPath="$remoteOrdererDOMAIN"
+    local serverDNSName=www.${remoteOrdererDOMAIN}
+    downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
+    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+}
+
+function downloadOrgMSP() {
+    local org=${1:?Org is required}
+    downloadMSP "peerOrganizations" ${org}.${DOMAIN}
 }
 
 function downloadMSP() {
-    local org=$1
-
-    if [ -z "$org" ]; then
-        mspSubPath="$DOMAIN"
-        orgSubPath="ordererOrganizations"
-    else
-        mspSubPath="$org.$DOMAIN"
-        orgSubPath="peerOrganizations"
-    fi
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/admincerts http://www.${mspSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/cacerts http://www.${mspSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${orgSubPath}/${mspSubPath}/msp/tlscacerts http://www.${mspSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    local typeSubPath=$1
+    local mspSubPath=$2
+    local serverDNSName=${3:-${mspSubPath}}
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
 }
 
 function certificationsToEnv() {
-    local org=$1
-    local mspDir="crypto-config/peerOrganizations/${org}.${DOMAIN:-example.com}/msp"
+    local org=${1:?Org is required}
+    local domain=${2:-${DOMAIN}}
+    local mspDir="crypto-config/peerOrganizations/${org}.${domain}/msp"
     if [ "${org}" == "orderer" ]; then
-        mspDir="crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp";
+        mspDir="crypto-config/ordererOrganizations/${domain}/msp";
         org=""
     fi
+    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 -w 0`
+}
+
+function ordererCertificationsToEnv() {
+    local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
     export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
       && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
       && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0`
@@ -46,7 +61,7 @@ function fetchChannelConfigBlock() {
     local blockNum=${2:-config}
 
     mkdir -p crypto-config/configtx
-    peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
+    peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function txTranslateChannelConfigBlock() {
@@ -59,11 +74,19 @@ function txTranslateChannelConfigBlock() {
 function updateChannelGroupConfigForOrg() {
     local org=$1
     local templateFileOfUpdate=$2
-
-    certificationsToEnv $org
     export NEWORG=${org}
     envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
+}
+
+function mergeListsInJsons() {
+    local firstFile=${1:?First file is required}
+    local firstFileJsonPath=${2:?Json path in first file is required}
+    local secondFile=${3:?Second file is required}
+    local secondFileJsonPath=${4:?Json path in second file is required}
+    local outputFile=${5:?Output file is requried}
+    sh -c "jq -s '.[1][\"${secondFileJsonPath}\"] as \$addr | .[0].${firstFileJsonPath} |= .+\$addr | .[0]' $firstFile $secondFile  > ${outputFile}.temp"
+    mv ${outputFile}.temp ${outputFile}
 }
 
 
@@ -81,17 +104,41 @@ function createConfigUpdateEnvelope() {
     echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat crypto-config/configtx/update.json`}}}" | jq . > crypto-config/configtx/update_in_envelope.json
     configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb
     echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
-    peer channel update -f update_in_envelope.pb -c ${channel} -o orderer.${DOMAIN}:7050 ${ORDERER_TLSCA_CERT_OPTS}
+    peer channel update -f update_in_envelope.pb -c ${channel} -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
-function updateChannelConfig() {
-    local channel=${1:?Channel to be updated must be specified}
-    local org=${2:?Org to be updated must be specified}
-    local templateFile=${3:?template file must be specified}
+
+
+function insertObjectIntoChannelConfig() {
+    local channel=${1:?Channel is required}
+    local org=${2:?Org is required}
+    local templateFile=${3:?Template is required}
     txTranslateChannelConfigBlock "$channel"
     updateChannelGroupConfigForOrg "$org" "$templateFile"
+}
+
+
+function updateChannelConfig() {
+    local channel=${1:?Channel is required}
+    local org=${2:?Org is required}
+    certificationsToEnv $org
+    insertObjectIntoChannelConfig $@
     createConfigUpdateEnvelope $channel
 }
+
+
+function mergeListIntoChannelConfig() {
+    local channel=${1:?Channel is requried}
+    local configInputFile=${2:?Config input file is requried}
+    local configJsonPath=$3
+    local mergedFile=$4
+    local mergedFileJsonPath=$5
+    local outputFile=${6:-crypto-config/configtx/updated_config.json}
+    txTranslateChannelConfigBlock "$channel"
+    mergeListsInJsons ${configInputFile} ${configJsonPath} ${mergedFile} ${mergedFileJsonPath} ${outputFile}
+}
+
+
 
 function updateConsortium() {
     local org=${1:?Org to be added to consortium must be specified}
@@ -112,11 +159,11 @@ function updateAnchorPeers() {
 function createChannel() {
     local channelName=${1:?Channel name must be specified}
     echo "Create channel $ORG $channelName"
-    downloadMSP
+    downloadOrdererMSP ${ORDERER_NAME}
     mkdir -p crypto-config/configtx
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
     configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
-    peer channel create -o orderer.$DOMAIN:7050 -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
+    peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
 
     updateAnchorPeers "$ORG" "$channelName"
 }
@@ -164,7 +211,7 @@ function instantiateChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
 
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
 }
 
 

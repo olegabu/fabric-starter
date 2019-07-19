@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
-source $(dirname "$0")/container-lib.sh
+source $(dirname "$0")/lib/container-lib.sh
 
 echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 

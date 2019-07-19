@@ -49,7 +49,7 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
-      - ORDERER_GENERAL_LOCALMSPID=orderer
+      - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
@@ -78,13 +78,12 @@ services:
     tty: true
     environment:
       - ORG=${ORG:-org1}
-      - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
-      - ORDERER_GENERAL_LOCALMSPID=orderer
+      - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
@@ -93,17 +92,20 @@ services:
       - CORE_PEER_LOCALMSPID=orderer
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
+
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
     working_dir: /etc/hyperledger
     depends_on:
       - pre-install
       - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./templates:/etc/hyperledger/templates # for local debug
-      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
+      - ./templates:/etc/hyperledger/templates # for local debug
+      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server
@@ -148,16 +150,16 @@ services:
   #    privileged: true
 
   # http serves certificates
-#  www.orderer:
-#    image: ${DOCKER_REGISTRY:-docker.io}/nginx
-#    container_name: www.${DOMAIN:-example.com}
-#    #    ports:
-#    #      - ${WWW_PORT:-8080}:80
-#    volumes:
-#      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-#      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
-#    depends_on:
-#    - post-install
+  www.orderer:
+    image: ${DOCKER_REGISTRY:-docker.io}/nginx
+    container_name: www.${DOMAIN:-example.com}
+    #    ports:
+    #      - ${WWW_PORT:-8080}:80
+    volumes:
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+    depends_on:
+    - post-install
 
 networks:
   default:

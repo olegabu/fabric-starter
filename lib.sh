@@ -29,36 +29,6 @@ function printUsage() {
     printRedYellow "\nExample:" "$exampleMsg"
 }
 
-function runCLIWithComposerOverrides() {
-    local composeCommand=${1:?Compose command must be specified}
-    local service=${2}
-    local command=${3}
-    IFS=' ' composeCommandSplitted=($composeCommand)
-
-    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
-
-    if [ "${MULTIHOST}" ]; then
-        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
-    fi
-
-#    if [ "${PORTS}" ]; then
-#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
-#    fi
-
-    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
-    [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
-
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
-    if [ -n "$command" ]; then
-        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
-    else
-        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
-    fi
-
-    [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
-}
-
-
 function runCLI() {
     local command="$1"
 
@@ -73,10 +43,40 @@ function runCLI() {
     cliContainerId=`docker ps --filter name=$checkContainer -q`
 
     # TODO No such command: run __rm when composeCommand="run --rm"
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --no-deps"
+    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --no-deps --force-recreate"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
+
+function runCLIWithComposerOverrides() {
+    local composeCommand=${1:?Compose command must be specified}
+    local service=${2}
+    local command=${3}
+    IFS=' ' composeCommandSplitted=($composeCommand)
+
+    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
+
+    if [ "${MULTIHOST}" ]; then
+        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
+    fi
+
+    #    if [ "${PORTS}" ]; then
+    #        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
+    #    fi
+
+    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
+    [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
+
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
+    if [ -n "$command" ]; then
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
+    else
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
+    fi
+
+    [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
+}
+
 
 function envSubst() {
     inputFile=${1:?Input file required}
