@@ -25,11 +25,11 @@ export RAFT_NEWORDERER_PORT=${NEWORDERER_PORT:-7050}
 envsubst < './templates/raft/consenters.json' > crypto-config/configtx/consenters_${NEWORDERER_NAME}.json
 
 mergeListIntoChannelConfig ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/updated_config.json' 'channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters' \
-                                                    crypto-config/configtx/consenters_${NEWORDERER_NAME}.json 'consenters'
+#                                                    crypto-config/configtx/consenters_${NEWORDERER_NAME}.json 'consenters'
 
 createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
 
-sleep 1
+sleep 4
 txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
 
 updatedConfigBlockDir=crypto-config/ordererOrganizations/${DOMAIN}/msp/${NEWORDERER_NAME}.${NEWORDERER_DOMAIN}/genesis

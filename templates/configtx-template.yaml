@@ -99,6 +99,22 @@ Profiles:
           - *OrdererOrg
         Capabilities:
           <<: *OrdererCapabilities
+        Policies:
+          Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+          Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+          Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+          # BlockValidation specifies what signatures must be included in the block
+          # from the orderer for the peer to validate it.
+          BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
 
       Consortiums:
         SampleConsortium:
@@ -139,6 +155,21 @@ Profiles:
                 - *OrdererOrg
             Capabilities:
                 <<: *OrdererCapabilities
+            Policies:
+              Readers:
+                Type: ImplicitMeta
+                Rule: "ANY Readers"
+              Writers:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+              Admins:
+                Type: ImplicitMeta
+                Rule: "ANY Admins"
+              # BlockValidation specifies what signatures must be included in the block
+              # from the orderer for the peer to validate it.
+              BlockValidation:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
 
         Consortiums:
             SampleConsortium:
