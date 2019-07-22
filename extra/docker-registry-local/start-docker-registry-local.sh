@@ -25,7 +25,7 @@ dockerImages=(\
     "hyperledger/fabric-couchdb" \
     "nginx" \
     "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}" \
-    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:}" \
+    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}" \
     "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
     )
 

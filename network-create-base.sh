@@ -50,7 +50,8 @@ connectMachine $ordererMachineName
 ./clean.sh
 # Copy generated hosts file to the host machines
 echo -e "${hosts}" > hosts
-createHostsFileInOrg $ordererMachineName
+
+createHostsFileInOrg $ordererMachineName orderer
 
 if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
     ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
