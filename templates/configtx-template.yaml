@@ -77,6 +77,36 @@ Profiles:
                 Organizations:
                     - *OrdererOrg
 
+    RaftOrdererGenesis:
+      Capabilities:
+        <<: *ChannelCapabilities
+      Orderer:
+        <<: *OrdererDefaults
+        OrdererType: etcdraft
+        Addresses: [${ORDERER_NAME}.${DOMAIN}:7050]
+        EtcdRaft:
+          # The set of Raft replicas for this network. For the etcd/raft-based
+          # implementation, we expect every replica to also be an OSN. Therefore,
+          # a subset of the host:port items enumerated in this list should be
+          # replicated under the Orderer.Addresses key above.
+          Consenters:
+            - Host: ${ORDERER_NAME}.${DOMAIN}
+              Port: 7050
+              #                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+              ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME}.${DOMAIN}/tls/server.crt
+              ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME}.${DOMAIN}/tls/server.crt
+        Organizations:
+          - *OrdererOrg
+        Capabilities:
+          <<: *OrdererCapabilities
+
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+            - *OrdererOrg
+
+
+
     Raft3OrdererGenesis:
         Capabilities:
             <<: *ChannelCapabilities
