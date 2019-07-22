@@ -172,12 +172,12 @@ function getHostOrgForOrg() {
 
 function createHostsFileInOrg() {
     local org=${1:?Org is requreid}
+    local node=${2:-${org}}
 
     cp hosts org_hosts
     # remove entry of your own ip not to confuse docker and chaincode networking
     sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
     orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
-
     local siblingOrg=`getHostOrgForOrg $org`
     if [ -n "$siblingOrg" ]; then
         sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
@@ -189,11 +189,12 @@ function createHostsFileInOrg() {
             echo "Exclude record from hosts for $hostOrg:$siblingOrg"
             sed -i.bak "/.*\.$hostOrg\.$DOMAIN*/d" org_hosts
             sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
+            sed -i.bak "/.*$node\.$DOMAIN*/d" org_hosts
         fi
     done
 
     createDirInMachine $org crypto-config
-    copyFileToMachine ${org} org_hosts crypto-config/hosts_${org}
+    copyFileToMachine ${org} org_hosts crypto-config/hosts_${node}
     rm org_hosts.bak org_hosts
 
     # you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
