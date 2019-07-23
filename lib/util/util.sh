@@ -21,6 +21,18 @@ function printYellow() {
     printInColor "1;33" "$1"
 }
 
+function printRedYellow() {
+    printInColor "1;31" "$1" "1;33" "$2"
+}
+
+function printUsage() {
+    usageMsg=$1
+    exampleMsg=$2
+    printRedYellow "\nUsage:" "$usageMsg"
+    printRedYellow "\nExample:" "$exampleMsg"
+}
+
+
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }

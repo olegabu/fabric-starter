@@ -184,7 +184,7 @@ services:
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
 #    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
-    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
+#    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
 
   # fabric-rest api server
   api:

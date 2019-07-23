@@ -2,8 +2,6 @@
 source lib.sh
 usageMsg="$0 chaincode-path chaincode-package-name"
 exampleMsg="$0 /opt/chaincode/java/reference reference.cds"
-usageMsg="$0 chaincode-path chaincode-package-name"
-exampleMsg="$0 /opt/chaincode/java/reference reference.cds"
 
 IFS=
 chaincodeName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}

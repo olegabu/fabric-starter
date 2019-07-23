@@ -18,6 +18,7 @@ services:
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_GENESIS_PROFILE=${ORDERER_GENESIS_PROFILE:-SoloOrdererGenesis}
+      - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
@@ -48,7 +49,7 @@ services:
       - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}/genesis.pb
       - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true

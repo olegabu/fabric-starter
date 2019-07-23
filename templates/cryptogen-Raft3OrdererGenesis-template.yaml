@@ -6,27 +6,27 @@ OrdererOrgs:
   # ---------------------------------------------------------------------------
   # Orderer
   # ---------------------------------------------------------------------------
-  - Name: Orderer
-    Domain: ${DOMAIN}
+#  - Name: Orderer
+#    Domain: ${DOMAIN}
 
     # ---------------------------------------------------------------------------
     # "Specs" - See PeerOrgs below for complete description
     # ---------------------------------------------------------------------------
-    Specs:
-      - Hostname: ${ORDERER_NAME}
+#    Specs:
+#      - Hostname: ${ORDERER_NAME}
 
 
   # ---------------------------------------------------------------------------
   # Raft Orderer
   # ---------------------------------------------------------------------------
-#  - Name: RaftOrderer
-#    Domain: ${DOMAIN}
-#
-#    Template:
-#      Count: 3
-#      Start: 0
-##      Hostname: "raft{{.Index}}.${ORG}"
-#      Hostname: "raft{{.Index}}"
-#      SANS:
-#        - "localhost"
-#
+  - Name: RaftOrderer
+    Domain: ${DOMAIN}
+
+    Template:
+      Count: 3
+      Start: 0
+#      Hostname: "raft{{.Index}}.${ORG}"
+      Hostname: "raft{{.Index}}"
+      SANS:
+        - "localhost"
+

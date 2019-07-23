@@ -3,22 +3,25 @@
 
 tree crypto-config
 
+echo "$ORG, $DOMAIN, $ORDERER_NAME, $ORDERER_GENESIS_PROFILE"
 if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem" ]; then
     echo "No file: crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem"
     echo "Generation orderer MSP."
 
-    envsubst < "templates/cryptogen-orderer-template.yaml" > "crypto-config/cryptogen-orderer.yaml"
+    cryptogenTemplate="templates/cryptogen-orderer-template.yaml"
+    [ -f "templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml" ] && cryptogenTemplate="templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml"
+    envsubst < "${cryptogenTemplate}" > "crypto-config/cryptogen-orderer.yaml"
     rm -rf crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/
     cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
 else
     echo "Orderer MSP exists. Generation skipped".
 fi
 
-if [ ! -f "crypto-config/configtx/genesis.pb" ]; then
+if [ ! -f "crypto-config/configtx/$DOMAIN/genesis.pb" ]; then
     echo "Generation genesis configtx."
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
-    mkdir -p crypto-config/configtx
-    configtxgen -configPath crypto-config/ -outputBlock crypto-config/configtx/genesis.pb -profile ${ORDERER_GENESIS_PROFILE} -channelID ${SYSTEM_CHANNEL_ID}
+    mkdir -p crypto-config/configtx/$DOMAIN
+    configtxgen -configPath crypto-config/ -outputBlock crypto-config/configtx/$DOMAIN/genesis.pb -profile ${ORDERER_GENESIS_PROFILE} -channelID ${SYSTEM_CHANNEL_ID}
 else
     echo "Genesis configtx exists. Generation skipped".
 fi

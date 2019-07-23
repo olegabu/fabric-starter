@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+source lib/util/util.sh
+
+
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
@@ -9,25 +12,6 @@
 
 
 export DOMAIN ORG
-
-function printInColor() {
-    color1=$1
-    message1=$2
-    color2=$3
-    message2=$4
-    echo -e "\033[${color1}m${message1}\033[m\033[${color2}m$message2\033[m"
-}
-
-function printRedYellow() {
-    printInColor "1;31" "$1" "1;33" "$2"
-}
-
-function printUsage() {
-    usageMsg=$1
-    exampleMsg=$2
-    printRedYellow "\nUsage:" "$usageMsg"
-    printRedYellow "\nExample:" "$exampleMsg"
-}
 
 function runCLI() {
     local command="$1"
