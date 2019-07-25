@@ -83,7 +83,7 @@ Profiles:
       Orderer:
         <<: *OrdererDefaults
         OrdererType: etcdraft
-        Addresses: [${ORDERER_NAME}.${DOMAIN}:7050]
+        Addresses: [${ORDERER_NAME}.${DOMAIN}:${RAFT0_PORT}]
         EtcdRaft:
           # The set of Raft replicas for this network. For the etcd/raft-based
           # implementation, we expect every replica to also be an OSN. Therefore,
@@ -91,7 +91,7 @@ Profiles:
           # replicated under the Orderer.Addresses key above.
           Consenters:
             - Host: ${ORDERER_NAME}.${DOMAIN}
-              Port: 7050
+              Port: ${RAFT0_PORT}
               #                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
               ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME}.${DOMAIN}/tls/server.crt
               ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME}.${DOMAIN}/tls/server.crt
@@ -129,7 +129,7 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             OrdererType: etcdraft
-            Addresses: [${ORDERER_NAME_PREFIX}0.${DOMAIN}:7050, ${ORDERER_NAME_PREFIX}1.${DOMAIN}:7050,${ORDERER_NAME_PREFIX}2.${DOMAIN}:7050]
+            Addresses: [${ORDERER_NAME_PREFIX}0.${DOMAIN}:${RAFT0_PORT}, ${ORDERER_NAME_PREFIX}1.${DOMAIN}:${RAFT1_PORT},${ORDERER_NAME_PREFIX}2.${DOMAIN}:${RAFT2_PORT}]
             EtcdRaft:
               # The set of Raft replicas for this network. For the etcd/raft-based
               # implementation, we expect every replica to also be an OSN. Therefore,
@@ -137,17 +137,17 @@ Profiles:
               # replicated under the Orderer.Addresses key above.
               Consenters:
                 - Host: ${ORDERER_NAME_PREFIX}0.${DOMAIN}
-                  Port: 7050
+                  Port: ${RAFT0_PORT}
 #                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
                   ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${DOMAIN}/tls/server.crt
                   ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${DOMAIN}/tls/server.crt
                 - Host: ${ORDERER_NAME_PREFIX}1.${DOMAIN}
-                  Port: 7050
+                  Port: ${RAFT1_PORT}
 #                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
                   ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${DOMAIN}/tls/server.crt
                   ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${DOMAIN}/tls/server.crt
                 - Host: ${ORDERER_NAME_PREFIX}2.${DOMAIN}
-                  Port: 7050
+                  Port: ${RAFT2_PORT}
 #                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
                   ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${DOMAIN}/tls/server.crt
                   ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${DOMAIN}/tls/server.crt

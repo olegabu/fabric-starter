@@ -9,7 +9,7 @@ NEWCONSENTER_ORG=${2:?New orderer org hosting certificates is requreid}
 NEWCONSENTER_DOMAIN=${3}
 NEWCONSENTER_PORT=${4:-7050}
 
-echo -e "\n\nAdd new consenter: ${NEWCONSENTER_NAME}, ${NEWCONSENTER_ORG}, ${NEWCONSENTER_DOMAIN}\n\n"
+echo -e "\n\nAdd new consenter: ${NEWCONSENTER_NAME}, ${NEWCONSENTER_ORG}, ${NEWCONSENTER_DOMAIN}, ${NEWCONSENTER_PORT}\n\n"
 
 downloadOrdererMSP ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN}
 
@@ -32,5 +32,5 @@ mergeListIntoChannelConfig ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/updated_
 createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
 
 sleep 5
-$BASEDIR/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN} ${NEWCONSENTER_PORT}
+$BASEDIR/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN}
 

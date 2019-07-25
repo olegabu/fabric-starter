@@ -7,6 +7,12 @@ domain1=${2:-example1.com}
 org2=${3:-org2}
 domain2=${4:-example2.com}
 
+: ${RAFT0_PORT:=7050}
+: ${RAFT1_PORT:=7150}
+: ${RAFT2_PORT:=7250}
+
+export RAFT0_PORT RAFT1_PORT RAFT2_PORT
+
 ./clean.sh
 printYellow "1_raft-prepare-consenter.sh: Prepare ORG 2 raft0:"
 ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=raft0 ORDERER_NAME_PREFIX=raft raft/1_raft-prepare-consenter.sh
@@ -15,7 +21,8 @@ ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=raft0 ORDERER_NAME_PREFIX=raft raft/1
 #ORG=${org2} DOMAIN=${domain2} EXECUTE_BY_ORDERER=1 runCLI "rm -f crypto-config/configtx/${domain2}/genesis.pb"
 
 printYellow "2_raft-start-3-nodes-and-add-consenter.sh: Starting Org1 raft0-raft2; then add raft0 to the consenters list:"
-ORG=${org1} DOMAIN=${domain1} ./raft/2_raft-start-3-nodes-and-add-consenter.sh raft0 ${org2} ${domain2}
+ORG=${org1} DOMAIN=${domain1} ./raft/2_raft-start-3-nodes-and-add-consenter.sh raft0 ${org2} ${domain2} ${RAFT0_PORT}
+
 
 printYellow "3_raft-start-consenter.sh: Start raft0, wait for join:"
 ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=raft0 ./raft/3_raft-start-consenter.sh www.${org1}.${domain1}
@@ -24,7 +31,7 @@ echo "Waitng raft0.${domain2}"
 sleep 40
 
 printYellow "4_raft-update-endpoints: Include endpoints raft0.${org2}. ${domain2} to the system-channel"
-ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 ./raft/4_raft-update-endpoints.sh raft0 ${org2} ${domain2}
+ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 ./raft/4_raft-update-endpoints.sh raft0 ${org2} ${domain2} ${RAFT0_PORT}
 
 echo -e "\n################# Second orderer node for Org2: raft1\n"
 
@@ -34,16 +41,16 @@ ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=raft1 ORDERER_NAME_PREFIX=raft raft/1
 sleep 5
 
 printYellow "raft-add-consenter.sh: to add raft1 to the consenters list"
-ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 raft/raft-add-consenter.sh raft1 ${org2} ${domain2}
+ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 raft/2.1_raft-add-consenter.sh raft1 ${org2} ${domain2} ${RAFT1_PORT}
 sleep 5
 
 printYellow "3_raft-start-consenter.sh: Start raft1, wait for join:"
-ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=raft1 ./raft/3_raft-start-consenter.sh www.${org1}.${domain1}
+ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=raft1 ORDERER_GENERAL_LISTENPORT=${RAFT1_PORT} ./raft/3_raft-start-consenter.sh www.${org1}.${domain1}
 
 echo "Waitng raft1.example2.com"
 sleep 40
 
 printYellow "4_raft-update-endpoints: Include endpoints raft1.${org2}.${domain2} to the system-channel"
-ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 ./raft/4_raft-update-endpoints.sh raft1 ${org2} ${domain2}
+ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 ./raft/4_raft-update-endpoints.sh raft1 ${org2} ${domain2} ${RAFT1_PORT}
 
 
