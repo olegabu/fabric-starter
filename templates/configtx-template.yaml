@@ -129,28 +129,28 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             OrdererType: etcdraft
-            Addresses: [raft0.${DOMAIN}:7050,raft1.${DOMAIN}:7050,raft2.${DOMAIN}:7050]
+            Addresses: [${ORDERER_NAME_PREFIX}0.${DOMAIN}:7050, ${ORDERER_NAME_PREFIX}1.${DOMAIN}:7050,${ORDERER_NAME_PREFIX}2.${DOMAIN}:7050]
             EtcdRaft:
               # The set of Raft replicas for this network. For the etcd/raft-based
               # implementation, we expect every replica to also be an OSN. Therefore,
               # a subset of the host:port items enumerated in this list should be
               # replicated under the Orderer.Addresses key above.
               Consenters:
-                - Host: raft0.${DOMAIN}
+                - Host: ${ORDERER_NAME_PREFIX}0.${DOMAIN}
                   Port: 7050
-#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
-                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft0.${DOMAIN}/tls/server.crt
-                - Host: raft1.${DOMAIN}
+#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${DOMAIN}/tls/server.crt
+                - Host: ${ORDERER_NAME_PREFIX}1.${DOMAIN}
                   Port: 7050
-#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft1.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
-                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft1.${DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft1.${DOMAIN}/tls/server.crt
-                - Host: raft2.${DOMAIN}
+#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${DOMAIN}/tls/server.crt
+                - Host: ${ORDERER_NAME_PREFIX}2.${DOMAIN}
                   Port: 7050
-#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft2.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
-                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft2.${DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/raft2.${DOMAIN}/tls/server.crt
+#                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem
+                  ClientTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${DOMAIN}/tls/server.crt
             Organizations:
                 - *OrdererOrg
             Capabilities:

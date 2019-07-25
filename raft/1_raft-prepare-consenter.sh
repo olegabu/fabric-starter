@@ -19,8 +19,8 @@ exampleMsg="ORG=org1 ORDERER_NAME=raft0 $0"
 : ${DOMAIN:=example.com}
 : ${ORDERER_NAME:=raft0}
 
-COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORG} ORDERER_GENESIS_PROFILE=Raft3OrdererGenesis docker-compose -f docker-compose-orderer.yaml up -d post-install
+COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORG}.${DOMAIN} ORDERER_GENESIS_PROFILE=Raft3OrdererGenesis docker-compose -f docker-compose-orderer.yaml up -d post-install
 
 sleep 2
 
-DOMAIN=${DOMAIN} COMPOSE_PROJECT_NAME=${ORG} docker-compose up -d
+DOMAIN=${DOMAIN} COMPOSE_PROJECT_NAME=${ORG}.${DOMAIN} docker-compose up -d

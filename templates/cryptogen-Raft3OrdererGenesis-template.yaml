@@ -26,7 +26,7 @@ OrdererOrgs:
       Count: 3
       Start: 0
 #      Hostname: "raft{{.Index}}.${ORG}"
-      Hostname: "raft{{.Index}}"
+      Hostname: "${ORDERER_NAME_PREFIX}{{.Index}}"
       SANS:
         - "localhost"
 

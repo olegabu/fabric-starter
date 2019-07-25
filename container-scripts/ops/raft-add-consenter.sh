@@ -9,7 +9,7 @@ NEWCONSENTER_ORG=${2:?New orderer org hosting certificates is requreid}
 NEWCONSENTER_DOMAIN=${3}
 NEWCONSENTER_PORT=${4:-7050}
 
-echo -e "\n\n${NEWCONSENTER_NAME}, ${NEWCONSENTER_DOMAIN}\n\n"
+echo -e "\n\nAdd new consenter: ${NEWCONSENTER_NAME}, ${NEWCONSENTER_ORG}, ${NEWCONSENTER_DOMAIN}\n\n"
 
 downloadOrdererMSP ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN}
 

@@ -2,26 +2,14 @@
 source container-scripts/lib/container-lib.sh
 source ../lib/container-lib.sh 2>/dev/null # for IDE code completion
 
-BASEDIR=$(dirname "$0")
+channel=${1:?Channel is requried}
+configInputFile=${2:?Config input file is requried}
+configJsonPath=${3:?Json path to update is required}
+mergedFile=${4:?File with values to merge is required}
+mergedFileJsonPath=${5:?Path in the file with values is required}
+outputFile=${6:-crypto-config/configtx/updated_config.json}
 
-NEWCONSENTER_NAME=${1:?New Orderer name is requried}
-NEWCONSENTER_ORG=${2:?New orderer org hosting certificates is requreid}
-NEWCONSENTER_DOMAIN=${3}
-NEWCONSENTER_PORT=${4:-7050}
+mergeListIntoChannelConfig ${channel} "${configInputFile}" "${configJsonPath}" "${mergedFile}" "${mergedFileJsonPath}" "${outputFile}"
 
-echo -e "\n\n\n\n"
+createConfigUpdateEnvelope ${channel}
 
-set -x
-RAFT_NEWCONSENTER_ADDR=${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}:${NEWCONSENTER_PORT} envsubst < './templates/raft/addresses.json' > crypto-config/configtx/addresses_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json
-
-txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
-
-mergeListIntoChannelConfig ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.values.OrdererAddresses.value.addresses' \
-                                                    crypto-config/configtx/addresses_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'addresses'
-set +x
-
-
-createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
-
-sleep 5
-$BASEDIR/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN} ${NEWCONSENTER_PORT}

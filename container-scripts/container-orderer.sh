@@ -12,11 +12,14 @@ if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$
     [ -f "templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml" ] && cryptogenTemplate="templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml"
     envsubst < "${cryptogenTemplate}" > "crypto-config/cryptogen-orderer.yaml"
     rm -rf crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/
+#    mkdir temp && pushd temp
     cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
+#    cp -r --no-clobber crypto-config ../
+#    popd
 else
     echo "Orderer MSP exists. Generation skipped".
 fi
-
+set -x
 if [ ! -f "crypto-config/configtx/$DOMAIN/genesis.pb" ]; then
     echo "Generation genesis configtx."
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
@@ -25,7 +28,7 @@ if [ ! -f "crypto-config/configtx/$DOMAIN/genesis.pb" ]; then
 else
     echo "Genesis configtx exists. Generation skipped".
 fi
-
+set +x
 if [ ! -f "crypto-config/hosts_orderer" ]; then
     echo "Generating crypto-config/hosts_orderer"
     echo -e "#generated at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts_orderer

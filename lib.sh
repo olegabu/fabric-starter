@@ -27,7 +27,7 @@ function runCLI() {
     cliContainerId=`docker ps --filter name=$checkContainer -q`
 
     # TODO No such command: run __rm when composeCommand="run --rm"
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --no-deps --force-recreate"
+    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --no-deps --rm"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
@@ -51,11 +51,11 @@ function runCLIWithComposerOverrides() {
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service} ${command:+bash -c} $command"
     if [ -n "$command" ]; then
-        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${composeCommandSplitted[2]} ${service} bash -c "${command}"
     else
-        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service}
     fi
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1

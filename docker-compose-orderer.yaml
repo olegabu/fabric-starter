@@ -16,6 +16,7 @@ services:
     environment:
       - ORDERER=true
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_GENESIS_PROFILE=${ORDERER_GENESIS_PROFILE:-SoloOrdererGenesis}
@@ -96,6 +97,7 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
 
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
     working_dir: /etc/hyperledger
     depends_on:

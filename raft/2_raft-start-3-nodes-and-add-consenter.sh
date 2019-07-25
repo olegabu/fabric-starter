@@ -16,20 +16,17 @@ exampleMsg="ORG=org1 ORDERER_NAME_PREFIX=raft0 $0"
 NEWCONSENTER_NAME=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 NEWCONSENTER_ORG=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 NEWCONSENTER_DOMAIN=${3:?`printUsage "$usageMsg" "$exampleMsg"`}
-#chaincodeLang=${3:?Chaincode lang must be specified}
-#chaincodeVersion=${4:?Chaincode version must be specified}
-#chaincodePackageName=${5:?Chaincode PackageName must be specified}
 
-ORDERER_GENESIS_PROFILE=Raft3OrdererGenesis COMPOSE_PROJECT_NAME=${ORDERER_NAME_PREFIX}0.${ORG} ORDERER_NAME=${ORDERER_NAME_PREFIX}0 docker-compose -f docker-compose-orderer.yaml up -d orderer
+ORDERER_GENESIS_PROFILE=Raft3OrdererGenesis COMPOSE_PROJECT_NAME=${ORDERER_NAME_PREFIX}0.${ORG}.${DOMAIN} ORDERER_NAME=${ORDERER_NAME_PREFIX}0 docker-compose -f docker-compose-orderer.yaml up -d
 sleep 5
-COMPOSE_PROJECT_NAME=${ORDERER_NAME_PREFIX}1.${ORG} ORDERER_NAME=${ORDERER_NAME_PREFIX}1 docker-compose -f docker-compose-orderer.yaml up -d orderer
+COMPOSE_PROJECT_NAME=${ORDERER_NAME_PREFIX}1.${ORG}.${DOMAIN} ORDERER_NAME=${ORDERER_NAME_PREFIX}1 docker-compose -f docker-compose-orderer.yaml up -d orderer
 sleep 5
-COMPOSE_PROJECT_NAME=${ORDERER_NAME_PREFIX}2.${ORG} ORDERER_NAME=${ORDERER_NAME_PREFIX}2 docker-compose -f docker-compose-orderer.yaml up -d orderer
+COMPOSE_PROJECT_NAME=${ORDERER_NAME_PREFIX}2.${ORG}.${DOMAIN} ORDERER_NAME=${ORDERER_NAME_PREFIX}2 docker-compose -f docker-compose-orderer.yaml up -d orderer
 sleep 5
 
 sleep 20
 ORDERER_NAME=${ORDERER_NAME_PREFIX}0 $BASEDIR/raft-add-consenter.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN}
 
 
-DOMAIN=${DOMAIN} COMPOSE_PROJECT_NAME=${ORG} docker-compose up -d
+DOMAIN=${DOMAIN} COMPOSE_PROJECT_NAME=${ORG}.${DOMAIN} docker-compose up -d
 

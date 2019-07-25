@@ -62,6 +62,7 @@ function fetchChannelConfigBlock() {
     local blockNum=${2:-config}
 
     mkdir -p crypto-config/configtx
+    echo "Execute: channel fetch $blockNum crypto-config/configtx/${channel}.pb -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}"
     peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
@@ -106,6 +107,7 @@ function createConfigUpdateEnvelope() {
     echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat crypto-config/configtx/update.json`}}}" | jq . > crypto-config/configtx/update_in_envelope.json
     configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb
     echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
+    echo "Execute: peer channel update -f update_in_envelope.pb -c ${channel} -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
     peer channel update -f update_in_envelope.pb -c ${channel} -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
@@ -139,6 +141,14 @@ function mergeListIntoChannelConfig() {
     mergeListsInJsons ${configInputFile} ${configJsonPath} ${mergedFile} ${mergedFileJsonPath} ${outputFile}
 }
 
+function removeObjectFromChannelConfig() {
+    local channel=${1:?Channel is requried}
+    local configInputFile=${2:?Config input file is requried}
+    local configJsonPath=$3
+    local outputFile=${4:-crypto-config/configtx/updated_config.json}
+    sh -c "jq 'del .${configJsonPath} > ${outputFile}.temp"
+    mv ${outputFile}.temp ${outputFile}
+}
 
 
 function updateConsortium() {
