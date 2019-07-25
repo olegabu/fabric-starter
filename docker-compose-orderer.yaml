@@ -16,6 +16,7 @@ services:
     environment:
       - ORDERER=true
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_GENESIS_PROFILE=${ORDERER_GENESIS_PROFILE:-SoloOrdererGenesis}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}

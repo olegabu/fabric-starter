@@ -15,9 +15,10 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1}
-    local remoteOrdererDOMAIN=${2:-${DOMAIN}}
+    local remoteOrg=${2}
+    local remoteOrdererDOMAIN=${3:-${DOMAIN}}
     local mspSubPath="$remoteOrdererDOMAIN"
-    local serverDNSName=www.${remoteOrdererDOMAIN}
+    local serverDNSName=www.${remoteOrg}${remoteOrg:+.}${remoteOrdererDOMAIN}
     downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
     wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
@@ -66,6 +67,7 @@ function fetchChannelConfigBlock() {
 
 function txTranslateChannelConfigBlock() {
     local channel=$1
+    rm -f crypto-config/configtx/${channel}.pb crypto-config/configtx/${channel}.json crypto-config/configtx/config.json
     fetchChannelConfigBlock $channel
     configtxlator proto_decode --type 'common.Block' --input=crypto-config/configtx/${channel}.pb --output=crypto-config/configtx/${channel}.json
     jq .data.data[0].payload.data.config crypto-config/configtx/${channel}.json > crypto-config/configtx/config.json
@@ -134,7 +136,6 @@ function mergeListIntoChannelConfig() {
     local mergedFile=$4
     local mergedFileJsonPath=$5
     local outputFile=${6:-crypto-config/configtx/updated_config.json}
-    txTranslateChannelConfigBlock "$channel"
     mergeListsInJsons ${configInputFile} ${configJsonPath} ${mergedFile} ${mergedFileJsonPath} ${outputFile}
 }
 

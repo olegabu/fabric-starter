@@ -5,7 +5,13 @@ source $BASEDIR/../lib.sh
 source ../lib.sh 2>/dev/null # for IDE code completion
 
 
-NEWORDERER_NAME=${1}
-NEWORDERER_DOMAIN=${2:-${DOMAIN:-example.com}}
+NEWCONSENTER_NAME=${1}
+NEWCONSENTER_ORG=${2}
+NEWCONSENTER_DOMAIN=${3:-${DOMAIN:-example.com}}
 
-EXECUTE_BY_ORDERER=1 runCLI "container-scripts/ops/raft-add-consenter.sh $NEWORDERER_NAME $NEWORDERER_DOMAIN"
+: ${ORG:=org1}
+: ${DOMAIN:=example.com}
+: ${ORDERER_NAME:=raft0}
+
+COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORG}  EXECUTE_BY_ORDERER=1 runCLI "container-scripts/ops/raft-add-consenter.sh $NEWCONSENTER_NAME ${NEWCONSENTER_ORG} $NEWCONSENTER_DOMAIN"
+

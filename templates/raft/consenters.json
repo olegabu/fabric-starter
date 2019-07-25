@@ -1,10 +1,10 @@
 {
   "consenters": [
     {
-      "client_tls_cert": "${RAFT_NEWORDERER_CLIENT_TLS_CERT}",
-      "host": "${RAFT_NEWORDERER_HOST}",
-      "port": "${RAFT_NEWORDERER_PORT}",
-      "server_tls_cert": "${RAFT_NEWORDERER_SERVER_TLS_CERT}"
+      "client_tls_cert": "${RAFT_NEWCONSENTER_CLIENT_TLS_CERT}",
+      "host": "${RAFT_NEWCONSENTER_HOST}",
+      "port": "${RAFT_NEWCONSENTER_PORT}",
+      "server_tls_cert": "${RAFT_NEWCONSENTER_SERVER_TLS_CERT}"
     }
   ]
 }

@@ -40,9 +40,18 @@ cp crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-c
 
 tlsCert="crypto-config/ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME}.$DOMAIN/tls/server.crt"
 tlsNginxFolder=crypto-config/ordererOrganizations/${DOMAIN}/msp/${ORDERER_NAME}.$DOMAIN/tls
+
 echo "Copying tls certs to nginx served folder $tlsCert"
 mkdir -p ${tlsNginxFolder}
 cp "${tlsCert}" "${tlsNginxFolder}"
 
+set -x
+if [ -d "crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/" ]; then
+    echo "Copying tls certs to peerOrganizations nginx served folder $tlsCert"
+    tlsNginxFolder=crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/${ORDERER_NAME}.$DOMAIN/tls
+    mkdir -p ${tlsNginxFolder}
+    cp "${tlsCert}" "${tlsNginxFolder}"
+fi
+set +x
 
 cat crypto-config/hosts_orderer

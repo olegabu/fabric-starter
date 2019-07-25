@@ -1,39 +1,36 @@
 #!/usr/bin/env bash
 source container-scripts/lib/container-lib.sh
-source ../lib/container-lib.sh 2>/dev/null
+source ../lib/container-lib.sh 2>/dev/null # for IDE code completion
 
-NEWORDERER_NAME=${1:?New Orderer name is requried}
-NEWORDERER_DOMAIN=${2:-${DOMAIN}}
-echo -e "\n\n${NEWORDERER_NAME}, ${NEWORDERER_DOMAIN}\n\n"
-downloadOrdererMSP ${NEWORDERER_NAME} ${NEWORDERER_DOMAIN}
+BASEDIR=$(dirname "$0")
 
-certificationsToEnv orderer ${NEWORDERER_DOMAIN}
+NEWCONSENTER_NAME=${1:?New Orderer name is requried}
+NEWCONSENTER_ORG=${2:?New orderer org hosting certificates is requreid}
+NEWCONSENTER_DOMAIN=${3}
+NEWCONSENTER_PORT=${4:-7050}
 
-insertObjectIntoChannelConfig ${SYSTEM_CHANNEL_ID} orderer.${NEWORDERER_DOMAIN} 'templates/raft/Orderer.json'
+echo -e "\n\n${NEWCONSENTER_NAME}, ${NEWCONSENTER_DOMAIN}\n\n"
 
-RAFT_NEWORDERER_ADDR=${NEWORDERER_NAME}.${NEWORDERER_DOMAIN}:${NEWORDERER_PORT:-7050} envsubst < './templates/raft/addresses.json' > crypto-config/configtx/addresses_${NEWORDERER_NAME}.json
+downloadOrdererMSP ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN}
 
-mergeListIntoChannelConfig ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/updated_config.json' 'channel_group.values.OrdererAddresses.value.addresses' \
-                                                    crypto-config/configtx/addresses_${NEWORDERER_NAME}.json 'addresses'
+certificationsToEnv orderer ${NEWCONSENTER_DOMAIN}
 
-export RAFT_NEWORDERER_CLIENT_TLS_CERT=`cat crypto-config/ordererOrganizations/${NEWORDERER_DOMAIN}/msp/${NEWORDERER_NAME}.${NEWORDERER_DOMAIN}/tls/server.crt | base64 -w 0`
-export RAFT_NEWORDERER_SERVER_TLS_CERT=`cat crypto-config/ordererOrganizations/${NEWORDERER_DOMAIN}/msp/${NEWORDERER_NAME}.${NEWORDERER_DOMAIN}/tls/server.crt | base64 -w 0`
+insertObjectIntoChannelConfig ${SYSTEM_CHANNEL_ID} orderer.${NEWCONSENTER_DOMAIN} 'templates/raft/Orderer.json'
 
-export RAFT_NEWORDERER_HOST=${NEWORDERER_NAME}.${NEWORDERER_DOMAIN}
-export RAFT_NEWORDERER_PORT=${NEWORDERER_PORT:-7050}
 
-envsubst < './templates/raft/consenters.json' > crypto-config/configtx/consenters_${NEWORDERER_NAME}.json
+export RAFT_NEWCONSENTER_CLIENT_TLS_CERT=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/tls/server.crt | base64 -w 0`
+export RAFT_NEWCONSENTER_SERVER_TLS_CERT=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/tls/server.crt | base64 -w 0`
+
+export RAFT_NEWCONSENTER_HOST=${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}
+export RAFT_NEWCONSENTER_PORT=${NEWCONSENTER_PORT}
+
+envsubst < './templates/raft/consenters.json' > crypto-config/configtx/consenters_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json
 
 mergeListIntoChannelConfig ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/updated_config.json' 'channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters' \
-#                                                    crypto-config/configtx/consenters_${NEWORDERER_NAME}.json 'consenters'
+                                                    crypto-config/configtx/consenters_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'consenters'
 
 createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
 
-sleep 4
-txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
-
-updatedConfigBlockDir=crypto-config/ordererOrganizations/${DOMAIN}/msp/${NEWORDERER_NAME}.${NEWORDERER_DOMAIN}/genesis
-echo "Copy updated genesis block to ${updatedConfigBlockDir}"
-mkdir -p ${updatedConfigBlockDir}
-cp crypto-config/configtx/${SYSTEM_CHANNEL_ID}.pb ${updatedConfigBlockDir}/${SYSTEM_CHANNEL_ID}_remote.pb
+sleep 5
+$BASEDIR/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_ORG} ${NEWCONSENTER_DOMAIN} ${NEWCONSENTER_PORT}
 
