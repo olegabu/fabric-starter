@@ -23,7 +23,7 @@ OrdererOrgs:
     Domain: ${DOMAIN}
 
     Template:
-      Count: 3
+      Count: ${RAFT_NODES_COUNT}
       Start: 0
 #      Hostname: "raft{{.Index}}.${ORG}"
       Hostname: "${ORDERER_NAME_PREFIX}{{.Index}}"

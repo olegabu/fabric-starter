@@ -3,7 +3,7 @@
 
 tree crypto-config
 
-echo "$ORG, $DOMAIN, $ORDERER_NAME, $ORDERER_GENESIS_PROFILE"
+echo "ORG=$ORG, DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_GENESIS_PROFILE=$ORDERER_GENESIS_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}"
 if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem" ]; then
     echo "No file: crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem"
     echo "Generation orderer MSP."

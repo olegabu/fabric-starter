@@ -9,6 +9,8 @@ mergedFile=${4:?File with values to merge is required}
 mergedFileJsonPath=${5:?Path in the file with values is required}
 outputFile=${6:-crypto-config/configtx/updated_config.json}
 
+txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
+
 mergeListIntoChannelConfig ${channel} "${configInputFile}" "${configJsonPath}" "${mergedFile}" "${mergedFileJsonPath}" "${outputFile}"
 
 createConfigUpdateEnvelope ${channel}

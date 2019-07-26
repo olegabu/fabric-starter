@@ -15,10 +15,9 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1}
-    local remoteOrg=${2}
-    local remoteOrdererDOMAIN=${3:-${DOMAIN}}
+    local remoteOrdererDOMAIN=${2:-${DOMAIN}}
     local mspSubPath="$remoteOrdererDOMAIN"
-    local serverDNSName=www.${remoteOrg}${remoteOrg:+.}${remoteOrdererDOMAIN}
+    local serverDNSName=www.${remoteOrdererDOMAIN}
     downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
     wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
