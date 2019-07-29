@@ -23,7 +23,7 @@ services:
       - ${WORK_DIR:-/home/docker}/crypto-config/configtx:/etc/hyperledger/configtx
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/orderer.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
     ports:
-      - ${ORDERER_PORT:-7050}:7050
+      - ${ORDERER_GENERAL_LISTENPORT:-7050}:${ORDERER_GENERAL_LISTENPORT:-7050}
 
   cli.orderer:
     volumes:
