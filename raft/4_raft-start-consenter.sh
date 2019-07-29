@@ -11,6 +11,7 @@ REMOTE_WWW_ADDR=${1:?Remote www addr is requried}
 : ${ORDERER_GENERAL_LISTENPORT:=7050}
 : ${DOCKER_COMPOSE_ORDERER_ARGS:= -f docker-compose-orderer.yaml}
 
+export DOMAIN ORDERER_NAME ORDERER_GENERAL_LISTENPORT
 
 echo "Stop orderer ${ORDERER_NAME}.${DOMAIN}"
 COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} down -v
