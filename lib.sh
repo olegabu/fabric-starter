@@ -4,11 +4,12 @@ source lib/util/util.sh
 
 
 : ${DOMAIN:="example.com"}
+: ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
 : ${FABRIC_STARTER_HOME:=.}
 
-: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 
 
 export DOMAIN ORG

@@ -103,6 +103,7 @@ services:
 
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
+      - ORDERER_DOMAIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
     working_dir: /etc/hyperledger
     depends_on:
