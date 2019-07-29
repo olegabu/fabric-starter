@@ -12,6 +12,7 @@ exampleMsg="ORG=org1 ORDERER_NAME=raft0 $0"
 : ${DOMAIN:=example.com}
 : ${ORDERER_NAME:=raft0}
 : ${DOCKER_COMPOSE_ORDERER_ARGS:=-f docker-compose-orderer.yaml}
+: ${WWW_PORT:=81}
 
 COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} ORDERER_GENESIS_PROFILE=RaftOrdererGenesis docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d www.orderer
 
