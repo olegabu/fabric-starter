@@ -7,7 +7,7 @@ source ../lib.sh 2>/dev/null # for IDE code completion
 NEWCONSENTER_NAME=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 NEWCONSENTER_DOMAIN=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 NEWCONSENTER_PORT=${3:-7050}
-NEWCONSENTER_WWW_PORT=${3:-80}
+NEWCONSENTER_WWW_PORT=${4:-80}
 
 : ${DOMAIN:=example.com}
 : ${ORDERER_NAME:=raft0}
