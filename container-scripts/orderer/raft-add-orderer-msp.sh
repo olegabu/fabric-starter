@@ -19,5 +19,5 @@ insertObjectIntoChannelConfig ${SYSTEM_CHANNEL_ID} orderer.${NEWORDERER_DOMAIN} 
 createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
 
 sleep 5
-$BASEDIR/retrieve-latest-config.sh ${NEWORDERER_MSP_NAME} ${NEWORDERER_DOMAIN}
+$BASEDIR/../ops/retrieve-latest-config.sh ${NEWORDERER_MSP_NAME} ${NEWORDERER_DOMAIN}
 
