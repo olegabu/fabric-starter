@@ -14,10 +14,12 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID
 : ${ORDERER_ADDRESS="${ORDERER_NAME}.${DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
-    local remoteOrdererName=${1}
+    local remoteOrdererName=${1:?-Orderer name is required}
     local remoteOrdererDOMAIN=${2:-${DOMAIN}}
+    local wwwPort=${3:-80}
+
     local mspSubPath="$remoteOrdererDOMAIN"
-    local serverDNSName=www.${remoteOrdererDOMAIN}
+    local serverDNSName=www.${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
     wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }

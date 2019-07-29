@@ -7,7 +7,10 @@ BASEDIR=$(dirname "$0")
 NEWCONSENTER_NAME=${1:?New Orderer name is requried}
 NEWCONSENTER_DOMAIN=${2}
 NEWCONSENTER_PORT=${3:-7050}
+NEWCONSENTER_WWW_PORT=${4:-80}
 
+
+downloadOrdererMSP ${NEWCONSENTER_NAME} ${NEWCONSENTER_DOMAIN} ${NEWCONSENTER_WWW_PORT}
 
 export RAFT_NEWCONSENTER_CLIENT_TLS_CERT=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/tls/server.crt | base64 -w 0`
 export RAFT_NEWCONSENTER_SERVER_TLS_CERT=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/tls/server.crt | base64 -w 0`

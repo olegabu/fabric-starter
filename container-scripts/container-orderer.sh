@@ -3,7 +3,7 @@
 
 tree crypto-config
 
-echo "ORG=$ORG, DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_GENESIS_PROFILE=$ORDERER_GENESIS_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}"
+echo "DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_GENESIS_PROFILE=$ORDERER_GENESIS_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}"
 if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem" ]; then
     echo "No file: crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem"
     echo "Generation orderer MSP."
@@ -48,13 +48,13 @@ echo "Copying tls certs to nginx served folder $tlsCert"
 mkdir -p ${tlsNginxFolder}
 cp "${tlsCert}" "${tlsNginxFolder}"
 
-set -x
-if [ -d "crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/" ]; then
-    echo "Copying tls certs to peerOrganizations nginx served folder $tlsCert"
-    tlsNginxFolder=crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/${ORDERER_NAME}.$DOMAIN/tls
-    mkdir -p ${tlsNginxFolder}
-    cp "${tlsCert}" "${tlsNginxFolder}"
-fi
-set +x
+#set -x
+#if [ -d "crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/" ]; then
+#    echo "Copying tls certs to peerOrganizations nginx served folder $tlsCert"
+#    tlsNginxFolder=crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/${ORDERER_NAME}.$DOMAIN/tls
+#    mkdir -p ${tlsNginxFolder}
+#    cp "${tlsCert}" "${tlsNginxFolder}"
+#fi
+#set +x
 
 cat crypto-config/hosts_orderer

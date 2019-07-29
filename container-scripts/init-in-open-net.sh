@@ -6,7 +6,7 @@ echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 
 env|sort
 
-downloadOrdererMSP
+downloadOrdererMSP ${ORDERER_NAME}
 updateConsortium ${ORG} orderer-system-channel
 sleep 3
 
