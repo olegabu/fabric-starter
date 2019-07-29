@@ -21,7 +21,7 @@ export ORG2_RAFT_NAME_1=raft3 \
 Manually prepare `hosts` file which will be mapped to containers' `/etc/hosts` so containers could find each other:  
 * Org1:
 ```bash
-mkdir crypto-config crypto-config
+mkdir crypto-config
 # Write dns-record into the file `hosts_orderer`:
 echo "<org2-IP> raft3.${DOMAIN} raft4.${DOMAIN} raft5.${DOMAIN}" > crypto-config/hosts_orderer
 ```
@@ -29,8 +29,7 @@ echo "<org2-IP> raft3.${DOMAIN} raft4.${DOMAIN} raft5.${DOMAIN}" > crypto-config
 
 * Org2 
 ```bash
-mkdir crypto-config && cd crypto-config
-touch hosts_orderer
+mkdir crypto-config
 # Write dns-record into the file `hosts_orderer`:
 echo "<org1-IP> www.raft0.${DOMAIN} raft0.${DOMAIN} raft1.${DOMAIN} raft2.${DOMAIN}" > crypto-config/hosts_orderer
 ```
