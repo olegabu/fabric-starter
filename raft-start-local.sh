@@ -30,7 +30,7 @@ DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/2_raft-prepare-new-conse
 sleep 5
 
 printYellow "3_raft-add-consenter: Add new consenter info to config:"
-DOMAIN=${domain1} ORDERER_NAME=raft0 raft/3_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${domain2} ${RAFT0_PORT}
+DOMAIN=${domain1} ORDERER_NAME=raft0 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${domain2} ${RAFT0_PORT}
 sleep 5
 
 #TODO: not need restart first new consenter
@@ -50,7 +50,7 @@ DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} raft/2_raft-prepare-new-conse
 sleep 5
 
 printYellow "7. raft-add-consenter.sh: to add raft1 to the consenters list"
-DOMAIN=${domain1} ORDERER_NAME=raft0 raft/3_raft-add-consenter.sh ${ORG2_RAFT_NAME_2} ${domain2} ${RAFT1_PORT}
+DOMAIN=${domain1} ORDERER_NAME=raft0 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_2} ${domain2} ${RAFT1_PORT}
 sleep 5
 
 printYellow "8 _raft-start-consenter.sh: Start ${ORG2_RAFT_NAME_2}, wait for join:"
