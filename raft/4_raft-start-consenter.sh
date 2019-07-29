@@ -14,9 +14,9 @@ REMOTE_WWW_ADDR=${1:?Remote www addr is requried}
 
 echo "Stop orderer ${ORDERER_NAME}.${DOMAIN}"
 COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} down -v
-
+sleep 2
 ORDERER_NAME=${ORDERER_NAME} COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} EXECUTE_BY_ORDERER=1 runCLI "container-scripts/ops/raft-download-remote-config-block.sh $REMOTE_WWW_ADDR"
-
+sleep 2
 echo "Start orderer ${ORDERER_NAME}.${DOMAIN} with new genesis"
 COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d orderer
 

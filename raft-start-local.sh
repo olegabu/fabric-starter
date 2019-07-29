@@ -22,21 +22,21 @@ ORG2_RAFT_NAME_2=raft4
 
 printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
 ORG=${org1} DOMAIN=${domain1} raft/1_raft-start-3-nodes.sh
+sleep 20
 
 
 printYellow "2_raft-prepare-new-consenter.sh: Prepare ORG 2 raft0:"
 ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/2_raft-prepare-new-consenter.sh
-
-#printYellow "Remove temporal genesis.pb"
-#ORG=${org2} DOMAIN=${domain2} EXECUTE_BY_ORDERER=1 runCLI "rm -f crypto-config/configtx/${domain2}/genesis.pb"
+sleep 5
 
 printYellow "3_raft-add-consenter: Add new consenter info to config:"
 ORG=${org1} DOMAIN=${domain1} ORDERER_NAME=raft0 raft/3_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${domain2} ${RAFT0_PORT}
 sleep 5
 
-printYellow "4_raft-start-consenter.sh: Start Org2-raft0, wait for join:"
-ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
-exit
+#TODO: not need for first extra consenter
+#printYellow "4_raft-start-consenter.sh: Start Org2-raft0, wait for join:"
+#ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
+
 echo "Waitng ${ORG2_RAFT_NAME_1}.${domain2}"
 sleep 40
 

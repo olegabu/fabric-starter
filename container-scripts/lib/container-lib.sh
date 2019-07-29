@@ -145,7 +145,7 @@ function removeObjectFromChannelConfig() {
     local configInputFile=${2:?Config input file is requried}
     local configJsonPath=$3
     local outputFile=${4:-crypto-config/configtx/updated_config.json}
-    sh -c "jq 'del .${configJsonPath} > ${outputFile}.temp"
+    sh -c "jq 'del (.${configJsonPath})' $configInputFile > ${outputFile}.temp "
     mv ${outputFile}.temp ${outputFile}
 }
 

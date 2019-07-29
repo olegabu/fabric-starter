@@ -17,18 +17,11 @@ export RAFT_NEWCONSENTER_PORT=${NEWCONSENTER_PORT}
 
 envsubst < './templates/raft/consenters.json' > crypto-config/configtx/consenters_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json
 
-#txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
 
-#mergeListIntoChannelConfig ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters' \
-#                                                    crypto-config/configtx/consenters_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'consenters'
-#
-#createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
+$BASEDIR/merge-list-into-channel-config.sh  ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters' \
+                                                    crypto-config/configtx/consenters_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'consenters'
 
-#$BASEDIR/merge-list-into-channel-config.sh  ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters' \
-#                                                    crypto-config/configtx/consenters_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'consenters'
-
-
-sleep 5
+sleep 10
 set -x
 $BASEDIR/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_DOMAIN}
 set +x

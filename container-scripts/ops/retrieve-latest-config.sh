@@ -20,5 +20,3 @@ cp crypto-config/configtx/${SYSTEM_CHANNEL_ID}.pb ${updatedConfigBlockDir}/${SYS
 #cp crypto-config/configtx/${SYSTEM_CHANNEL_ID}.pb ${updatedConfigBlockDirOnPeer}/${SYSTEM_CHANNEL_ID}_remote.pb
 set +x
 
-
-sleep 5

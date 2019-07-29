@@ -12,5 +12,5 @@ NEWCONSENTER_DOMAIN=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 : ${DOMAIN:=example.com}
 : ${ORDERER_NAME:=raft0}
 
-COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORG}.${DOMAIN} EXECUTE_BY_ORDERER=1 runCLI "container-scripts/orderer/raft-add-orderer-msp.sh $NEWCONSENTER_NAME $NEWCONSENTER_DOMAIN"
+COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} EXECUTE_BY_ORDERER=1 runCLI "container-scripts/orderer/raft-add-orderer-msp.sh $NEWCONSENTER_NAME $NEWCONSENTER_DOMAIN"
 
