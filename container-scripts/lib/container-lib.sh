@@ -4,14 +4,15 @@
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${ORDERER_NAME:="orderer"}
+: ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${WGET_OPTS:="--verbose -N"}
 
 export ORG DOMAIN SYSTEM_CHANNEL_ID
 
-: ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
-: ${ORDERER_ADDRESS="${ORDERER_NAME}.${DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
+: ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
+: ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1:?-Orderer name is required}

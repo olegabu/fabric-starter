@@ -12,7 +12,7 @@ services:
 
   peer0:
     ports:
-      - ${PEER0_PORT:-7051}:7051
+      - ${PEER0_PORT:-7051}:${PEER0_INTERNAL_PORT:-7051}
 #      - ${PEER0_EVENT_PORT:-7053}:7053
 
 #  peer1:

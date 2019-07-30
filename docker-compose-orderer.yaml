@@ -100,7 +100,6 @@ services:
       - CORE_PEER_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
-
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_DOMAIN
