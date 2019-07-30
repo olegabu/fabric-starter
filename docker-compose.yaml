@@ -218,6 +218,7 @@ services:
       - UI_LISTEN_BLOCK_OPTS
       - P=${PWD}
       - HFC_LOGGING={"debug":"console","info":"console"}
+      - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
