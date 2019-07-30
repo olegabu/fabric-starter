@@ -55,7 +55,7 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
   #      - ${WORK_DIR-/home/docker}/middleware:/usr/src/app/routes # for local debug
-  #      - ${WORK_DIR-/home/docker}/templates:/usr/src/app/templates # for local debug
+        - ${WORK_DIR-/home/docker}/templates:/usr/src/app/templates # for local debug
 
   # block event listener
   #  listener:
