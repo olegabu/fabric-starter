@@ -37,6 +37,7 @@ services:
       - LDAP_ENABLED
       - LDAP_BASE_DN
       - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+      - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
