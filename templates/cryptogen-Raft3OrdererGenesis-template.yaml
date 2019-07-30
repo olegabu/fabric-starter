@@ -20,7 +20,7 @@ OrdererOrgs:
   # Raft Orderer
   # ---------------------------------------------------------------------------
   - Name: RaftOrderer
-    Domain: ${DOMAIN}
+    Domain: ${ORDERER_DOMAIN}
 
     Template:
       Count: ${RAFT_NODES_COUNT}
