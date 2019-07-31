@@ -162,6 +162,7 @@ services:
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_DOMAIN
       - ENROLL_ID
       - ENROLL_SECRET
@@ -185,12 +186,13 @@ services:
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
-#    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates
-#    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
 #    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
 #    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
+  #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+  #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+
 
   # fabric-rest api server
   api:

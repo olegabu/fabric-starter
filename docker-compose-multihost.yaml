@@ -38,7 +38,9 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
       #    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
-      - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
+      - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
+      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates # for local debug
+      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
   # fabric-rest api server
   api:

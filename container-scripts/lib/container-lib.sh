@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
-
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${ORDERER_NAME:="orderer"}
+: ${ORDERER_NAME_PREFIX:="raft"}
 : ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
-: ${WGET_OPTS:="--verbose -N"}
+: ${RAFT0_PORT:=7050}
+: ${RAFT1_PORT:=7150}
+: ${RAFT2_PORT:=7250}
+
+: ${WGET_OPTS:=--verbose -N}
 
 export ORG DOMAIN SYSTEM_CHANNEL_ID
 
@@ -16,13 +20,13 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1:?-Orderer name is required}
-    local remoteOrdererDOMAIN=${2:-${DOMAIN}}
+    local remoteOrdererDOMAIN=${2:-${ORDERER_DOMAIN}}
     local wwwPort=${3:-80}
 
     local mspSubPath="$remoteOrdererDOMAIN"
-    local serverDNSName=www.${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
+    local serverDNSName=${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
-    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
 function downloadOrgMSP() {
@@ -33,7 +37,7 @@ function downloadOrgMSP() {
 function downloadMSP() {
     local typeSubPath=$1
     local mspSubPath=$2
-    local serverDNSName=${3:-${mspSubPath}}
+    local serverDNSName=www.${3:-${mspSubPath}}
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/msp/admincerts/Admin@${mspSubPath}-cert.pem
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/msp/cacerts/ca.${mspSubPath}-cert.pem
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
@@ -175,10 +179,12 @@ function createChannel() {
     downloadOrdererMSP ${ORDERER_NAME}
     mkdir -p crypto-config/configtx
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
+
     configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
 
     updateAnchorPeers "$ORG" "$channelName"
+
 }
 
 function addOrgToChannel() {

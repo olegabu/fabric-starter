@@ -7,5 +7,7 @@ IFS=
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 newOrg=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 
-downloadMSP ${newOrg}
-addOrgToChannel $channelName $newOrg
+#downloadMSP ${newOrg}
+#addOrgToChannel $channelName $newOrg
+
+ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} runCLI "container-scripts/network/channel-add-org.sh $channelName ${newOrg}"

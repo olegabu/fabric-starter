@@ -19,16 +19,17 @@ function runCLI() {
 
     if [ -n "$EXECUTE_BY_ORDERER" ]; then
         service="cli.orderer"
-        checkContainer="cli.$DOMAIN"
+        checkContainer="cli.${ORDERER_NAME}.${ORDERER_DOMAIN}"
     else
         service="cli.peer"
         checkContainer="cli.$ORG.$DOMAIN"
     fi
 
     cliContainerId=`docker ps --filter name=$checkContainer -q`
-
+echo "\n\n\cliContainerId: $checkContainer : $cliContainerId\n\n"
     # TODO No such command: run __rm when composeCommand="run --rm"
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --no-deps"
+#    [ -n "$cliContainerId" ] && composeCommand="exec" ||
+    composeCommand="run --no-deps"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }

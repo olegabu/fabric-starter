@@ -7,6 +7,9 @@ tree crypto-config
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 
+export ORDERER_DOMAIN ORDERER_NAME
+env|sort
+
 if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp" ]; then
     echo "Generation $ORG peer MSP."
 

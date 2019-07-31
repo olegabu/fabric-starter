@@ -30,8 +30,8 @@ services:
       - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
 #      - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates
-      - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
-      - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+      - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 
   # http serves certificates
   www.orderer:

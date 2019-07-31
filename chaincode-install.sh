@@ -9,5 +9,5 @@ version=${2-1.0}
 path=${3-"/opt/chaincode/node/$chaincodeName"}
 lang=${4-node}
 
+ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME} runCLI "container-scripts/network/chaincode-install.sh $chaincodeName $version $path $lang"
 
-installChaincode "$chaincodeName" "$path" "$lang" "$version"

@@ -13,8 +13,8 @@ RAFT_NEWCONSENTER_ADDR=${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}:${NEWCONSENTE
 
 #txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
 
-$BASEDIR/merge-list-into-channel-config.sh  ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.values.OrdererAddresses.value.addresses' \
+$BASEDIR/../ops/merge-list-into-channel-config.sh  ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.values.OrdererAddresses.value.addresses' \
                                                     crypto-config/configtx/addresses_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'addresses'
 
 sleep 5
-$BASEDIR/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_DOMAIN}
+$BASEDIR/../ops/retrieve-latest-config.sh ${NEWCONSENTER_NAME} ${NEWCONSENTER_DOMAIN}
