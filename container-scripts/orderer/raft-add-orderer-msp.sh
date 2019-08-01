@@ -6,9 +6,9 @@ BASEDIR=$(dirname "$0")
 
 NEWORDERER_MSP_NAME=${1:?New Orderer name is requried}
 NEWORDERER_DOMAIN=${2:-New orderer domain is required}
-NEWORDERER_WWW_PORT=${3:-New orderer port is required}
+NEWORDERER_WWW_PORT=${3:-New orderer www port is required}
 
-echo -e "\n\nAdd new consenter: ${NEWORDERER_MSP_NAME}, ${NEWORDERER_DOMAIN}\n\n"
+echo -e "\n\nAdd Orderer MSP: ${NEWORDERER_MSP_NAME}, ${NEWORDERER_DOMAIN}\n\n"
 
 downloadOrdererMSP ${NEWORDERER_MSP_NAME} ${NEWORDERER_DOMAIN} ${NEWORDERER_WWW_PORT}
 
@@ -16,7 +16,14 @@ certificationsToEnv orderer ${NEWORDERER_DOMAIN}
 
 insertObjectIntoChannelConfig ${SYSTEM_CHANNEL_ID} orderer.${NEWORDERER_DOMAIN} 'templates/raft/Orderer.json'
 
-createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
+difference=`diff crypto-config/configtx/config.json crypto-config/configtx/updated_config.json`
+
+if [ -n "$difference" ]; then
+    echo -e "\n Creating config update envelope:\n"
+    createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
+else
+    echo -e "\n No difference in configs. Skipping update config block.\n"
+fi
 
 sleep 5
 $BASEDIR/../ops/retrieve-latest-config.sh ${NEWORDERER_MSP_NAME} ${NEWORDERER_DOMAIN}

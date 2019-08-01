@@ -7,7 +7,9 @@ BASEDIR=$(dirname "$0")
 jsonPath=${1:?Json path to remove is required}
 channel=${2:-${SYSTEM_CHANNEL_ID}}
 
+txTranslateChannelConfigBlock ${channel}
+
 removeObjectFromChannelConfig ${channel} 'crypto-config/configtx/config.json' "$jsonPath"
 
-createConfigUpdateEnvelope ${SYSTEM_CHANNEL_ID}
+createConfigUpdateEnvelope ${channel}
 

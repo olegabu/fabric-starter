@@ -26,7 +26,6 @@ function runCLI() {
     fi
 
     cliContainerId=`docker ps --filter name=$checkContainer -q`
-echo "\n\n\cliContainerId: $checkContainer : $cliContainerId\n\n"
     # TODO No such command: run __rm when composeCommand="run --rm"
 #    [ -n "$cliContainerId" ] && composeCommand="exec" ||
     composeCommand="run --no-deps"

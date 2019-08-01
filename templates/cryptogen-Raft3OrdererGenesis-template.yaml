@@ -24,7 +24,7 @@ OrdererOrgs:
 
     Template:
       Count: ${RAFT_NODES_COUNT}
-      Start: 0
+      Start: ${RAFT_NODES_NUMBERING_START}
 #      Hostname: "raft{{.Index}}.${ORG}"
       Hostname: "${ORDERER_NAME_PREFIX}{{.Index}}"
       SANS:
