@@ -197,7 +197,7 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:1.4.2_ST
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
