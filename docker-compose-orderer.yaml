@@ -32,8 +32,8 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./templates:/etc/hyperledger/templates # for local debug
-      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ./templates:/etc/hyperledger/templates # for local debug
+#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   post-install:
@@ -115,8 +115,8 @@ services:
       - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
-      - ./templates:/etc/hyperledger/templates # for local debug
-      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ./templates:/etc/hyperledger/templates # for local debug
+#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server

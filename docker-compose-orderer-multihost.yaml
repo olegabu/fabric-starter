@@ -9,6 +9,8 @@ services:
   pre-install:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates # for local debug
 
   post-install:
     volumes:
@@ -29,9 +31,11 @@ services:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
-#      - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+#      - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates # for local debug
+#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+
 
   # http serves certificates
   www.orderer:

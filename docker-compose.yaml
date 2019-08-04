@@ -190,14 +190,14 @@ services:
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
 #    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
 #    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
-  #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-  #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+#     - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+#     - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:1.4.2_ST
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:

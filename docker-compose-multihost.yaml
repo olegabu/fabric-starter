@@ -9,12 +9,13 @@ services:
   pre-install:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+#      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates # for local debug
+#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
   post-install:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
       - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
-#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
   ca:
     volumes:
@@ -34,13 +35,12 @@ services:
       - ${CHAINCODE_HOME-/home/docker/chaincode}:/opt/chaincode
       - ${WORK_DIR-/home/docker}/chaincode/go:/opt/gopath/src
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
-      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
       #    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
       - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
-      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates # for local debug
-      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates # for local debug
+#      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
   # fabric-rest api server
   api:
@@ -56,8 +56,8 @@ services:
       - ${WEBAPP_HOME-/home/docker/webapp}:/usr/src/app/webapp
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
-  #      - ${WORK_DIR-/home/docker}/middleware:/usr/src/app/routes # for local debug
-      - ${WORK_DIR-/home/docker}/templates:/usr/src/app/templates # for local debug
+#      - ${WORK_DIR-/home/docker}/middleware:/usr/src/app/routes # for local debug
+#      - ${WORK_DIR-/home/docker}/templates:/usr/src/app/templates # for local debug
 
   # block event listener
   #  listener:
