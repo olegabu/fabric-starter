@@ -11,7 +11,5 @@ initArguments=${3-'[]'}
 chaincodeVersion=${4-1.0}
 privateCollectionPath=${5}
 endorsementPolicy=${6}
-env|sort
-ls -l $CORE_PEER_MSPCONFIGPATH
 
 instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$privateCollectionPath" "$endorsementPolicy"

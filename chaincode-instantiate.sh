@@ -11,4 +11,6 @@ chaincodeVersion=${4-1.0}
 privateCollectionPath=${5}
 endorsementPolicy=${6}
 
+: ${PEER0_PORT:=7051}
+
 ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME} runCLI "container-scripts/network/chaincode-instantiate.sh $channelName $chaincodeName $initArguments $chaincodeVersion $privateCollectionPath $endorsementPolicy"

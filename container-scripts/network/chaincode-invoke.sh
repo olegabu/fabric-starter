@@ -2,7 +2,8 @@
 source container-scripts/lib/container-lib.sh
 source ../lib/container-lib.sh 2>/dev/null # for IDE code completion
 
-env|sort
 channelName=${1:?Channel name is required}
-downloadOrdererMSP ${ORDERER_NAME}
-joinChannel "$channelName"
+chaincodeName=${2:?Chaincode name is required}
+arguments=${3-'[]'}
+
+invokeChaincode "$channelName" "$chaincodeName" "$arguments"

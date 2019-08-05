@@ -7,5 +7,5 @@ version=${2-1.0}
 path=${3-"/opt/chaincode/node/$chaincodeName"}
 lang=${4-node}
 
-set -x
+env|sort
 installChaincode "$chaincodeName" "$path" "$lang" "$version"

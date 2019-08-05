@@ -58,6 +58,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+      - PEER0_PORT
     working_dir: /etc/hyperledger
     command: container-scripts/install-default-chaincodes.sh
     depends_on:
@@ -89,7 +90,8 @@ services:
     environment:
     - CORE_PEER_ID=peer0.${ORG:-org1}.${DOMAIN:-example.com}
     - CORE_PEER_LOCALMSPID=${ORG:-org1}
-    - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_INTERNAL_PORT:-7051}
+    - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_LISTENADDRESS=0.0.0.0:${PEER0_PORT:-7051}
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     # the following setting starts chaincode containers on the same
     # bridge network as the peers
@@ -106,7 +108,7 @@ services:
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
-    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_INTERNAL_PORT:-7051}
+    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
@@ -172,6 +174,7 @@ services:
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
       - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - PEER0_PORT
       - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
@@ -191,7 +194,7 @@ services:
 #    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
 #    - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
 #     - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-#     - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+#    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server
@@ -212,6 +215,7 @@ services:
       - MSP_DIR=/usr/src/app/msp
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
+      - PEER0_PORT
       - DISCOVER_AS_LOCALHOST=false
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
       - ENROLL_ID

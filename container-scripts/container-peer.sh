@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # maOS workaround
+
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
 

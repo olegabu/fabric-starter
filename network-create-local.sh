@@ -80,12 +80,15 @@ info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instanti
 
 # Other organizations join the channel
 
+peer0_port=${PEER0_PORT:-7051}
+
 for org in "${@:2}"
 do
     export ORG=${org}
     export COMPOSE_PROJECT_NAME=${ORG}
+    peer0_port=$((peer0_port + 1000))
     info "Joining $org to channel ${channel}"
-    ./channel-join.sh ${channel}
-    ./chaincode-install.sh ${chaincode_install_args}
+    PEER0_PORT=$peer0_port ./channel-join.sh ${channel}
+    PEER0_PORT=$peer0_port ./chaincode-install.sh ${chaincode_install_args}
     unset ORG COMPOSE_PROJECT_NAME
 done
