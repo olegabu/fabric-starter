@@ -216,13 +216,14 @@ function installChaincode {
 }
 
 
-function instantiateChaincode() {
-    local channelName=${1:?Channel name must be specified}
-    local chaincodeName=${2:?Chaincode name must be specified}
-    local initArguments=${3:-[]}
-    local chaincodeVersion=${4:-1.0}
-    local privateCollectionPath=${5}
-    local endorsementPolicy=${6}
+function initChaincode() {
+    local operation=${1:?Operation is required}
+    local channelName=${2:?Channel is required}
+    local chaincodeName=${3:?Chaincode is required}
+    local initArguments=${4:-[]}
+    local chaincodeVersion=${5:-1.0}
+    local privateCollectionPath=${6}
+    local endorsementPolicy=${7}
     local arguments="{\"Args\":$initArguments}"
 
     if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
@@ -231,9 +232,16 @@ function instantiateChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
 
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode ${operation} -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
 }
 
+function instantiateChaincode() {
+    initChaincode instantiate $@
+}
+
+function upgradeChaincode() {
+    initChaincode upgrade $@
+}
 
 function callChaincode() {
     channelName=${1:?Channel name must be specified}
