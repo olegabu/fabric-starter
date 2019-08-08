@@ -34,17 +34,24 @@ ca_port=${CA_PORT:-7054}
 peer0_port=${PEER0_PORT:-7051}
 #
 
+ldap_http=${LDAP_PORT_HTTP:-6080}
+ldap_https=${LDAP_PORT_HTTPS:-6443}
+
+
 for org in ${orgs}
 do
-    export ORG=${org} API_PORT=${api_port} WWW_PORT=${www_port} PEER0_PORT=${peer0_port} CA_PORT=${ca_port}
+    export ORG=${org} API_PORT=${api_port} WWW_PORT=${www_port} PEER0_PORT=${peer0_port} CA_PORT=${ca_port} LDAP_PORT_HTTP=${ldap_http} LDAP_PORT_HTTPS=${ldap_https}
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
+    echo "docker-compose ${docker_compose_args} up -d"
     docker-compose ${docker_compose_args} up -d
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))
     peer0_port=$((peer0_port + 1000))
-    unset ORG COMPOSE_PROJECT_NAME API_PORT WWW_PORT PEER0_PORT CA_PORT
+    ldap_http=$((ldap_http + 100))
+    ldap_https=$((ldap_https + 100))
+    unset ORG COMPOSE_PROJECT_NAME API_PORT WWW_PORT PEER0_PORT CA_PORT LDAP_PORT_HTTP LDAP_PORT_HTTPS
 done
 
 # Add member organizations to the consortium
