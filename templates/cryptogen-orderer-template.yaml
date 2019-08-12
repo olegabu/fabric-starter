@@ -14,19 +14,3 @@ OrdererOrgs:
     # ---------------------------------------------------------------------------
     Specs:
       - Hostname: ${ORDERER_NAME}
-
-
-  # ---------------------------------------------------------------------------
-  # Raft Orderer
-  # ---------------------------------------------------------------------------
-#  - Name: RaftOrderer
-#    Domain: ${DOMAIN}
-#
-#    Template:
-#      Count: 3
-#      Start: 0
-##      Hostname: "raft{{.Index}}.${ORG}"
-#      Hostname: "raft{{.Index}}"
-#      SANS:
-#        - "localhost"
-#

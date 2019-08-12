@@ -220,17 +220,17 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             OrdererType: etcdraft
-            Addresses: [${ORDERER_NAME_PREFIX}0.${ORDERER_DOMAIN}:${RAFT0_PORT}, ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}:${RAFT1_PORT},${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}:${RAFT2_PORT}]
+            Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${RAFT0_PORT}, ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}:${RAFT1_PORT},${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}:${RAFT2_PORT}]
             EtcdRaft:
               # The set of Raft replicas for this network. For the etcd/raft-based
               # implementation, we expect every replica to also be an OSN. Therefore,
               # a subset of the host:port items enumerated in this list should be
               # replicated under the Orderer.Addresses key above.
               Consenters:
-                - Host: ${ORDERER_NAME_PREFIX}0.${ORDERER_DOMAIN}
+                - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
                   Port: ${RAFT0_PORT}
-                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${ORDERER_DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}0.${ORDERER_DOMAIN}/tls/server.crt
+                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
                 - Host: ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}
                   Port: ${RAFT1_PORT}
                   ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}/tls/server.crt

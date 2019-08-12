@@ -64,6 +64,11 @@ services:
     depends_on:
       - pre-install
       - peer0
+    volumes:
+      - ./crypto-config:/etc/hyperledger/crypto-config
+#      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+
 
   ca:
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}

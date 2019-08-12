@@ -50,7 +50,7 @@ ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/2_raft-prepare-new-consenter.sh
 
 * Org1 node: add new orderer node config to system channel
 ```bash
-ORDERER_NAME=raft0 raft/3_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${ORG2_DOMAIN:-${DOMAIN}} ${RAFT0_PORT}
+ORDERER_NAME=raft0 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${ORG2_DOMAIN:-${DOMAIN}} ${RAFT0_PORT}
 ```
 * Wait for new config is replicated between nodes 
 

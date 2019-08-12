@@ -17,10 +17,7 @@ if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$
     [ -f "templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml" ] && cryptogenTemplate="templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml"
     envsubst < "${cryptogenTemplate}" > "crypto-config/cryptogen-orderer.yaml"
     rm -rf crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/
-#    mkdir temp && pushd temp
     cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
-#    cp -r --no-clobber crypto-config ../
-#    popd
 else
     echo "Orderer MSP exists. Generation skipped".
 fi
