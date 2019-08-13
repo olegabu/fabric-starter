@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 source lib.sh
 
 
@@ -24,6 +25,10 @@ printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
 DOMAIN=${domain1} raft/1_raft-start-3-nodes.sh
 sleep 20
 
+if [ "$domain1" == "$domain2" ]; then
+    printYellow "Delete WWW container to allow new concenter from same domain start flowlessly"
+    docker rm -f www.${domain1}
+fi
 
 printYellow "2_raft-prepare-new-consenter.sh: Prepare ORG 2 raft0:"
 DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/2_raft-prepare-new-consenter.sh
@@ -34,7 +39,7 @@ DOMAIN=${domain1} raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${domain2} 
 sleep 5
 
 printYellow "4_raft-start-consenter.sh: Start Org2-raft0, wait for join:"
-ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.orderer.${domain1}
+ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
 echo "Waitng ${ORG2_RAFT_NAME_1}.${domain2}"
 sleep 20
 
@@ -53,7 +58,7 @@ DOMAIN=${domain1} raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_2} ${domain2} 
 sleep 5
 
 printYellow "8 _raft-start-consenter.sh: Start ${ORG2_RAFT_NAME_2}, wait for join:"
-DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} ORDERER_GENERAL_LISTENPORT=${RAFT1_PORT} raft/4_raft-start-consenter.sh www.orderer.${domain1}
+DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} ORDERER_GENERAL_LISTENPORT=${RAFT1_PORT} raft/4_raft-start-consenter.sh www.${domain1}
 
 echo "Waitng raft1.example2.com"
 sleep 20

@@ -73,17 +73,21 @@ info "Creating channel ${channel} by $ORG"
 
 # First organization adds other organizations to the channel
 
+peer0_port=$((${PEER0_PORT:-7051}+1000))
+
 for org in "${@:2}"
 do
     info "Adding $org to channel ${channel}"
-    ./channel-add-org.sh ${channel} ${org}
+    ./channel-add-org.sh ${channel} ${org} ${peer0_port}
+    peer0_port=$((peer0_port + 1000))
 done
 
 # First organization creates the chaincode
-
-info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
-./chaincode-install.sh ${chaincode_install_args}
-./chaincode-instantiate.sh ${chaincode_instantiate_args}
+if [ -n "${chaincode_install_args}" ]; then
+   info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
+   ./chaincode-install.sh ${chaincode_install_args}
+   ./chaincode-instantiate.sh ${chaincode_instantiate_args}
+fi
 
 # Other organizations join the channel
 
@@ -96,6 +100,8 @@ do
     peer0_port=$((peer0_port + 1000))
     info "Joining $org to channel ${channel}"
     PEER0_PORT=$peer0_port ./channel-join.sh ${channel}
-    PEER0_PORT=$peer0_port ./chaincode-install.sh ${chaincode_install_args}
+    if [ -n "${chaincode_install_args}" ]; then
+        PEER0_PORT=$peer0_port ./chaincode-install.sh ${chaincode_install_args}
+    fi
     unset ORG COMPOSE_PROJECT_NAME
 done

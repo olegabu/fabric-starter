@@ -15,14 +15,12 @@ REMOTE_WWW_ADDR=${1:?Remote www addr is requried}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN ORDERER_GENERAL_LISTENPORT
 
-echo "Stop orderer ${ORDERER_NAME}.${ORDERER_DOMAIN}"
-COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} down -v
-docker rm -f www.${ORDERER_NAME}.${ORDERER_DOMAIN} 2>/dev/null
-docker rm -f www.${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN} 2>/dev/null
-docker rm -f www.${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN} 2>/dev/null
-sleep 1
 COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} EXECUTE_BY_ORDERER=1 runCLI "container-scripts/ops/download-remote-config-block.sh $REMOTE_WWW_ADDR"
 sleep 1
+
+echo "Stop orderer ${ORDERER_NAME}.${ORDERER_DOMAIN}"
+COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} down -v
+docker rm -f www.${ORDERER_DOMAIN} 2>/dev/null
 echo "Start orderer ${ORDERER_NAME}.${ORDERER_DOMAIN} with new genesis"
 COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d orderer cli.orderer www.orderer
 

@@ -14,7 +14,7 @@ exampleMsg="ORG=org1 ORDERER_NAME_PREFIX=raft0 $0"
 
 export DOMAIN WWW_PORT
 
-echo "Start first Raft node 0 ()"
+echo "Start first Raft node 0 (orderer.$DOMAIN)"
 ORDERER_GENESIS_PROFILE=Raft3OrdererGenesis COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d orderer cli.orderer www.orderer
 sleep 5
 echo "Start first Raft node 1"

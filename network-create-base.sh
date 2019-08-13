@@ -58,7 +58,7 @@ if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachin
     echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
 fi
 
-WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
+WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
 
 # Create member organizations
 

@@ -6,7 +6,8 @@ source ../lib/container-lib.sh 2>/dev/null # for IDE code completion
 
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 newOrg=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
+newOrgAnchorPeerPort=${3:-7051}
 
 downloadOrgMSP ${newOrg}
-addOrgToChannel $channelName $newOrg
+addOrgToChannel $channelName $newOrg $newOrgAnchorPeerPort
 

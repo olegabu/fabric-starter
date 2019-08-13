@@ -42,7 +42,3 @@ services:
     depends_on:
       - ldap-service
 
-networks:
-  default:
-    external:
-      name: fabric-starter_default

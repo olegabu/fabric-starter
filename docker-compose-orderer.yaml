@@ -174,7 +174,7 @@ services:
 
   www.orderer:
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
-    container_name: www.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
+    container_name: www.${DOMAIN:-example.com}
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:
@@ -183,7 +183,3 @@ services:
     depends_on:
     - post-install
 
-networks:
-  default:
-    external:
-      name: fabric-starter_default

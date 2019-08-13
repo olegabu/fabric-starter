@@ -74,8 +74,3 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/configtx:/usr/share/nginx/html/configtx
     ports:
       - ${WWW_PORT:-80}:80
-
-networks:
-  default:
-    external: false
-    name: fabric-starter_default

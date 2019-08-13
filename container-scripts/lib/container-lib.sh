@@ -25,7 +25,8 @@ function downloadOrdererMSP() {
     local wwwPort=${3:-80}
 
     local mspSubPath="$remoteOrdererDOMAIN"
-    local serverDNSName=${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
+#    local serverDNSName=${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
+    local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
     wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
@@ -82,9 +83,10 @@ function txTranslateChannelConfigBlock() {
 }
 
 function updateChannelGroupConfigForOrg() {
-    local org=$1
-    local templateFileOfUpdate=$2
-    export NEWORG=${org}
+    local org=${1:?Org is required}
+    local templateFileOfUpdate=${2:?Template file is required}
+    local newOrgAnchorPeerPort=${3:-7051}
+    export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
     envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
 }
@@ -124,8 +126,9 @@ function insertObjectIntoChannelConfig() {
     local channel=${1:?Channel is required}
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
+    local peer0Port=${4}
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile"
+    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port
 }
 
 
@@ -189,12 +192,13 @@ function createChannel() {
 }
 
 function addOrgToChannel() {
-    local channel=${1:?"Channel must be specified"}
-    local org=${2:?"New Org must be specified"}
+    local channel=${1:?"Channel is required"}
+    local org=${2:?"New Org is required"}
+    local newOrgAnchorPeerPort=${3}
 
-    echo " >> Add new org '$org' to channel $channel"
+    echo " >> Add new org '$org' to channel $channel, anchor peer at port $newOrgAnchorPeerPort"
     certificationsToEnv $org
-    updateChannelConfig $channel $org ./templates/NewOrg.json
+    updateChannelConfig $channel $org ./templates/NewOrg.json $newOrgAnchorPeerPort
 }
 
 function joinChannel() {
