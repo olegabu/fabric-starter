@@ -12,7 +12,7 @@ exampleMsg="ORG=org1 ORDERER_NAME_PREFIX=raft0 $0"
 : ${ORDERER_NAME:=orderer}
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml"}
 
-export DOMAIN WWW_PORT
+export DOMAIN WWW_PORT ORDERER_NAME
 
 echo "Start first Raft node 0 (orderer.$DOMAIN)"
 ORDERER_GENESIS_PROFILE=Raft3OrdererGenesis COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d orderer cli.orderer www.orderer
