@@ -10,7 +10,7 @@ orgs=${@:-org1}
 first_org=${1:-org1}
 
 channel=${CHANNEL:-common}
-chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
+chaincode_install_args=${CHAINCODE_INSTALL_ARGS-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
 docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml}
 
