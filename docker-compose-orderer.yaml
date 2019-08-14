@@ -183,3 +183,7 @@ services:
     depends_on:
     - post-install
 
+networks:
+  default:
+    external: false
+    name: fabric-starter_default

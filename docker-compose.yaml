@@ -264,3 +264,7 @@ services:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
 
+networks:
+  default:
+    external: false
+    name: fabric-starter_default
