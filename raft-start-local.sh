@@ -45,10 +45,14 @@ sleep 20
 
 printYellow "5_raft-update-endpoints: Include endpoints ${ORG2_RAFT_NAME_1}.${domain2} to the system-channel"
 DOMAIN=${domain1} raft/5_raft-update-endpoints.sh ${ORG2_RAFT_NAME_1} ${domain2} ${RAFT0_PORT}
+sleep 5
 
 echo -e "\n################# Second orderer node for Org2: raft1\n"
 
-sleep 5
+if [ "$domain1" == "$domain2" ]; then
+    printYellow "Delete WWW container to allow new concenter from same domain start flowlessly"
+    docker rm -f www.${domain1}
+fi
 printYellow "6. Prepare ORG 2 raft4:"
 DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} raft/2_raft-prepare-new-consenter.sh
 sleep 5
