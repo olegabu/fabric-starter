@@ -252,7 +252,7 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
-    command: sh -c "sleep 60 && npm start"
+    command: sh -c "npm start"
 
   # simple http server to disseminate certificates
   www.peer:
