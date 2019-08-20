@@ -43,7 +43,3 @@ services:
       - certs.generate
       - api
 
-networks:
-  default:
-    external:
-      name: fabric-starter_default
