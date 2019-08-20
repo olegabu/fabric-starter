@@ -47,8 +47,6 @@ services:
     environment:
       - MULTIHOST=true
     #      - P=${WORK_DIR-/home/docker}
-    ports:
-      - ${API_PORT:-4000}:3000
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts_orderer
