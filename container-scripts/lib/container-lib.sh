@@ -209,6 +209,24 @@ function joinChannel() {
     CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b crypto-config/configtx/$channel.pb
 }
 
+function createChaincodePackage() {
+    local chaincodeName=${1:?Chaincode name must be specified}
+    local chaincodePath=${2:?Chaincode path must be specified}
+    local chaincodeLang=${3:?Chaincode lang must be specified}
+    local chaincodeVersion=${4:?Chaincode version must be specified}
+    local chaincodePackageName=${5:?Chaincode PackageName must be specified}
+
+    echo "Packaging chaincode $chaincodePath to $chaincodeName"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
+}
+
+function installChaincodePackage() {
+    local chaincodeName=${1:?Chaincode package must be specified}
+
+    echo "Install chaincode package $chaincodeName"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
+}
+
 function installChaincode {
     local chaincodeName=${1:?Chaincode name must be specified}
     local chaincodePath=${2:-$chaincodeName}
@@ -218,7 +236,6 @@ function installChaincode {
     echo "Install chaincode $chaincodeName  $chaincodePath $lang $chaincodeVersion"
     CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
 }
-
 
 function initChaincode() {
     local operation=${1:?Operation is required}
