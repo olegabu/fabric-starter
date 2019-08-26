@@ -10,4 +10,4 @@ consortiumName=${3:-"SampleConsortium"}
 
 downloadOrgMSP ${NEWORG} ${NEWORG_DOMAIN}
 txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
-updateConsortium $NEWORG ${SYSTEM_CHANNEL_ID}
+updateConsortium $NEWORG ${SYSTEM_CHANNEL_ID} ${NEWORG_DOMAIN}
