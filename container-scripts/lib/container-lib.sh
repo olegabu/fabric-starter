@@ -136,7 +136,9 @@ function insertObjectIntoChannelConfig() {
 function updateChannelConfig() {
     local channel=${1:?Channel is required}
     local org=${2:?Org is required}
-    certificationsToEnv $org
+
+    local domain=${5:-$DOMAIN}
+    certificationsToEnv $org $domain
     insertObjectIntoChannelConfig $@
     createConfigUpdateEnvelope $channel
 }
@@ -201,7 +203,7 @@ function addOrgToChannel() {
 
     echo " >> Add new org '$org' to channel $channel, anchor peer at port $newOrgAnchorPeerPort"
     certificationsToEnv $org $newOrgDomain
-    updateChannelConfig $channel $org ./templates/NewOrg.json $newOrgAnchorPeerPort
+    updateChannelConfig $channel $org ./templates/NewOrg.json $newOrgAnchorPeerPort $newOrgDomain
 }
 
 function joinChannel() {
