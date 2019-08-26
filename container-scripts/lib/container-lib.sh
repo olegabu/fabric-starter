@@ -33,7 +33,8 @@ function downloadOrdererMSP() {
 
 function downloadOrgMSP() {
     local org=${1:?Org is required}
-    downloadMSP "peerOrganizations" ${org}.${DOMAIN}
+    local domain=${2:-$DOMAIN}
+    downloadMSP "peerOrganizations" ${org}.${domain}
 }
 
 function downloadMSP() {
@@ -164,10 +165,11 @@ function removeObjectFromChannelConfig() {
 function updateConsortium() {
     local org=${1:?Org to be added to consortium must be specified}
     local channel=${2:?System channel must be specified}
-    local updateTemplateFile=${3:-./templates/Consortium.json}
-    local consortiumName=${4:-SampleConsortium}
+    local domain=${3:-$DOMAIN}
+    local updateTemplateFile=${4:-./templates/Consortium.json}
+    local consortiumName=${5:-SampleConsortium}
     export CONSORTIUM_NAME=${consortiumName}
-    certificationsToEnv $org
+    certificationsToEnv $org $domain
     updateChannelConfig $channel $org "$updateTemplateFile"
 }
 
@@ -195,9 +197,10 @@ function addOrgToChannel() {
     local channel=${1:?"Channel is required"}
     local org=${2:?"New Org is required"}
     local newOrgAnchorPeerPort=${3}
+    local newOrgDomain=${4:-$DOMAIN}
 
     echo " >> Add new org '$org' to channel $channel, anchor peer at port $newOrgAnchorPeerPort"
-    certificationsToEnv $org
+    certificationsToEnv $org $newOrgDomain
     updateChannelConfig $channel $org ./templates/NewOrg.json $newOrgAnchorPeerPort
 }
 
