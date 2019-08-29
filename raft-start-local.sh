@@ -30,6 +30,8 @@ if [ "$domain1" == "$domain2" ]; then
     docker rm -f www.${domain1}
 fi
 
+echo -e "\n################# orderer (RAFT0) orderer node for Org2\n"
+
 printYellow "2_raft-prepare-new-consenter.sh: Prepare ORG 2 raft0:"
 DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/2_raft-prepare-new-consenter.sh
 sleep 5
@@ -39,32 +41,35 @@ DOMAIN=${domain1} raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${domain2} 
 sleep 5
 
 printYellow "4_raft-start-consenter.sh: Start Org2-raft0, wait for join:"
-ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
+# skip restarting as in local deployment it's already started and successfully joined at prepare step
+#ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
 echo "Waitng ${ORG2_RAFT_NAME_1}.${domain2}"
+
 sleep 20
 
 printYellow "5_raft-update-endpoints: Include endpoints ${ORG2_RAFT_NAME_1}.${domain2} to the system-channel"
 DOMAIN=${domain1} raft/5_raft-update-endpoints.sh ${ORG2_RAFT_NAME_1} ${domain2} ${RAFT0_PORT}
 sleep 5
 
-echo -e "\n################# Second orderer node for Org2: raft1\n"
+echo -e "\n################# RAFT1 orderer node for Org2\n"
 
 if [ "$domain1" == "$domain2" ]; then
-    printYellow "Delete WWW container to allow new concenter from same domain start flowlessly"
+    printYellow "Delete WWW container to allow new consenter from same domain start flowlessly"
     docker rm -f www.${domain1}
 fi
 printYellow "6. Prepare ORG 2 raft4:"
-DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} raft/2_raft-prepare-new-consenter.sh
+DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} ORDERER_GENERAL_LISTENPORT=${RAFT1_PORT} raft/2_raft-prepare-new-consenter.sh
 sleep 5
 
-printYellow "7. raft-add-consenter.sh: to add raft1 to the consenters list"
+printYellow "7. raft-add-consenter.sh: to add ${ORG2_RAFT_NAME_2}.${domain2} to the consenters list"
 DOMAIN=${domain1} raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_2} ${domain2} ${RAFT1_PORT}
 sleep 5
 
 printYellow "8 _raft-start-consenter.sh: Start ${ORG2_RAFT_NAME_2}, wait for join:"
-DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} ORDERER_GENERAL_LISTENPORT=${RAFT1_PORT} raft/4_raft-start-consenter.sh www.${domain1}
+# skip restarting as in local deployment it's already started and successfully joined at prepare step
+#DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_2} ORDERER_GENERAL_LISTENPORT=${RAFT1_PORT} raft/4_raft-start-consenter.sh www.${domain1}
 
-echo "Waitng raft1.example2.com"
+echo "Waitng ${ORG2_RAFT_NAME_2}.${domain2}"
 sleep 20
 
 printYellow "4_raft-update-endpoints: Include endpoints raft4.${domain2} to the system-channel"

@@ -26,7 +26,7 @@ function runCLI() {
     fi
 
     # TODO No such command: run __rm when composeCommand="run --rm"
-    composeCommand="run --no-deps --rm"
+    composeCommand="run --no-deps "
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }

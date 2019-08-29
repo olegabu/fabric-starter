@@ -175,7 +175,7 @@ Profiles:
       Orderer:
         <<: *OrdererDefaults
         OrdererType: etcdraft
-        Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${RAFT0_PORT}]
+        Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}]
         EtcdRaft:
           # The set of Raft replicas for this network. For the etcd/raft-based
           # implementation, we expect every replica to also be an OSN. Therefore,
