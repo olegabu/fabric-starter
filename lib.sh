@@ -8,6 +8,7 @@ source lib/util/util.sh
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
 : ${FABRIC_STARTER_HOME:=.}
+: ${DOCKER_COMPOSE_OPTION_RM:="--rm"}
 
 : ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 
@@ -26,7 +27,7 @@ function runCLI() {
     fi
 
     # TODO No such command: run __rm when composeCommand="run --rm"
-    composeCommand="run --no-deps "
+    composeCommand="run --no-deps ${DOCKER_COMPOSE_OPTION_RM}"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
