@@ -127,13 +127,13 @@ export DOCKER_REGISTRY=192.168.99.1:5000
  
 #####orderer (and org1) machine:
 ```bash
-    WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
-    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+    WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 dd#####org2(,org3...) machine:
 ```bash
-    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 #####orderer machine again:
@@ -199,7 +199,7 @@ eval "$(docker-machine env orderer)"
 Inspect created hosts' IPs and collect them into `hosts` file to copy to the hosts. This file will be mapped to the
 docker containers' `/etc/hosts` to resolve names to IPs.
 This is better done by the script.
-Alternatively, edit `extra_hosts` in `multihost.yaml` and `orderer-multihost.yaml` to specify host IPs directly.
+Alternatively, edit `extra_hosts` in `docker-compose-multihost.yaml` and `docker-compose-orderer-multihost.yaml` to specify host IPs directly.
 
 ```bash
 docker-machine ip orderer
@@ -210,7 +210,7 @@ docker-machine ip org2
 Generate crypto material for the orderer organization and start its docker containers.
 ```bash
 ./generate-orderer.sh
-docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
 ```
 
 ### Create member organizations
@@ -233,7 +233,7 @@ eval "$(docker-machine env $ORG)"
 Generate crypto material for the org and start its docker containers.
 ```bash
 ./generate-peer.sh
-docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 To create other organizations repeat the above steps in separate consoles 

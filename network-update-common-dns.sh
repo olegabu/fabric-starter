@@ -3,6 +3,8 @@
 source lib/util/util.sh
 source lib.sh
 
+setDocker_LocalRegistryEnv
+
 export MULTIHOST=true
 : ${CHANNEL:=common}
 
