@@ -30,7 +30,8 @@ The following sections describe Fabric Starter possibilites in more details:
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
 - [Join to an External Network](#joinexternal)
-- [Consortium Types. Invite-based and Majority-based Governance](#consortiumtypes)
+- [Network Governance. Invite-based and Majority-based Governance](#network-governance)
+- [Consensus Types. RAFT consensus algorithm](#consensus-types)
 - [Development\Release cycle](#releasecycle)
 
 
@@ -81,10 +82,10 @@ export BOOTSTRAP_IP=192.168.0.1
 Then the new organization passes the ip address of the newly deployed node to the network's member and this member adds the organization to Consortium by it's administration dashboard.
 After that the new organization can create own channels, add other organizations to the own channels and even invite more organizations to the network itself.     
 
-<a name="consortiumtypes"></a>
-## Consortium Types. Invite-based and Majority-based Governance
+<a name="network-governance"></a>
+## Network Governance. Invite-based and Majority-based Governance
 
-So now our network can be governed by itself (or to say it right by the netwrk's members). 
+So now our network can be governed by itself (or to say it right by the network's members). 
 The first type of network-governance is `Invite-based`. With this type of deployment 
 any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
 
@@ -103,6 +104,12 @@ MY_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=
 ```
 
 `Majority` type of governance is coming.       
+
+
+<a name="consensus-types"></a>
+Consensus Types. RAFT consensus algorithm.
+By default Fabric Starter uses Solo type of consensus.
+To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
 
 
 <a name="releasecycle"></a>
