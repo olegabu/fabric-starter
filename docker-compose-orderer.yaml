@@ -42,7 +42,7 @@ services:
     environment:
       - ORDERER=true
       - CONSORTIUM_CONFIG
-      - CORE_PEER_LOCALMSPID=orderer
+      - CORE_PEER_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
     working_dir: /etc/hyperledger
     #    command: container-scripts/consortium-reconfigure.sh
