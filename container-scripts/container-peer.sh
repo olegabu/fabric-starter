@@ -6,17 +6,7 @@ touch "crypto-config/hosts_$ORG"
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
 
-tree crypto-config
-
-: ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
-: ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
-
-export ORDERER_DOMAIN ORDERER_NAME
-env|sort
-
-if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp" ]; then
-    echo "Generation $ORG peer MSP."
-
+function prepareLDAPBaseDN() {
     IFS='.' read -r -a subDomains <<< ${DOMAIN}
 
     echo $DOMAIN
@@ -28,21 +18,38 @@ if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN
         export LDAP_BASE_DN
     fi
 
-    [ -n "$LDAP_ENABLED" ] && echo "LDAP Url used: $LDAP_BASE_DN"
+    [ -n "$LDAP_ENABLED" ] && echo "Using LDAP Url: $LDAP_BASE_DN"
+}
+
+######## START #######
+
+tree crypto-config
+
+: ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
+: ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
+
+export ORDERER_DOMAIN ORDERER_NAME
+env|sort
+
+prepareLDAPBaseDN
+envsubst < "templates/fabric-ca-server-template.yaml" > "crypto-config/fabric-ca-server-config-$ORG.yaml"
+
+if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp" ]; then
+    echo "Generation $ORG peer MSP."
 
     envsubst < "templates/cryptogen-peer-template.yaml" > "crypto-config/cryptogen-$ORG.yaml"
-    envsubst < "templates/fabric-ca-server-template.yaml" > "crypto-config/fabric-ca-server-config-$ORG.yaml"
     cryptogen generate --config=crypto-config/cryptogen-$ORG.yaml
-    mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
-    mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
-    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null
-
-    mkdir -p crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known
-    cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
-    cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
 else
     echo "$ORG MSP exists (crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp). Generation skipped."
 fi
+
+[ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
+[ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
+cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null
+
+mkdir -p crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known
+cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
+cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
 
 if [ ! -f "crypto-config/hosts_$ORG" ]; then
     if [ -n "$BOOTSTRAP_IP" ]; then

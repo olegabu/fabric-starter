@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 
+touch crypto-config/hosts_orderer
+
 tree crypto-config
 
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
@@ -39,9 +41,9 @@ else
 fi
 
 echo "Copying well-known tls certs to nginx "
-mkdir -p crypto-config/ordererOrganizations/$DOMAIN/msp/well-known
-cp crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem crypto-config/ordererOrganizations/${DOMAIN}/msp/well-known/msp-admin.pem 2>/dev/null
-cp crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem crypto-config/ordererOrganizations/${DOMAIN}/msp/well-known/tlsca-cert.pem 2>/dev/null
+mkdir -p crypto-config/ordererOrganizations/$DOMAIN/msp/.well-known
+cp crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem crypto-config/ordererOrganizations/${DOMAIN}/msp/.well-known/msp-admin.pem 2>/dev/null
+cp crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem crypto-config/ordererOrganizations/${DOMAIN}/msp/.well-known/tlsca-cert.pem 2>/dev/null
 
 tlsCert="crypto-config/ordererOrganizations/${DOMAIN}/orderers/${ORDERER_NAME}.$DOMAIN/tls/server.crt"
 tlsNginxFolder=crypto-config/ordererOrganizations/${DOMAIN}/msp/${ORDERER_NAME}.$DOMAIN/tls

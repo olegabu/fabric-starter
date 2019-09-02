@@ -47,6 +47,7 @@ copyDirToMachine $ordererMachineName templates ${WORK_DIR}/templates
 copyDirToMachine $ordererMachineName container-scripts ${WORK_DIR}/container-scripts
 
 connectMachine $ordererMachineName
+
 ./clean.sh
 # Copy generated hosts file to the host machines
 echo -e "${hosts}" > hosts

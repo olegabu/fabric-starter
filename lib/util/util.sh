@@ -74,7 +74,7 @@ function virtualboxHostIpAddr() {
 
 function runningDockerContainer() {
     local containerName=${1:?Container name expected}
-    echo `docker ps -aq -f name=${containerName}`
+    echo `docker ps -q -f name=${containerName}`
 }
 
 function localHostRunningDockerContainer() {
@@ -135,9 +135,17 @@ function connectMachine() {
     local machine=`getDockerMachineName $1`
     sleep 1
     info "Connecting to org $1 in remote machine $machine"
+    docker-machine env ${machine} 2>&1 1>/dev/null
+    local res=$?
     eval "$(docker-machine env ${machine})"
-    export ORG=${1}
-    env | grep DOCKER
+
+    if [ $res -eq 0 ]; then
+        export ORG=${1}
+        env | grep DOCKER
+    else
+        printError "Can't connect to machine. See errors above. Exit code: $res"
+        exit $res
+    fi
 }
 
 function getMachineIp() {

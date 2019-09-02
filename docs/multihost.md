@@ -25,14 +25,9 @@ Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
 
 Use script [network-docker-machine-create.sh](./network-docker-machine-create.sh) to create a network with an arbitrary 
-number of member organizations each running in its own virtual host.
+number of member organizations each running in its own virtual host (`orderer` node is started on the `org1`'s host):
 ```bash
 ./network-docker-machine-create.sh org1 org2 org3
-```
-
-There is an option to start orderer and the first organization nodes on the same host simultaneously:
-```bash
-./network-docker-machine-create.sh org1:orderer org2 org3
 ```
 
 
@@ -44,7 +39,7 @@ WEBAPP_HOME=/home/oleg/webapp \
 CHAINCODE_HOME=/home/oleg/chaincode \
 CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' \
 CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
-./network-create-docker-machine.sh a b
+./network-docker-machine-create.sh a b
 ```
 
 The script [network-create-docker-machine.sh](./network-create-docker-machine.sh) combines
@@ -75,9 +70,15 @@ export DOCKER_MACHINE_FLAGS="--driver amazonec2 \
 ```
 More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
 
+
+* Stop the local docker images registry if started:
+ ```bash
+ docker stop docker-registry
+ ```
+
 * Then start the network:
 ```bash
-./network-create-docker-machine.sh org1 org2 org3
+./network-docker-machine-create.sh org1 org2 org3
 ```
 
 ## Quick start with remote hosts on Microsoft Azure
@@ -118,43 +119,64 @@ DOMAIN=mynetwork.org CHANNEL=a-b WEBAPP_HOME=/home/oleg/webapp CHAINCODE_HOME=/h
 
 ## Manual start using Web Admin Dashboard without docker-machine
 
-The first host is used for both orderer and org1 deployment.
+Now we will use two separate hosts and setup network of two organizations manually.
 
-If you like to use local docker registry (on all machines):
+In test\dev mode, if you use Oracle VirtualBox's machines you can use local docker registry which 
+results faster docker images downloading.
+
+* Start local registry with:
+```bash
+ ./extra/docker-registry-local/start-docker-registry-local.sh
+``` 
+This will start the `registry` docker container which provides docker registry on port `5000`. 
+
+Having registry container is running start virtual machines with:
+```bash
+./host-create.sh org1 org2
+```
+
+Then on virtual machines you'll specify address of the local registry:
 ```bash
 export DOCKER_REGISTRY=192.168.99.1:5000
 ``` 
  
-#####orderer (and org1) machine:
+#####org1/orderer machine:
 ```bash
+    export DOCKER_REGISTRY=192.168.99.1:5000
     WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
     BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 dd#####org2(,org3...) machine:
 ```bash
-    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
+    export DOCKER_REGISTRY=192.168.99.1:5000
+    ORG=org2 BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.yy MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
-#####orderer machine again:
+##### org1/orderer machine again:
 ```bash 
     ./consortium-add-org.sh org1
-    ./consortium-add-org.sh org2
     ...
 ```
 
-#####orderer-IP(org1-IP):4000/admin:    
+#####Configure network using admin dashboard: 
+- open Admin Dashboard <org1-IP>:4000/admin
 - add channel "common"
-- instantiate chaincode: "dns"
-- invoke dns.put ("192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com")
-- invoke dns.registerOrg  ("org2.example.com" "192.168.99.yy")
-- organizations: add organization to channel "org2"
-- invoke dns.registerOrg  ("org3.example.com" "192.168.99.zz")
-- 
-- organizations: add organization to channel "org3"
+- instantiate chaincode: `dns`
+- invoke `dns`, function:`put`, params:"192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com")
+- organizations: `Add organization to channel`  ("org2" "192.168.99.yy")
+- organizations: `Add organization to channel`  ("org3" "192.168.99.zz")
+
 - install custom chaincode
 - instantiate custom chaincode
 
+##### org1/orderer machine again:
+```bash 
+    ./consortium-add-org.sh org2
+    ./consortium-add-org.sh org3
+    ...
+```
+    
 #####org2-IP:4000/admin:
 - join channel "common"
 - install custom chaincode

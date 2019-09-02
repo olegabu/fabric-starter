@@ -24,8 +24,8 @@ See also
 
 The following sections describe Fabric Starter possibilites in more details:
 
-- [Installation.](#install)
-- [Network with 1 organization (and orderer) for development.](#example1org)
+- [Prerequisites](#install)
+- [Network with 1 organization (and orderer) for development](#example1org)
 - [Several organizations on one (local) host in multiple docker containers.](#example3org)
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
@@ -38,7 +38,7 @@ The following sections describe Fabric Starter possibilites in more details:
 
 <a name="install"></a>
 ## Install
-See [Installation](docs/install.md)
+See [Prerequisites](docs/install.md)
 
 
 
