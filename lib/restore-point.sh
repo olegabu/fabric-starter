@@ -18,8 +18,8 @@ printInColor "1;32" "Using backup from $backupDir"
 docker rm -f tempCopy 2>/dev/null
 docker run --name tempCopy --detach \
 -v /var/lib/docker:/docker \
--v data:/opt/data \
--v crypto-config:/opt/crypto-config \
+-v $PWD/data:/opt/data \
+-v $PWD/crypto-config:/opt/crypto-config \
 -v ${backupDir}:/backup \
 olegabu/fabric-tools-extended bash -c "tail -f /var/log/dpkg.log"
 
@@ -29,8 +29,8 @@ docker exec -t tempCopy bash -c "cp -r -a -f /backup/volumes /docker"
 docker exec -t tempCopy bash -c "ls /docker/volumes"
 docker exec -t tempCopy bash -c "chown -v ${USER_ID} -r /opt/crypto-config"
 docker exec -t tempCopy bash -c "chown -v ${USER_ID} -r /opt/data"
+docker exec -t tempCopy bash -c "cp -r /backup/data /opt/data"
+docker exec -t tempCopy bash -c "cp -r /backup/crypto-config /opt/crypto-config"
 
 docker rm -f tempCopy 1>/dev/null
 
-cp -r -a ${backupDir}/crypto-config/ ./
-cp -r -a ${backupDir}/data/ ./
