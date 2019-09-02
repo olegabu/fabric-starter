@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export DOMAIN=${DOMAIN1}
+echo "ORG=${ORG1} DOMAIN=${DOMAIN1} ORDERER_NAME=raft0 ORDERER_DOMAIN=${RAFT_DOMAIN1} MULTIHOST=true WORK_DIR=./ docker-compose ${DOCKER_COMPOSE_ARGS} up -d"
+ORG=${ORG1} ORDERER_NAME=raft0 ORDERER_DOMAIN=${RAFT_DOMAIN1} MULTIHOST=true WORK_DIR=./ docker-compose ${DOCKER_COMPOSE_ARGS} up -d
+sleep 5
