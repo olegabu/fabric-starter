@@ -11,7 +11,7 @@ exampleMsg="$0 1"
 backupLabel=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 backupDir="$PWD/backup/$backupLabel"
 
-sudo rm -r -f "$backupDir"
+#sudo rm -r -f "$backupDir" TODO: check if backup dir exists and warn user
 mkdir -p "$backupDir"
 
 echo; printInColor "1;32" "Stopping containers"
@@ -25,7 +25,7 @@ docker run --rm \
 -v data:/opt/data \
 -v crypto-config:/opt/crypto-config \
 olegabu/fabric-tools-extended bash \
--c "cp -r -a /docker/volumes /backup && chown ${USER_ID}:${USER_ID} -R /opt/crypto-config && chown ${USER_ID}:${USER_ID} -R /opt/data && rm -rf opt/data/ldap/*/certs/* && cp -r -a /opt/data /backup && cp -r -a /opt/crypto-config /backup "
+-c "rm -r -f /backup/* && cp -r -a /docker/volumes /backup && chown ${USER_ID}:${USER_ID} -R /opt/crypto-config && chown ${USER_ID}:${USER_ID} -R /opt/data && rm -rf opt/data/ldap/*/certs/* && cp -r -a /opt/data /backup && cp -r -a /opt/crypto-config /backup "
 
 echo; printInColor "1;32" "Starting containers up"
 docker start $(docker ps -aq)
