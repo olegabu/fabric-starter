@@ -70,4 +70,4 @@ fi
 echo -e "\ncrypto-config/hosts_$ORG:\n"
 cat crypto-config/hosts_$ORG
 
-downloadOrdererMSP ${ORDERER_NAME}
+

@@ -59,26 +59,26 @@ services:
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}/genesis.pb
       - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
-      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/msp
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
       - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9090
       - ORDERER_OPERATIONS_TLS_ENABLED=false
       - ORDERER_METRICS_PROVIDER=prometheus
 
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
     working_dir: /etc/hyperledger
     command: orderer
     depends_on:
       - pre-install
     volumes:
       - ./crypto-config/configtx:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
 
 

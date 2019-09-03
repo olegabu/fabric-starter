@@ -145,25 +145,22 @@ export DOCKER_REGISTRY=192.168.99.1:5000
     export DOCKER_REGISTRY=192.168.99.1:5000
     WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
     BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
+
+    ./consortium-add-org.sh org1
 ```
 
-dd#####org2(,org3...) machine:
+#####Start org2 (,org3...) machine:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     ORG=org2 BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.yy MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
-```
-
-##### org1/orderer machine again:
-```bash 
-    ./consortium-add-org.sh org1
-    ...
 ```
 
 #####Configure network using admin dashboard: 
 - open Admin Dashboard <org1-IP>:4000/admin
 - add channel "common"
 - instantiate chaincode: `dns`
-- invoke `dns`, function:`put`, params:"192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com")
+- invoke `dns`, function:`put`, params:   
+`"192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com"`
 - organizations: `Add organization to channel`  ("org2" "192.168.99.yy")
 - organizations: `Add organization to channel`  ("org3" "192.168.99.zz")
 

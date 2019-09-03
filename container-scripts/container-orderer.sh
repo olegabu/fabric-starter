@@ -8,20 +8,20 @@ if [ ! -f "crypto-config/hosts_orderer" ]; then
     export HOSTS_FILE_GENERATION_REQUIRED=true
     touch crypto-config/hosts_orderer
 fi
-touch crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN
 
 #tree crypto-config
 
 echo "DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_GENESIS_PROFILE=$ORDERER_GENESIS_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}"
 if [ ! -f "crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem" ]; then
-    echo "No file: crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem"
+    echo "File does not exists: crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/msp/admincerts/Admin@$DOMAIN-cert.pem"
     echo "Generation orderer MSP."
 
     cryptogenTemplate="templates/cryptogen-orderer-template.yaml"
     [ -f "templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml" ] && cryptogenTemplate="templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml"
     envsubst < "${cryptogenTemplate}" > "crypto-config/cryptogen-orderer.yaml"
-    rm -rf crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN/*
+    rm -rf crypto-config/ordererOrganizations/$DOMAIN/orderers/${ORDERER_NAME}.$DOMAIN
     cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
+    tree crypto-config/ordererOrganizations
 else
     echo "Orderer MSP exists. Generation skipped".
 fi
