@@ -29,9 +29,9 @@ docker exec -t tempCopy bash -c "cp -r -a -f /backup/volumes /docker"
 docker exec -t tempCopy bash -c "ls /docker/volumes"
 docker exec -t tempCopy bash -c "chown -R -v ${USER_ID} /opt/crypto-config"
 docker exec -t tempCopy bash -c "chown -R -v ${USER_ID} /opt/data"
-docker exec -t tempCopy bash -c "cp -r /backup/data /opt/data"
-docker exec -t tempCopy bash -c "cp -r /backup/crypto-config /opt/crypto-config"
-docker exec -t tempCopy bash -c "chown -R root:root /docker"
+docker exec -t tempCopy bash -c "cp -r /backup/data/* /opt/data/"
+docker exec -t tempCopy bash -c "cp -r /backup/crypto-config/* /opt/crypto-config/"
+docker exec -t tempCopy bash -c "chown -R root:root /docker/volumes"
 
 docker rm -f tempCopy 1>/dev/null
 
