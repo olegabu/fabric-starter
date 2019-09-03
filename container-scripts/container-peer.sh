@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # maOS workaround
-touch "crypto-config/hosts_$ORG"
+
+if [ ! -f "crypto-config/hosts_$ORG" ]; then
+    export HOSTS_FILE_GENERATION_REQUIRED=true
+    touch "crypto-config/hosts_$ORG"
+fi
 
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
@@ -51,16 +55,19 @@ mkdir -p crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known
 cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
 cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
 
-if [ ! -f "crypto-config/hosts_$ORG" ]; then
+if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
     if [ -n "$BOOTSTRAP_IP" ]; then
         echo "Generating crypto-config/hosts_$ORG"
         echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} api.${DOMAIN} ${DOMAIN}" > crypto-config/hosts_$ORG
-        echo "\n\nDownload orderer MSP envs from $BOOTSTRAP_IP\n\n"
-        downloadOrdererMSP ${ORDERER_NAME}
+        echo -e "\n\nDownload orderer MSP envs from $BOOTSTRAP_IP\n\n"
     else
         echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts_$ORG
     fi
 else
     echo "crypto-config/hosts_$ORG file exists. Generation skipped."
 fi
-    cat crypto-config/hosts_$ORG
+
+echo -e "\ncrypto-config/hosts_$ORG:\n"
+cat crypto-config/hosts_$ORG
+
+downloadOrdererMSP ${ORDERER_NAME}
