@@ -25,7 +25,7 @@ docker run --rm \
 -v data:/opt/data \
 -v crypto-config:/opt/crypto-config \
 olegabu/fabric-tools-extended bash \
--c "rm -r -f /backup/* && cp -r -a /docker/volumes /backup && chown ${USER_ID}:${USER_ID} -R /opt/crypto-config && chown ${USER_ID}:${USER_ID} -R /opt/data && rm -rf opt/data/ldap/*/certs/* && cp -r -a /opt/data /backup && cp -r -a /opt/crypto-config /backup "
+-c "rm -rf /backup/* && cp -r -a /docker/volumes /backup && rm -rf opt/data/ldap/*/certs/* && cp -r -a /opt/data /backup && cp -r -a /opt/crypto-config /backup && chown ${USER_ID}:${USER_ID} -R /backup"
 
 echo; printInColor "1;32" "Starting containers up"
 docker start $(docker ps -aq)
