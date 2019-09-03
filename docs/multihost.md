@@ -161,8 +161,10 @@ export DOCKER_REGISTRY=192.168.99.1:5000
 - instantiate chaincode: `dns`
 - invoke `dns`, function:`put`, params:   
 `"192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com"`
-- organizations: `Add organization to channel`  ("org2" "192.168.99.yy")
-- organizations: `Add organization to channel`  ("org3" "192.168.99.zz")
+- organizations: `Add organization to channel`:  *"org2", "192.168.99.yy"*  (this will add dns-information for org2) 
+- organizations: `Add organization to channel`  *"org3", "192.168.99.zz"* (this will add dns-information for org3)
+- or just add dns-information for an org:  
+ chaincode: `dns` invoke function `registerOrg`("org2.example.com" "192.168.99.yy")
 
 - install custom chaincode
 - instantiate custom chaincode
