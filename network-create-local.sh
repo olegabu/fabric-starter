@@ -12,7 +12,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml}
 
 # Clean up. Remove all containers, delete local crypto material
 
@@ -37,13 +37,16 @@ peer0_port=${PEER0_PORT:-7051}
 ldap_http=${LDAP_PORT_HTTP:-6080}
 ldap_https=${LDAP_PORT_HTTPS:-6443}
 
+custom_port=${CUSTOM_PORT}
+
 
 for org in ${orgs}
 do
-    export ORG=${org} API_PORT=${api_port} WWW_PORT=${www_port} PEER0_PORT=${peer0_port} CA_PORT=${ca_port} LDAP_PORT_HTTP=${ldap_http} LDAP_PORT_HTTPS=${ldap_https}
+    export ORG=${org} API_PORT=${api_port} WWW_PORT=${www_port} PEER0_PORT=${peer0_port} CA_PORT=${ca_port} LDAP_PORT_HTTP=${ldap_http} LDAP_PORT_HTTPS=${ldap_https} CUSTOM_PORT=${custom_port}
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     echo "docker-compose ${docker_compose_args} up -d"
+
     docker-compose ${docker_compose_args} up -d
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
@@ -51,7 +54,8 @@ do
     peer0_port=$((peer0_port + 1000))
     ldap_http=$((ldap_http + 100))
     ldap_https=$((ldap_https + 100))
-    unset ORG COMPOSE_PROJECT_NAME API_PORT WWW_PORT PEER0_PORT CA_PORT LDAP_PORT_HTTP LDAP_PORT_HTTPS
+    custom_port=$((custom_port + 1))
+    unset ORG COMPOSE_PROJECT_NAME API_PORT WWW_PORT PEER0_PORT CA_PORT LDAP_PORT_HTTP LDAP_PORT_HTTPS CUSTOM_PORT
 done
 
 # Add member organizations to the consortium
