@@ -183,8 +183,8 @@ function updateAnchorPeers() {
 
 function createChannel() {
     local channelName=${1:?Channel name must be specified}
-    echo "Create channel $ORG $channelName"
-    downloadOrdererMSP ${ORDERER_NAME}
+    echo -e "\nCreate channel $ORG $channelName"
+    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
     mkdir -p crypto-config/configtx
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
 

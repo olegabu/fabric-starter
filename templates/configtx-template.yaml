@@ -158,7 +158,7 @@ Profiles:
             <<: *OrdererDefaults
             OrdererType: solo
             Addresses:
-              - orderer.${DOMAIN}:7050
+              - orderer.${DOMAIN}:${ORDERER_GENERAL_LISTENPORT}
             Organizations:
                 - *OrdererOrg
             Capabilities:
