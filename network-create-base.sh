@@ -8,24 +8,24 @@ setDocker_LocalRegistryEnv
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
 
-: ${CHANNEL:=common}
-: ${CHAINCODE_INSTALL_ARGS:=reference}
-: ${CHAINCODE_INSTANTIATE_ARGS:=common reference}
-: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f multihost.yaml }
+: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml }
 : ${CHAINCODE_HOME:=chaincode}
 : ${WEBAPP_HOME:=webapp}
 : ${MIDDLEWARE_HOME:=middleware}
 
+ordererMachineName=${1:-orderer}
+shift
 
 declare -a ORGS_MAP=${@:-org1}
 orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
 first_org=${orgs%% *}
 
+echo "Orderer machine: $ordererMachineName, First org:$first_org, Orgs: $orgs"
 
 # Set WORK_DIR as home dir on remote machine
-setMachineWorkDir orderer
+setMachineWorkDir $ordererMachineName
 
-BOOTSTRAP_IP=$(getMachineIp orderer)
+BOOTSTRAP_IP=$(getMachineIp $ordererMachineName)
 export BOOTSTRAP_IP
 
 hosts="# created by network-create.sh\n${BOOTSTRAP_IP} www.${DOMAIN} orderer.${DOMAIN}"
@@ -39,29 +39,27 @@ done
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
 
-#docker-machine scp hosts ${ordererMachineName}:hosts
-#copyFileToMachine orderer hosts ${WORK_DIR}/hosts
-
-
 # Create orderer organization
 
 info "Creating orderer organization"
 
-copyDirToMachine orderer templates ${WORK_DIR}/templates
-copyDirToMachine orderer container-scripts ${WORK_DIR}/container-scripts
+copyDirToMachine $ordererMachineName templates ${WORK_DIR}/templates
+copyDirToMachine $ordererMachineName container-scripts ${WORK_DIR}/container-scripts
 
-connectMachine orderer
+connectMachine $ordererMachineName
+
 ./clean.sh
 # Copy generated hosts file to the host machines
 echo -e "${hosts}" > hosts
-createHostsFileInOrg orderer
 
-if [ -n "`getHostOrgForOrg ${first_org}`" ]; then
+createHostsFileInOrg $ordererMachineName orderer
+
+if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
     ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
-    echo "Orderer using WWW_PORT: $ORDERER_WWW_PORT"
+    echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
 fi
 
-WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f orderer-multihost.yaml up -d
+WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
 
 # Create member organizations
 
@@ -83,7 +81,7 @@ do
     info "Creating member organization $org"
     connectMachine ${org}
     export MY_IP=$(getMachineIp ${org})
-    [ -z `getHostOrgForOrg $org` ] && ./clean.sh
+    [[ -z `getHostOrgForOrg $org` && ("${org}" != "$ordererMachineName") ]] && ./clean.sh && sleep 2
     echo -e "${hosts}" > hosts
     createHostsFileInOrg $org
 

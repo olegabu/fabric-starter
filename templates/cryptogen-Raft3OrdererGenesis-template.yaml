@@ -1,0 +1,22 @@
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # Raft Orderer
+  # ---------------------------------------------------------------------------
+  - Name: RaftOrderer
+    Domain: ${DOMAIN}
+
+    Specs:
+      - Hostname: ${ORDERER_NAME}
+
+    Template:
+      Count: ${RAFT_NODES_COUNT}
+      Start: ${RAFT_NODES_NUMBERING_START}
+#      Hostname: "raft{{.Index}}.${ORG}"
+      Hostname: "${ORDERER_NAME_PREFIX}{{.Index}}"
+      SANS:
+        - "localhost"
+

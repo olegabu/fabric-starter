@@ -24,20 +24,21 @@ See also
 
 The following sections describe Fabric Starter possibilites in more details:
 
-- [Installation.](#install)
-- [Network with 1 organization (and orderer) for development.](#example1org)
+- [Prerequisites](#install)
+- [Network with 1 organization (and orderer) for development](#example1org)
 - [Several organizations on one (local) host in multiple docker containers.](#example3org)
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
 - [Join to an External Network](#joinexternal)
-- [Consortium Types. Invite-based and Majority-based Governance](#consortiumtypes)
+- [Network Governance. Invite-based and Majority-based Governance](#network-governance)
+- [Consensus Types. RAFT consensus algorithm](#consensus-types)
 - [Development\Release cycle](#releasecycle)
 
 
 
 <a name="install"></a>
 ## Install
-See [Installation](docs/install.md)
+See [Prerequisites](docs/install.md)
 
 
 
@@ -81,10 +82,10 @@ export BOOTSTRAP_IP=192.168.0.1
 Then the new organization passes the ip address of the newly deployed node to the network's member and this member adds the organization to Consortium by it's administration dashboard.
 After that the new organization can create own channels, add other organizations to the own channels and even invite more organizations to the network itself.     
 
-<a name="consortiumtypes"></a>
-## Consortium Types. Invite-based and Majority-based Governance
+<a name="network-governance"></a>
+## Network Governance. Invite-based and Majority-based Governance
 
-So now our network can be governed by itself (or to say it right by the netwrk's members). 
+So now our network can be governed by itself (or to say it right by the network's members). 
 The first type of network-governance is `Invite-based`. With this type of deployment 
 any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
 
@@ -94,15 +95,21 @@ export CONSORTIUM_CONFIG=InviteConsortiumPolicy
 ```
 Start orderer:
 ```bash
-WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
 ```
 
 Then start an organization
 ```bash
-MY_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d 
+MY_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d 
 ```
 
 `Majority` type of governance is coming.       
+
+
+<a name="consensus-types"></a>
+Consensus Types. RAFT consensus algorithm.
+By default Fabric Starter uses Solo type of consensus.
+To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
 
 
 <a name="releasecycle"></a>

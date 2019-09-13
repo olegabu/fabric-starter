@@ -7,7 +7,7 @@ version: '3.7'
 services:
   orderer:
     ports:
-      - 7050:7050
+      - ${ORDERER_GENERAL_LISTENPORT:-7050}:${ORDERER_GENERAL_LISTENPORT:-7050}
       - 9090:9090
 
   www.orderer:

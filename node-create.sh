@@ -15,7 +15,7 @@ cleanBeforeStart=${4}
 setDocker_LocalRegistryEnv # local DOCKER_REGISTRY if started
 
 
-: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f multihost.yaml }
+: ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml}
 
 connectMachine ${org}
 [ "${reuseOldConfig}" ] || ./clean.sh

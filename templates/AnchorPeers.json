@@ -9,7 +9,7 @@
               "anchor_peers": [
                 {
                   "host": "peer0.${NEWORG}.${DOMAIN}",
-                  "port": 7051
+                  "port": "${PEER0_PORT}"
                 }
               ]
             },

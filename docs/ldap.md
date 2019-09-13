@@ -40,8 +40,8 @@ Start Ldap service and Ldap PHP Admin application in docker containers:
  docker-compose -f docker-compose-ldap.yaml up
   ```
 
-Ldap PHP Admin now is available at http://localhost:6080
-Login name for ldap-service is **cn=admin,dc=example,dc=com**, password **adminpw** (or as specified in the *.env* file)
+Ldap PHP Admin now is available at http://localhost:6080.  
+Default login name for ldap-service is **cn=admin,dc=example,dc=com**, password **adminpw** (or as specified in the *.env* file)
 
 To add new users to ldap directories use **Create new entry here** item in the domain tree. Use **Courier Mail: Account** template.
 

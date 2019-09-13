@@ -25,14 +25,9 @@ Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
 
 Use script [network-docker-machine-create.sh](./network-docker-machine-create.sh) to create a network with an arbitrary 
-number of member organizations each running in its own virtual host.
+number of member organizations each running in its own virtual host (`orderer` node is started on the `org1`'s host):
 ```bash
 ./network-docker-machine-create.sh org1 org2 org3
-```
-
-There is an option to start orderer and the first organization nodes on the same host simultaneously:
-```bash
-./network-docker-machine-create.sh org1:orderer org2 org3
 ```
 
 
@@ -44,7 +39,7 @@ WEBAPP_HOME=/home/oleg/webapp \
 CHAINCODE_HOME=/home/oleg/chaincode \
 CHAINCODE_INSTALL_ARGS='example02 1.0 chaincode_example02 golang' \
 CHAINCODE_INSTANTIATE_ARGS="a-b example02 [\"init\",\"a\",\"10\",\"b\",\"0\"] 1.0 collections.json AND('a.member','b.member')" \
-./network-create-docker-machine.sh a b
+./network-docker-machine-create.sh a b
 ```
 
 The script [network-create-docker-machine.sh](./network-create-docker-machine.sh) combines
@@ -56,13 +51,34 @@ env variables to recreate the network on the same remote hosts by clearing and c
 
 ## Quick start with remote hosts on AWS EC2
 
-Define `amazonec2` driver for docker-machine and open ports in `docker-machine` security group.
-Make sure your AWS credentials are saved in env variables or `~/.aws/credentials` or passed as arguments
-`--amazonec2-access-key` and `--amazonec2-secret-key`. 
-More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
+* Define `amazonec2` driver for docker-machine and open ports in `docker-machine` security group.
+* Make sure your AWS credentials are saved in env variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) 
+or `~/.aws/credentials` or passed as arguments --amazonec2-access-key` and `--amazonec2-secret-key`.
+
+* Determine the AWS `region` (e.g. `us-east-1` or `us-west-1`) and find the `vpc_id` 
+corresponded to this region (or make sure the `region` has a default `vpc`)
+* Determine which AWS `instance types` you are going to use (instance types with at least 4Gb RAM are recommended, e.g. `c5.xlarge`) 
+* Provide AWS related flags environment for `docker-machine`:
+
 ```bash
-DOCKER_MACHINE_FLAGS="--driver amazonec2 --amazonec2-open-port 80 --amazonec2-open-port 7050 --amazonec2-open-port 7051 --amazonec2-open-port 4000" \
-./network-create-docker-machine.sh org1 org2 org3
+export DOCKER_MACHINE_FLAGS="--driver amazonec2 \
+    --amazonec2-region us-east-1 \
+    --amazonec2-vpc-id vpc-0e3f0c2243772be49 \
+    --amazonec2-instance-type c5.xlarge \
+    --amazonec2-open-port 80 --amazonec2-open-port 7050 --amazonec2-open-port 7051 --amazonec2-open-port 4000"
+
+```
+More settings are described on the [driver page](https://docs.docker.com/machine/drivers/aws/).
+
+
+* Stop the local docker images registry if started:
+ ```bash
+ docker stop docker-registry
+ ```
+
+* Then start the network:
+```bash
+./network-docker-machine-create.sh org1 org2 org3
 ```
 
 ## Quick start with remote hosts on Microsoft Azure
@@ -103,44 +119,57 @@ DOMAIN=mynetwork.org CHANNEL=a-b WEBAPP_HOME=/home/oleg/webapp CHAINCODE_HOME=/h
 
 ## Manual start using Web Admin Dashboard without docker-machine
 
-The first host is used for both orderer and org1 deployment.
+Now we will use two separate hosts and setup network of two organizations manually.
 
-If you like to use local docker registry (on all machines):
+In test\dev mode, if you use Oracle VirtualBox's machines you can use local docker registry which 
+results faster docker images downloading.
+
+* Start local registry with:
+```bash
+ ./extra/docker-registry-local/start-docker-registry-local.sh
+``` 
+This will start the `registry` docker container which provides docker registry on port `5000`. 
+
+Having registry container is running start virtual machines with:
+```bash
+./host-create.sh org1 org2
+```
+
+Then on virtual machines you'll specify address of the local registry (if used):
 ```bash
 export DOCKER_REGISTRY=192.168.99.1:5000
 ``` 
  
-#####orderer (and org1) machine:
+#####org1/orderer machine:
 ```bash
-    WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
-    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
-```
+    export DOCKER_REGISTRY=192.168.99.1:5000
+    WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
+    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 
-dd#####org2(,org3...) machine:
-```bash
-    BOOTSTRAP_IP=192.168.99.xx ORG=org2 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f multihost.yaml up -d
-```
-
-#####orderer machine again:
-```bash 
     ./consortium-add-org.sh org1
-    ./consortium-add-org.sh org2
-    ...
 ```
 
-#####orderer-IP(org1-IP):4000/admin:    
-- add channel "common"
-- instantiate chaincode: "dns"
-- invoke dns.put ("192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com")
-- invoke dns.registerOrg  ("org2.example.com" "192.168.99.yy")
-- organizations: add organization to channel "org2"
-- invoke dns.registerOrg  ("org3.example.com" "192.168.99.zz")
-- 
-- organizations: add organization to channel "org3"
+#####Start org2 (,org3...) machine:
+```bash
+    export DOCKER_REGISTRY=192.168.99.1:5000
+    ORG=org2 BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.yy MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
+```
+
+#####Configure network using Admin Dashboard: 
+- open Admin Dashboard <org1-IP>:4000/admin
+- see channel "common" is already created
+- wait for chaincode `dns` is auto-instantiated (this can take couple of minutes), when done the `dns` appears in the Chaincodes List  
+- organizations: Use `Add organization to channel` specifying IP and ports:  *"org2", "192.168.99.yy"*  (this will add dns-information for org2) 
+- organizations: `Add organization to channel`  *"org3", "192.168.99.zz"* (this will add dns-information for org3)
+- or a dns-information of an Org can be registered the blockchain-network:  
+ chaincode: `dns` invoke function `registerOrg` with params `"org2.example.com" "192.168.99.yy"`
+
 - install custom chaincode
 - instantiate custom chaincode
 
-#####org2-IP:4000/admin:
+- Use Consortium sub-form to add orgs to Consortium, specify org name, ip, WWW Port where certificates are served
+    
+#####org2-IP:4000/Admin Dashboard:
 - join channel "common"
 - install custom chaincode
 
@@ -170,11 +199,6 @@ Tell the scripts to use extra multihost docker-compose yaml files.
 export MULTIHOST=true
 ```
 
-Copy config templates to the orderer host.
-```bash
-docker-machine scp -r templates orderer:templates
-```
-
 Connect docker client to the orderer host. 
 The docker commands that follow will be executed on the host not local machine.
 ```bash
@@ -184,7 +208,7 @@ eval "$(docker-machine env orderer)"
 Inspect created hosts' IPs and collect them into `hosts` file to copy to the hosts. This file will be mapped to the
 docker containers' `/etc/hosts` to resolve names to IPs.
 This is better done by the script.
-Alternatively, edit `extra_hosts` in `multihost.yaml` and `orderer-multihost.yaml` to specify host IPs directly.
+Alternatively, edit `extra_hosts` in `docker-compose-multihost.yaml` and `docker-compose-orderer-multihost.yaml` to specify host IPs directly.
 
 ```bash
 docker-machine ip orderer
@@ -192,10 +216,9 @@ docker-machine ip org1
 docker-machine ip org2
 ```
 
-Generate crypto material for the orderer organization and start its docker containers.
+Start orderer docker containers (crypto-material will be auto-generated).
 ```bash
-./generate-orderer.sh
-docker-compose -f docker-compose-orderer.yaml -f orderer-multihost.yaml up -d
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
 ```
 
 ### Create member organizations
@@ -205,9 +228,9 @@ Open a new console. Use env variables to tell the scripts to use multihost confi
 export MULTIHOST=true && export ORG=org1
 ```
 
-Copy templates, chaincode and webapp folders to the host.
+Copy chaincode and webapp folders to the host.
 ```bash
-docker-machine scp -r templates $ORG:templates && docker-machine scp -r chaincode $ORG:chaincode && docker-machine scp -r webapp $ORG:webapp
+docker-machine scp -r chaincode $ORG:chaincode && docker-machine scp -r webapp $ORG:webapp
 ```
 
 Connect docker client to the organization host.
@@ -215,10 +238,9 @@ Connect docker client to the organization host.
 eval "$(docker-machine env $ORG)"
 ```
 
-Generate crypto material for the org and start its docker containers.
+Start peer docker containers (again, crypto-material for peer will be auto-generated).
 ```bash
-./generate-peer.sh
-docker-compose -f docker-compose.yaml -f multihost.yaml up -d
+docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 To create other organizations repeat the above steps in separate consoles 

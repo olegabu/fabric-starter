@@ -5,9 +5,9 @@ exampleMsg="$0 org1"
 
 IFS=
 NEWORG=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
-consortiumName=${2:-"SampleConsortium"}
+NEWORG_DOMAIN=${2:-$DOMAIN}
+consortiumName=${3:-"SampleConsortium"}
 
 echo "Add $NEWORG to consortium $consortiumName"
-EXECUTE_BY_ORDERER=1 downloadMSP ${NEWORG}
-#EXECUTE_BY_ORDERER=1 txTranslateChannelConfigBlock "orderer-system-channel"
-EXECUTE_BY_ORDERER=1 updateConsortium $NEWORG "orderer-system-channel"
+
+EXECUTE_BY_ORDERER=1 ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} runCLI "container-scripts/orderer/consortium-add-org.sh ${NEWORG} ${NEWORG_DOMAIN}"

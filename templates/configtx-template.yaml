@@ -3,8 +3,8 @@ Organizations:
 
     - &OrdererOrg
         Name: Orderer
-        ID: orderer
-        MSPDir: ordererOrganizations/${DOMAIN}/msp
+        ID: orderer.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
 
     - &firstOrg
         Name: ${ORG}
@@ -15,7 +15,7 @@ Organizations:
         # for cross org gossip communication.  Note, this value is only
         # encoded in the genesis block in the Application section context
         - Host: peer0.${ORG}.${DOMAIN}
-          Port: 7051
+          Port: ${PEER0_PORT}
 
 Capabilities:
   Global: &ChannelCapabilities
@@ -25,19 +25,104 @@ Capabilities:
   Application: &ApplicationCapabilities
     V1_2: true
 
+Application: &ApplicationDefaults
+  ACLs: &ACLsDefault
+    # This section provides defaults for policies for various resources
+    # in the system. These "resources" could be functions on system chaincodes
+    # (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other resources
+    # (e.g.,who can receive Block events). This section does NOT specify the resource's
+    # definition or API, but just the ACL policy for it.
+    #
+    # User's can override these defaults with their own policy mapping by defining the
+    # mapping under ACLs in their channel definition
+
+    #---Lifecycle System Chaincode (lscc) function to policy mapping for access control---#
+
+    # ACL policy for lscc's "getid" function
+    lscc/ChaincodeExists: /Channel/Application/Readers
+
+    # ACL policy for lscc's "getdepspec" function
+    lscc/GetDeploymentSpec: /Channel/Application/Readers
+
+    # ACL policy for lscc's "getccdata" function
+    lscc/GetChaincodeData: /Channel/Application/Readers
+
+    # ACL Policy for lscc's "getchaincodes" function
+    lscc/GetInstantiatedChaincodes: /Channel/Application/Readers
+
+    #---Query System Chaincode (qscc) function to policy mapping for access control---#
+
+    # ACL policy for qscc's "GetChainInfo" function
+    qscc/GetChainInfo: /Channel/Application/Readers
+
+    # ACL policy for qscc's "GetBlockByNumber" function
+    qscc/GetBlockByNumber: /Channel/Application/Readers
+
+    # ACL policy for qscc's  "GetBlockByHash" function
+    qscc/GetBlockByHash: /Channel/Application/Readers
+
+    # ACL policy for qscc's "GetTransactionByID" function
+    qscc/GetTransactionByID: /Channel/Application/Readers
+
+    # ACL policy for qscc's "GetBlockByTxID" function
+    qscc/GetBlockByTxID: /Channel/Application/Readers
+
+    #---Configuration System Chaincode (cscc) function to policy mapping for access control---#
+
+    # ACL policy for cscc's "GetConfigBlock" function
+    cscc/GetConfigBlock: /Channel/Application/Readers
+
+    # ACL policy for cscc's "GetConfigTree" function
+    cscc/GetConfigTree: /Channel/Application/Readers
+
+    # ACL policy for cscc's "SimulateConfigTreeUpdate" function
+    cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+
+    #---Miscellanesous peer function to policy mapping for access control---#
+
+    # ACL policy for invoking chaincodes on peer
+    peer/Propose: /Channel/Application/Writers
+
+    # ACL policy for chaincode to chaincode invocation
+    peer/ChaincodeToChaincode: /Channel/Application/Readers
+
+    #---Events resource to policy mapping for access control###---#
+
+    # ACL policy for sending block events
+    event/Block: /Channel/Application/Readers
+
+    # ACL policy for sending filtered block events
+    event/FilteredBlock: /Channel/Application/Readers
+
+  # Organizations lists the orgs participating on the application side of the
+  # network.
+  Organizations:
+
+  # Policies defines the set of policies at this level of the config tree
+  # For Application policies, their canonical path is
+  #   /Channel/Application/<PolicyName>
+  Policies: &ApplicationDefaultPolicies
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+
+  # Capabilities describes the application level capabilities, see the
+  # dedicated Capabilities section elsewhere in this file for a full
+  # description
+  Capabilities:
+    <<: *ApplicationCapabilities
 
 
 Orderer: &OrdererDefaults
 
-    # Orderer Type: The orderer implementation to start
-    # Available types are "solo" and "kafka"
-    OrdererType: solo
-
-    Addresses:
-        - orderer.${DOMAIN}:7050
-
     # Batch Timeout: The amount of time to wait before creating a batch
-    BatchTimeout: 2s
+    BatchTimeout: ${ORDERER_BATCH_TIMEOUT}s
 
     # Batch Size: Controls the number of messages batched into a block
     BatchSize:
@@ -66,11 +151,14 @@ Orderer: &OrdererDefaults
 
 Profiles:
 
-    OrdererGenesis:
+    SoloOrdererGenesis:
         Capabilities:
             <<: *ChannelCapabilities
         Orderer:
             <<: *OrdererDefaults
+            OrdererType: solo
+            Addresses:
+              - orderer.${DOMAIN}:${ORDERER_GENERAL_LISTENPORT}
             Organizations:
                 - *OrdererOrg
             Capabilities:
@@ -79,7 +167,102 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *OrdererOrg
+#                    - *OrdererOrg
+
+    RaftOrdererGenesis:
+      Capabilities:
+        <<: *ChannelCapabilities
+      Orderer:
+        <<: *OrdererDefaults
+        OrdererType: etcdraft
+        Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}]
+        EtcdRaft:
+          # The set of Raft replicas for this network. For the etcd/raft-based
+          # implementation, we expect every replica to also be an OSN. Therefore,
+          # a subset of the host:port items enumerated in this list should be
+          # replicated under the Orderer.Addresses key above.
+          Consenters:
+            - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
+              Port: ${RAFT0_PORT}
+              ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+              ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+        Organizations:
+          - *OrdererOrg
+        Capabilities:
+          <<: *OrdererCapabilities
+        Policies:
+          Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+          Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+          Admins:
+            Type: ImplicitMeta
+            Rule: "ANY Admins"
+          # BlockValidation specifies what signatures must be included in the block
+          # from the orderer for the peer to validate it.
+          BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+#            - *OrdererOrg
+
+
+
+    Raft3OrdererGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            OrdererType: etcdraft
+            Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${RAFT0_PORT}, ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}:${RAFT1_PORT},${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}:${RAFT2_PORT}]
+            EtcdRaft:
+              # The set of Raft replicas for this network. For the etcd/raft-based
+              # implementation, we expect every replica to also be an OSN. Therefore,
+              # a subset of the host:port items enumerated in this list should be
+              # replicated under the Orderer.Addresses key above.
+              Consenters:
+                - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
+                  Port: ${RAFT0_PORT}
+                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+                - Host: ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}
+                  Port: ${RAFT1_PORT}
+                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}/tls/server.crt
+                - Host: ${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}
+                  Port: ${RAFT2_PORT}
+                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}/tls/server.crt
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+            Policies:
+              Readers:
+                Type: ImplicitMeta
+                Rule: "ANY Readers"
+              Writers:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+              Admins:
+                Type: ImplicitMeta
+                Rule: "ANY Admins"
+              # BlockValidation specifies what signatures must be included in the block
+              # from the orderer for the peer to validate it.
+              BlockValidation:
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
+
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+#                    - *OrdererOrg
 
 
     CHANNEL:
@@ -100,6 +283,8 @@ Profiles:
                   Type: ImplicitMeta
                   Rule: "ANY Writers"
               Admins:
+#                Type: ImplicitMeta
+#                Rule: "ANY Admins"
                 Type: Signature
                 Rule: "OutOf('1','${ORG}.admin')"
 #              Admins:

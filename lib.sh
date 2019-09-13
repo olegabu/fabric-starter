@@ -1,32 +1,35 @@
 #!/usr/bin/env bash
 
+source lib/util/util.sh
+
+
 : ${DOMAIN:="example.com"}
+: ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
 : ${FABRIC_STARTER_HOME:=.}
+: ${DOCKER_COMPOSE_OPTION_RM:="--rm"}
 
-: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem"}
+: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 
 
 export DOMAIN ORG
 
-function printInColor() {
-    color1=$1
-    message1=$2
-    color2=$3
-    message2=$4
-    echo -e "\033[${color1}m${message1}\033[m\033[${color2}m$message2\033[m"
-}
+function runCLI() {
+    local command="$1"
 
-function printRedYellow() {
-    printInColor "1;31" "$1" "1;33" "$2"
-}
+    if [ -n "$EXECUTE_BY_ORDERER" ]; then
+        service="cli.orderer"
+        checkContainer="cli.${ORDERER_NAME}.${ORDERER_DOMAIN}"
+    else
+        service="cli.peer"
+        checkContainer="cli.$ORG.$DOMAIN"
+    fi
 
-function printUsage() {
-    usageMsg=$1
-    exampleMsg=$2
-    printRedYellow "\nUsage:" "$usageMsg"
-    printRedYellow "\nExample:" "$exampleMsg"
+    # TODO No such command: run __rm when composeCommand="run --rm"
+    composeCommand="run --no-deps ${DOCKER_COMPOSE_OPTION_RM}"
+
+    runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
 
 function runCLIWithComposerOverrides() {
@@ -38,45 +41,26 @@ function runCLIWithComposerOverrides() {
     [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
 
     if [ "${MULTIHOST}" ]; then
-        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
+        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-fdocker-compose-orderer-multihost.yaml" || multihostComposeFile="-fdocker-compose-multihost.yaml"
     fi
 
-#    if [ "${PORTS}" ]; then
-#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
-#    fi
+    #    if [ "${PORTS}" ]; then
+    #        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
+    #    fi
 
     [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
     [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
 
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${service} ${command:+bash -c} $command"
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service} ${command:+bash -c} $command"
     if [ -n "$command" ]; then
-        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service} bash -c "${command}"
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${composeCommandSplitted[2]} ${service} bash -c "${command}"
     else
-        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${service}
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service}
     fi
 
     [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
 }
 
-
-function runCLI() {
-    local command="$1"
-
-    if [ -n "$EXECUTE_BY_ORDERER" ]; then
-        service="cli.orderer"
-        checkContainer="cli.$DOMAIN"
-    else
-        service="cli.peer"
-        checkContainer="cli.$ORG.$DOMAIN"
-    fi
-
-    cliContainerId=`docker ps --filter name=$checkContainer -q`
-
-    # TODO No such command: run __rm when composeCommand="run --rm"
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
-
-    runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
-}
 
 function envSubst() {
     inputFile=${1:?Input file required}
@@ -296,137 +280,3 @@ function info() {
 #    echo
 }
 
-function parseOrganizationsForDockerMachine() {
-    #   excpecting external variable is declared by: declare -a ORGS_MAP
-    local orgsArg=${@:?List of organizations is expected}
-    local orgs=()
-    for orgMachineParam in $orgsArg; do
-        local orgMachineArray=($(IFS=':'; echo ${orgMachineParam}))
-        local org=${orgMachineArray[0]};
-        orgs+=($org)
-#        ORGS_MAP["$org"]="${orgMachineArray[1]}"
-    done
-    echo "${orgs[@]}"
-    #  note: implicitly returning ORGS_MAP
-}
-
-function getHostOrgForOrg() {
-    local org=${1:?Org name is expected}
-    set +x
-    for org_Machine in $ORGS_MAP; do
-        local orgMachineArray=($(IFS=':'; echo ${org_Machine}))
-        if [ "${org}" == "${orgMachineArray[0]}" ]; then
-            echo ${orgMachineArray[1]}
-        fi
-    done
-}
-
-function getDockerMachineName() {
-    local org=${1:?Org name is expected}
-    local hostOrg=`getHostOrgForOrg $1`
-    if [ -n "$hostOrg" ]; then
-        local org=`getHostOrgForOrg $1`
-    fi
-    echo "$org.$DOMAIN"
-}
-
-function copyDirToMachine() {
-    local machine=`getDockerMachineName $1`
-    local src=$2
-    local dest=$3
-
-    info "Copying ${src} to remote machine ${machine}:${dest}"
-    docker-machine ssh ${machine} sudo rm -rf ${dest}
-#    docker-machine ssh ${machine} sudo mkdir -p ${dest}
-    docker-machine scp -r ${src} ${machine}:${dest}
-}
-
-function copyFileToMachine() {
-    local machine=`getDockerMachineName $1`
-    local src=$2
-    local dest=$3
-    info "Copying ${src} to remote machine ${machine}:${dest}"
-    docker-machine scp ${src} ${machine}:${dest}
-}
-
-function connectMachine() {
-    local machine=`getDockerMachineName $1`
-
-    info "Connecting to org $1 in remote machine $machine"
-    eval "$(docker-machine env ${machine})"
-    export ORG=${1}
-}
-
-function getMachineIp() {
-    local machine=`getDockerMachineName $1`
-    echo `(docker-machine ip ${machine})`
-}
-
-function setMachineWorkDir() {
-    local machine=`getDockerMachineName $1`
-    export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
-}
-
-function createDirInMachine() {
-    local machine=`getDockerMachineName $1`
-    local dir=${2:?Specify directory to create}
-    info "Create directory $dir on $machine"
-    docker-machine ssh ${machine} mkdir -p "$dir"
-}
-
-function createHostsFileInOrg() {
-    local org=${1:?Org must be specified}
-
-    cp hosts org_hosts
-    # remove entry of your own ip not to confuse docker and chaincode networking
-    sed -i.bak "/.*\.$org\.$DOMAIN*/d" org_hosts
-    orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
-
-    local siblingOrg=`getHostOrgForOrg $org`
-    if [ -n "$siblingOrg" ]; then
-        sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
-    fi
-    for hostOrg in ${orgs}; do
-        local siblingOrg=`getHostOrgForOrg $hostOrg`
-        echo "Check $hostOrg:$siblingOrg"
-        if [ "$siblingOrg" == "$org" ]; then
-            echo "Exclude record from hosts for $hostOrg:$siblingOrg"
-            sed -i.bak "/.*\.$hostOrg\.$DOMAIN*/d" org_hosts
-            sed -i.bak "/.*\.\?$siblingOrg\.$DOMAIN*/d" org_hosts
-        fi
-    done
-
-    createDirInMachine $org crypto-config
-    copyFileToMachine ${org} org_hosts crypto-config/hosts_${org}
-    rm org_hosts.bak org_hosts
-
-    # you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
-    # sudo cat hosts >> /etc/hosts
-}
-
-function createChannelAndAddOthers() {
-    local c=$1
-
-    connectMachine ${first_org}
-
-    info "Creating channel $c by $ORG"
-    ./channel-create.sh ${c}
-
-    # First organization adds other organizations to the channel
-    for org in ${orgs}
-    do
-        if [[ ${org} = ${first_org} ]]; then
-            continue
-        fi
-        info "Adding $org to channel $c"
-        ./channel-add-org.sh ${c} ${org}
-    done
-
-    # All organizations join the channel
-    for org in ${orgs}
-    do
-        info "Joining $org to channel $c"
-        connectMachine ${org}
-        ./channel-join.sh ${c}
-    done
-}

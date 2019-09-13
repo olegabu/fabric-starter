@@ -3,8 +3,13 @@
 source lib/util/util.sh
 source lib.sh
 
+setDocker_LocalRegistryEnv
+
 export MULTIHOST=true
 : ${CHANNEL:=common}
+
+ordererMachineName=${@:-orderer}
+shift
 
 declare -a ORGS_MAP=${@:-org1}
 orgs=`parseOrganizationsForDockerMachine ${ORGS_MAP}`
@@ -14,7 +19,7 @@ first_org=${orgs%% *}
 setMachineWorkDir $first_org
 
 # Add member organizations to the consortium
-connectMachine orderer
+connectMachine $ordererMachineName
 
 for org in ${orgs}
 do
@@ -23,11 +28,11 @@ do
 done
 
 # First organization creates application channel
-createChannelAndAddOthers ${CHANNEL}
+createChannelAndAddOthers ${CHANNEL} $first_org $orgs
 
 # First organization creates common channel if it's not the default application channel
 if [[ ${CHANNEL} != common ]]; then
-    createChannelAndAddOthers common
+    createChannelAndAddOthers common $first_org $orgs
 fi
 
 # First organization instantiates dns chaincode
@@ -42,8 +47,8 @@ sleep 5
 
 # First organization creates entries in dns chaincode
 
-ip=$(getMachineIp orderer)
-./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${DOMAIN} orderer.${DOMAIN}\"]"
+ip=$(getMachineIp $ordererMachineName)
+./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${DOMAIN} $ordererMachineName.${DOMAIN}\"]"
 
 for org in ${orgs}
 do
@@ -51,7 +56,7 @@ do
 #    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" // TODO: update registerOrg
     value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
     hostOrg=`getHostOrgForOrg $org`
-    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} orderer.${DOMAIN}"
+    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} $ordererMachineName.${DOMAIN}"
     value="$value\""
 
     ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"

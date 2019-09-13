@@ -25,7 +25,7 @@ services:
 
   peer0:
     ports:
-      - ${PEER0_PORT:-7051}:7051
+      - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 
 
   # simple http server to disseminate certificates
@@ -43,7 +43,3 @@ services:
       - certs.generate
       - api
 
-networks:
-  default:
-    external:
-      name: fabric-starter_default

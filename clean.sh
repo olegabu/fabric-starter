@@ -2,6 +2,7 @@
 source lib/util/util.sh
 source lib.sh
 
+all=${1}
 localRegistryStarted=`runningDockerContainer docker-registry`
 
 if [ -z "$localRegistryStarted" ] ; then
@@ -20,9 +21,10 @@ docker rmi -f $(docker images -q -f "reference=dev-*")
 
 if [ -z "$DOCKER_HOST" ] ; then
     docker-compose -f docker-compose-clean.yaml run --rm cli.clean rm -rf crypto-config/*
+    [ "$all" == "all" ] && docker-compose -f docker-compose-clean.yaml run --rm cli.clean rm -rf data/*
 else
     docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf crypto-config
-    docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf data/
+    [ "$all" == "all" ] && docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf data/
 fi
 
 #docker rmi -f $(docker images -q -f "reference=olegabu/fabric-starter-client")

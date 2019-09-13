@@ -1,5 +1,8 @@
 # Use REST API to query and invoke chaincodes
 
+**Note:** Here you cab find some examplese of using rest API. 
+Full list of provided functions can be found at a running node on the Swagger generated page `http://<node IP>:4000/api-docs` 
+
 Login into *org1* as *user1* and save returned token into env variable `JWT` which we'll use to identify our user 
 in subsequent requests:
 ```bash
