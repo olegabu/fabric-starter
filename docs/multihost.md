@@ -135,19 +135,25 @@ Having registry container is running start virtual machines with:
 ./host-create.sh org1 org2
 ```
 
-Then on virtual machines you'll specify address of the local registry (if used):
+On virtualbox machines you'll specify address of the local registry (if used):
 ```bash
 export DOCKER_REGISTRY=192.168.99.1:5000
 ``` 
  
-#####org1/orderer machine:
+#####org1/orderer machine 
+**`start orderer`**:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
-    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
-
-    ./consortium-add-org.sh org1
+    BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
+
+**`Then start peer`**:
+```bash
+    export DOCKER_REGISTRY=192.168.99.1:5000
+    BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
+```
+
 
 #####Start org2 (,org3...) machine:
 ```bash
