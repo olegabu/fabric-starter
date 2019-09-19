@@ -140,7 +140,7 @@ On virtualbox machines you'll specify address of the local registry (if used):
 export DOCKER_REGISTRY=192.168.99.1:5000
 ``` 
  
-#####org1/orderer machine 
+##### org1/orderer machine 
 **`start orderer`**:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
@@ -154,13 +154,13 @@ export DOCKER_REGISTRY=192.168.99.1:5000
 ```
 
 
-#####Start org2 (,org3...) machine:
+##### Start org2 (,org3...) machine:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     ORG=org2 BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.yy MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
-#####Configure network using Admin Dashboard: 
+##### Configure network using Admin Dashboard: 
 - open Admin Dashboard <org1-IP>:4000/admin
 - see channel "common" is already created
 - wait for chaincode `dns` is auto-instantiated (this can take couple of minutes), when done the `dns` appears in the Chaincodes List  
@@ -174,11 +174,11 @@ export DOCKER_REGISTRY=192.168.99.1:5000
 
 - Use Consortium sub-form to add orgs to Consortium, specify org name, ip, WWW Port where certificates are served
     
-#####org2-IP:4000/Admin Dashboard:
+##### org2-IP:4000/Admin Dashboard:
 - join channel "common"
 - install custom chaincode
 
-#####org3-IP:4000/admin:
+##### org3-IP:4000/admin:
 - join channel "common"
 - install custom chaincode
 
