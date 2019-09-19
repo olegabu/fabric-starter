@@ -135,27 +135,32 @@ Having registry container is running start virtual machines with:
 ./host-create.sh org1 org2
 ```
 
-Then on virtual machines you'll specify address of the local registry (if used):
+On virtualbox machines you'll specify address of the local registry (if used):
 ```bash
 export DOCKER_REGISTRY=192.168.99.1:5000
 ``` 
  
-#####org1/orderer machine:
+##### org1/orderer machine 
+**`start orderer`**:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
-    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
-
-    ./consortium-add-org.sh org1
 ```
 
-#####Start org2 (,org3...) machine:
+**`Then start peer`**:
+```bash
+    export DOCKER_REGISTRY=192.168.99.1:5000
+    BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
+```
+
+
+##### Start org2 (,org3...) machine:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     ORG=org2 BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.yy MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
-#####Configure network using Admin Dashboard: 
+##### Configure network using Admin Dashboard: 
 - open Admin Dashboard <org1-IP>:4000/admin
 - see channel "common" is already created
 - wait for chaincode `dns` is auto-instantiated (this can take couple of minutes), when done the `dns` appears in the Chaincodes List  
@@ -169,11 +174,11 @@ export DOCKER_REGISTRY=192.168.99.1:5000
 
 - Use Consortium sub-form to add orgs to Consortium, specify org name, ip, WWW Port where certificates are served
     
-#####org2-IP:4000/Admin Dashboard:
+##### org2-IP:4000/Admin Dashboard:
 - join channel "common"
 - install custom chaincode
 
-#####org3-IP:4000/admin:
+##### org3-IP:4000/admin:
 - join channel "common"
 - install custom chaincode
 
