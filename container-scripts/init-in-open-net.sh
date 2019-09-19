@@ -11,7 +11,6 @@ echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
 
 export ORDERER_DOMAIN ORDERER_NAME ORDERER_WWW_PORT
-export ORDERER_DOMAIN ORDERER_NAME ORDERER_WWW_PORT
 
 env|sort
 

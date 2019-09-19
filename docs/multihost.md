@@ -145,7 +145,6 @@ export DOCKER_REGISTRY=192.168.99.1:5000
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
-    BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 **`Then start peer`**:
