@@ -8,7 +8,7 @@ usageMsg="ORG=<org name> ORDERER_NAME=<orderer instance name> $0"
 exampleMsg="ORG=org1 ORDERER_NAME=raft0 $0"
 
 : ${DOMAIN:=example.com}
-: ${ORDERER_NAME:=raft1}
+: ${ORDERER_NAME:=orderer}
 : ${ORDERER_NAME_PREFIX:=raft}
 : ${ORDERER_DOMAIN:=$DOMAIN}
 : ${ORDERER_GENERAL_LISTENPORT:=${ORDERER_GENERAL_LISTENPORT:-7050}}

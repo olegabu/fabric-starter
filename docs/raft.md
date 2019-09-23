@@ -69,18 +69,18 @@ DOMAIN=$ORDERER_DOMAIN1 raft/1_raft-start-3-nodes.sh
 
 * **Org2** Node: prepare new `raft` ordrerer node config 
 ```bash
-ORDERER_NAME=${ORG2_RAFT_NAME_1} DOMAIN=$ORDERER_DOMAIN2 raft/2_raft-prepare-new-consenter.sh
+DOMAIN=$ORDERER_DOMAIN2 raft/2_raft-prepare-new-consenter.sh
 ```
 
 * **Org1** node: add new orderer node config to system channel
 ```bash
-ORDERER_NAME=raft0 DOMAIN=$ORDERER_DOMAIN1 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${ORDERER_DOMAIN2:-${DOMAIN}} ${RAFT0_PORT}
+DOMAIN=$ORDERER_DOMAIN1 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${ORDERER_DOMAIN2:-${DOMAIN}} ${RAFT0_PORT}
 ```
 * Wait for new config is replicated between nodes 
 
 * **Org2** node: Start orderer:
 ```bash
-ORDERER_NAME=${ORG2_RAFT_NAME_1} DOMAIN=$ORDERER_DOMAIN2 raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN1}
+DOMAIN=$ORDERER_DOMAIN2 raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN1}
 ```
 
 This way any number of raft-ordering nodes can be added to the consensus. 
