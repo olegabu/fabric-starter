@@ -45,7 +45,7 @@ Manually prepare `hosts` file which will be mapped to containers' `/etc/hosts` s
 ```bash
 mkdir crypto-config
 # Write dns-record into the file `hosts_orderer`:
-echo "$ORG2_IP www.${ORDERER_DOMAIN2} raft3.${ORDERER_DOMAIN2} raft4.${ORDERER_DOMAIN2} raft5.${ORDERER_DOMAIN2} peer0.org2.${DOMAIN}" > crypto-config/hosts_orderer
+echo "$ORG2_IP www.${ORDERER_DOMAIN2} orderer.${ORDERER_DOMAIN2} raft4.${ORDERER_DOMAIN2} raft5.${ORDERER_DOMAIN2} peer0.org2.${DOMAIN}" > crypto-config/hosts_orderer
 ```
 
 
