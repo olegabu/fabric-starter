@@ -95,6 +95,8 @@ module.exports = async app => {
     }
 
     function filterOutOrgByPattern(list, pattern) {
+        list.forEach(o=>{logger.debug(`Filtering ${_.get(o, "value")} with ${pattern}`);});
+
         list = list.filter(o => !_.includes(_.get(o, "value"), `${pattern}`));
         return list;
     }
@@ -146,12 +148,13 @@ module.exports = async app => {
             }
 
             list = filterOutOrgByPattern(list, `.${orgDomain}`);
+            logger.debug("DNS after org filtering", list);
 
             if (existsAndIsFile(ORDERER_HOSTS_FILE)) {
                 list = filterOutOrgByPattern(list, `orderer.${process.env.DOMAIN}`);
             }
 
-            logger.debug("DNS after filtering", list);
+            logger.debug("DNS after arg and orderer filtering", list);
 
             let hostsFileContent = generateHostsRecords(list);
 
