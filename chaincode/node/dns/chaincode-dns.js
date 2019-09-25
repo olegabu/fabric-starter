@@ -14,7 +14,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let wwwAddr = `www.${orgNameDomain}`;
         let peerAddr = `peer0.${orgNameDomain}`;
 
-        let dnsNames = await this.stub.getState(["${orgIp}"]); //await this.get(["${orgIp}"]);
+        let dnsNames = await this.stub.getState(orgIp); //await this.get(["${orgIp}"]);
         logger.debug(`DNS record before update ${orgIp} `, dnsNames);
 
         dnsNames=`${dnsNames} ${wwwAddr} ${peerAddr}`;
