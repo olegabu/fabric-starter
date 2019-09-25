@@ -11,7 +11,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let wwwAddr = `www.${orgNameDomain}`;
         let peerAddr = `peer0.${orgNameDomain}`;
 
-        let dnsNames = this.get(orgIp);
+        let dnsNames = await this.get(orgIp);
         dnsNames=`${dnsNames} ${wwwAddr} ${peerAddr}`;
 
         let dnsArgs = [orgIp, dnsNames];
