@@ -20,6 +20,7 @@ module.exports = async app => {
     const skip = !process.env.MULTIHOST;
     const period = process.env.DNS_PERIOD || 60000;
     const orgDomain = `${process.env.ORG}.${process.env.DOMAIN}`;
+    const ordererDomain = process.env.ORDERER_DOMAIN || process.env.DOMAIN;
     const queryTarget = process.env.DNS_QUERY_TARGET || `peer0.${orgDomain}:7051`;
 
     let dnsUserLoggedin = false;
@@ -151,7 +152,7 @@ module.exports = async app => {
             logger.debug("DNS after org filtering", list);
 
             if (existsAndIsFile(ORDERER_HOSTS_FILE)) {
-                list = filterOutOrgByPattern(list, `orderer.${process.env.DOMAIN}`);
+                list = filterOutOrgByPattern(list, `orderer.${ordererDomain}`);
             }
 
             logger.debug("DNS after arg and orderer filtering", list);
