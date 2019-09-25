@@ -243,12 +243,13 @@ services:
       - WEBAPP_DIR=/usr/src/app/webapp
       - MSP_DIR=/usr/src/app/msp
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/peeradmin/msp
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - PEER0_PORT=${PEER0_PORT:-7051}
       - DISCOVER_AS_LOCALHOST=false
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
       - ENROLL_ID
       - ENROLL_SECRET
+      - MY_IP
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
       - P=${PWD}
@@ -269,7 +270,7 @@ services:
       - ./crypto-config:/usr/src/app/crypto-config
       - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+#      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
 #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
