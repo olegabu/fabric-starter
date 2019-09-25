@@ -1,7 +1,7 @@
 const StorageChaincode = require('chaincode-node-storage');
 const shim = require('fabric-shim');
 
-const logger = shim.newLogger('StorageChaincode');
+const logger = shim.newLogger('DnsChaincode');
 
 module.exports = class DnsChaincode extends StorageChaincode {
 
@@ -14,12 +14,12 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let wwwAddr = `www.${orgNameDomain}`;
         let peerAddr = `peer0.${orgNameDomain}`;
 
-        let dnsNames = await this.stub.getState(key); //await this.get(["${orgIp}"]);
-        logger.info(`DNS record before update ${orgIp} `, dnsNames);
+        let dnsNames = await this.stub.getState(["${orgIp}"]); //await this.get(["${orgIp}"]);
+        logger.debug(`DNS record before update ${orgIp} `, dnsNames);
 
         dnsNames=`${dnsNames} ${wwwAddr} ${peerAddr}`;
 
-        logger.info(`Updating DNS record with ${orgIp} `, dnsNames);
+        logger.debug(`Updating DNS record with ${orgIp} `, dnsNames);
 
         let dnsArgs = [orgIp, dnsNames];
 
