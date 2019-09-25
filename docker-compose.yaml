@@ -246,7 +246,7 @@ services:
       - WEBAPP_DIR=/usr/src/app/webapp
       - MSP_DIR=/usr/src/app/msp
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
-      - CORE_PEER_MSPCONFIGPATH=crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
+      - CORE_PEER_MSPCONFIGPATH=/usr/src/app/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - PEER0_PORT=${PEER0_PORT:-7051}
       - DISCOVER_AS_LOCALHOST=false
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
