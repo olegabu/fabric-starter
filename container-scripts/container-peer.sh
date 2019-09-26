@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+BASEDIR=$(dirname "$0")
 
 touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # maOS workaround
 
@@ -58,7 +59,7 @@ cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAI
 if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
     if [ -n "$BOOTSTRAP_IP" ]; then
         echo "Generating crypto-config/hosts_$ORG"
-        echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} api.${DOMAIN} ${DOMAIN}" > crypto-config/hosts_$ORG
+        echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts_$ORG
         echo -e "\n\nDownload orderer MSP envs from $BOOTSTRAP_IP\n\n"
     else
         echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts_$ORG
@@ -70,4 +71,4 @@ fi
 echo -e "\ncrypto-config/hosts_$ORG:\n"
 cat crypto-config/hosts_$ORG
 
-
+#ORDERER_DOMAIN=osn-$ORG.$DOMAIN DOMAIN=osn-$ORG.$DOMAIN ORDERER_GENESIS_PROFILE=RaftOrdererGenesis ./$BASEDIR/container-orderer.sh
