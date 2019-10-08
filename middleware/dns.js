@@ -15,11 +15,13 @@ module.exports = async app => {
     const ORDERER_HOSTS_FILE = '/etc/hosts_orderer';
 
     const channel = process.env.DNS_CHANNEL || 'common';
+    const chaincodeName = process.env.DNS_CHAINCODE || 'dns';
     const username = process.env.DNS_USERNAME || 'dns';
     const password = process.env.DNS_PASSWORD || 'pass';
     const skip = !process.env.MULTIHOST;
     const period = process.env.DNS_PERIOD || 60000;
     const orgDomain = `${process.env.ORG}.${process.env.DOMAIN}`;
+    const myIp = process.env.MY_IP;
     const ordererDomain = process.env.ORDERER_DOMAIN || process.env.DOMAIN;
     const queryTarget = process.env.DNS_QUERY_TARGET || `peer0.${orgDomain}:7051`;
 
@@ -64,15 +66,6 @@ module.exports = async app => {
         });
     }
 
-
-    function generateHostsRecords(list) {
-        let h = `# replaced by dns listener on ${channel}\n`;
-        list.forEach(o => {
-            h = h.concat(o.key, ' ', o.value, '\n');
-        });
-        return h;
-    }
-
     function existsAndIsFile(file) {
         try {
             fs.accessSync(file, fs.constants.W_OK);
@@ -93,13 +86,6 @@ module.exports = async app => {
         } else {
             logger.debug(`Skipping ${file}`);
         }
-    }
-
-    function filterOutOrgByPattern(list, pattern) {
-        list.forEach(o=>{logger.debug(`Filtering ${_.get(o, "value")} with ${pattern}`);});
-
-        list = list.filter(o => !_.includes(_.get(o, "value"), `${pattern}`));
-        return list;
     }
 
     async function processEvent() {
@@ -130,10 +116,10 @@ module.exports = async app => {
         }
 
 
-        const queryResponses = await fabricStarterClient.query(channel, 'dns', 'range', '[]', {targets: queryTarget});
+        const queryResponses = await fabricStarterClient.query(channel, chaincodeName, 'get', '["dns"]', {targets: queryTarget});
         logger.debug('queryResponses', queryResponses);
 
-        const ret = queryResponses[0];
+        const ret = queryResponses;//[0];
 
         if (ret) {
             let list;
@@ -148,14 +134,15 @@ module.exports = async app => {
                 return logger.debug('no dns records found on chain');
             }
 
-            list = filterOutOrgByPattern(list, `.${orgDomain}`);
+            // list = filterOutOrgByPattern(list, `.${orgDomain}`);
+            list = filterOutByIp(list, myIp);
             logger.debug("DNS after org filtering", list);
 
-            if (existsAndIsFile(ORDERER_HOSTS_FILE)) {
-                list = filterOutOrgByPattern(list, `orderer.${ordererDomain}`);
-            }
+            // if (existsAndIsFile(ORDERER_HOSTS_FILE)) {
+            //     list = filterOutOrgByPattern(list, `orderer.${ordererDomain}`);
+            // }
 
-            logger.debug("DNS after arg and orderer filtering", list);
+            // logger.debug("DNS after org and orderer filtering", list);
 
             let hostsFileContent = generateHostsRecords(list);
 
@@ -163,4 +150,28 @@ module.exports = async app => {
             writeFile(ORDERER_HOSTS_FILE, hostsFileContent);
         }
     }
+
+    function filterOutByIp(list, ip) {
+        return list.filter(o => _.get(o, "key") !== ip);
+    }
+
+    function generateHostsRecords(list) {
+        let h = `# replaced by dns listener on ${channel}\n`;
+        list.forEach(o => {
+            h = h.concat(o.key, ' ', o.value, '\n');
+        });
+        return h;
+    }
+
+
+    function filterOutOrgByPattern(list, pattern) {
+        list.forEach(o => {
+            logger.debug(`Filtering ${_.get(o, "value")} with ${pattern}`);
+        });
+
+        list = list.filter(o => !_.includes(_.get(o, "value"), `${pattern}`));
+        return list;
+    }
+
+
 };
