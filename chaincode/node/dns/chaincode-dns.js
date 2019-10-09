@@ -28,7 +28,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
         } catch (err) {
             osnInfo = {};
         }
-        osnInfo[`${ordererName}.${ordererDomain}:${ordererPort}`] = ordererIp;
+        osnInfo[`${ordererName}.${ordererDomain}:${ordererPort}`] = {ordererName, ordererDomain, ordererPort, ordererIp};
         const osnStringified = JSON.stringify(osnInfo);
 
         logger.debug('Updating OSN record with ', osnStringified);
