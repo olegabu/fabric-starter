@@ -7,7 +7,7 @@ OrdererOrgs:
   # Raft Orderer
   # ---------------------------------------------------------------------------
   - Name: RaftOrderer
-    Domain: ${DOMAIN}
+    Domain: ${ORDERER_DOMAIN}
 
     Specs:
       - Hostname: ${ORDERER_NAME}

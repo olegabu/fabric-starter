@@ -237,9 +237,9 @@ function addOrgsToChannel() {
     # First organization adds other organizations to the channel
     for org in ${orgsToAdd}
     do
-#        local orgIp=`getMachineIp $org`
-#        ORG=$first_org ./chaincode-invoke.sh common dns "[\"registerOrg\",\"${org}.${DOMAIN}\",\"$orgIp\"]"
-#        sleep 5
+        #        local orgIp=`getMachineIp $org`
+        #        ORG=$first_org ./chaincode-invoke.sh common dns "[\"registerOrg\",\"${org}.${DOMAIN}\",\"$orgIp\"]"
+        #        sleep 5
         info "Adding $org to channel $channel"
         ORG=$first_org ./channel-add-org.sh ${channel} ${org}
     done
@@ -251,4 +251,14 @@ function addOrgsToChannel() {
         connectMachine ${org}
         ORG=${org} ./channel-join.sh ${channel}
     done
+}
+
+function setOrdererIdentity() {
+    local ORDERER_NAME=${1:?ORDERER_NAME is required}
+    local ORDERER_DOMAIN=${2:?ORDERER_DOMAIN is required}
+    local cryptoConfigPath=${3:?cryptoConfigParentPath is required}
+
+    export CORE_PEER_LOCALMSPID=${ORDERER_NAME}.${ORDERER_DOMAIN:-example.com}
+    export CORE_PEER_MSPCONFIGPATH=${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp
+    export CORE_PEER_TLS_ROOTCERT_FILE=${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/ca.crt
 }

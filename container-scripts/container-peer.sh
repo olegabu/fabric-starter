@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 BASEDIR=$(dirname "$0")
 
+touch crypto-config/hosts
 touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # maOS workaround
 
 if [ ! -f "crypto-config/hosts_$ORG" ]; then

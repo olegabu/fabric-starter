@@ -5,3 +5,4 @@ crypto-config
 docs
 extra
 data
+**/node_modules

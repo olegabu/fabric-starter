@@ -48,7 +48,6 @@ services:
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
-      - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -81,6 +80,8 @@ services:
       - peer0
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
+      - ./crypto-config/hosts:/etc/hosts
+#      - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -127,8 +128,7 @@ services:
     - CORE_CHAINCODE_JAVA_RUNTIME=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_JAVA_RUNTIME:-hyperledger/fabric-javaenv}:${FABRIC_JAVA_RUNTIME_VERSION:-latest}
     - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
     - CORE_CHAINCODE_LOGGING_SHIM=debug
-#    - CORE_CHAINCODE_STARTUPTIMEOUT=600000
-#    - CORE_CHAINCODE_DEPLOYTIMEOUT=600000
+    - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
@@ -148,6 +148,7 @@ services:
     volumes:
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer0:/var/hyperledger/production
+    - ./crypto-config/hosts:/etc/hosts
     - /var/run/:/host/var/run/
 
 #  peer1:
@@ -220,6 +221,7 @@ services:
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
+    - ./crypto-config/hosts:/etc/hosts
 #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -272,10 +274,11 @@ services:
 #      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
+      - ./crypto-config/hosts:/etc/hosts
 #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-
+      - /var/run/docker.sock:/var/run/docker.sock
     command: sh -c "npm start"
 
   # simple http server to disseminate certificates

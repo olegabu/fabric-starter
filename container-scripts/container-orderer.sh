@@ -4,7 +4,9 @@
 : ${DOMAIN:=example.com}
 
 export ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN}
-
+set -x
+touch crypto-config/hosts
+set +x
 if [ ! -f "crypto-config/hosts_orderer" ]; then
     export HOSTS_FILE_GENERATION_REQUIRED=true
     touch crypto-config/hosts_orderer

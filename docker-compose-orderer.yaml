@@ -31,7 +31,6 @@ services:
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
-      - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -81,11 +80,11 @@ services:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
-
     volumes:
       - ./crypto-config/configtx:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
+      - ./crypto-config/hosts:/etc/hosts
 
 
   cli.orderer:
@@ -118,10 +117,10 @@ services:
       - pre-install
       - post-install
     volumes:
-      - ./crypto-config/hosts_orderer:/etc/hosts
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+      - ./crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug

@@ -16,12 +16,14 @@ module.exports = class DnsChaincode extends StorageChaincode {
     }
 
     async registerOrderer(args) {
-        const ordererIp = _.get(args, "[0]");
-        const ordererName = _.get(args, "[1]");
-        const ordererDomain = _.get(args, "[2]");
-        const ordererPort = _.get(args, "[3]");
+        const ordererName = _.get(args, "[0]");
+        const ordererDomain = _.get(args, "[1]");
+        const ordererPort = _.get(args, "[2]");
+        const ordererIp = _.get(args, "[3]");
 
-        await this.updateDns(ordererIp, `${ordererName}.${ordererDomain} www.${ordererDomain}`);
+        if (ordererIp) {
+            await this.updateDns(ordererIp, `${ordererName}.${ordererDomain} www.${ordererDomain}`);
+        }
         let osnInfo = await this.get(["osn"]);
         try {
             osnInfo = JSON.parse(osnInfo);
