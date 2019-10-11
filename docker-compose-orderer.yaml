@@ -42,7 +42,7 @@ services:
     environment:
       - ORDERER=true
       - CONSORTIUM_CONFIG
-      - CORE_PEER_LOCALMSPID=orderer.${DOMAIN:-example.com}
+      - CORE_PEER_LOCALMSPID=${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
     working_dir: /etc/hyperledger
     #    command: container-scripts/consortium-reconfigure.sh
@@ -118,8 +118,8 @@ services:
       - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
-      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
       - ./crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug

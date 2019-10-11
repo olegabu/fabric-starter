@@ -250,7 +250,9 @@ services:
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
       - ENROLL_ID
       - ENROLL_SECRET
+      - BOOTSTRAP_IP
       - MY_IP
+      - WWW_PORT=${WWW_PORT:-80}
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
       - P=${PWD}
