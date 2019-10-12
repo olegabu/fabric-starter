@@ -1,0 +1,49 @@
+# 
+# Copyright . All Rights Reserved.
+# 
+
+version: '3.7'
+
+volumes:
+  orderer:
+
+
+services:
+
+  pre-install:
+    container_name: pre-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+
+  orderer:
+    container_name: ${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+    environment:
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${ORDERER_DOMAIN:-example.com}/genesis.pb
+      - ORDERER_GENERAL_LOCALMSPID=${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/msp
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/ca.crt]
+
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/ca.crt]
+    volumes:
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
+
+
+  cli.orderer:
+    container_name: cli.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+    environment:
+      - ORDERER_GENERAL_LOCALMSPID=${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+      - CORE_PEER_LOCALMSPID=orderer.${ORDERER_DOMAIN:-example.com}
+      - ORDERER_NAME=${ORDERER_NAME:-orderer}
+      - ORDERER_DOMAIN
+    volumes:
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+
+
+  www.orderer:
+    container_name: www.${ORDERER_DOMAIN:-example.com}
+    volumes:
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
+      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
