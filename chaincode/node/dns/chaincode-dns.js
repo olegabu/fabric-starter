@@ -12,7 +12,11 @@ module.exports = class DnsChaincode extends StorageChaincode {
         const orgIp = req.value;
         const dnsNames = `www.${orgNameDomain} peer0.${orgNameDomain}`;
 
-        return this.updateDns(orgIp, dnsNames);
+        if (orgIp) {
+            await this.updateDns(orgIp, dnsNames);
+        }
+        const newOrgData={[orgNameDomain]:{'ip':orgIp}};
+        return this.updateRegistryObject("orgs", newOrgData);
     }
 
     async registerOrderer(args) {
@@ -24,6 +28,11 @@ module.exports = class DnsChaincode extends StorageChaincode {
         if (ordererIp) {
             await this.updateDns(ordererIp, `${ordererName}.${ordererDomain} www.${ordererDomain}`);
         }
+
+        const newOrdererData={[`${ordererName}.${ordererDomain}:${ordererPort}`]: {ordererName, ordererDomain, ordererPort, ordererIp}};
+        return this.updateRegistryObject("osn", newOrdererData);
+/*
+
         let osnInfo = await this.get(["osn"]);
         try {
             osnInfo = JSON.parse(osnInfo);
@@ -35,6 +44,22 @@ module.exports = class DnsChaincode extends StorageChaincode {
 
         logger.debug('Updating OSN record with ', osnStringified);
         return this.put(['osn', osnStringified]);
+*/
+    }
+
+    async updateRegistryObject(dataKey, newData){
+        let data = await this.get([dataKey]);
+        try {
+            data = JSON.parse(data);
+        } catch (err) {
+            data = {};
+        }
+        _.assign(data, newData);
+
+        const dataStringified = JSON.stringify(data);
+
+        logger.debug(`Updating ${dataKey} record with `, dataStringified);
+        return this.put([dataKey, dataStringified]);
     }
 
     async updateDns(ip, dnsNames) {
