@@ -8,7 +8,7 @@ services:
   orderer:
     ports:
       - ${ORDERER_GENERAL_LISTENPORT:-7050}:${ORDERER_GENERAL_LISTENPORT:-7050}
-      - 9090:9090
+#      - 9090:9090
 
 #  www.orderer:
 #    ports:
