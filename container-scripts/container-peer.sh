@@ -69,6 +69,10 @@ else
     echo "crypto-config/hosts_$ORG file exists. Generation skipped."
 fi
 
+if [ -n "$BOOTSTRAP_IP" ]; then
+    echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
+fi
+
 echo -e "\ncrypto-config/hosts_$ORG:\n"
 cat crypto-config/hosts_$ORG
 
