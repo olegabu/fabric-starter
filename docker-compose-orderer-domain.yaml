@@ -13,6 +13,9 @@ services:
   pre-install:
     container_name: pre-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
 
+  post-install:
+    container_name:  post-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+
   orderer:
     container_name: ${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
     environment:
