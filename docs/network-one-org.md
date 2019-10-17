@@ -31,7 +31,7 @@ docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml up -d
 
 Open another console. Add *org1* to the consortium as *Admin* of the *orderer* organization:
 ```bash
-./consortium-add-org.sh org1
+./consortium-add-org.sh $ORG
 ``` 
 
 Create channel *common* as *Admin* of *org1* and join our peers to the channel:
