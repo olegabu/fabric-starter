@@ -21,6 +21,7 @@ services:
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
       - ORDERER_GENESIS_PROFILE=${ORDERER_GENESIS_PROFILE:-SoloOrdererGenesis}
+      - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - RAFT0_PORT=${RAFT0_PORT:-7050}
       - RAFT1_PORT=${RAFT1_PORT:-7150}
@@ -76,6 +77,11 @@ services:
     command: orderer
     depends_on:
       - pre-install
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
+        max-file: "5"
+
     volumes:
       - ./crypto-config/configtx:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
@@ -99,6 +105,7 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - CORE_PEER_LOCALMSPID=orderer.${ORDERER_DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt

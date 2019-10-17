@@ -135,52 +135,50 @@ Having registry container is running start virtual machines with:
 ./host-create.sh org1 org2
 ```
 
-Then on virtual machines you'll specify address of the local registry:
+On virtualbox machines you'll specify address of the local registry (if used):
 ```bash
 export DOCKER_REGISTRY=192.168.99.1:5000
 ``` 
  
-#####org1/orderer machine:
+##### org1/orderer machine 
+**`start orderer`**:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
-    BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
-
-    ./consortium-add-org.sh org1
 ```
 
-#####Start org2 (,org3...) machine:
+**`Then start peer`**:
+```bash
+    export DOCKER_REGISTRY=192.168.99.1:5000
+    BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
+```
+
+
+##### Start org2 (,org3...) machine:
 ```bash
     export DOCKER_REGISTRY=192.168.99.1:5000
     ORG=org2 BOOTSTRAP_IP=192.168.99.xx MY_IP=192.168.99.yy MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
-#####Configure network using admin dashboard: 
+##### Configure network using Admin Dashboard: 
 - open Admin Dashboard <org1-IP>:4000/admin
-- add channel "common"
-- instantiate chaincode: `dns`
-- invoke `dns`, function:`put`, params:   
-`"192.168.99.xx" "orderer.example.com www.example.com peer0.org1.example.com www.org1.example.com"`
-- organizations: `Add organization to channel`:  *"org2", "192.168.99.yy"*  (this will add dns-information for org2) 
+- see channel "common" is already created
+- wait for chaincode `dns` is auto-instantiated (this can take couple of minutes), when done the `dns` appears in the Chaincodes List  
+- organizations: Use `Add organization to channel` specifying IP and ports:  *"org2", "192.168.99.yy"*  (this will add dns-information for org2) 
 - organizations: `Add organization to channel`  *"org3", "192.168.99.zz"* (this will add dns-information for org3)
-- or just add dns-information for an org:  
- chaincode: `dns` invoke function `registerOrg`("org2.example.com" "192.168.99.yy")
+- or a dns-information of an Org can be registered the blockchain-network:  
+ chaincode: `dns` invoke function `registerOrg` with params `"org2.example.com" "192.168.99.yy"`
 
 - install custom chaincode
 - instantiate custom chaincode
 
-##### org1/orderer machine again:
-```bash 
-    ./consortium-add-org.sh org2
-    ./consortium-add-org.sh org3
-    ...
-```
+- Use Consortium sub-form to add orgs to Consortium, specify org name, ip, WWW Port where certificates are served
     
-#####org2-IP:4000/admin:
+##### org2-IP:4000/Admin Dashboard:
 - join channel "common"
 - install custom chaincode
 
-#####org3-IP:4000/admin:
+##### org3-IP:4000/admin:
 - join channel "common"
 - install custom chaincode
 
@@ -206,11 +204,6 @@ Tell the scripts to use extra multihost docker-compose yaml files.
 export MULTIHOST=true
 ```
 
-Copy config templates to the orderer host.
-```bash
-docker-machine scp -r templates orderer:templates
-```
-
 Connect docker client to the orderer host. 
 The docker commands that follow will be executed on the host not local machine.
 ```bash
@@ -228,9 +221,8 @@ docker-machine ip org1
 docker-machine ip org2
 ```
 
-Generate crypto material for the orderer organization and start its docker containers.
+Start orderer docker containers (crypto-material will be auto-generated).
 ```bash
-./generate-orderer.sh
 docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
 ```
 
@@ -241,9 +233,9 @@ Open a new console. Use env variables to tell the scripts to use multihost confi
 export MULTIHOST=true && export ORG=org1
 ```
 
-Copy templates, chaincode and webapp folders to the host.
+Copy chaincode and webapp folders to the host.
 ```bash
-docker-machine scp -r templates $ORG:templates && docker-machine scp -r chaincode $ORG:chaincode && docker-machine scp -r webapp $ORG:webapp
+docker-machine scp -r chaincode $ORG:chaincode && docker-machine scp -r webapp $ORG:webapp
 ```
 
 Connect docker client to the organization host.
@@ -251,9 +243,8 @@ Connect docker client to the organization host.
 eval "$(docker-machine env $ORG)"
 ```
 
-Generate crypto material for the org and start its docker containers.
+Start peer docker containers (again, crypto-material for peer will be auto-generated).
 ```bash
-./generate-peer.sh
 docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d
 ```
 
