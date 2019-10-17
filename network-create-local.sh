@@ -4,7 +4,7 @@ function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
 
-export DOMAIN=${DOMAIN-example.com}
+export DOMAIN=${DOMAIN:-example.com}
 
 orgs=${@:-org1}
 first_org=${1:-org1}
@@ -60,7 +60,7 @@ done
 
 # Add member organizations to the consortium
 
-for org in ${orgs}
+for org in "${@:2}"
 do
     info "Adding $org to the consortium"
     ./consortium-add-org.sh ${org}
@@ -71,9 +71,9 @@ done
 export ORG=${first_org}
 export COMPOSE_PROJECT_NAME=${ORG}
 
-info "Creating channel ${channel} by $ORG"
-./channel-create.sh ${channel}
-./channel-join.sh ${channel}
+# Wait for container scripts completed
+info "Wait for post-install.${ORG}.${DOMAIN} completed"
+docker wait post-install.${ORG}.${DOMAIN}
 
 # First organization adds other organizations to the channel
 
