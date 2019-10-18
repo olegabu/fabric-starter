@@ -1,3 +1,0 @@
-rootProject.name = 'token-transfer'
-
-include(':chaincode:java:token-transfer-chaincode')
