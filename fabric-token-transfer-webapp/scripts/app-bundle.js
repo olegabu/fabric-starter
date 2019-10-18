@@ -2581,7 +2581,7 @@ define('pages/home',['exports', '../common/crud', 'aurelia-validation', 'aurelia
   }(_crud.CRUD)) || _class);
 });
 define('text!pages/home.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"../resources/elements/key\"></require>\n  <require from=\"../resources/elements/handy-table\"></require>\n  <require from=\"../resources/elements/column\"></require>\n  <require from=\"../resources/elements/widget-entity-crud\"></require>\n\n  <div class=\"form-group row\">\n    <div class=\"card-body aut-form-card\">\n      <button type=\"button\" class=\"btn btn-success\" click.trigger=\"getTokens()\" t=\"Get one million tokens\">\n        Transfer\n      </button>\n    </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <h4 t=\"Balance\">Balance</h4>\n      <div class=\"col-sm-6\">\n        ${organizationAccount.value.amount}\n      </div>\n    </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <h4 t=\"Transfer\">Transfer</h4>\n    </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <label class=\"col-sm-2 col-form-label\" t=\"Receiver\"></label>\n      <div class=\"col-sm-10\">\n        <select class=\"form-control\"\n                value.bind=\"receiver\">\n          <option repeat.for=\"o of orgList\" model.bind=\"o.key\">${o.key}\n          </option>\n        </select>\n      </div>\n    </div>\n  </div>\n\n\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <label class=\"col-sm-2 col-form-label\" t=\"Amount\"></label>\n      <div class=\"input-group col-sm-10\">\n        <input id=\"amount\" name=\"amount\" type=\"text\" class=\"form-control\"\n               value.bind=\"amount & validateManually:discountValidationController\">\n      </div>\n    </div>\n  </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <div if.bind=\"discountValidationController.errors.length > 0\" class=\"alert alert-danger\" role=\"alert\">\n        <span t=\"errorMessages.hasErrors\">hasErrors</span>\n      </div>\n    </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"card-body aut-form-card\">\n      <button type=\"button\" class=\"btn btn-success\" click.trigger=\"transfer(receiver,amount)\" t=\"Transfer\">\n        Transfer\n      </button>\n    </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <h4 t=\"Operation history\">Operation history</h4>\n    </div>\n  </div>\n  <div class=\"form-group row\">\n    <div class=\"col-sm-6\">\n      <div>\n        <handy-table\n          tabident=\"operation-tab\"\n          read-data.call=\"queryOperationHistory()\"\n          pageable=\"true\"\n          can-create.call=\"false\"\n          can-cancel-filter.call=\"false\"\n          can-filter-columns.bind=\"false\">\n          <column field=\"value.sender\" resourcekey=\"Sender\"></column>\n          <column field=\"value.receiver\" resourcekey=\"Receiver\"></column>\n          <column field=\"value.amount\" resourcekey=\"Amount\"></column>\n          <column field=\"value.timestamp\" resourcekey=\"Date time\" viewtype=\"datetime\" format=\"YYYY-MM-DD HH:mm\" ></column>\n        </handy-table>\n      </div>\n    </div>\n  </div>\n\n</template>\n\n\n</template>\n"; });
-define('main',['exports', './environment', 'aurelia-i18n'], function (exports, _environment, _aureliaI18n) {
+define('main',['exports', './environment', 'aurelia-validation', 'aurelia-i18n', 'aurelia-framework', 'aurelia-logging-console'], function (exports, _environment, _aureliaValidation, _aureliaI18n, _aureliaFramework, _aureliaLoggingConsole) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -2597,8 +2597,10 @@ define('main',['exports', './environment', 'aurelia-i18n'], function (exports, _
     };
   }
 
-  function configure(aurelia) {
+  _aureliaFramework.LogManager.addAppender(new _aureliaLoggingConsole.ConsoleAppender());
+  _aureliaFramework.LogManager.setLevel(_aureliaFramework.LogManager.logLevel.warn);
 
+  function configure(aurelia) {
     aurelia.use.standardConfiguration().plugin('aurelia-i18n', function (instance) {
       var aliases = ['t', 'i18n'];
 
@@ -2609,13 +2611,19 @@ define('main',['exports', './environment', 'aurelia-i18n'], function (exports, _
 
       return instance.setup({
         backend: {
-          loadPath: '../locales/{{lng}}/{{ns}}.json' },
+          loadPath: './locales/{{lng}}/{{ns}}.json' },
         attributes: aliases,
         lng: 'en',
         fallbackLng: 'en',
         debug: false
       });
     }).plugin('aurelia-table').plugin('aurelia-validation').feature('resources');
+
+    aurelia.use.plugin('aurelia-bootstrap-datetimepicker', function (config) {
+      config.extra.bootstrapVersion = 4;
+
+      config.extra.buttonClass = 'btn btn-outline-secondary';
+    });
 
     if (_environment2.default.debug) {
       aurelia.use.developmentLogging();
@@ -2972,5 +2980,5 @@ define('app',['exports', 'aurelia-i18n', 'aurelia-framework', './services/identi
     return App;
   }()) || _class);
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"font-awesome/css/font-awesome.css\"></require>\n  <require from=\"bootstrap/css/bootstrap.min.css\"></require>\n  <require from=\"eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css\"></require>\n  <require from=\"./styles/app.css\"></require>\n  <require from=\"./styles/spinners.css\"></require>\n  <require from=\"./resources/elements/footer-alerts\"></require>\n\n  <div class=\"page-wrapper\">\n    <div class=\"page-header\">\n      <!--mb-2-->\n      <nav class=\"navbar navbar-expand-md navbar-light\" style=\"background-color: #e3f2fd;\">\n        <a class=\"navbar-brand mb-0 h1 mr-3\" href=\"#/\" t=\"appName\"></a>\n        <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarCollapse\" aria-controls=\"navbarCollapse\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n          <span class=\"navbar-toggler-icon\"></span>\n        </button>\n        <div class=\"collapse navbar-collapse\" id=\"navbarCollapse\">\n          <ul class=\"navbar-nav mr-auto ml-auto\">\n            <li repeat.for=\"row of router.navigation\" class=\"nav-item ${row.isActive ? 'active' : ''} text-uppercase font-weight-bold text-center mt-2\">\n              <h5><a class=\"nav-link ${row.isActive ? '' : 'dimmed'}\" href.bind=\"row.href\">${row.title}</a></h5>\n            </li>\n          </ul>\n          <h3><a href=\"#\" class=\"badge badge-light mt-2\">${org}</a></h3>\n          <ul class=\"navbar-nav mt-3 ml-3 mt-md-0\">\n            <li><a class=\"btn btn-sm btn-secondary float-right text-uppercase\" href click.delegate=\"logout()\"><span t=\"logout\">logout</span></a></li>\n          </ul>\n        </div>\n      </nav>\n    </div>\n<!-- class=\"container\" -->\n\n      <!--padding-right: 10px; padding-left: 10px; padding-top: 10px;-->\n        <div class=\"page-content flex-fill-column\">\n          <main role=\"main\" style=\"width: 100%; margin: 0 auto; padding: 10px;\" class=\"flex-fill-column\">\n            <router-view class=\"flex-fill-column\"></router-view>\n          </main>\n        </div>\n\n\n        <footer-alerts>\n        </footer-alerts>\n\n  </div>\n</template>\n"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"font-awesome/css/font-awesome.css\"></require>\n  <require from=\"bootstrap/css/bootstrap.min.css\"></require>\n  <require from=\"eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css\"></require>\n  <require from=\"./styles/app.css\"></require>\n  <require from=\"./styles/spinners.css\"></require>\n  <require from=\"./resources/elements/footer-alerts\"></require>\n\n  <div class=\"page-wrapper\">\n    <div class=\"page-header\">\n      <!--mb-2-->\n      <nav class=\"navbar navbar-expand-md navbar-light\" style=\"background-color: #e3f2fd;\">\n        <a class=\"navbar-brand mb-0 h1 mr-3\" href=\"#/\" t=\"Token Transfer\"></a>\n        <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarCollapse\" aria-controls=\"navbarCollapse\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n          <span class=\"navbar-toggler-icon\"></span>\n        </button>\n        <div class=\"collapse navbar-collapse\" id=\"navbarCollapse\">\n          <ul class=\"navbar-nav mr-auto ml-auto\">\n            <li repeat.for=\"row of router.navigation\" class=\"nav-item ${row.isActive ? 'active' : ''} text-uppercase font-weight-bold text-center mt-2\">\n              <h5><a class=\"nav-link ${row.isActive ? '' : 'dimmed'}\" href.bind=\"row.href\">${row.title}</a></h5>\n            </li>\n          </ul>\n          <h3><a href=\"#\" class=\"badge badge-light mt-2\">${org}</a></h3>\n          <ul class=\"navbar-nav mt-3 ml-3 mt-md-0\">\n            <li><a class=\"btn btn-sm btn-secondary float-right text-uppercase\" href click.delegate=\"logout()\"><span t=\"logout\">logout</span></a></li>\n          </ul>\n        </div>\n      </nav>\n    </div>\n<!-- class=\"container\" -->\n\n      <!--padding-right: 10px; padding-left: 10px; padding-top: 10px;-->\n        <div class=\"page-content flex-fill-column\">\n          <main role=\"main\" style=\"width: 100%; margin: 0 auto; padding: 10px;\" class=\"flex-fill-column\">\n            <router-view class=\"flex-fill-column\"></router-view>\n          </main>\n        </div>\n\n\n        <footer-alerts>\n        </footer-alerts>\n\n  </div>\n</template>\n"; });
 //# sourceMappingURL=app-bundle.js.map
