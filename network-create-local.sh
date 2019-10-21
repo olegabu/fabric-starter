@@ -12,8 +12,6 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-#chaincode_install_args=${CHAINCODE_INSTALL_ARGS:- token-transfer-chaincode 1.0 /opt/chaincode/java/token-transfer-chaincode java }
-#chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common token-transfer-chaincode}
 docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml}
 
 # Clean up. Remove all containers, delete local crypto material
