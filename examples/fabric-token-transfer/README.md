@@ -9,8 +9,9 @@ There are two different ways of running the Token transfer example:
 <a name="deployment1"></a>
 ## Deployment through the Admin panel
 
-Run `./generate-zip-files.sh`, it will produce two files in **build** folder. 
-Simply upload `token-transfer-chaincode.zip` to the admin panel in **Install chaincode** section, and then instantiate it. 
+Run `./generate-zip-files.sh`, it will produce two zip packages for the webapp and the chaincode in **build** folder. 
+Then, upload `token-transfer-chaincode.zip` to the admin panel in **Install chaincode** section, and then instantiate the token-transfer-chaincode, 
+which appears in the `Installed chaincodes` list. 
 
 To run webapp, upload `token-transfer.zip` to the admin panel in **Install Web App** section.
 
@@ -19,7 +20,7 @@ To run webapp, upload `token-transfer.zip` to the admin panel in **Install Web A
 
 To deploy chaincode and webapp with the deployment script:
 
-Run the following script:
+Run the following command:
 ```
 CHAINCODE_INSTALL_ARGS="token-transfer-chaincode 1.0 /opt/chaincode/java/token-transfer-chaincode java" \
 CHAINCODE_INSTANTIATE_ARGS="common token-transfer-chaincode" \
