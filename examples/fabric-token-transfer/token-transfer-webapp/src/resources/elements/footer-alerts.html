@@ -1,0 +1,46 @@
+<template>
+  <require from="./field-value-converters"></require>
+
+  <footer class="page-footer ${alertStackViewState}" style="position: relative; display: flex; ">
+
+    <div class="notifications-hdr" if.bind="alertMessages.length == 0">
+      <div class="alert-status alert-status-info alert-passiv">
+        [<span t="alertStackEmptyTitle">No messages</span>]
+      </div>
+    </div>
+
+      <div class="notifications-hdr" if.bind="alertMessages.length > 0" >
+        <!--<div class="alert-block-btn ${('alert-status alert-' + topAlertState + ' alert-status-' + topMessage.type)}" title="${alertMessages.length > 0 ? ('[' + alertMessages[0].title + '] ' + alertMessages[0].message) : 'Нет собщений' }" click.delegate="toggleAlertStackPanel()">-->
+            <!--<span>${alertMessages.length > 0 ? (alertMessages[0].message) : 'Нет собщений' }</span>-->
+        <!--</div>-->
+
+        <div class="hdr-block-right">
+
+          <div class="hdr-block-btn" click.delegate="toggleAlertStackPanel()">
+            <!--<span t="alertStackHistory">alertStackHistory</span>-->
+            <div class="alert-block-btn ${('alert-status alert-' + topAlertState + ' alert-status-' + topMessage.type)}" title="${alertMessages.length > 0 ? ('[' + alertMessages[0].title + '] ' + alertMessages[0].message) : 'Нет собщений' }" >
+              <span>${alertMessages.length > 0 ? (alertMessages[0].message) : 'Нет собщений' }</span>
+            </div>
+
+            <i class="fa fa-list" style="padding-left: 5px;"></i>
+          </div>
+
+        </div>
+      </div>
+
+        <div id="alertStackPanel" class="${alertPanelClass}" if.bind="alertMessages.length > 0" >
+          <div class="notifications-stack">
+            <div>
+              <div repeat.for="$msg of alertMessages" class="notification-it ${$msg.type}">
+                <span style="width: 20em;">${$msg.time | dateFormat}</span>
+                <span style="width: 10em; text-transform: uppercase;">${$msg.title }</span>
+                <span >${$msg.message}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+  </footer>
+
+</template>
