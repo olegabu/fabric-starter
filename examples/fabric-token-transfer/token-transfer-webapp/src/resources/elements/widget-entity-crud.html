@@ -1,0 +1,54 @@
+<template class="flex-fill-column">
+
+  <div class="card flex-fill-column" show.bind="!showForm && !showViewOnly">
+    <div class="card-body aut-table-card">
+      <!--<span class="aut-table-card-title" if.bind="entityTitle" t.bind="entityTitle"></span>-->
+      <template replaceable part="handy-table-part">Table Placeholder.</template>
+    </div>
+  </div>
+
+  <!--<div class="card aut-splitter-card" >-->
+    <!--<div class="card-body">-->
+    <!--</div>-->
+  <!--</div>-->
+
+  <div class="card flex-fill-column aut-form-card-container" show.bind="showForm">
+    <span if.bind="backActionCallback" class="aut-form-card-close" click.trigger="backAction($event)">
+      <!--<span class="aut-tooltip" t="closeWindow"></span>-->
+      <i class="fa fa-arrow-circle-left fa-2x"></i>
+    </span>
+
+    <div class="card-body aut-form-card">
+      <!--<h5 class="card-title"></h5>-->
+      <form submit.delegate="buttonAClicked()" >
+        <template replaceable part="handy-form-part">Form placeholder</template>
+
+        <div class="form-group mt-1">
+          <div class="d-inline" if.bind="buttonAVisible">
+            <button type="submit" class="btn btn-success" t="${buttonAName}">save</button>
+          </div>
+          <div class="d-inline" if.bind="buttonBVisible">
+            <button type="button" class="btn btn-success" click.trigger="buttonBClicked($event)" t="${buttonBName}">cancel</button>
+          </div>
+          <div class="d-inline" if.bind="buttonCVisible">
+            <button class="btn btn-danger float-right" click.trigger="buttonCClicked($event)" t="${buttonCName}">delete</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <div class="card aut-form-card-container" show.bind="showViewOnly">
+    <span if.bind="backActionCallback" class="aut-form-card-close" click.trigger="backAction($event)">
+      <!--<span class="aut-tooltip" t="closeWindow"></span>-->
+      <i class="fa fa-arrow-circle-left fa-2x"></i>
+    </span>
+
+    <div class="card-body aut-form-card">
+      <template replaceable part="handy-viewonly-part">View Only placeholder</template>
+    </div>
+  </div>
+
+</template>
