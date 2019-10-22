@@ -98,14 +98,14 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
-      - ORDERER_GENERAL_LOCALMSPID=orderer.${ORDERER_DOMAIN:-example.com}
+      - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/tls/ca.crt]
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
-      - CORE_PEER_LOCALMSPID=orderer.${ORDERER_DOMAIN:-example.com}
+      - CORE_PEER_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto/ordereradmin/msp
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/orderer/tls/ca.crt
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
@@ -118,8 +118,8 @@ services:
       - post-install
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
-      - ./crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${DOMAIN:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
       - ./crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug
