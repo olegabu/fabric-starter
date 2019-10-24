@@ -255,11 +255,12 @@ services:
       - WWW_PORT=${WWW_PORT:-80}
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
-      - P=${PWD}
+      - FABRIC_STARTER_HOME=${PWD}
 #      - HFC_LOGGING={"debug":"console","info":"console"}
       - HFC_LOGGING={"debug":"/dev/null","info":"/dev/null"}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - DOCKER_REGISTRY
+      - BOOTSTRAP_PORT
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api

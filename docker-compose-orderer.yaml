@@ -31,7 +31,7 @@ services:
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -81,10 +81,10 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
     volumes:
-      - ./crypto-config/configtx:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/configtx:/etc/hyperledger/configtx
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
-      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 
 
   cli.orderer:
@@ -117,10 +117,10 @@ services:
       - pre-install
       - post-install
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${DOMAIN:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${DOMAIN:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -185,8 +185,8 @@ services:
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
     - post-install
 
