@@ -114,7 +114,7 @@
                 ],
                 "crypto_config": {
                   "identity_identifier_hash_function": "SHA256",
-                  "signature_hash_family": "SHA2"
+                  "signature_hash_family": "SM3"
                 },
                 "name": "${NEWORG}",
                 "root_certs": [
