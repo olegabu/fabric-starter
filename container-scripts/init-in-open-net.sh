@@ -52,20 +52,20 @@ echo -e "\n\nJoining channel 'common'\n\n"
 joinChannel common
 joinResult=$?
 
-if [ $createResult -eq 0 ]; then
+#if [ $createResult -eq 0 ]; then
     if [ -n "$BOOTSTRAP_IP" ]; then
         sleep 3
         instantiateChaincode ${DNS_CHANNEL:-common} dns
         sleep 3
         echo -e "\n\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n\n"
-        invokeChaincode common dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${DOMAIN} orderer.${DOMAIN}\"]"
+        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${ORDERER_DOMAIN} orderer.${ORDERER_DOMAIN}\"]"
     fi
-fi
+#fi
 
 if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
     sleep 3
     if [[ -n "$ORG_IP" || -n "$MY_IP" ]]; then # ORG_IP is deprecated
         echo -e "\n\nRegister MY_IP: $MY_IP\n\n"
-        invokeChaincode common dns "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
+        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
     fi
 fi

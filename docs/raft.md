@@ -22,8 +22,12 @@ Execute this on both organization nodes:
 
 ```bash
 export DOMAIN=example.com
+export ORDERER_DOMAIN1=osn-org1.$DOMAIN
+export ORDERER_DOMAIN2=osn-org2.$DOMAIN
+export ORG1_IP=<IP1>
+export ORG2_IP=<IP2>
 
-export WORK_DIR=$PWD/fabric-starter # path to fabric-starter folder
+export WORK_DIR=./ # path to fabric-starter folder
 
 export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml"
 
@@ -41,7 +45,7 @@ Manually prepare `hosts` file which will be mapped to containers' `/etc/hosts` s
 ```bash
 mkdir crypto-config
 # Write dns-record into the file `hosts_orderer`:
-echo "<org2-IP> raft3.${DOMAIN} raft4.${DOMAIN} raft5.${DOMAIN}" > crypto-config/hosts_orderer
+echo "$ORG2_IP www.${ORDERER_DOMAIN2} orderer.${ORDERER_DOMAIN2} raft4.${ORDERER_DOMAIN2} raft5.${ORDERER_DOMAIN2} peer0.org2.${DOMAIN}" > crypto-config/hosts_orderer
 ```
 
 
@@ -49,7 +53,7 @@ echo "<org2-IP> raft3.${DOMAIN} raft4.${DOMAIN} raft5.${DOMAIN}" > crypto-config
 ```bash
 mkdir crypto-config
 # Write dns-record into the file `hosts_orderer`:
-echo "<org1-IP> www.raft0.${DOMAIN} raft0.${DOMAIN} raft1.${DOMAIN} raft2.${DOMAIN}" > crypto-config/hosts_orderer
+echo "$ORG1_IP www.${ORDERER_DOMAIN1} orderer.${ORDERER_DOMAIN1} raft1.${ORDERER_DOMAIN1} raft2.${ORDERER_DOMAIN1} peer0.org1.${DOMAIN}" > crypto-config/hosts_orderer
 ```
 
 
@@ -58,25 +62,25 @@ echo "<org1-IP> www.raft0.${DOMAIN} raft0.${DOMAIN} raft1.${DOMAIN} raft2.${DOMA
 
 * **Org1** node: start 3 instances of`raft` orderers:  
 ```bash
-raft/1_raft-start-3-nodes.sh 
+DOMAIN=$ORDERER_DOMAIN1 raft/1_raft-start-3-nodes.sh 
 ```
 
 ### Add new raft-node to the consensus
 
 * **Org2** Node: prepare new `raft` ordrerer node config 
 ```bash
-ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/2_raft-prepare-new-consenter.sh
+DOMAIN=$ORDERER_DOMAIN2 raft/2_raft-prepare-new-consenter.sh
 ```
 
 * **Org1** node: add new orderer node config to system channel
 ```bash
-ORDERER_NAME=raft0 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${ORG2_DOMAIN:-${DOMAIN}} ${RAFT0_PORT}
+DOMAIN=$ORDERER_DOMAIN1 raft/3_2_raft-add-consenter.sh ${ORG2_RAFT_NAME_1} ${ORDERER_DOMAIN2:-${DOMAIN}} ${RAFT0_PORT}
 ```
 * Wait for new config is replicated between nodes 
 
 * **Org2** node: Start orderer:
 ```bash
-ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
+DOMAIN=$ORDERER_DOMAIN2 raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN1}
 ```
 
 This way any number of raft-ordering nodes can be added to the consensus. 

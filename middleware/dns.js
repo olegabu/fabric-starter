@@ -20,6 +20,7 @@ module.exports = async app => {
     const skip = !process.env.MULTIHOST;
     const period = process.env.DNS_PERIOD || 60000;
     const orgDomain = `${process.env.ORG}.${process.env.DOMAIN}`;
+    const ordererDomain = process.env.ORDERER_DOMAIN || process.env.DOMAIN;
     const queryTarget = process.env.DNS_QUERY_TARGET || `peer0.${orgDomain}:7051`;
 
     let dnsUserLoggedin = false;
@@ -95,6 +96,8 @@ module.exports = async app => {
     }
 
     function filterOutOrgByPattern(list, pattern) {
+        list.forEach(o=>{logger.debug(`Filtering ${_.get(o, "value")} with ${pattern}`);});
+
         list = list.filter(o => !_.includes(_.get(o, "value"), `${pattern}`));
         return list;
     }
@@ -146,12 +149,13 @@ module.exports = async app => {
             }
 
             list = filterOutOrgByPattern(list, `.${orgDomain}`);
+            logger.debug("DNS after org filtering", list);
 
             if (existsAndIsFile(ORDERER_HOSTS_FILE)) {
-                list = filterOutOrgByPattern(list, `orderer.${process.env.DOMAIN}`);
+                list = filterOutOrgByPattern(list, `orderer.${ordererDomain}`);
             }
 
-            logger.debug("DNS after filtering", list);
+            logger.debug("DNS after arg and orderer filtering", list);
 
             let hostsFileContent = generateHostsRecords(list);
 
