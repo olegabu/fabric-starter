@@ -118,7 +118,7 @@ services:
       - pre-install
       - post-install
     volumes:
-      - ./crypto-config/hosts_orderer:/etc/hosts
+#      - ./crypto-config/hosts_orderer:/etc/hosts
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${DOMAIN:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
