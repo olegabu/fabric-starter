@@ -15,7 +15,7 @@ REMOTE_WWW_ADDR=${1:?Remote www addr is requried}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN ORDERER_GENERAL_LISTENPORT
 
-COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} EXECUTE_BY_ORDERER=1 runCLI "container-scripts/ops/download-remote-config-block.sh $REMOTE_WWW_ADDR"
+COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} EXECUTE_BY_ORDERER=1 docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer container-scripts/ops/download-remote-config-block.sh $REMOTE_WWW_ADDR
 sleep 1
 
 echo "Stop orderer ${ORDERER_NAME}.${ORDERER_DOMAIN}"
