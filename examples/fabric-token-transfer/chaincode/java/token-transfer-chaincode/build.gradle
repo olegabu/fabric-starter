@@ -10,7 +10,7 @@ compileScala.targetCompatibility = 1.8
 dependencies {
     compile 'org.scala-lang:scala-library:2.12.0'
     compile 'org.scala-lang.modules:scala-xml_2.12:1.1.0'
-    compile 'com.github.apolubelov.fabric-contract-base:fabric-contract-base:1.4.0.13'
+    compile 'org.enterprisedlt.fabric.chaincode:fabric-chaincode-scala:1.4.0.15'
     // testing libraries
     testCompile 'junit:junit:4.12'
     testCompile 'org.scalatest:scalatest_2.12:3.0.5'

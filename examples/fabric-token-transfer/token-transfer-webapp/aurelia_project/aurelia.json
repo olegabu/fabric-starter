@@ -166,12 +166,6 @@
             "path": "../node_modules/cleave.js/dist",
             "exports": "$",
             "main": "cleave.min.js"
-          },
-          {
-            "name": "packages",
-            "main": "./lib/index.js",
-            "path": "../node_modules/packages",
-            "resources": []
           }
         ]
       }
