@@ -92,7 +92,7 @@ for org in ${orgs}; do
     printYellow " 4_raft-start-consenter.sh: Start Org2-raft0, wait for join: "
     connectMachine ${org}
     ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}
-    echo " Waiting  $ { ORG2_RAFT_NAME_1 } . $ { domain2 } "
+    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
 
 done
 
