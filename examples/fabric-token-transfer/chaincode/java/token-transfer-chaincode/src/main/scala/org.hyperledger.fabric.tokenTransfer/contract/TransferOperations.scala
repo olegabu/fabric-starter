@@ -1,7 +1,7 @@
 package org.hyperledger.fabric.tokenTransfer.contract
 
-import com.github.apolubelov.fabric.contract.annotation.ContractOperation
-import com.github.apolubelov.fabric.contract.{ContractContext, ContractResponse, Success}
+import org.enterprisedlt.fabric.contract.annotation.ContractOperation
+import org.enterprisedlt.fabric.contract.{ContractContext, ContractResponse, Success}
 import org.hyperledger.fabric.tokenTransfer.{Account, Main, OperationHistory}
 
 
