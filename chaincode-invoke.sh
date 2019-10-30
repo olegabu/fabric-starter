@@ -10,4 +10,4 @@ arguments=${3-'[]'}
 
 : ${PEER0_PORT:=7051}
 
-ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME} runCLI "container-scripts/network/chaincode-invoke.sh  $channelName $chaincodeName '$arguments'"
+ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME:-orderer} runCLI "container-scripts/network/chaincode-invoke.sh  $channelName $chaincodeName '$arguments'"
