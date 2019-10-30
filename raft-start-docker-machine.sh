@@ -47,37 +47,39 @@ export WWW_PORT=81
 BOOTSTRAP_IP=$(getMachineIp ${machineName})
 export BOOTSTRAP_IP
 export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"
+export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-ports.yaml"
 
 ORDERER_DOMAIN_1=${first_org}-${DOMAIN}
 
 
 
 
-#connectMachine ${machineName}
-#./clean.sh
-#docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
-#docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
-#
-#createHostsFile ${first_org}
-#
-#printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
-#ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
-#sleep 2
+connectMachine ${machineName}
+./clean.sh
+docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
+docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
 
+createHostsFile ${first_org}
+
+printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
+#ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
+sleep 2
+
+ORG=${first_org} ORDERER_DOMAIN=${ORDERER_DOMAIN_1} WWW_PORT=80 docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
 
 
 for org in ${orgs}; do
 
     ORDERER_DOMAIN_ORG=${org}-${DOMAIN}
-#
-#    connectMachine ${org}
-#
-#    ./clean.sh
-#    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
-#    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
-#
-#    createHostsFile ${org}
-#
+
+    connectMachine ${org}
+
+    ./clean.sh
+    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
+    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
+
+    createHostsFile ${org}
+
 #    printYellow "2_raft-prepare-new-consenter.sh: Prepare ${org} orderer:"
 #    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/2_raft-prepare-new-consenter.sh
 #    sleep 1
@@ -86,13 +88,13 @@ for org in ${orgs}; do
 #    connectMachine ${first_org}
 #    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
 #
-#    ORG=${first_org} ORDERER_DOMAIN=${ORDERER_DOMAIN_1} docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml up -d
-
-
-    printYellow " 4_raft-start-consenter.sh: Start Org2-raft0, wait for join: "
-    connectMachine ${org}
-    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}
-    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
+#
+#
+#
+#    printYellow " 4_raft-start-consenter.sh: Start Org2-raft0, wait for join: "
+#    connectMachine ${org}
+#    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}
+#    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
 
 done
 
