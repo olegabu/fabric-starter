@@ -11,7 +11,7 @@ REMOTE_WWW_ADDR=${1:?Remote www addr is requried}
 : ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORDERER_GENERAL_LISTENPORT:=7050}
 : ${ORDERER_NAME_PREFIX:=raft}
-: ${DOCKER_COMPOSE_ORDERER_ARGS:= -f docker-compose-orderer.yaml}
+: ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml"}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN ORDERER_GENERAL_LISTENPORT
 

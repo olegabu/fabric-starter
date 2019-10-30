@@ -12,7 +12,7 @@ exampleMsg="ORG=org1 ORDERER_NAME=raft0 $0"
 : ${ORDERER_NAME_PREFIX:=raft}
 : ${ORDERER_DOMAIN:=$DOMAIN}
 : ${ORDERER_GENERAL_LISTENPORT:=${ORDERER_GENERAL_LISTENPORT:-7050}}
-: ${DOCKER_COMPOSE_ORDERER_ARGS:=-f docker-compose-orderer.yaml}
+: ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml"}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN ORDERER_GENERAL_LISTENPORT
 

@@ -12,6 +12,7 @@ NEWCONSENTER_WWW_PORT=${4:-80}
 : ${DOMAIN:=example.com}
 : ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORDERER_NAME:=orderer}
+: ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml"}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN
 
