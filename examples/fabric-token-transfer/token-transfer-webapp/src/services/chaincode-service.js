@@ -116,7 +116,8 @@ export class ChaincodeService {
 
     const params = {
       fcn: func,
-      args: json(args)
+      args: json(args),
+      targets: json([])
     };
 
     return new Promise((resolve, reject) => {
@@ -156,7 +157,8 @@ export class ChaincodeService {
 
     const params = {
       fcn: func,
-      args: args
+      args: args,
+      targets: json([])
     };
 
     return new Promise((resolve, reject) => {
@@ -178,6 +180,7 @@ export class ChaincodeService {
     const params = {
       fcn: func,
       args: args,
+      targets: json([]),
       transientMap: transient
     };
 
