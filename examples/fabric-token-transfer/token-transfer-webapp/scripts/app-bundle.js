@@ -365,7 +365,8 @@ define('services/chaincode-service',['exports', 'aurelia-framework', 'aurelia-fe
 
       var params = {
         fcn: func,
-        args: (0, _aureliaFetchClient.json)(args)
+        args: (0, _aureliaFetchClient.json)(args),
+        targets: (0, _aureliaFetchClient.json)([])
       };
 
       return new Promise(function (resolve, reject) {
@@ -408,7 +409,8 @@ define('services/chaincode-service',['exports', 'aurelia-framework', 'aurelia-fe
 
       var params = {
         fcn: func,
-        args: args
+        args: args,
+        targets: (0, _aureliaFetchClient.json)([])
       };
 
       return new Promise(function (resolve, reject) {
@@ -431,6 +433,7 @@ define('services/chaincode-service',['exports', 'aurelia-framework', 'aurelia-fe
       var params = {
         fcn: func,
         args: args,
+        targets: (0, _aureliaFetchClient.json)([]),
         transientMap: transient
       };
 
@@ -2712,13 +2715,14 @@ define('login',['exports', 'aurelia-framework', './services/identity-service', '
   }()) || _class);
 });
 define('text!login.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"bootstrap/css/bootstrap.min.css\"></require>\n  <require from=\"./styles/app.css\"></require>\n\n  <div style=\"position: relative; height: 100%; display: flex; justify-content: center;\">\n    <div class=\"container\" style=\"margin: auto;\">\n      <!--h-100-->\n      <div class=\"row justify-content-center align-items-center\">\n        <form class=\"form-signin\" submit.delegate=\"login()\">\n          <h1 class=\"text-center text-uppercase\">${org}</h1>\n          <p>You're connected to your organization's API server. Login or register.</p>\n          <div class=\"form-group\">\n            <input type=\"text\" class=\"form-control\" placeholder=\"Username\" required autofocus value.bind=\"username\">\n          </div>\n          <div class=\"form-group\">\n            <input type=\"password\" class=\"form-control\" placeholder=\"Password\" required value.bind=\"password\">\n          </div>\n          <div if.bind=\"errorMessage\" class=\"alert alert-danger\" role=\"alert\">\n            <span t=\"errorMessages.errorMessage\">errorMessages.errorMessage</span>\n          </div>\n          <div class=\"form-group\">\n            <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Login</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n</template>\n"; });
-define('environment',["exports"], function (exports) {
-  "use strict";
+define('environment',['exports'], function (exports) {
+  'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
   exports.default = {
+    baseUrl: 'http://localhost:4000',
     debug: true,
     testing: false
   };
