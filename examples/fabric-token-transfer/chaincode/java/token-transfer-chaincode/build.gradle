@@ -21,8 +21,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-    maven { url 'https://dl.bintray.com/apolubelov/hyperledger-fabric-extensions' }
-    maven { url 'https://dl.bintray.com/apolubelov/general' }
+    maven { url 'https://dl.bintray.com/enterprisedlt/fabric' }
 }
 
 
