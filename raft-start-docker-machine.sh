@@ -51,47 +51,45 @@ export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-multihost.y
 
 ORDERER_DOMAIN_1=${first_org}-${DOMAIN}
 
+#
+connectMachine ${machineName}
+./clean.sh
+docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
+docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
+#
+createHostsFile ${first_org}
+
+printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
+ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
+sleep 2
 
 
+for org in ${orgs}; do
+#
+    ORDERER_DOMAIN_ORG=${org}-${DOMAIN}
 
-#connectMachine ${machineName}
-#./clean.sh
-#docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
-#docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
-#
-#createHostsFile ${first_org}
-#
-#printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
-#ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
-#sleep 2
+    connectMachine ${org}
 
-#
-#for org in ${orgs}; do
-#
-#    ORDERER_DOMAIN_ORG=${org}-${DOMAIN}
-#
-#    connectMachine ${org}
-#
-#    ./clean.sh
-#    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
-#    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
-#
-#    createHostsFile ${org}
-#
-#    printYellow "2_raft-prepare-new-consenter.sh: Prepare ${org} orderer:"
-#    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/2_raft-prepare-new-consenter.sh
-#    sleep 1
-#
-#    printYellow " 3_raft-add-consenter: Add new consenter to config: "
-#    connectMachine ${first_org}
-#    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
-#
-#    printYellow " 4_raft-start-consenter.sh: Start Org2-raft0, wait for join: "
-#    connectMachine ${org}
-#    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}:${WWW_PORT}
-#    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
-#
-#done
+    ./clean.sh
+    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
+    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
+
+    createHostsFile ${org}
+
+    printYellow "2_raft-prepare-new-consenter.sh: Prepare ${org} orderer:"
+    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/2_raft-prepare-new-consenter.sh
+    sleep 1
+
+    printYellow " 3_raft-add-consenter: Add new consenter to config: "
+    connectMachine ${first_org}
+    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
+
+    printYellow " 4_raft-start-consenter.sh: Start Org2-raft0, wait for join: "
+    connectMachine ${org}
+    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}:${WWW_PORT}
+    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
+
+done
 
 docker-compose ${DOCKER_COMPOSE_ARGS} down --volumes
 
@@ -99,8 +97,30 @@ for org in ${orig_orgs}; do
 
     ORDERER_DOMAIN_ORG=${org}-${DOMAIN}
 
-    MY_IP=$(getMachineIp ${machineName})
+    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
+    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
+
+    ORG_IP=$(getMachineIp ${org})
     connectMachine ${org}
-    ORG=${org} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} WWW_PORT=80 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${MY_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
+    ORG=${org} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} WWW_PORT=80 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
+    echo -e "\n\nWait for org initialized"
+    docker wait post-install.${org}.${DOMAIN}
+
+    if [ "${org}" != "${first_org}" ]; then
+        connectMachine ${first_org}
+
+        echo -e "\n\nQuery RegisterOrg ${org}.${DOMAIN} ${ORG_IP}"
+        ORG=${first_org} ORDERER_DOMAIN=${ORDERER_DOMAIN_1} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"${ORG_IP}\"]"
+
+        ORG=${first_org}  ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-add-org.sh common ${org}
+
+        connectMachine ${org}
+        echo -e "\n\nJoin channel common ${org}.${DOMAIN}"
+        ORG=${org} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
+        sleep 5
+        echo -e "\n\nQuery RegisterOrg ${org}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN_ORG}"
+
+        ORG=${org} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"${ORG_IP}\"]"
+    fi
 
 done
