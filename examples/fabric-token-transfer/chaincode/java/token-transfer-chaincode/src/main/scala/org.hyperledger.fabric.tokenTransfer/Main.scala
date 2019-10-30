@@ -1,6 +1,6 @@
 package org.hyperledger.fabric.tokenTransfer
 
-import com.github.apolubelov.fabric.contract.ContractBase
+import org.enterprisedlt.fabric.contract.ContractBase
 import org.hyperledger.fabric.tokenTransfer.contract.{ContractInitialize, TransferOperations}
 import org.slf4j.{Logger, LoggerFactory}
 
