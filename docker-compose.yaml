@@ -251,7 +251,7 @@ services:
       - MY_IP
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
-      - AUTH_MODE=CA
+      - AUTH_MODE=${AUTH_MODE:-CA}
       - P=${PWD}
       - HFC_LOGGING={"debug":"console","info":"console"}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
