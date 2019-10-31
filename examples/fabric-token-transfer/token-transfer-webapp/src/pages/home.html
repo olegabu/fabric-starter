@@ -1,0 +1,92 @@
+<template>
+  <require from="../resources/elements/key"></require>
+  <require from="../resources/elements/handy-table"></require>
+  <require from="../resources/elements/column"></require>
+  <require from="../resources/elements/widget-entity-crud"></require>
+
+  <div class="form-group row">
+    <div class="card-body aut-form-card">
+      <button type="button" class="btn btn-success" click.trigger="getTokens()" t="Get one million tokens">
+        Transfer
+      </button>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <h4 t="Balance">Balance</h4>
+      <div class="col-sm-6">
+        ${organizationAccount.value.amount}
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <h4 t="Transfer">Transfer</h4>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <label class="col-sm-2 col-form-label" t="Receiver"></label>
+      <div class="col-sm-10">
+        <select class="form-control"
+                value.bind="receiver">
+          <option repeat.for="o of orgList" model.bind="o.key">${o.key}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <label class="col-sm-2 col-form-label" t="Amount"></label>
+      <div class="input-group col-sm-10">
+        <input id="amount" name="amount" type="text" class="form-control"
+               value.bind="amount & validateManually:discountValidationController">
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <div if.bind="discountValidationController.errors.length > 0" class="alert alert-danger" role="alert">
+        <span t="errorMessages.hasErrors">hasErrors</span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="card-body aut-form-card">
+      <button type="button" class="btn btn-success" click.trigger="transfer(receiver,amount)" t="Transfer">
+        Transfer
+      </button>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <h4 t="Operation history">Operation history</h4>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6">
+      <div>
+        <handy-table
+          tabident="operation-tab"
+          read-data.call="queryOperationHistory()"
+          pageable="true"
+          can-create.call="false"
+          can-cancel-filter.call="false"
+          can-filter-columns.bind="false">
+          <column field="value.sender" resourcekey="Sender"></column>
+          <column field="value.receiver" resourcekey="Receiver"></column>
+          <column field="value.amount" resourcekey="Amount"></column>
+          <column field="value.timestamp" resourcekey="Date time" viewtype="datetime" format="YYYY-MM-DD HH:mm" ></column>
+        </handy-table>
+      </div>
+    </div>
+  </div>
+
+</template>
+
+
+</template>
