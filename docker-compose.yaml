@@ -255,6 +255,7 @@ services:
       - WWW_PORT=${WWW_PORT:-80}
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
+      - AUTH_MODE=${AUTH_MODE:-CA}
       - FABRIC_STARTER_HOME=${PWD}
 #      - HFC_LOGGING={"debug":"console","info":"console"}
       - HFC_LOGGING={"debug":"/dev/null","info":"/dev/null"}
