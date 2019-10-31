@@ -23,10 +23,10 @@ ORG2_RAFT_NAME_2=raft4
 
 printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
 DOMAIN=${domain1} raft/1_raft-start-3-nodes.sh
-sleep 20
+sleep 10
 
 if [ "$domain1" == "$domain2" ]; then
-    printYellow "Delete WWW container to allow new concenter from same domain start flowlessly"
+    printYellow "Delete WWW container to allow new consenter from same domain start flowlessly"
     docker rm -f www.${domain1}
 fi
 
@@ -42,10 +42,10 @@ sleep 5
 
 printYellow "4_raft-start-consenter.sh: Start Org2-raft0, wait for join:"
 # skip restarting as in local deployment it's already started and successfully joined at prepare step
-#ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
+ORG=${org2} DOMAIN=${domain2} ORDERER_NAME=${ORG2_RAFT_NAME_1} raft/4_raft-start-consenter.sh www.${domain1}
 echo "Waitng ${ORG2_RAFT_NAME_1}.${domain2}"
 
-sleep 20
+sleep 10
 
 printYellow "5_raft-update-endpoints: Include endpoints ${ORG2_RAFT_NAME_1}.${domain2} to the system-channel"
 DOMAIN=${domain1} raft/5_raft-update-endpoints.sh ${ORG2_RAFT_NAME_1} ${domain2} ${RAFT0_PORT}

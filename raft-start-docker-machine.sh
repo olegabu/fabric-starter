@@ -22,8 +22,6 @@ function createHostsFile() {
 }
 
 
-export FABRIC_STARTER_VERSION=gost-0.1
-
 : ${RAFT0_PORT:=7050}
 : ${RAFT1_PORT:=7150}
 : ${RAFT2_PORT:=7250}
@@ -31,7 +29,7 @@ export FABRIC_STARTER_VERSION=gost-0.1
 
 export DOMAIN=testnet.aft
 export RAFT0_PORT RAFT1_PORT RAFT2_PORT RAFT_NODES_COUNT
-
+export AUTH_MODE=ADMIN
 ######### START ####
 
 first_org=${1:-org1}
@@ -53,17 +51,14 @@ ORDERER_DOMAIN_1=${first_org}-osn.${DOMAIN}
 for org in ${orig_orgs}; do
     connectMachine ${org}
     ./clean.sh
-    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
-    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     createHostsFile ${org}
 done
 
-
-connectMachine ${first_org}
-createHostsFile ${first_org}
-
 echo -e "\n\n"
 printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
+connectMachine ${first_org}
 ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
 sleep 2
 
@@ -82,6 +77,7 @@ for currOrg in ${orgsArr[@]:0:3}; do
     printYellow " 3_raft-add-consenter ${currOrg}: Add new consenter to config: "
     connectMachine ${first_org}
     ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
+    exit
     sleep 5
     printYellow " 4_raft-start-consenter.sh ${currOrg}: Start Org2-raft0, wait for join: "
     connectMachine ${currOrg}
@@ -89,10 +85,11 @@ for currOrg in ${orgsArr[@]:0:3}; do
     echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
     sleep 5
 done
+sleep 5
 
 IFS=', ' read -r -a allOrgsArr <<< "$orig_orgs"
-echo -e "\n\nPeers with raft: ${allOrgsArr[@]:0:4}"
-for peerOrg in ${allOrgsArr[@]:0:4}; do
+echo -e "\n\nPeers with raft: $orig_orgs"
+for peerOrg in $orig_orgs; do
 
     ORDERER_DOMAIN_ORG=${peerOrg}-osn.${DOMAIN}
     connectMachine ${peerOrg}
@@ -122,7 +119,7 @@ for peerOrg in ${allOrgsArr[@]:0:4}; do
     fi
 
 done
-
+exit
 echo -e "\n\nPeers no raft:${allOrgsArr[@]:4}"
 unset peerOrg
 for peerOrg in ${allOrgsArr[@]:4}; do
