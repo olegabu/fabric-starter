@@ -72,7 +72,6 @@ for org in ${orgs}; do
 
     ./clean.sh
     docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
-    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
 
     createHostsFile ${org}
 
@@ -97,7 +96,6 @@ for org in ${orig_orgs}; do
 
     ORDERER_DOMAIN_ORG=${org}-${DOMAIN}
 
-    docker pull olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION}
     docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
 
     ORG_IP=$(getMachineIp ${org})
