@@ -101,7 +101,7 @@ for peerOrg in ${allOrgsArr[@]:0:4}; do
     ORG_IP=$(getMachineIp ${peerOrg})
     connectMachine ${peerOrg}
     ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} ORDERER_NAME=orderer WWW_PORT=80 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
-    echo -e "\n\nWait for org initialized"
+    echo -e "\n\nWait for dns chaincode initialized"
     docker wait post-install.${peerOrg}.${DOMAIN}
 
     if [ "${peerOrg}" != "${first_org}" ]; then
@@ -114,7 +114,7 @@ for peerOrg in ${allOrgsArr[@]:0:4}; do
 
         connectMachine ${peerOrg}
         echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
-        ORG=${org} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
+        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
         sleep 5
         echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN_ORG}"
 
@@ -122,18 +122,19 @@ for peerOrg in ${allOrgsArr[@]:0:4}; do
     fi
 
 done
-echo -e "\n\nPeers no raft:${orgsArr[@]:4}"
-exit
-for peerOrg in ${orgsArr[@]:4}; do
 
-    ORDERER_DOMAIN_ORG=${peerOrg}-osn.${DOMAIN}
+echo -e "\n\nPeers no raft:${allOrgsArr[@]:4}"
+unset peerOrg
+for peerOrg in ${allOrgsArr[@]:4}; do
+
+    ORDERER_DOMAIN_ORG=${first_org}-osn.${DOMAIN}
 
     docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
 
     ORG_IP=$(getMachineIp ${peerOrg})
     connectMachine ${peerOrg}
     ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} WWW_PORT=80 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
-    echo -e "\n\nWait for org initialized"
+    echo -e "\n\nWait for dns chaincode initialized"
     docker wait post-install.${peerOrg}.${DOMAIN}
 
     if [ "${peerOrg}" != "${first_org}" ]; then
@@ -146,7 +147,7 @@ for peerOrg in ${orgsArr[@]:4}; do
 
         connectMachine ${peerOrg}
         echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
-        ORG=${org} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
+        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
         sleep 5
         echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN_ORG}"
 
