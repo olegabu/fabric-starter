@@ -122,8 +122,8 @@ services:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
-      - ./templates:/etc/hyperledger/templates # for local debug
-      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ./templates:/etc/hyperledger/templates # for local debug
+#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server
