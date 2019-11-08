@@ -49,8 +49,8 @@ joinResult=$?
 if [ $createResult -eq 0 ]; then
     sleep 3
     instantiateChaincode ${DNS_CHANNEL:-common} dns
+    sleep 15
     if [ -n "$BOOTSTRAP_IP" ]; then
-        sleep 3
         echo -e "\n\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n\n"
         invokeChaincode ${DNS_CHANNEL:-common} dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${ORDERER_DOMAIN} orderer.${ORDERER_DOMAIN}\"]"
     fi
