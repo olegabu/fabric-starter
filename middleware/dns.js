@@ -88,7 +88,7 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
 
         const osns = await getChaincodeData("osn");
         if (osns) {
-            eventBus.emit('osn-configuration-changed', osns);
+            eventBus && eventBus.emit('osn-configuration-changed', osns);
         }
 
         const chainOrgs = await getChaincodeData("orgs");
