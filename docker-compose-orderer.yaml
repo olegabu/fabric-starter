@@ -65,7 +65,7 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
-      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9090
+      - ORDERER_OPERATIONS_LISTENADDRESS=${ORDERER_OPERATIONS_LISTENADDRESS:-0.0.0.0:9090}
       - ORDERER_OPERATIONS_TLS_ENABLED=false
       - ORDERER_METRICS_PROVIDER=prometheus
 

@@ -5,150 +5,180 @@ source lib.sh
 orig_orgs=$@
 
 function createHostsFile() {
-    local currOrg=${1?:Current org isrequired}
-    local hosts=""
+    local firstOrg=${1?:First org is required}
+    local currOrg=${2?:Current org is required}
+    local ordererDomain=${3:-${currOrg}-osn.${DOMAIN}}
+    shift
+    shift
+    shift
+    local restOrgs=$@
 
+    local hosts=""
+    local org
+    local ip
+
+     if [ "$currOrg" != "$firstOrg" ]; then
+            ip=$(getMachineIp ${firstOrg})
+            hosts="${ip} www.${ordererDomain} orderer.${ordererDomain} raft1.${ordererDomain} raft2.${ordererDomain}"
+     fi
 
     # Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
-    for org in ${orig_orgs}; do
+
+    local raftIndex=3
+    for org in ${restOrgs}; do
         if [ "$currOrg" != "$org" ]; then
             ip=$(getMachineIp ${org})
-            hosts="${hosts}\n${ip} www.${org}-osn.${DOMAIN} orderer.${org}-osn.${DOMAIN} raft1.${org}-osn.${DOMAIN} raft2.${org}-osn.${DOMAIN}"
+            hosts="${hosts}\n${ip} raft${raftIndex}.${ordererDomain}"
+            raftIndex=$((raftIndex+1))
         fi
     done
-    mkdir -p crypto-config/hosts_${currOrg}/crypto-config/
-    echo -e ${hosts} > crypto-config/hosts_${currOrg}/crypto-config/hosts
-    copyDirToMachine $currOrg crypto-config/hosts_${currOrg}/crypto-config crypto-config
+    echo -e ${hosts} > crypto-config/hosts_${currOrg}
+    copyFileToMachine $currOrg crypto-config/hosts_${currOrg} crypto-config/hosts
+}
+
+function prepareOrg() {
+    local org=${1?: org is required}
+    local ordererDomain=${2?: ordererDomain is required}
+
+    bash -c "\
+    source lib.sh;  \
+    setMachineWorkDir ${org}; \
+    export FABRIC_STARTER_HOME=${WORK_DIR}; \
+    connectMachine ${org};  \
+    ./clean.sh;
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
+    copyDirToMachine $org crypto-config/ordererOrganizations/${ordererDomain} crypto-config/ordererOrganizations; \
+    copyDirToMachine $org crypto-config/configtx crypto-config "
+
+
+    createHostsFile ${first_org} ${org} ${ORDERER_DOMAIN_1} ${orgs}
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ordererDomain} crypto-config/ordererOrganizations
+#    copyDirToMachine $org crypto-config/configtx crypto-config
+
+
+
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/ crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}
+
+#
+#    copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/server.crt
+#    copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/ca.crt
+#    for ((raftIdx=1; raftIdx< ${RAFT_NODES_COUNT}; raftIdx++)); do
+#        copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/server.crt
+#        copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/ca.crt
+#    done
+#
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/msp crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/msp
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/msp crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/users
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/msp crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/ca
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/msp crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/tlsca
+#    copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/msp crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/tlsca
+#    if [ "${org}" == "${first_org}" ]; then
+#        copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1} crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}
+#        copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIndex}.${ORDERER_DOMAIN_1} crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIndex}.${ORDERER_DOMAIN_1}
+#        raftIndex=$((raftIndex+1))
+#        copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIndex}.${ORDERER_DOMAIN_1} crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIndex}.${ORDERER_DOMAIN_1}
+#        raftIndex=$((raftIndex+1))
+#    else
+#        copyDirToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIndex}.${ORDERER_DOMAIN_1} crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIndex}.${ORDERER_DOMAIN_1}
+#        raftIndex=$((raftIndex+1))
+#    fi
+}
+
+
+function startOrderer() {
+    local org=${1?: org is required}
+    local ordererDomain=${2?: ordererDomain is required}
+    local raftIndex=${3?: raftIndex is required}
+
+    bash -c "\
+        source lib.sh;  \
+        setMachineWorkDir ${first_org}; \
+        connectMachine ${org};
+        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer; \
+    "
 }
 
 
 : ${RAFT0_PORT:=7050}
 : ${RAFT1_PORT:=7150}
 : ${RAFT2_PORT:=7250}
-: ${RAFT_NODES_COUNT:=3}
+: ${RAFT_NODES_COUNT:=9}
 
-export DOMAIN=testnet.aft
-export RAFT0_PORT RAFT1_PORT RAFT2_PORT RAFT_NODES_COUNT
-export AUTH_MODE=ADMIN
+: ${DOMAIN:=DOMAIN}
+
+export DOMAIN RAFT0_PORT RAFT1_PORT RAFT2_PORT RAFT_NODES_COUNT
+
 ######### START ####
 
 first_org=${1:-org1}
 shift
 orgs=$@
 
+export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"
+ORDERER_DOMAIN_1=${first_org}-osn.${DOMAIN}
+
+
+./clean.sh
+printYellow "Pre-generate orderer files on local host"
+ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} RAFT_NODES_COUNT=${RAFT_NODES_COUNT} COMPOSE_PROJECT_NAME=orderer.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d pre-install
+docker wait pre-install.orderer.${ORDERER_DOMAIN_1}
+printYellow "Pre-generate completed"
+sudo chown -R $USER crypto-config
+
 
 setMachineWorkDir ${first_org}
 export FABRIC_STARTER_HOME=${WORK_DIR}
 export WWW_PORT=81
 
-BOOTSTRAP_IP=$(getMachineIp ${first_org})
-export BOOTSTRAP_IP
-export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"
-export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-ports.yaml"
-ORDERER_DOMAIN_1=${first_org}-osn.${DOMAIN}
+
+IFS=', ' read -r -a orgsArr <<< "$orgs"
 
 
 for org in ${orig_orgs}; do
-    connectMachine ${org}
-    ./clean.sh
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
-    createHostsFile ${org}
+    prepareOrg $org ${ORDERER_DOMAIN_1} &
+    procId=$!
+    sleep 1
 done
 
+wait  ${procId}
+echo -e "\n\nEND\n\n"
+
+
 echo -e "\n\n"
+
 printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
 connectMachine ${first_org}
-ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
+ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
 sleep 2
 
 IFS=', ' read -r -a orgsArr <<< "$orgs"
 echo -e "\n\n Raft: ${orgsArr[@]:0:3}"
-for currOrg in ${orgsArr[@]:0:3}; do
+raftIndex=3
+for currOrg in ${orgs}; do
 
     ORDERER_DOMAIN_ORG=${currOrg}-osn.${DOMAIN}
 
-    connectMachine ${currOrg}
+    startOrderer ${currOrg} ${ORDERER_DOMAIN_1} ${raftIndex} &
+    procId=$!
 
-    printYellow "2_raft-prepare-new-consenter.sh: Prepare ${currOrg} orderer:"
-    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/2_raft-prepare-new-consenter.sh
     sleep 1
+    raftIndex=$((raftIndex+1))
 
-    printYellow " 3_raft-add-consenter ${currOrg}: Add new consenter to config: "
-    connectMachine ${first_org}
-    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
-    exit
-    sleep 5
-    printYellow " 4_raft-start-consenter.sh ${currOrg}: Start Org2-raft0, wait for join: "
-    connectMachine ${currOrg}
-    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}:${WWW_PORT}
-    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
-    sleep 5
+#    printYellow "2_raft-prepare-new-consenter.sh: Prepare ${currOrg} orderer:"
+#    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/2_raft-prepare-new-consenter.sh
+#    sleep 1
+
+#    printYellow " 3_raft-add-consenter ${currOrg}: Add new consenter to config: "
+#    connectMachine ${first_org}
+#    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
+#    sleep 5
+
+#    printYellow " 4_raft-start-consenter.sh ${currOrg}: Start Org2-raft0, wait for join: "
+#    connectMachine ${currOrg}
+#    ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} raft/4_raft-start-consenter.sh www.${ORDERER_DOMAIN_1}:${WWW_PORT}
+#    echo "Waiting  orderer.${ORDERER_DOMAIN_ORG}"
+#    sleep 5
 done
-sleep 5
 
-IFS=', ' read -r -a allOrgsArr <<< "$orig_orgs"
-echo -e "\n\nPeers with raft: $orig_orgs"
-for peerOrg in $orig_orgs; do
-
-    ORDERER_DOMAIN_ORG=${peerOrg}-osn.${DOMAIN}
-    connectMachine ${peerOrg}
-    docker-compose ${DOCKER_COMPOSE_ARGS} down --volumes
-
-    ORG_IP=$(getMachineIp ${peerOrg})
-    connectMachine ${peerOrg}
-    ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} ORDERER_NAME=orderer WWW_PORT=80 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
-    echo -e "\n\nWait for dns chaincode initialized"
-    docker wait post-install.${peerOrg}.${DOMAIN}
-
-    if [ "${peerOrg}" != "${first_org}" ]; then
-        connectMachine ${first_org}
-
-        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP}"
-        ORG=${first_org} ORDERER_DOMAIN=${ORDERER_DOMAIN_1} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]"
-
-        ORG=${first_org}  ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-add-org.sh common ${peerOrg}
-
-        connectMachine ${peerOrg}
-        echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
-        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
-        sleep 5
-        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN_ORG}"
-
-        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]"
-    fi
-
-done
-exit
-echo -e "\n\nPeers no raft:${allOrgsArr[@]:4}"
-unset peerOrg
-for peerOrg in ${allOrgsArr[@]:4}; do
-
-    ORDERER_DOMAIN_ORG=${first_org}-osn.${DOMAIN}
-
-    docker pull olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION}
-
-    ORG_IP=$(getMachineIp ${peerOrg})
-    connectMachine ${peerOrg}
-    ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} WWW_PORT=80 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
-    echo -e "\n\nWait for dns chaincode initialized"
-    docker wait post-install.${peerOrg}.${DOMAIN}
-
-    if [ "${peerOrg}" != "${first_org}" ]; then
-        connectMachine ${first_org}
-
-        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP}"
-        ORG=${first_org} ORDERER_DOMAIN=${ORDERER_DOMAIN_1} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]"
-
-        ORG=${first_org}  ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-add-org.sh common ${peerOrg}
-
-        connectMachine ${peerOrg}
-        echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
-        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./channel-join.sh common
-        sleep 5
-        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN_ORG}"
-
-        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN_ORG} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]"
-    fi
-
-done
+wait ${procId}
