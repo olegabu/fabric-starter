@@ -58,7 +58,7 @@ if [ $createResult -eq 0 ]; then
     if [ -n "$BOOTSTRAP_IP" ]; then
         echo -e "\n\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n\n"
 #        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${ORDERER_DOMAIN} orderer.${ORDERER_DOMAIN}\"]"
-        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\, \"${ORDERER_GENERAL_LISTENPORT}\", \"$BOOTSTRAP_IP\"]"
+        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$BOOTSTRAP_IP\"]"
     fi
 fi
 
