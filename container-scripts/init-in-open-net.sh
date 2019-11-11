@@ -22,10 +22,15 @@ ORG_CORE_PEER_LOCALMSPID=${CORE_PEER_LOCALMSPID}
 ORG_CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}
 ORG_CORE_PEER_TLS_ROOTCERT_FILE=${CORE_PEER_TLS_ROOTCERT_FILE}
 
+echo "No file ${CORE_PEER_TLS_ROOTCERT_FILE}. Exiting."
+
 setOrdererIdentity ${ORDERER_NAME} ${ORDERER_DOMAIN} /etc/hyperledger/crypto-config
 if [ ! -f "${CORE_PEER_TLS_ROOTCERT_FILE}" ]; then
+    echo "No file ${CORE_PEER_TLS_ROOTCERT_FILE}. Exiting."
     exit
 fi
+echo "File  ${CORE_PEER_TLS_ROOTCERT_FILE}. Exiting."
+
 
 echo -e "\n\nTrying to add  ${ORG} to consortium\n\n"
 ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
@@ -52,7 +57,8 @@ if [ $createResult -eq 0 ]; then
     sleep 15
     if [ -n "$BOOTSTRAP_IP" ]; then
         echo -e "\n\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n\n"
-        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${ORDERER_DOMAIN} orderer.${ORDERER_DOMAIN}\"]"
+#        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${ORDERER_DOMAIN} orderer.${ORDERER_DOMAIN}\"]"
+        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\, \"${ORDERER_GENERAL_LISTENPORT}\", \"$BOOTSTRAP_IP\"]"
     fi
 fi
 
