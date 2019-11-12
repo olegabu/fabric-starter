@@ -75,4 +75,46 @@ module.exports = class DnsChaincode extends StorageChaincode {
         logger.debug('Updating DNS record with ', dnsStringified);
         return this.put(['dns', dnsStringified]);
     }
+
+    async Invoke(stub) {
+        this.stub = stub;
+
+        let req = stub.getFunctionAndParameters();
+        this.channel = stub.getChannelID();
+
+        // const cid = new ClientIdentity(stub);
+        // logger.debug("cid.mspId=%s cid.id=%s cid.cert=%j", cid.mspId, cid.id, cid.cert);
+        // // alternative method to get transaction creator org and identity
+        // // const creator = stub.getCreator();
+        // // logger.info("creator=%j", creator);
+        //
+        // this.creator = cid;
+        // this.creator.org = cid.mspId.split('MSP')[0];
+        //
+        // logger.info("Invoke on %s by org %s user %s with %j",
+        //     this.channel, this.creator.org, this.creator.cert.subject.commonName, req);
+        //
+        // logger.info("Invoke on %s with %j", this.channel, req);
+
+        let method = this[req.fcn];
+        if (!method) {
+            return shim.error(`no method found of name: ${req.fcn}`);
+        }
+
+        method = method.bind(this);
+
+        try {
+            let ret = await method(req.params);
+
+            if (ret && !Buffer.isBuffer(ret)) {
+                logger.debug(`not buffer ret=${ret}`);
+                ret = Buffer.from(ret);
+            }
+
+            return shim.success(ret);
+        } catch (err) {
+            logger.error(err);
+            return shim.error(err);
+        }
+    }
 };
