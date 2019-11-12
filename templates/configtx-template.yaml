@@ -16,6 +16,36 @@ Organizations:
         ID: raft2.${ORDERER_DOMAIN}
         MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
 
+    - &OrdererOrg3
+        Name: Orderer2
+        ID: raft3.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg4
+        Name: Orderer2
+        ID: raft4.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg5
+        Name: Orderer2
+        ID: raft5.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg6
+        Name: Orderer2
+        ID: raft6.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg7
+        Name: Orderer2
+        ID: raft7.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg8
+        Name: Orderer2
+        ID: raft8.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}
@@ -365,6 +395,14 @@ Profiles:
         Orderer:
             Organizations:
             - *OrdererOrg
+            - *OrdererOrg1
+            - *OrdererOrg2
+            - *OrdererOrg3
+            - *OrdererOrg4
+            - *OrdererOrg5
+            - *OrdererOrg6
+            - *OrdererOrg7
+            - *OrdererOrg8
         Consortium: SampleConsortium
         Application:
             Organizations:
