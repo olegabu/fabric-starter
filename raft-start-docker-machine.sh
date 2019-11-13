@@ -29,8 +29,8 @@ function createHostsFile() {
         if [ "$currOrg" != "$org" ]; then
             ip=$(getMachineIp ${org})
             hosts="${hosts}\n${ip} raft${raftIndex}.${ordererDomain}"
-            raftIndex=$((raftIndex+1))
         fi
+        raftIndex=$((raftIndex+1))
     done
     echo -e ${hosts} > crypto-config/hosts_${currOrg}
     copyFileToMachine $currOrg crypto-config/hosts_${currOrg} crypto-config/hosts
@@ -48,6 +48,8 @@ function prepareOrg() {
     ./clean.sh;
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-latest}; \
     copyDirToMachine $org crypto-config/ordererOrganizations/${ordererDomain} crypto-config/ordererOrganizations; \
     copyDirToMachine $org crypto-config/configtx crypto-config "
 
@@ -118,6 +120,7 @@ orgs=$@
 export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"
 ORDERER_DOMAIN_1=${first_org}-osn.${DOMAIN}
 
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
 
 ./clean.sh
 printYellow "Pre-generate orderer files on local host"
@@ -142,7 +145,7 @@ for org in ${orig_orgs}; do
 done
 
 wait  ${procId}
-echo -e "\n\nEND\n\n"
+echo -e "\n\nRaft servers preparing completed\n\n"
 
 
 echo -e "\n\n"
@@ -153,7 +156,7 @@ ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} r
 sleep 2
 
 IFS=', ' read -r -a orgsArr <<< "$orgs"
-echo -e "\n\n Raft: ${orgsArr[@]:0:3}"
+echo -e "\n\n Raft: $orgs"
 raftIndex=3
 for currOrg in ${orgs}; do
 
