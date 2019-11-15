@@ -51,7 +51,7 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts_orderer
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
-      - ${WEBAPP_HOME-/home/docker}/webapp}:/usr/src/app/webapp
+      - ${WEBAPP_HOME-/home/docker}/webapp:/usr/src/app/webapp
 #      - ${WEBAPP_HOME-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
 #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
 #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin

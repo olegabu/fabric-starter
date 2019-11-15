@@ -45,11 +45,11 @@ function prepareOrg() {
     setMachineWorkDir ${org}; \
     export FABRIC_STARTER_HOME=${WORK_DIR}; \
     connectMachine ${org};  \
-    ./clean.sh;
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
     docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}; \
     docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-latest}; \
+    ./clean.sh; \
     copyDirToMachine $org crypto-config/ordererOrganizations/${ordererDomain} crypto-config/ordererOrganizations; \
     copyDirToMachine $org crypto-config/configtx crypto-config "
 
@@ -65,6 +65,7 @@ function prepareOrg() {
 #
 #    copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/server.crt
 #    copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/orderer.${ORDERER_DOMAIN_1}/tls/ca.crt
+#local raftIdx
 #    for ((raftIdx=1; raftIdx< ${RAFT_NODES_COUNT}; raftIdx++)); do
 #        copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/server.crt
 #        copyFileToMachine $org crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/server.crt crypto-config/ordererOrganizations/${ORDERER_DOMAIN_1}/orderers/raft${raftIdx}.${ORDERER_DOMAIN_1}/tls/ca.crt
@@ -97,8 +98,7 @@ function startOrderer() {
         source lib.sh;  \
         setMachineWorkDir ${first_org}; \
         connectMachine ${org};
-        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer; \
-    "
+        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer"
 }
 
 
@@ -120,11 +120,11 @@ orgs=$@
 export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"
 ORDERER_DOMAIN_1=${first_org}-osn.${DOMAIN}
 
-docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+docker pull ${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
 
-./clean.sh
+DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}} ./clean.sh
 printYellow "Pre-generate orderer files on local host"
-ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} RAFT_NODES_COUNT=${RAFT_NODES_COUNT} COMPOSE_PROJECT_NAME=orderer.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d pre-install
+DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}  ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} RAFT_NODES_COUNT=${RAFT_NODES_COUNT} COMPOSE_PROJECT_NAME=orderer.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d pre-install
 docker wait pre-install.orderer.${ORDERER_DOMAIN_1}
 printYellow "Pre-generate completed"
 sudo chown -R $USER crypto-config
@@ -184,4 +184,4 @@ for currOrg in ${orgs}; do
 #    sleep 5
 done
 
-wait ${procId}
+[[ -n "${procId}" ]] && wait ${procId}

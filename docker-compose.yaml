@@ -68,6 +68,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - RAFT0_PORT=${RAFT0_PORT:-7050}
@@ -78,6 +79,10 @@ services:
     depends_on:
       - api
       - peer0
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
+        max-file: "5"
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./crypto-config/hosts:/etc/hosts

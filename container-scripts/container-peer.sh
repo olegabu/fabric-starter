@@ -4,7 +4,7 @@ BASEDIR=$(dirname "$0")
 touch crypto-config/hosts
 touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # maOS workaround
 
-if [ ! -f "crypto-config/hosts" ]; then
+if [ ! -f "crypto-config/hosts" ]; then #TODO
     export HOSTS_FILE_GENERATION_REQUIRED=true
     touch "crypto-config/hosts"
 fi
