@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 cat > org1_env << END
+FABRIC_VERSION=1.4.3
+FABRIC_STARTER_VERSION=baas_test
 ORG=org1
 DOMAIN=sber-example.com
 WWW_PORT=80
@@ -9,9 +11,13 @@ PEER0_PORT=7051
 LDAP_PORT_HTTP=6080
 
 ORDERER=true
+METRICS_PROVIDER_PORT=9090
+ORDERER_PORT=7050
 END
 
 cat > org2_env << END
+FABRIC_VERSION=1.4.3
+FABRIC_STARTER_VERSION=baas_test
 ORG=org2
 DOMAIN=sber-example.com
 WWW_PORT=81
