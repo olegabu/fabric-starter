@@ -24,6 +24,11 @@ unset ORG COMPOSE_PROJECT_NAME
 
 info "Creating orderer organization for $DOMAIN"
 export ORDERER_WWW_PORT=79
+source ${first_org}_env
+
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
+
 WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Create member organizations
@@ -47,6 +52,8 @@ do
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     echo "docker-compose ${docker_compose_args} up -d"
+
+    source ${org}_env
 
     docker-compose ${docker_compose_args} up -d
     api_port=$((api_port + 1))
@@ -74,7 +81,8 @@ export COMPOSE_PROJECT_NAME=${ORG}
 
 # Wait for container scripts completed
 info "Wait for post-install.${ORG}.${DOMAIN} completed"
-docker wait post-install.${ORG}.${DOMAIN}
+#docker wait post-install.${ORG}.${DOMAIN}
+sleep 20
 
 # First organization adds other organizations to the channel
 
