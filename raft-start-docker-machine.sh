@@ -98,7 +98,7 @@ function startOrderer() {
         source lib.sh;  \
         setMachineWorkDir ${first_org}; \
         connectMachine ${org};
-        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer"
+        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer www.orderer"
 }
 
 

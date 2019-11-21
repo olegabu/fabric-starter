@@ -23,14 +23,15 @@ env|sort
 
 downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
 
+
+ORG_CORE_PEER_LOCALMSPID=${CORE_PEER_LOCALMSPID}
+ORG_CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}
+ORG_CORE_PEER_TLS_ROOTCERT_FILE=${CORE_PEER_TLS_ROOTCERT_FILE}
 setOrdererIdentity ${ORDERER_NAME} ${ORDERER_DOMAIN} /etc/hyperledger/crypto-config
+
 if [ -f "${CORE_PEER_TLS_ROOTCERT_FILE}" ]; then
 #    printError "No file ${CORE_PEER_TLS_ROOTCERT_FILE}. Exiting."
     echo "File  ${CORE_PEER_TLS_ROOTCERT_FILE} exists."
-
-    ORG_CORE_PEER_LOCALMSPID=${CORE_PEER_LOCALMSPID}
-    ORG_CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}
-    ORG_CORE_PEER_TLS_ROOTCERT_FILE=${CORE_PEER_TLS_ROOTCERT_FILE}
 
     status=1
     while [[ ${status} -ne 0 && $CONSORTIUM_AUTO_APPLY ]]; do
@@ -78,7 +79,7 @@ joinResult=$?
 if [ $createResult -eq 0 ]; then
     sleep 3
     instantiateChaincode ${DNS_CHANNEL} dns
-    sleep 15
+    sleep 10
     if [ -n "$BOOTSTRAP_IP" ]; then
         printYellow "\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n"
         invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$BOOTSTRAP_IP\"]"
