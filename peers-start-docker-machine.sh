@@ -49,15 +49,15 @@ for peerOrg in $orig_orgs; do
         sleep 2
         ORG=${first_org}  ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./channel-add-org.sh common ${peerOrg}
 
-#        connectMachine ${peerOrg}
-#        echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
-#        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./channel-join.sh common
-#        sleep 5
-#        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN}"
-#
-#        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]" &
-#        procId=$!
-#        sleep 1
+        connectMachine ${peerOrg}
+        echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
+        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./channel-join.sh common
+        sleep 5
+        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN}"
+
+        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]" &
+        procId=$!
+        sleep 1
     fi
 done
-#wait ${procId}
+[[ -n "${procId}" ]] &&  wait ${procId}
