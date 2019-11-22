@@ -256,9 +256,29 @@ function addOrgsToChannel() {
 function setOrdererIdentity() {
     local ORDERER_NAME=${1:?ORDERER_NAME is required}
     local ORDERER_DOMAIN=${2:?ORDERER_DOMAIN is required}
-    local cryptoConfigPath=${3:?cryptoConfigParentPath is required}
 
     export CORE_PEER_LOCALMSPID=${ORDERER_NAME}.${ORDERER_DOMAIN:-example.com}
-    export CORE_PEER_MSPCONFIGPATH=${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp
-    export CORE_PEER_TLS_ROOTCERT_FILE=${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp
+    export CORE_PEER_TLS_ROOTCERT_FILE=${ORDERER_GENERAL_TLS_ROOTCERT_FILE} #${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/ca.crt
+}
+
+function runAsOrderer() {
+    local command=${1:?Command is required}
+    shift
+    local params=$@
+
+    ORG_CORE_PEER_LOCALMSPID=${CORE_PEER_LOCALMSPID}
+    ORG_CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}
+    ORG_CORE_PEER_TLS_ROOTCERT_FILE=${CORE_PEER_TLS_ROOTCERT_FILE}
+
+    setOrdererIdentity ${ORDERER_NAME} ${ORDERER_DOMAIN}
+
+    ${command} ${params}
+    local status=$?
+echo "BBBBBBBBBBBBBBBB:$status"
+
+    CORE_PEER_LOCALMSPID=${ORG_CORE_PEER_LOCALMSPID}
+    CORE_PEER_MSPCONFIGPATH=${ORG_CORE_PEER_MSPCONFIGPATH}
+    CORE_PEER_TLS_ROOTCERT_FILE=${ORG_CORE_PEER_TLS_ROOTCERT_FILE}
+    return $status
 }

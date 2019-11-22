@@ -8,7 +8,6 @@ source $(dirname "$0")/lib/container-util.sh
 
 echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 
-
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
@@ -23,29 +22,19 @@ env|sort
 
 downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
 
-
-ORG_CORE_PEER_LOCALMSPID=${CORE_PEER_LOCALMSPID}
-ORG_CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}
-ORG_CORE_PEER_TLS_ROOTCERT_FILE=${CORE_PEER_TLS_ROOTCERT_FILE}
-setOrdererIdentity ${ORDERER_NAME} ${ORDERER_DOMAIN} /etc/hyperledger/crypto-config
-
-if [ -f "${CORE_PEER_TLS_ROOTCERT_FILE}" ]; then
-#    printError "No file ${CORE_PEER_TLS_ROOTCERT_FILE}. Exiting."
-    echo "File  ${CORE_PEER_TLS_ROOTCERT_FILE} exists."
+if [ -f "${ORDERER_GENERAL_TLS_ROOTCERT_FILE}" ]; then
+    echo "File  ${ORDERER_GENERAL_TLS_ROOTCERT_FILE} exists."
 
     status=1
     while [[ ${status} -ne 0 && $CONSORTIUM_AUTO_APPLY ]]; do
         printYellow "\n\nTrying to add  ${ORG} to consortium\n\n"
-        ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
+        runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
         sleep $(( RANDOM % 10 ))
-        ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
+        runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
         status=$?
+        echo -e "Status: $status\n"
         sleep 3
     done
-
-    CORE_PEER_LOCALMSPID=${ORG_CORE_PEER_LOCALMSPID}
-    CORE_PEER_MSPCONFIGPATH=${ORG_CORE_PEER_MSPCONFIGPATH}
-    CORE_PEER_TLS_ROOTCERT_FILE=${ORG_CORE_PEER_TLS_ROOTCERT_FILE}
 
     printYellow "\nTrying to create channel common\n"
 
@@ -59,16 +48,15 @@ if [ -f "${CORE_PEER_TLS_ROOTCERT_FILE}" ]; then
     fi
 fi
 
-CORE_PEER_LOCALMSPID=${ORG_CORE_PEER_LOCALMSPID}
-CORE_PEER_MSPCONFIGPATH=${ORG_CORE_PEER_MSPCONFIGPATH}
-CORE_PEER_TLS_ROOTCERT_FILE=${ORG_CORE_PEER_TLS_ROOTCERT_FILE}
-
 printYellow "\n\nJoining channel '${CHANNEL_AUTO_JOIN}'\n\n"
 status=1
 while [[ ${status} -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; do
-    joinChannel ${CHANNEL_AUTO_JOIN}
+    joinOutput=`joinChannel ${CHANNEL_AUTO_JOIN} 2>&1`
     status=$?
-    echo -e "Status: $status\n"
+    echo -e "${joinOutput}\nStatus: $status\n"
+    if [[ "${joinOutput}" =~ "LedgerID already exists" ]];then
+        status=0
+    fi
     sleep 5
 done
 
