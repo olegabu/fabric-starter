@@ -61,7 +61,7 @@ services:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
-      - DNS_CHANNEL=${DNS_CHANNEL:-common}
+      - DNS_CHANNEL
       - BOOTSTRAP_IP
       - MY_IP
       - PEER0_PORT=${PEER0_PORT:-7051}
@@ -258,8 +258,8 @@ services:
       - PEER0_PORT=${PEER0_PORT:-7051}
       - DISCOVER_AS_LOCALHOST=false
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
-      - DNS_USERNAME=${DNS_USERNAME:-common}
-      - DNS_PASSWORD=${DNS_PASSWORD:-common}
+      - DNS_USERNAME=${DNS_USERNAME:-dns}
+      - DNS_PASSWORD=${DNS_PASSWORD:-dns}
       - ENROLL_ID
       - ENROLL_SECRET
       - BOOTSTRAP_IP

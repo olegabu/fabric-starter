@@ -17,7 +17,8 @@ services:
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
       - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-    command: "sh" #container-scripts/install-default-chaincodes.sh
+    command: container-scripts/install-default-chaincodes.sh
+#    command: "sh"
 
 
   peer0:

@@ -275,10 +275,9 @@ function runAsOrderer() {
 
     ${command} ${params}
     local status=$?
-echo "BBBBBBBBBBBBBBBB:$status"
 
     CORE_PEER_LOCALMSPID=${ORG_CORE_PEER_LOCALMSPID}
     CORE_PEER_MSPCONFIGPATH=${ORG_CORE_PEER_MSPCONFIGPATH}
     CORE_PEER_TLS_ROOTCERT_FILE=${ORG_CORE_PEER_TLS_ROOTCERT_FILE}
-    return $status
+    return ${status}
 }
