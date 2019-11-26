@@ -23,17 +23,13 @@ function main() {
     env|sort
 
     downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
-
     addMeToConsortiumIfOrdererExists
-
     if [[ ! ${DNS_CHANNEL} ]]; then
         printYellow "\nDNS_CHANNEL is set to empty. Skipping joining."
         exit
     fi
-
     createServiceChannel ${DNS_CHANNEL}
     createResult=$?
-
     joinServiceChannel ${DNS_CHANNEL}
     joinResult=$?
 
