@@ -7,7 +7,6 @@ ORDERER_DOMAIN=${3:?ORDERER_DOMAIN is required}
 source lib.sh
 
 
-
 setMachineWorkDir ${peerOrg}
 export FABRIC_STARTER_HOME=${WORK_DIR}
 
@@ -25,9 +24,14 @@ env|sort|grep ENROLL
 
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
-randomWait=$(( $RANDOM%10 *3 ))
-sleep ${randomWait}
-ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} ORDERER_NAME=${ORDERER_NAME} WWW_PORT=80 DNS_USERNAME=${DNS_USERNAME:-${ENROLL_ID:-admin}} DNS_PASSWORD=${ENROLL_SECRET:-${ENROLL_SECRET:-adminpw}} BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
+
+#randomWait=$(( $RANDOM%10 *3 )) #TODO: introduce locking for config updates
+#sleep ${randomWait}
+
+ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} ORDERER_NAME=${ORDERER_NAME} \
+DNS_USERNAME=${DNS_USERNAME:-${ENROLL_ID:-admin}} DNS_PASSWORD=${ENROLL_SECRET:-${ENROLL_SECRET:-adminpw}} \
+BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} \
+docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
 
 
 

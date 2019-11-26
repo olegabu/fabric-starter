@@ -72,3 +72,5 @@ env|sort
 
 echo -e "\ncrypto-config/hosts_orderer:\n"
 cat crypto-config/hosts_orderer
+
+tree /etc/hyperledger/crypto-config/peerOrganizations/

@@ -167,6 +167,7 @@ function getMachineIp() {
 function setMachineWorkDir() {
     local machine=`getDockerMachineName $1`
     export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
+    export FABRIC_STARTER_HOME=${WORK_DIR}
     echo "Set work dir for $1: $WORK_DIR"
 }
 

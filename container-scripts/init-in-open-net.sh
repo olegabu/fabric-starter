@@ -30,7 +30,7 @@ if [ -f "${ORDERER_GENERAL_TLS_ROOTCERT_FILE}" ]; then
     while [[ ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} ]]; do
         printYellow "\n\nTrying to add  ${ORG} to consortium\n\n"
         runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
-        sleep $(( RANDOM % 10 )) #TODO: make external synchronization
+        sleep $(( RANDOM % 20 )) #TODO: make external locking for config updates
         runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
         status=$?
         echo -e "Status: $status\n"
@@ -65,7 +65,7 @@ while [[ ${status} -ne 0 ]]; do
 done
 
 joinResult=$?
-printGreen "\n\nJoined channel '${DNS_CHANNEL}'\n\n"
+printGreen "\nJoined channel '${DNS_CHANNEL}'\n"
 
 if [ $createResult -eq 0 ]; then
     sleep 3
@@ -84,3 +84,4 @@ if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
         invokeChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME} "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
     fi
 fi
+

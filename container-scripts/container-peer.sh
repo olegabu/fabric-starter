@@ -76,4 +76,4 @@ fi
 echo -e "\ncrypto-config/hosts_$ORG:\n"
 cat crypto-config/hosts_$ORG
 
-#ORDERER_DOMAIN=osn-$ORG.$DOMAIN DOMAIN=osn-$ORG.$DOMAIN ORDERER_GENESIS_PROFILE=RaftOrdererGenesis ./$BASEDIR/container-orderer.sh
+tree /etc/hyperledger/crypto-config/peerOrganizations/
