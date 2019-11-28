@@ -2,18 +2,25 @@
 
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${DOMAIN:=example.com}
+: ${RAFT_NODES_COUNT:=1}
+: ${RAFT_NODES_NUMBERING_START:=1}
+: ${ORDERER_PROFILE:=Solo}
+: ${ORDERER_NAME_PREFIX:=raft}
 
-export ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN}
+export ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} RAFT_NODES_COUNT RAFT_NODES_NUMBERING_START ORDERER_NAME_PREFIX
+
 
 touch crypto-config/hosts
 
 
 function main() {
-    echo "DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_DOMAIN=$ORDERER_DOMAIN, ORDERER_GENESIS_PROFILE=$ORDERER_GENESIS_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}, ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX}"
+    echo "DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_DOMAIN=$ORDERER_DOMAIN, ORDERER_PROFILE=$ORDERER_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}, RAFT_NODES_NUMBERING_START=$RAFT_NODES_NUMBERING_START, ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX}"
+    echo "ORDERER_NAMES:$ORDERER_NAMES"
     env|sort
 
+    constructConfigTxAndCryptogenConfigs
     generateCryptoMaterialIfNotExists
-    generateGenesisBlock
+    generateGenesisBlockIfNotExists
     copyWellKnownTLSCerts
     copyClientTLSCertForServingByWWW
 
@@ -22,27 +29,125 @@ function main() {
 
 function generateCryptoMaterialIfNotExists() {
     if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
-        echo "File does not exists: crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
-        echo "Generation orderer MSP."
-
-        cryptogenTemplate="templates/cryptogen-orderer-template.yaml"
-        [ -f "templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml" ] && cryptogenTemplate="templates/cryptogen-${ORDERER_GENESIS_PROFILE}-template.yaml"
-        envsubst < "${cryptogenTemplate}" > "crypto-config/cryptogen-orderer.yaml"
+        echo "Crypto-config not exists. File does not exists: crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
+        echo "Generating orderer MSP."
         rm -rf crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN
         cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
-        tree crypto-config/ordererOrganizations
     else
         echo "Orderer MSP exists. Generation skipped".
     fi
 }
 
-function generateGenesisBlock() {
+function constructConfigTxAndCryptogenConfigs() {
+
+    if [[ -n "${ORDERER_NAMES}" ]]; then
+        echo "Using ORDERER_NAMES: ${ORDERER_NAMES}"
+        local ordererNames
+        IFS="," read -r -a ordererNames <<< ${ORDERER_NAMES}
+        local start=true
+        for ordererName_Port in ${ordererNames[@]}; do
+            local ordererConf
+            IFS=':' read -r -a ordererConf <<< ${ordererName_Port}
+            local ordererName=${ordererConf[0]}
+            local ordererPort=${ordererConf[1]:-${ORDERER_GENERAL_LISTENPORT}}
+            writeCryptogenOrgConfig ${ordererName} ${start}
+            writeConfigtxOrgConfig "${ordererName}Org" ${ordererName} $ORDERER_DOMAIN ${ordererPort} ${start}
+            start=""
+        done
+    else
+        echo "Using RAFT_NODES_COUNT: ${RAFT_NODES_COUNT}"
+        writeCryptogenOrgConfig "$ORDERER_NAME" true
+        writeConfigtxOrgConfig "OrdererOrg" $ORDERER_NAME $ORDERER_DOMAIN ${RAFT0_PORT:-${ORDERER_GENERAL_LISTENPORT}} true
+        local ind;
+        for ((ind=1; ind<${RAFT_NODES_COUNT}; ind++)) do
+            writeCryptogenOrgConfig "${ORDERER_NAME_PREFIX}${ind}"
+            local ordererPortVar="RAFT${ind}_PORT"
+            writeConfigtxOrgConfig "${ORDERER_NAME_PREFIX}Org" "${ORDERER_NAME_PREFIX}${ind}" $ORDERER_DOMAIN ${!ordererPortVar}
+        done
+    fi
+
+    PATTERN=%ORDERER_ADDRESSES% templates/templater.awk crypto-config/configtx_addresses_list.part templates/OrdererProfile_${ORDERER_PROFILE}.yaml > crypto-config/OrdererProfile_1.yaml
+    PATTERN=%ORDERER_ORGS% templates/templater.awk crypto-config/configtx_orgs_list.part crypto-config/OrdererProfile_1.yaml > crypto-config/OrdererProfile_2.yaml
+    PATTERN=%RAFT_CONSENTERS% templates/templater.awk crypto-config/configtx_consenters_list.part crypto-config/OrdererProfile_2.yaml > crypto-config/OrdererProfile.yaml
+
+    envsubst < "templates/configtx-template-dynamic.yaml" > "crypto-config/configtx_1.yaml"
+    PATTERN=%ORGS_DEFINITIONS% templates/templater.awk crypto-config/configtx_org_definitions.part crypto-config/configtx_1.yaml > crypto-config/configtx.yaml
+    cat crypto-config/OrdererProfile.yaml >> crypto-config/configtx.yaml
+
+    envsubst < "templates/cryptogen-orderer-template.yaml" >> "crypto-config/cryptogen-orderer.yaml"
+    cat crypto-config/cryptogen-orderer-spec.yaml >>  "crypto-config/cryptogen-orderer.yaml"
+
+}
+
+writeCryptogenOrgConfig() {
+    local ordererName=${1:?Orderer name is required}
+    local renewFiles=${2}
+    local cryptogenFile=crypto-config/cryptogen-orderer-spec.yaml
+
+    if [[ ${renewFiles} ]]; then
+        touch ${cryptogenFile} && truncate --size 0 ${cryptogenFile}
+    fi
+    ordererName=$ordererName  envsubst >> ${cryptogenFile} <<  "    END"
+        Specs:
+      - Hostname: ${ordererName}
+    END
+}
+
+function writeConfigtxOrgConfig() {
+    local aliasName=${1:?Orderer name is required}
+    local ordererName=${2:?Orderer name is required}
+    local ordererDomain=${3:?Orderer domain is required}
+    local ordererPort=${4:?Orderer domain is required}
+    local renewFiles=${5}
+
+    local orgDefinitionsFile=${6:-crypto-config/configtx_org_definitions.part}
+    local orgsListFile=${7:-crypto-config/configtx_orgs_list.part}
+    local addressesListFile=${8:-crypto-config/configtx_addresses_list.part}
+    local consentersListFile=${9:-crypto-config/configtx_consenters_list.part}
+
+    mkdir -p crypto-config/configtx/
+    if [[ ${renewFiles} ]]; then
+        touch ${orgDefinitionsFile} && truncate --size 0 ${orgDefinitionsFile}
+        touch ${orgsListFile} && truncate --size 0 ${orgsListFile}
+        touch ${addressesListFile} && truncate --size 0 ${addressesListFile}
+        touch ${consentersListFile} && truncate --size 0 ${consentersListFile}
+    fi
+
+    echo "Writing ${orgDefinitionsFile}"
+    aliasName=$aliasName ordererName=$ordererName ordererDomain=$ordererDomain \
+    envsubst >> ${orgDefinitionsFile} <<  "    END"
+    - &${aliasName}
+        Name: $ordererName
+        ID: $ordererName.$ordererDomain
+        MSPDir: ordererOrganizations/${ordererDomain}/msp
+    END
+
+    echo "Writing ${orgsListFile}"
+    aliasName=$aliasName envsubst >> ${orgsListFile} <<  "    END"
+                - *${aliasName}
+    END
+
+    echo "Writing ${addressesListFile}"
+    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort envsubst >> ${addressesListFile} <<  "    END"
+                - ${ordererName}.$ordererDomain:${ordererPort}
+    END
+
+
+    echo "Writing ${consentersListFile}"
+    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort envsubst >> ${consentersListFile} <<  "    END"
+                - Host: ${ordererName}.$ordererDomain
+                  Port: ${ordererPort}
+                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+    END
+}
+
+function generateGenesisBlockIfNotExists() {
     set -x
     if [ ! -f "crypto-config/configtx/$ORDERER_DOMAIN/genesis.pb" ]; then
-        echo "Generation genesis configtx."
-        envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
+        echo "Generating genesis configtx."
         mkdir -p crypto-config/configtx/$ORDERER_DOMAIN
-        configtxgen -configPath crypto-config/ -outputBlock crypto-config/configtx/$ORDERER_DOMAIN/genesis.pb -profile ${ORDERER_GENESIS_PROFILE} -channelID ${SYSTEM_CHANNEL_ID}
+        configtxgen -configPath crypto-config/ -outputBlock crypto-config/configtx/$ORDERER_DOMAIN/genesis.pb -profile ${ORDERER_PROFILE} -channelID ${SYSTEM_CHANNEL_ID}
     else
         echo "Genesis configtx exists. Generation skipped".
     fi
