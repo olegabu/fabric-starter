@@ -13,4 +13,4 @@ OrdererOrgs:
     # "Specs" - See PeerOrgs below for complete description
     # ---------------------------------------------------------------------------
     Specs:
-      - Hostname: ${ORDERER_NAME}
+#      - Hostname: ${ORDERER_NAME}

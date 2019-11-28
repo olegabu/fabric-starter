@@ -27,21 +27,10 @@ function main() {
     tree /etc/hyperledger/crypto-config/ordererOrganizations/
 }
 
-function generateCryptoMaterialIfNotExists() {
-    if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
-        echo "Crypto-config not exists. File does not exists: crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
-        echo "Generating orderer MSP."
-        rm -rf crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN
-        cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
-    else
-        echo "Orderer MSP exists. Generation skipped".
-    fi
-}
-
 function constructConfigTxAndCryptogenConfigs() {
 
     if [[ -n "${ORDERER_NAMES}" ]]; then
-        echo "Using ORDERER_NAMES: ${ORDERER_NAMES}"
+        echo -e "\n\nUsing ORDERER_NAMES: ${ORDERER_NAMES}\n\n"
         local ordererNames
         IFS="," read -r -a ordererNames <<< ${ORDERER_NAMES}
         local start=true
@@ -55,14 +44,14 @@ function constructConfigTxAndCryptogenConfigs() {
             start=""
         done
     else
-        echo "Using RAFT_NODES_COUNT: ${RAFT_NODES_COUNT}"
+        echo -e "\n\nUsing RAFT_NODES_COUNT: ${RAFT_NODES_COUNT}, ORDERER_NAME:$ORDERER_NAME\n\n"
         writeCryptogenOrgConfig "$ORDERER_NAME" true
         writeConfigtxOrgConfig "OrdererOrg" $ORDERER_NAME $ORDERER_DOMAIN ${RAFT0_PORT:-${ORDERER_GENERAL_LISTENPORT}} true
         local ind;
         for ((ind=1; ind<${RAFT_NODES_COUNT}; ind++)) do
             writeCryptogenOrgConfig "${ORDERER_NAME_PREFIX}${ind}"
             local ordererPortVar="RAFT${ind}_PORT"
-            writeConfigtxOrgConfig "${ORDERER_NAME_PREFIX}Org" "${ORDERER_NAME_PREFIX}${ind}" $ORDERER_DOMAIN ${!ordererPortVar}
+            writeConfigtxOrgConfig "${ORDERER_NAME_PREFIX}${ind}Org" "${ORDERER_NAME_PREFIX}${ind}" $ORDERER_DOMAIN ${!ordererPortVar:-${ORDERER_GENERAL_LISTENPORT}}
         done
     fi
 
@@ -74,22 +63,32 @@ function constructConfigTxAndCryptogenConfigs() {
     PATTERN=%ORGS_DEFINITIONS% templates/templater.awk crypto-config/configtx_org_definitions.part crypto-config/configtx_1.yaml > crypto-config/configtx.yaml
     cat crypto-config/OrdererProfile.yaml >> crypto-config/configtx.yaml
 
-    envsubst < "templates/cryptogen-orderer-template.yaml" >> "crypto-config/cryptogen-orderer.yaml"
+    envsubst < "templates/cryptogen-orderer-template.yaml" > "crypto-config/cryptogen-orderer.yaml"
     cat crypto-config/cryptogen-orderer-spec.yaml >>  "crypto-config/cryptogen-orderer.yaml"
 
+}
+
+function generateCryptoMaterialIfNotExists() {
+    if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
+        echo "Crypto-config not exists. File does not exists: crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
+        echo "Generating orderer MSP."
+        rm -rf crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN
+        cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
+    else
+        echo "Orderer MSP exists. Generation skipped".
+    fi
 }
 
 writeCryptogenOrgConfig() {
     local ordererName=${1:?Orderer name is required}
     local renewFiles=${2}
     local cryptogenFile=crypto-config/cryptogen-orderer-spec.yaml
-
+    echo -e "\n\n\tWriting cryptogen hostname for: $ordererName, start new file:$renewFiles"
     if [[ ${renewFiles} ]]; then
         touch ${cryptogenFile} && truncate --size 0 ${cryptogenFile}
     fi
-    ordererName=$ordererName  envsubst >> ${cryptogenFile} <<  "    END"
-        Specs:
-      - Hostname: ${ordererName}
+    ordererName=$ordererName  stdbuf -oL envsubst >> ${cryptogenFile} <<  "    END"
+        - Hostname: ${ordererName}
     END
 }
 
@@ -121,29 +120,30 @@ function writeConfigtxOrgConfig() {
         ID: $ordererName.$ordererDomain
         MSPDir: ordererOrganizations/${ordererDomain}/msp
     END
+    stdbuf -oL echo "" >> ${orgDefinitionsFile}
 
     echo "Writing ${orgsListFile}"
-    aliasName=$aliasName envsubst >> ${orgsListFile} <<  "    END"
+    aliasName=$aliasName stdbuf -oL envsubst >> ${orgsListFile} <<  "    END"
                 - *${aliasName}
     END
 
     echo "Writing ${addressesListFile}"
-    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort envsubst >> ${addressesListFile} <<  "    END"
+    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort \
+    stdbuf -oL envsubst >> ${addressesListFile} <<  "    END"
                 - ${ordererName}.$ordererDomain:${ordererPort}
     END
 
-
     echo "Writing ${consentersListFile}"
-    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort envsubst >> ${consentersListFile} <<  "    END"
+    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort \
+    stdbuf -oL envsubst >> ${consentersListFile} <<  "    END"
                 - Host: ${ordererName}.$ordererDomain
                   Port: ${ordererPort}
-                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
+                  ClientTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
+                  ServerTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
     END
 }
 
 function generateGenesisBlockIfNotExists() {
-    set -x
     if [ ! -f "crypto-config/configtx/$ORDERER_DOMAIN/genesis.pb" ]; then
         echo "Generating genesis configtx."
         mkdir -p crypto-config/configtx/$ORDERER_DOMAIN
@@ -151,7 +151,6 @@ function generateGenesisBlockIfNotExists() {
     else
         echo "Genesis configtx exists. Generation skipped".
     fi
-    set +x
 }
 
 function copyWellKnownTLSCerts() {
