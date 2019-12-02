@@ -4,7 +4,7 @@
 : ${ORG:="org1"}
 : ${ORDERER_NAME:="orderer"}
 : ${ORDERER_NAME_PREFIX:="raft"}
-: ${ORDERER_DOMAIN:=${DOMAIN}}
+: ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
 : ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${PEER0_PORT:=7051}
@@ -15,7 +15,7 @@
 : ${WGET_OPTS:=--verbose -N}
 
 export ORG DOMAIN SYSTEM_CHANNEL_ID
-
+: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 : ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 

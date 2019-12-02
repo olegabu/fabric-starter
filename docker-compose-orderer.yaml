@@ -20,7 +20,7 @@ services:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
-      - ORDERER_GENESIS_PROFILE=${ORDERER_GENESIS_PROFILE:-SoloOrdererGenesis}
+      - ORDERER_PROFILE=${ORDERER_PROFILE:-Solo}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - RAFT0_PORT=${RAFT0_PORT:-7050}
@@ -28,6 +28,7 @@ services:
       - RAFT2_PORT=${RAFT2_PORT:-7250}
       - RAFT_NODES_COUNT=${RAFT_NODES_COUNT:-1}
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
@@ -44,6 +45,7 @@ services:
       - CONSORTIUM_CONFIG
       - CORE_PEER_LOCALMSPID=${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     #    command: container-scripts/consortium-reconfigure.sh
     depends_on:
@@ -97,7 +99,7 @@ services:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}/genesis.pb
       - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
@@ -112,6 +114,7 @@ services:
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_DOMAIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     depends_on:
       - pre-install
@@ -123,7 +126,7 @@ services:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server

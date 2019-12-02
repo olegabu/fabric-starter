@@ -38,6 +38,7 @@ services:
     environment:
       - ORDERER_GENERAL_LOCALMSPID=${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
       - CORE_PEER_LOCALMSPID=orderer.${ORDERER_DOMAIN:-example.com}
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${ORDERER_DOMAIN:-example.com}/genesis.pb
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_DOMAIN
     volumes:

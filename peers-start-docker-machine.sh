@@ -10,7 +10,6 @@ first_org=${1:-org1}
 orig_orgs=$@
 
 setMachineWorkDir ${first_org}
-export FABRIC_STARTER_HOME=${WORK_DIR}
 
 BOOTSTRAP_IP=$(getMachineIp ${first_org})
 export BOOTSTRAP_IP
@@ -33,13 +32,12 @@ for peerOrg in $orig_orgs; do
 done
 [[ -n "${procId}" ]] && wait ${procId}
 connectMachine ${first_org}
+echo -e "\n\nWait first org chaincode is initialized...\n\n"
+
 docker wait post-install.${first_org}.${DOMAIN}
 
 echo -e "\n\nStart Peers completed. Configure channels...\n\n"
-
 for peerOrg in $orig_orgs; do
-
-    echo -e "\n\nWait for dns chaincode initialized"
     ORG_IP=$(getMachineIp ${peerOrg})
     if [ "${peerOrg}" != "${first_org}" ]; then
         connectMachine ${first_org}
@@ -49,15 +47,7 @@ for peerOrg in $orig_orgs; do
         sleep 2
         ORG=${first_org}  ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./channel-add-org.sh common ${peerOrg}
 
-#        connectMachine ${peerOrg}
-#        echo -e "\n\nJoin channel common ${peerOrg}.${DOMAIN}"
-#        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./channel-join.sh common
-#        sleep 5
-#        echo -e "\n\nQuery RegisterOrg ${peerOrg}.${DOMAIN} ${ORG_IP} ${ORDERER_DOMAIN}"
-#
-#        ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} MULTIHOST=true ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${peerOrg}.${DOMAIN}\", \"${ORG_IP}\"]" &
-#        procId=$!
-#        sleep 1
+        sleep 1
     fi
 done
-#wait ${procId}
+

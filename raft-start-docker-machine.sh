@@ -98,7 +98,7 @@ function startOrderer() {
         source lib.sh;  \
         setMachineWorkDir ${first_org}; \
         connectMachine ${org};
-        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer"
+        COMPOSE_PROJECT_NAME=${org}.${DOMAIN} FABRIC_STARTER_HOME=${WORK_DIR} ORDERER_NAME=raft${raftIndex} ORDERER_DOMAIN=${ordererDomain}  docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d --force-recreate orderer www.orderer"
 }
 
 
@@ -124,7 +124,7 @@ docker pull ${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}/olegabu/fabr
 
 DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}} ./clean.sh
 printYellow "Pre-generate orderer files on local host"
-DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}  ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} RAFT_NODES_COUNT=${RAFT_NODES_COUNT} COMPOSE_PROJECT_NAME=orderer.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d pre-install
+DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}  ORDERER_PROFILE=Raft ORDERER_DOMAIN=${ORDERER_DOMAIN_1} RAFT_NODES_COUNT=${RAFT_NODES_COUNT} COMPOSE_PROJECT_NAME=orderer.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d pre-install
 docker wait pre-install.orderer.${ORDERER_DOMAIN_1}
 printYellow "Pre-generate completed"
 sudo chown -R $USER crypto-config
@@ -152,7 +152,7 @@ echo -e "\n\n"
 
 printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
 connectMachine ${first_org}
-ORDERER_GENESIS_PROFILE=Raft7OrdererGenesis ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
+ORDERER_PROFILE=Raft RAFT_NODES_COUNT=9 ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/1_raft-start-3-nodes.sh
 sleep 2
 
 IFS=', ' read -r -a orgsArr <<< "$orgs"
