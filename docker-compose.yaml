@@ -77,7 +77,10 @@ services:
       - api
       - peer0
     volumes:
+#      - ./crypto-config:/etc/hyperledger/crypto-config
+
       - ./crypto-config:/etc/hyperledger/crypto-config
+#      - ./crypto-config/hosts:/etc/hosts
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -144,7 +147,7 @@ services:
         max-file: "5"
     volumes:
     #- ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-    ### - ./crypto-config:/etc/hyperledger/crypto-config
+    - ./crypto-config:/etc/hyperledger/crypto-config
     - peer0:/var/hyperledger/production
     - /var/run/:/host/var/run/
 
