@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cat > org1_env << END
-export FABRIC_VERSION=1.4.3
+export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 export ORG=org1
 export DOMAIN=example.com
@@ -20,7 +20,7 @@ export LDAPADMIN_HTTPS=true
 END
 
 cat > org2_env << END
-export FABRIC_VERSION=1.4.3
+export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 export ORG=org2
 export DOMAIN=example.com
