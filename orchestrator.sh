@@ -13,7 +13,7 @@ export ORDERER=true
 export METRICS_PROVIDER_PORT=9090
 export ORDERER_PORT=7050
 
-#export LDAP_ENABLED=true
+export LDAP_ENABLED=true
 export LDAP_PORT_HTTPS=6443
 export LDAP_PORT_HTTP=6080
 export LDAPADMIN_HTTPS=true
@@ -30,7 +30,7 @@ export PEER0_PORT=8051
 
 export ORDERER=false
 
-export LDAP_ENABLED=false
+export LDAP_ENABLED=true
 export LDAP_PORT_HTTPS=6444
 export LDAP_PORT_HTTP=6081
 export LDAPADMIN_HTTPS=false
