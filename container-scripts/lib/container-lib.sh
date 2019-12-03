@@ -194,8 +194,9 @@ function createChannel() {
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
 
     configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+    set -x
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
-
+    set +x
     updateAnchorPeers "$ORG" "$channelName"
 
 }

@@ -34,7 +34,7 @@ function main() {
     joinResult=$?
 
     sleep 3
-    if [ $createResult -eq 0 ]; then
+    if [[ $createResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
         instantiateChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
         registerOrgInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
     fi

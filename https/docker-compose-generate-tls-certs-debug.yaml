@@ -1,0 +1,13 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+
+services:
+
+  certs.generate:
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/templates:/templates:ro
+      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
