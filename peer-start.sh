@@ -13,7 +13,7 @@ export FABRIC_STARTER_HOME=${WORK_DIR}
 echo -e "\n\nStart Peer: ${peerOrg}"
 
 connectMachine ${peerOrg}
-docker-compose ${DOCKER_COMPOSE_ARGS} down --volumes
+#docker-compose ${DOCKER_COMPOSE_ARGS} down --volumes
 
 ORG_IP=$(getMachineIp ${peerOrg})
 
@@ -29,7 +29,7 @@ docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_S
 #sleep ${randomWait}
 
 ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} ORDERER_NAME=${ORDERER_NAME} \
-DNS_USERNAME=${DNS_USERNAME:-${ENROLL_ID:-admin}} DNS_PASSWORD=${ENROLL_SECRET:-${ENROLL_SECRET:-adminpw}} \
+ENROLL_SECRET=${ENROLL_SECRET:-adminpw} DNS_USERNAME=${DNS_USERNAME:-${ENROLL_ID:-admin}} DNS_PASSWORD=${ENROLL_SECRET:-${ENROLL_SECRET:-adminpw}} \
 BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} \
 docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
 
