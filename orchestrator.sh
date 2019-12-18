@@ -4,7 +4,7 @@ export export DOCKER_COMPOSE_ARGS=" -f docker-compose.yaml -f docker-compose-cou
 
 cat > org1_env << END
 export ORDERER_TYPE=SOLO
-ORDERER_WWW_PORT=79
+export ORDERER_WWW_PORT=79
 
 export ORG=org1
 export DOMAIN=example.com
@@ -21,7 +21,7 @@ END
 
 cat > org2_env << END
 export ORDERER_TYPE=SOLO
-ORDERER_WWW_PORT=79
+export ORDERER_WWW_PORT=79
 
 export ORG=org2
 export DOMAIN=example.com
