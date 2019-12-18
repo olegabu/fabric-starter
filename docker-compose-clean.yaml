@@ -17,4 +17,5 @@ services:
     - /var/run/:/host/var/run/
     - ./crypto-config:/etc/hyperledger/crypto-config
     - ./data:/etc/hyperledger/data
+    - ./https/certs:/certs
 

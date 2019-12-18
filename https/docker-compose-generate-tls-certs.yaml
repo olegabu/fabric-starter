@@ -10,7 +10,7 @@ services:
 
   certs.generate:
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-    container_name: certs.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: certs-generate.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
       - CERT_ORG=${ORG:-org1}.${DOMAIN:-example.com}
       - CERT_DAYS=${CERT_DAYS:-365}
@@ -20,5 +20,5 @@ services:
       - CERT_COMMON_NAME=${CERT_COMMON_NAME:-Fabric-Starter-Rest-API}
     command: /etc/hyperledger/container-scripts/certificates/generate_tls_cert.sh
     volumes:
-      - ${SSL_CERTS_PATH:-./https/certs}:/certs
-
+      - ${SSL_CERTS_PATH:-./https/certs/}${ORG:-org1}.${DOMAIN:-example.com}:/certs
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/crypto-config
