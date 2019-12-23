@@ -9,11 +9,13 @@ first_org=${1:-org1}
 
 export DOMAIN=${DOMAIN:-example.com}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
-export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
-export LDAP_ENABLED=true
 
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml}
+export LDAP_ENABLED=true
+export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
+
+docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
 # -f environments/dev/docker-compose-debug.yaml -f https/docker-compose-generate-tls-certs-debug.yaml
+: ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 
 
 info "Cleaning up"
@@ -25,28 +27,35 @@ export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
+    set -x
     export DOCKER_REGISTRY=registry.labdlt.ru
     export FABRIC_VERSION=latest
-    export FABRIC_STARTER_VERSION=latest
+    export FABRIC_STARTER_VERSION=baas-test
+    export AUTH_MODE=ADMIN
+    export CRYPTO_ALGORITHM=GOST
+    export SIGNATURE_HASH_FAMILY=SM3
+    export DNS_USERNAME=admin
+    export DNS_PASSWORD=${ENROLL_SECRET:-adminpw}
+    set +x
 fi
 
 # Create orderer organization
 
-info "Creating orderer organization for $DOMAIN"
-source ${first_org}_env
+#docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+#docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
 
-docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+info "Creating orderer organization for $DOMAIN"
 
 source ${first_org}_env;
+shopt -s nocasematch
 if [ "${ORDERER_TYPE}" == "SOLO" ]; then
     WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
     #-f environments/dev/docker-compose-orderer-debug.yaml
 else
-    WWW_PORT=${ORDERER_WWW_PORT} ./raft/1_raft-start-3-nodes.sh
+    WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
 fi
 
-sleep 1
+sleep 3
 
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
