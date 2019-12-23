@@ -1,0 +1,38 @@
+    <configuration name="orderer go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="fabric" />
+      <working_directory value="$PROJECT_DIR$/sampleconfig" />
+      <envs>
+        <env name="FABRIC_LOGGING_SPEC" value="orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG" />
+        <env name="ORDERER_GENERAL_LISTENADDRESS" value="0.0.0.0" />
+        <env name="ORDERER_GENERAL_GENESISMETHOD" value="file" />
+        <env name="ORDERER_GENERAL_GENESISFILE" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/configtx/example.com/genesis.pb" />
+        <env name="ORDERER_GENERAL_LOCALMSPID" value="orderer.example.com" />
+        <env name="ORDERER_GENERAL_LOCALMSPDIR" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp" />
+        <env name="ORDERER_GENERAL_TLS_ENABLED" value="true" />
+        <env name="ORDERER_GENERAL_TLS_PRIVATEKEY" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key" />
+        <env name="ORDERER_GENERAL_TLS_CERTIFICATE" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt" />
+        <env name="ORDERER_GENERAL_TLS_ROOTCAS" value="[$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt]" />
+        <env name="ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt" />
+        <env name="ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.key" />
+        <env name="ORDERER_GENERAL_CLUSTER_ROOTCAS" value="$USER_HOME$/Work/projects/fabric-starter/fabric-starter/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt" />
+        <env name="--ORDERER_FILELEDGER_LOCATION" value="/var/lib/docker/volumes/ordererexamplecom_orderer/_data" />
+      </envs>
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/orderer/main.go" />
+      <package value="github.com/hyperledger/fabric" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.orderer go build main.go" />
+      <item itemvalue="Go Build.go build main.go" />
+    </list>

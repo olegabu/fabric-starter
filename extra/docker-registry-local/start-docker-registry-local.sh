@@ -4,7 +4,9 @@
 : ${FABRIC_STARTER_VERSION:="latest"}
 : ${JAVA_RUNTIME_VERSION:="latest"}
 
+: ${DOCKER_REGISTRY:=docker.io}
 : ${DOCKER_REGISTRY_LOCAL:=localhost:5000}
+
 echo "Using local docker registry address: $DOCKER_REGISTRY_LOCAL"
 
 unset DOCKER_HOST DOCKER_MACHINE_NAME DOCKER_CERT_PATH DOCKER_HOST DOCKER_TLS_VERIFY
@@ -13,11 +15,12 @@ BASEDIR=$(dirname "$0")
 
 docker-compose -f ${BASEDIR}/docker-compose-local-docker.yaml up -d
 
+#"${DOCKER_REGISTRY}/hyperledger/fabric-baseimage:amd64-0.4.15"
+#    "${DOCKER_REGISTRY}/hyperledger/fabric-baseimage:latest" \
+#    "${DOCKER_REGISTRY}/hyperledger/fabric-baseos" \
+#    "${DOCKER_REGISTRY}/hyperledger/fabric-javaenv:${FABRIC_VERSION}" \
+
 dockerImages=(\
-    "hyperledger/fabric-baseimage:amd64-0.4.15" \
-    "hyperledger/fabric-baseimage:latest" \
-    "hyperledger/fabric-baseos" \
-    "hyperledger/fabric-javaenv:${FABRIC_VERSION}" \
     "hyperledger/fabric-ccenv:${FABRIC_VERSION}" \
     "hyperledger/fabric-orderer:${FABRIC_VERSION}" \
     "hyperledger/fabric-peer:${FABRIC_VERSION}" \
@@ -25,8 +28,8 @@ dockerImages=(\
     "hyperledger/fabric-couchdb" \
     "nginx" \
     "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}" \
-    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}" \
-    "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
+    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}"
+#    "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
     )
 
 
@@ -37,9 +40,9 @@ function checkError() {
 
 for image in "${dockerImages[@]}"
 do
-    docker pull ${image}
+    docker pull ${DOCKER_REGISTRY}/${image}
     checkError
-    docker tag ${image} "${DOCKER_REGISTRY_LOCAL}/${image}"
+    docker tag ${DOCKER_REGISTRY}/${image} "${DOCKER_REGISTRY_LOCAL}/${image}"
     checkError
     docker push ${DOCKER_REGISTRY_LOCAL}/${image}
     checkError

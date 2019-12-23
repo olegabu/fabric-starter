@@ -1,5 +1,6 @@
+ARG DOCKER_REGISTRY
 ARG FABRIC_VERSION
-FROM hyperledger/fabric-tools:${FABRIC_VERSION:-latest}
+FROM ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-tools:${FABRIC_VERSION:-latest}
 
 RUN apt-get update && apt-get install -y \
     gettext-base \

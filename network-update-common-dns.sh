@@ -39,31 +39,23 @@ fi
 connectMachine ${first_org}
 
 info "Instantiating dns chaincode by $ORG"
-sleep 10
 ./chaincode-instantiate.sh common dns
-
-info "Waiting for dns chaincode to build"
-sleep 5
+sleep 1
 
 # First organization creates entries in dns chaincode
 
 ip=$(getMachineIp $ordererMachineName)
-./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${DOMAIN} $ordererMachineName.${DOMAIN}\"]"
+#./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${DOMAIN} $ordererMachineName.${DOMAIN}\"]"
 
 for org in ${orgs}
 do
     ip=$(getMachineIp ${org})
-#    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" // TODO: update registerOrg
-    value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
-    hostOrg=`getHostOrgForOrg $org`
-    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} $ordererMachineName.${DOMAIN}"
-    value="$value\""
-
-    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
-    sleep 10
+    connectMachine ${org}
+    ./chaincode-invoke.sh common dns "[\"registerOrg\",\"${org}.${DOMAIN}\",\"$ip\"]"
+    sleep 1
 done
 
-sleep 20
+sleep 2
 
 ./smoke-test.sh ${@}
 

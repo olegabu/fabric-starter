@@ -2,7 +2,9 @@
 BASEDIR=$(dirname "$0")
 
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
+source lib/container-util.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
+source $(dirname "$0")/lib/container-util.sh
 
 echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 
@@ -16,26 +18,20 @@ env|sort
 
 downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
 
-ORDERER_CRYPTO_CONFIG_DIR=/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
-
-if [ ! -d "${ORDERER_CRYPTO_CONFIG_DIR}" ]; then
-    exit
-fi
-
 ORG_CORE_PEER_LOCALMSPID=${CORE_PEER_LOCALMSPID}
 ORG_CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}
 ORG_CORE_PEER_TLS_ROOTCERT_FILE=${CORE_PEER_TLS_ROOTCERT_FILE}
 
-export CORE_PEER_LOCALMSPID=${ORDERER_NAME}.${ORDERER_DOMAIN:-example.com}
-export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp
-export CORE_PEER_TLS_ROOTCERT_FILE=${ORDERER_CRYPTO_CONFIG_DIR}/tls/ca.crt
+setOrdererIdentity ${ORDERER_NAME} ${ORDERER_DOMAIN} /etc/hyperledger/crypto-config
+if [ ! -f "${CORE_PEER_TLS_ROOTCERT_FILE}" ]; then
+    echo "No file ${CORE_PEER_TLS_ROOTCERT_FILE}. Exiting."
+    exit
+fi
+echo "File  ${CORE_PEER_TLS_ROOTCERT_FILE} exists."
+
+
 echo -e "\n\nTrying to add  ${ORG} to consortium\n\n"
-
-
-
-#updateConsortium ${ORG} orderer-system-channel ${ORDERER_DOMAIN}
 ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
-sleep 3
 
 CORE_PEER_LOCALMSPID=${ORG_CORE_PEER_LOCALMSPID}
 CORE_PEER_MSPCONFIGPATH=${ORG_CORE_PEER_MSPCONFIGPATH}
@@ -52,15 +48,15 @@ echo -e "\n\nJoining channel 'common'\n\n"
 joinChannel common
 joinResult=$?
 
-#if [ $createResult -eq 0 ]; then
+if [ $createResult -eq 0 ]; then
+    sleep 3
+    instantiateChaincode ${DNS_CHANNEL:-common} dns
+    sleep 15
     if [ -n "$BOOTSTRAP_IP" ]; then
-        sleep 3
-        instantiateChaincode ${DNS_CHANNEL:-common} dns
-        sleep 3
         echo -e "\n\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n\n"
-        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"put\",\"$BOOTSTRAP_IP\",\"www.${ORDERER_DOMAIN} orderer.${ORDERER_DOMAIN}\"]"
+        invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$BOOTSTRAP_IP\"]"
     fi
-#fi
+fi
 
 if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
     sleep 3
