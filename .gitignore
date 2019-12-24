@@ -36,3 +36,4 @@ build
 
 hosts
 data
+/test/.vscode/
