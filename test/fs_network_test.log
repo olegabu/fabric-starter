@@ -1,0 +1,6 @@
+Random channel name = testlocal28388
+Chaincode name = reference
+Running test for org1.example.com for /home/kilpio/CodeLab/merge_test/fabric-starter
+Step: 1
+TEST_CHANNEL_NAME=testlocal28388 ./curl/test-create-channel.sh
+Creating testlocal28388 channel in org1.example.com using CLI...

@@ -302,6 +302,7 @@ services:
   www.peer:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
+    restart: always
     depends_on:
       - pre-install
     logging:

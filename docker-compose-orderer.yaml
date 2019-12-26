@@ -185,6 +185,7 @@ services:
   www.orderer:
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     container_name: www.${DOMAIN:-example.com}
+    restart: always
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:
