@@ -1,10 +1,7 @@
 #!/bin/bash
 
-#source ${BASEDIR}/../lib/util/util.sh
-#source ${BASEDIR}/../lib.sh
-
-cd ${FABRIC_DIR}; source ./lib/util/util.sh
-cd ${FABRIC_DIR}; source ./lib.sh
+BASEDIR=$(dirname $0)
+source ${BASEDIR}/../libs.sh
 
 
 DEBUG=${DEBUG:-false}

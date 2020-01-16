@@ -27,10 +27,10 @@ result=$(docker exec cli.${ORG}.${DOMAIN} /bin/bash -c \
 
 
 if [ "${result}" = "${TEST_CHANNEL_NAME}" ]; then
-    printGreen "\nOK: The channel <$TEST_CHANNEL_NAME> exists." | printLogScreen
+    printGreen "\nOK: The channel <$TEST_CHANNEL_NAME> exists." | printDbg
     exit 0
 else
-    printError "\nERROR: Creating channel <$TEST_CHANNEL_NAME> failed!\n See ${FSTEST_LOG_FILE} for logs." | printLogScreen
+    printError "\nERROR: Creating channel <$TEST_CHANNEL_NAME> failed!\n See ${FSTEST_LOG_FILE} for logs." | printDbg
     exit 1
 fi
 

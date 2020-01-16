@@ -41,6 +41,51 @@ else
 fi
 export output
 
+
+
+printDbg() {
+: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
+
+	if [[ "$DEBUG" = "false" ]]; then
+	    outputdev=/dev/null
+	else 
+	    outputdev=/dev/stdout
+	fi
+
+	if (( $# == 0 )) ; then
+	while read -r line ; do
+            echo "${line}" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
+        done
+#	echo $(cat < /dev/stdin) | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
+	else
+	echo "$@" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
+	fi 
+}
+
+printLog() {
+: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
+
+	if (( $# == 0 )) ; then
+	    while read -r line ; do
+        	echo "${line}" | cat >> ${FSTEST_LOG_FILE} 
+            done
+	else
+		echo "$@" | cat >> ${FSTEST_LOG_FILE}
+	fi 
+}
+
+printLogScreen() {
+	if (( $# == 0 )) ; then
+		while read -r line ; do
+    		    echo "${line}" | tee -a ${FSTEST_LOG_FILE}
+		done
+	else
+	echo "$@" | tee -a ${FSTEST_LOG_FILE}
+	fi 
+}
+
+
+
 CURRENT_DIR=$(pwd)
 cd ${FABRIC_DIR} && source ./lib/util/util.sh && source ./lib.sh
 cd ${CURRENT_DIR}

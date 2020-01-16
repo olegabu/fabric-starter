@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-source ./libs.sh
+
+BASEDIR=$(dirname $0)
+source ${BASEDIR}/../libs.sh
+
 
 export ORG=${ORG:-org1}
-#export DOMAIN=${DOMAIN:-example.com}
 
 
 
 TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}} #($1, if set, or ${TEST_CHANNEL_NAME})
-echo "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using CLI..." | tee -a ${FSTEST_LOG_FILE} > "${output}"
+printInColor "1;36" "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." | printDbg
 
 getAPIPort()
 {
@@ -47,13 +49,18 @@ api_ip=$(getAPIHost ${ORG} ${DOMAIN})
 api_port=$(getAPIPort ${ORG} ${DOMAIN})
 
 
-read jwt jwt_http_code < <(curlItGet "http://${api_ip}:${api_port}/users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}")
+read jwt jwt_http_code < <(curlItGet "http://${api_ip}:${api_port}/users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}"; echo)
+
+
 jwt=$(echo $jwt | tr -d '"')
+
+
+
 
 if [[ "$jwt_http_code" -eq 200 ]]; then
     printGreen "\nOK: JWT token obtained."
 else
-    printError "\nERROR: Can not authorize. Ailed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs."
+    printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs."
     exit 1
 fi
 

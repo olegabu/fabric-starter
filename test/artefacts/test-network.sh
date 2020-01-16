@@ -2,6 +2,8 @@
 
 BASEDIR=$(dirname $0)
 export  BASEDIR
+echo "$BASEDIR -- BASEDIR"
+
 
 #{ Remove in production!
 export FABRIC_VERSION=1.4.3
