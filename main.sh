@@ -44,9 +44,11 @@ fi
 #docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
 #docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
 
-info "Creating orderer organization for $DOMAIN"
 
 source ${first_org}_env;
+
+info "Creating orderer organization for $DOMAIN"
+
 shopt -s nocasematch
 if [ "${ORDERER_TYPE}" == "SOLO" ]; then
     WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
