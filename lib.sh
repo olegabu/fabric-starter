@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 source ./lib/util/util.sh
-
+#source /home/kilpio/CodeLab/merge_test/fabric-starter/lib/util/util.sh
 
 : ${DOMAIN:="example.com"}
 : ${ORDERER_DOMAIN:=${DOMAIN}}

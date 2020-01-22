@@ -47,8 +47,9 @@ do
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     echo "docker-compose ${docker_compose_args} up -d"
-
+sleep 20
     docker-compose ${docker_compose_args} up -d
+sleep 20
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))

@@ -33,6 +33,7 @@ hosts="# created by network-create.sh\n${BOOTSTRAP_IP} www.${DOMAIN} orderer.${D
 for org in ${orgs}; do
     ip=$(getMachineIp ${org})
     hosts="${hosts}\n${ip} www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}"
+    echo "IP: $ip   hosts: $hosts"; sleep 15
 done
 
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"

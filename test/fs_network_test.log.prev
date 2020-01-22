@@ -1,44 +1,137 @@
-Random channel name = testlocal14485
+Random channel name = testlocal28974
 Chaincode name = reference
 Running test for org1.example.com for /home/kilpio/CodeLab/merge_test/fabric-starter
 Step: 1
-./curl/create-channel.sh testlocal14485
-[1;36mCreating testlocal14485 channel in org1.example.com using API...[m[m[m
+./cli/create-channel.sh testlocal28974
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal28974[m[m[m
+example.com
+
+Create channel org1 testlocal28974
+--2020-01-22 09:10:50--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:50--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:50--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:50--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-22 09:10:50.343 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-22 09:10:50.399 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-22 09:10:50.466 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-22 09:10:50.467 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-22 09:10:50.468 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-22 09:10:50.468 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-22 09:10:50.468 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-22 09:10:50.469 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-22 09:10:50.469 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-22 09:10:50.470 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-22 09:10:50.580 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:50.619 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/testlocal28974.pb -o orderer.example.com:7050 -c testlocal28974 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:10:50.709 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:50.710 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-22 09:10:50.712 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-22 09:10:50.713 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org1 for channel testlocal28974
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c testlocal28974 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:10:51.026 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:51.036 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
 Step 1: exit code 0
 Step: 2
-./verify/test-exist-channel.sh testlocal14485
-[34m2020-01-14 14:52:09.577 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-01-14 14:52:09.579 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
-[34m2020-01-14 14:52:09.580 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
-[34m2020-01-14 14:52:09.580 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+./verify/test-exist-channel.sh testlocal28974
+[34m2020-01-22 09:10:52.965 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:52.968 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-22 09:10:52.969 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-22 09:10:52.969 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
 {
-"channel_id": "testlocal14485",
+"channel_id": "testlocal28974",
 "epoch": "0",
 "extension": null,
-"timestamp": "2020-01-14T14:52:08Z",
+"timestamp": "2020-01-22T09:10:51Z",
 "tls_cert_hash": null,
 "tx_id": "",
 "type": 2,
 "version": 0
 }
-configtxlator output for .channel_id: testlocal14485
+configtxlator output for .channel_id: testlocal28974
 [1;32m
-OK: The channel <testlocal14485> exists.[m[m[m
+OK: The channel <testlocal28974> exists.[m[m[m
 Step 2: exit code 0
 Step: 3
-TEST_CHANNEL_NAME=testlocal14485 ORG2=org1 ./curl/add-org-to-channel.sh
-[1;36mAdd org1 to the testlocal14485 channel using API...[m[m[m
+TEST_CHANNEL_NAME=testlocal28974 ORG2=org1 ./cli/add-org-to-channel.sh
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-add-org.sh testlocal28974 org1 7051 example.com[m[m[m
+--2020-01-22 09:10:55--  http://www.org1.example.com/msp/admincerts/Admin@org1.example.com-cert.pem
+Resolving www.org1.example.com (www.org1.example.com)... 172.19.0.7
+Connecting to www.org1.example.com (www.org1.example.com)|172.19.0.7|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/peerOrganizations/org1.example.com/msp/admincerts/Admin@org1.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:55--  http://www.org1.example.com/msp/cacerts/ca.org1.example.com-cert.pem
+Resolving www.org1.example.com (www.org1.example.com)... 172.19.0.7
+Connecting to www.org1.example.com (www.org1.example.com)|172.19.0.7|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/peerOrganizations/org1.example.com/msp/cacerts/ca.org1.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:55--  http://www.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+Resolving www.org1.example.com (www.org1.example.com)... 172.19.0.7
+Connecting to www.org1.example.com (www.org1.example.com)|172.19.0.7|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem’ not modified on server. Omitting download.
+
+>> Add new org 'org1' to channel testlocal28974, anchor peer at port 7051
+Execute: channel fetch config crypto-config/configtx/testlocal28974.pb -o orderer.example.com:7050 -c testlocal28974 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:10:55.297 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:55.300 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-22 09:10:55.301 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-22 09:10:55.302 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel testlocal28974
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c testlocal28974 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:10:55.594 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'testlocal28974': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application/org1 be at version 0, but it is currently at version 1
+[1;31mError occurred. See console output above.[m[1;33m[m
 Step 3: exit code 0
 Step: 4
-TEST_CHANNEL_NAME=testlocal14485 ORG2=org1 ./verify/test-channel-add-org.sh
-[34m2020-01-14 14:52:14.055 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-01-14 14:52:14.057 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
-[34m2020-01-14 14:52:14.059 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
-[34m2020-01-14 14:52:14.059 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+TEST_CHANNEL_NAME=testlocal28974 ORG2=org1 ./verify/test-channel-add-org.sh
+[34m2020-01-22 09:10:56.403 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:56.405 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-22 09:10:56.406 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-22 09:10:56.406 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
 {
 "config": {
 "admins": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHRENDQWIrZ0F3SUJBZ0lRRllPaC95aFhscHh3SWs4UjR1a3JsekFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NUzVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNREF4TVRReE5ESTFNREJhRncwek1EQXhNVEV4TkRJMU1EQmEKTUZzeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVI4d0hRWURWUVFEREJaQlpHMXBia0J2Y21jeExtVjRZVzF3YkdVdVkyOXRNRmt3CkV3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFQVhFWlh1elhwVEhsNXlrc09jWGtaWDNBK2Nkd1pDY1gKL0JscFplNzgwVytUS3BGcVVsSVdmRjBUSUlhMzVZemt5NDNDVU9XQmNXUjlRcmdZY0s4WXA2Tk5NRXN3RGdZRApWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdLd1lEVlIwakJDUXdJb0FnOTg3bFo1SW1TSlR2Cnc3UldFSEk4Y0RteXJQaGtnQUdETUZZcGNCd1Y2aU13Q2dZSUtvWkl6ajBFQXdJRFJ3QXdSQUlnV2wrVXpVRHIKZDJaUndlY3lXNjJ2MExhY1p4WWJySWtWdkw4MWZVM2NsZElDSUI4ZnJ0ZWZZMm10RkN2a0pwbFN1VE84blJsUApROTIzMGdTa25XOHo4N2oxCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHRENDQWIrZ0F3SUJBZ0lRWGZmaWgvSmNxVlhIbitZaFpDc0FuREFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NUzVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNREF4TWpFd09URTFNREJhRncwek1EQXhNVGd3T1RFMU1EQmEKTUZzeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVI4d0hRWURWUVFEREJaQlpHMXBia0J2Y21jeExtVjRZVzF3YkdVdVkyOXRNRmt3CkV3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFOTI1cE5xMGtSa0NkUVZvRE5XWmNzeWtJdDRIRjFJbG8KYmN1SHNkVitCRXF4Y1poaFZwclRYR3prS3RBOS9YcHN4S2hWMGVWa1JKbkhuUndFeHdHeVlLTk5NRXN3RGdZRApWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdLd1lEVlIwakJDUXdJb0FncWpONk5DWFZnQ2l6Ci94NDFNck9vQjF1elJKV1d5Ni9La1ArSzlsL0hPQ293Q2dZSUtvWkl6ajBFQXdJRFJ3QXdSQUlnU0RmNng4dHQKc0tRcytrN2lWOFlBOGxWWXloeGJHOUo3VE9vbXZLbCtnSE1DSUI4Wld2NCtHKzdKZVNuNFVGak81VHY0Q2hoYgpCdUZtU3BtZHNxVUlzdXVNCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
 ],
 "crypto_config": {
 "identity_identifier_hash_function": "SHA256",
@@ -50,34 +143,63 @@ TEST_CHANNEL_NAME=testlocal14485 ORG2=org1 ./verify/test-channel-add-org.sh
 "organizational_unit_identifiers": [],
 "revocation_list": [],
 "root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVVENDQWZpZ0F3SUJBZ0lSQUxXbUp3NGFPQkFvYVhyUUlSSEhBQ1F3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TVRFME1UUXlOVEF3V2hjTk16QXdNVEV4TVRReU5UQXcKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQk9YdzBFY2pRRHJtMmFwUGl5SkZENU03VHJOODF2ZTFJbXZvMVFFYlNISUZiRUR2SmlLcFpFbDFHSXBreFdOUwpUWmN6NUNjM05lWWZzN1VKMGh3clJBZWpiVEJyTUE0R0ExVWREd0VCL3dRRUF3SUJwakFkQmdOVkhTVUVGakFVCkJnZ3JCZ0VGQlFjREFnWUlLd1lCQlFVSEF3RXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWcKOTg3bFo1SW1TSlR2dzdSV0VISThjRG15clBoa2dBR0RNRllwY0J3VjZpTXdDZ1lJS29aSXpqMEVBd0lEUndBdwpSQUlnYTQ2Ni9teERTQTk1TXpmMWlSS1pOb3pxcHh3VzhSSEMydUZ5WEJHbTMrZ0NJRFE1bHhwL3B1Z0czTzQwCjBiODdrdUlUci9ZWWszSTFveUQ3UUxwOW9CWEgKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVVENDQWZpZ0F3SUJBZ0lSQU5OUnBoWjc4OEQ1OHJkMFVRYVBhNWt3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TVRJeE1Ea3hOVEF3V2hjTk16QXdNVEU0TURreE5UQXcKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkppTkJ6Yk1XdmtBTktaZG81bE9qTDJFbkNKWldhTXdvNHRIWnZlSnRaaHNnaGlUTGxaRFFSNEpVTFZ4ZXZmWgpVbHhsdmFWOFZkQkJFV0RkVWJaUTA5T2piVEJyTUE0R0ExVWREd0VCL3dRRUF3SUJwakFkQmdOVkhTVUVGakFVCkJnZ3JCZ0VGQlFjREFnWUlLd1lCQlFVSEF3RXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWcKcWpONk5DWFZnQ2l6L3g0MU1yT29CMXV6UkpXV3k2L0trUCtLOWwvSE9Db3dDZ1lJS29aSXpqMEVBd0lEUndBdwpSQUlnRWxBeWR5SVRNTXNoQkg5aDdiT3E0UXQ0S2pJN3BhTm91V3F4TnZrcWpib0NJRWNZbG0xMmxSVEUwNkRiCkN3Qk83ZWtOamk3NGtVUUtselo3bWwyeDFnbkoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
 ],
 "signing_identity": null,
 "tls_intermediate_certs": [],
 "tls_root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNWekNDQWYyZ0F3SUJBZ0lRY0JBL3U3cERzSE10MHIwVWJaSUJ5REFLQmdncWhrak9QUVFEQWpCMk1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWZNQjBHQTFVRUF4TVdkR3h6ClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQWVGdzB5TURBeE1UUXhOREkxTURCYUZ3MHpNREF4TVRFeE5ESTEKTURCYU1IWXhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saE1SWXdGQVlEVlFRSApFdzFUWVc0Z1JuSmhibU5wYzJOdk1Sa3dGd1lEVlFRS0V4QnZjbWN4TG1WNFlXMXdiR1V1WTI5dE1SOHdIUVlEClZRUURFeFowYkhOallTNXZjbWN4TG1WNFlXMXdiR1V1WTI5dE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMEQKQVFjRFFnQUVUeHdNZ0I3bXhubnZEQ243d3YrWTJVTkZlRDhzaHJkMlNvWHlXcDJybTU2Yks2Ni91UzNOZDVRRQpZSU0xMnp3ZFQ5d3lDcUJNUElhTTNRNjhKQlcwYzZOdE1Hc3dEZ1lEVlIwUEFRSC9CQVFEQWdHbU1CMEdBMVVkCkpRUVdNQlFHQ0NzR0FRVUZCd01DQmdnckJnRUZCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUNrR0ExVWQKRGdRaUJDQTRiTi96WTQrQmhEUi90Qm4vL1BlVVRyV3A3eVpqdzZPRDdMUW93TjFtbGpBS0JnZ3Foa2pPUFFRRApBZ05JQURCRkFpRUFqVVovSGFVLzhubWc5RUhTcUo1eXpwY2pneFVrektYM1lJWEsvZkZkOU00Q0lFbGVHemV6Cm45ZXhwY2xTbDFTL25ra3I1amxRMFVDYXNJdDRHbkZQK0J2aQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNWekNDQWY2Z0F3SUJBZ0lSQU1KVDdobUVpS0xmWktrVTZMY0VlQTB3Q2dZSUtvWkl6ajBFQXdJd2RqRUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIekFkQmdOVkJBTVRGblJzCmMyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTWpBd01USXhNRGt4TlRBd1doY05NekF3TVRFNE1Ea3gKTlRBd1dqQjJNUXN3Q1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRQpCeE1OVTJGdUlFWnlZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWZNQjBHCkExVUVBeE1XZEd4elkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDkKQXdFSEEwSUFCT3g3dHVobDlDelp3MnNMMWRrSTdabzhJUHJpaGFuaXNTNXhYOHZ6SGJOWk1iWmZlVStqV0J4ZgpXSjJndnFFT24vdmNFV0F6R2pxSEY3enNEWDVSaDNtamJUQnJNQTRHQTFVZER3RUIvd1FFQXdJQnBqQWRCZ05WCkhTVUVGakFVQmdnckJnRUZCUWNEQWdZSUt3WUJCUVVIQXdFd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBcEJnTlYKSFE0RUlnUWdZS1BkVmwyL042V3B3K0NoaCtFL0paSFN0UnJ1dWlWTjJoT2N6TkxYOHhnd0NnWUlLb1pJemowRQpBd0lEUndBd1JBSWdQUllUK3hibWVRbW1rL1NpeFdoRE10RWZ0QmdMdGRFcCt3SHFTclEwWVVrQ0lBdERpSXh5ClZHYjRBemNUVE9lKzMvT3BOb3FHYW9mUHRrRnVNS0VGemxtTwotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 ]
 },
 "type": 0
 }
 configtxlator output for channel_id: org1
 [1;32m
-OK: <org1> is in the channel <testlocal14485>.[m[m[m
+OK: <org1> is in the channel <testlocal28974>.[m[m[m
 Step 4: exit code 0
 Step: 5
-TEST_CHANNEL_NAME=testlocal14485 ORG2=org2 ./curl/add-org-to-channel.sh
-[1;36mAdd org2 to the testlocal14485 channel using API...[m[m[m
+TEST_CHANNEL_NAME=testlocal28974 ORG2=org2 ./cli/add-org-to-channel.sh
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-add-org.sh testlocal28974 org2 7051 example.com[m[m[m
+--2020-01-22 09:10:58--  http://www.org2.example.com/msp/admincerts/Admin@org2.example.com-cert.pem
+Resolving www.org2.example.com (www.org2.example.com)... 172.19.0.12
+Connecting to www.org2.example.com (www.org2.example.com)|172.19.0.12|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/peerOrganizations/org2.example.com/msp/admincerts/Admin@org2.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:58--  http://www.org2.example.com/msp/cacerts/ca.org2.example.com-cert.pem
+Resolving www.org2.example.com (www.org2.example.com)... 172.19.0.12
+Connecting to www.org2.example.com (www.org2.example.com)|172.19.0.12|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/peerOrganizations/org2.example.com/msp/cacerts/ca.org2.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:10:58--  http://www.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem
+Resolving www.org2.example.com (www.org2.example.com)... 172.19.0.12
+Connecting to www.org2.example.com (www.org2.example.com)|172.19.0.12|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem’ not modified on server. Omitting download.
+
+>> Add new org 'org2' to channel testlocal28974, anchor peer at port 7051
+Execute: channel fetch config crypto-config/configtx/testlocal28974.pb -o orderer.example.com:7050 -c testlocal28974 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:10:58.763 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:58.766 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-22 09:10:58.769 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-22 09:10:58.769 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org2 for channel testlocal28974
+>> org2 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c testlocal28974 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:10:59.083 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:59.096 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
 Step 5: exit code 0
 Step: 6
-TEST_CHANNEL_NAME=testlocal14485 ORG2=org2 ./verify/test-channel-add-org.sh
-[34m2020-01-14 14:52:18.750 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-01-14 14:52:18.754 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
-[34m2020-01-14 14:52:18.760 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
-[34m2020-01-14 14:52:18.760 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+TEST_CHANNEL_NAME=testlocal28974 ORG2=org2 ./verify/test-channel-add-org.sh
+[34m2020-01-22 09:10:59.970 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:10:59.972 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
+[34m2020-01-22 09:10:59.973 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-01-22 09:10:59.973 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
 {
 "config": {
 "admins": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHakNDQWNDZ0F3SUJBZ0lSQUl0OHJybHY4enU5ZHRjbGZyaVRTU1F3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TVRFME1UUXlOVEF3V2hjTk16QXdNVEV4TVRReU5UQXcKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXd3V1FXUnRhVzVBYjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkxHNVoyYnQ4cDhTbStMY3NySXlkemU1RE0wZmlhaEsKNkJCUU9jL0dmZmVUaXhUQWM4ZjlUaDRzL2k0TWo4TkorOWlHVEpld2NjVkVpb0FmcVYvaFY4YWpUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUpxUjNNU21JdFlvCmF1azBObjhtcXNhSnJIaEpzWUNpTjBhNU1ZbnNZOGUrTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFEUnM4SzIKMHJOb3BvMWo5ZDN3U3RXUG9STFJ6eWs2QUpwT2t5ekw4TXJ0VEFJZ0VqZFVDTkhsTDdsSFFoNjRtSjZRTm9CQgo2bkJJeVlyYkRtUEkyMXI2UW9vPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHVENDQWNDZ0F3SUJBZ0lSQU90MDFObERPMUQwS3UwY2pwaHpiaE13Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TVRJeE1Ea3hOakF3V2hjTk16QXdNVEU0TURreE5qQXcKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXd3V1FXUnRhVzVBYjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkowQSthYXZnOW1SaWlTbG8rNC9OL1luWkRwQmNnTUYKeXRKSWlWNlNuVlcrRURncFY0VEYveGdhY1NEaXBIc29sM05YVThVa1JncU1SWjdjSDlVUkdpK2pUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUd0bzNYSGNLN2ZxClk5TjZQczU3dmtrWng5eEYxbmZVZjlMdWZFWGtjTVhNTUFvR0NDcUdTTTQ5QkFNQ0EwY0FNRVFDSUh5NHYwTHcKT2toWlkyM0RSem1FOW1iSDNyQlBQQ1V3eGdZQkhjRHdOSEVDQWlCOUp3YysyZDAwQ1VqdUxtL0pKaHNNRWRHMAp3ZzgrWC82TkdObXNZRFdLR0E9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 ],
 "crypto_config": {
 "identity_identifier_hash_function": "SHA256",
@@ -89,24 +211,291 @@ TEST_CHANNEL_NAME=testlocal14485 ORG2=org2 ./verify/test-channel-add-org.sh
 "organizational_unit_identifiers": [],
 "revocation_list": [],
 "root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVVENDQWZpZ0F3SUJBZ0lSQU9RYnhKSzQyMkNwSUU4ekl6eWg0dFV3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TVRFME1UUXlOVEF3V2hjTk16QXdNVEV4TVRReU5UQXcKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkgvdmpuM2ZZcFdzVU5YdDUvV3BZcHltcTZsbkFMblowZTRtWTBDRkplb3QyT1ZBTDlSYXJYb3B1ZFAwTUhpVgpRelFBSStGV0hjcjF4aHAvUHl2NnFnZWpiVEJyTUE0R0ExVWREd0VCL3dRRUF3SUJwakFkQmdOVkhTVUVGakFVCkJnZ3JCZ0VGQlFjREFnWUlLd1lCQlFVSEF3RXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWcKbXBIY3hLWWkxaWhxNlRRMmZ5YXF4b21zZUVteGdLSTNScmt4aWV4ang3NHdDZ1lJS29aSXpqMEVBd0lEUndBdwpSQUlnRFhVOEtXNUJrYkl2c2J0dlNpWkVPTjczUEgvOUwxdE1aZzB1WlpWT1BFTUNJREN4WEFyQm9IUk5zNUN0Cnl2YWY4b3hqck0zMnJQSGltdDh5RHJUM1BUUUYKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVRENDQWZlZ0F3SUJBZ0lRSEtlRE9zYkVjdzQzanc1OXE3M3RtREFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NaTVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNREF4TWpFd09URTJNREJhRncwek1EQXhNVGd3T1RFMk1EQmEKTUhNeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVJrd0Z3WURWUVFLRXhCdmNtY3lMbVY0WVcxd2JHVXVZMjl0TVJ3d0dnWURWUVFECkV4TmpZUzV2Y21jeUxtVjRZVzF3YkdVdVkyOXRNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUUKZkQ3U09XSVRLZk90Z29NUWNPeURTYUFUYk9YQ3FmMjdGWlpwMk9DSCtaRkovWFRPcFFJMEd6MndEUXQ5dkZCdwpyOVhnMUhLbEVTbHRVQUE0M0lzUUdLTnRNR3N3RGdZRFZSMFBBUUgvQkFRREFnR21NQjBHQTFVZEpRUVdNQlFHCkNDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREFUQVBCZ05WSFJNQkFmOEVCVEFEQVFIL01Da0dBMVVkRGdRaUJDQnIKYU4xeDNDdTM2bVBUZWo3T2U3NUpHY2ZjUmRaMzFIL1M3bnhGNUhERnpEQUtCZ2dxaGtqT1BRUURBZ05IQURCRQpBaUFoRmUwWHZqN3V5d3NyUEhGY3VXbUhzeXAzdWRMT04xNzBoNkRpVENtSnZRSWdZdkQrd3RrcWZkd0RVOGRqCjlaMWU1enhDWHJmbFA3WjF5eHA4ZXRRMEZzcz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
 ],
 "signing_identity": null,
 "tls_intermediate_certs": [],
 "tls_root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNWakNDQWYyZ0F3SUJBZ0lRQTZ4WnVGRVQ0dE1rY0daUmlFb1pDakFLQmdncWhrak9QUVFEQWpCMk1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWZNQjBHQTFVRUF4TVdkR3h6ClkyRXViM0puTWk1bGVHRnRjR3hsTG1OdmJUQWVGdzB5TURBeE1UUXhOREkxTURCYUZ3MHpNREF4TVRFeE5ESTEKTURCYU1IWXhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saE1SWXdGQVlEVlFRSApFdzFUWVc0Z1JuSmhibU5wYzJOdk1Sa3dGd1lEVlFRS0V4QnZjbWN5TG1WNFlXMXdiR1V1WTI5dE1SOHdIUVlEClZRUURFeFowYkhOallTNXZjbWN5TG1WNFlXMXdiR1V1WTI5dE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMEQKQVFjRFFnQUVnNE5IZkU2VmhWTFBGWHp1ZjFxbWplR1BLellINS9tanFENE00RXRJWjltSVNsMFFNRUhmcFhEbwo3Q1l4VFVOZTlYRzdkKzNzQ01kdEt3aWVSaHVCb2FOdE1Hc3dEZ1lEVlIwUEFRSC9CQVFEQWdHbU1CMEdBMVVkCkpRUVdNQlFHQ0NzR0FRVUZCd01DQmdnckJnRUZCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUNrR0ExVWQKRGdRaUJDQU9NWVBHdjltWGIzN1Fnck9kQm1ubzB2bmxVWWlyYUthczJ6U2ZrRGtDa3pBS0JnZ3Foa2pPUFFRRApBZ05IQURCRUFpQVFoUnRyL3BNVkRaY0RUUndhZkFTZmNKcU5VWkdwUnhBWi9Xa0JLNjFSRVFJZ0RoWG5scGdDCkI4M0owd0RxOGxvdVlrZGxPNVFGSzdPNnpWT1QvMThCM1ZnPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNWakNDQWYyZ0F3SUJBZ0lRTXY1WC96QTJ0WnB1eGJHelB3b2YrakFLQmdncWhrak9QUVFEQWpCMk1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWZNQjBHQTFVRUF4TVdkR3h6ClkyRXViM0puTWk1bGVHRnRjR3hsTG1OdmJUQWVGdzB5TURBeE1qRXdPVEUyTURCYUZ3MHpNREF4TVRnd09URTIKTURCYU1IWXhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saE1SWXdGQVlEVlFRSApFdzFUWVc0Z1JuSmhibU5wYzJOdk1Sa3dGd1lEVlFRS0V4QnZjbWN5TG1WNFlXMXdiR1V1WTI5dE1SOHdIUVlEClZRUURFeFowYkhOallTNXZjbWN5TG1WNFlXMXdiR1V1WTI5dE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMEQKQVFjRFFnQUVEbkRQNGtDN1N2YnFJNnltZVc5cXRMWW85QVRhQXl4WG5kbVNWc2piTzh4Vy9NZjJaa1B0dWRaVgprY2t2QUtGcjdzS2wxbDJpYitqbXRGMDAyaHRzSUtOdE1Hc3dEZ1lEVlIwUEFRSC9CQVFEQWdHbU1CMEdBMVVkCkpRUVdNQlFHQ0NzR0FRVUZCd01DQmdnckJnRUZCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUNrR0ExVWQKRGdRaUJDQ1IyVjcxY3hJZUN4bVU4eC9EOE51MXlMV2VtREdJQjNadjBZaDhQSW5PT3pBS0JnZ3Foa2pPUFFRRApBZ05IQURCRUFpQnJndm4vTVFUelVqT2g3QWtibDBPSUU0ZEdWeTJwdGFZWHZ6a05oS2d4cGdJZ091UW1aWE0rCmNxZzFlSzBNd3k1SmcvUzltT0NhV2ppakxISXNPb0pPVUtjPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 ]
 },
 "type": 0
 }
 configtxlator output for channel_id: org2
 [1;32m
-OK: <org2> is in the channel <testlocal14485>.[m[m[m
+OK: <org2> is in the channel <testlocal28974>.[m[m[m
 Step 6: exit code 0
 Step: 7
-PEER0_PORT=7051 TEST_CHANNEL_NAME=testlocal14485 ORG=org1 ./curl/join-channel.sh
-[1;36mJoining org1.example.com to the testlocal14485 channel using API...[m[m[m
+PEER0_PORT=7051 TEST_CHANNEL_NAME=testlocal28974 ORG=org1 ./cli/join-channel.sh
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-join.sh testlocal28974[m[m[m
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+CORE_PEER_LOCALMSPID=org1
+CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+DOMAIN=example.com
+ENROLL_ID=admin
+ENROLL_SECRET=adminpw
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+GOPATH=/opt/gopath
+GOROOT=/opt/go
+HOME=/root
+HOSTNAME=f7671111d79a
+JAVA_HOME=/opt/java/openjdk
+JAVA_TOOL_OPTIONS=-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+JAVA_VERSION=jdk8u222-b10_openj9-0.15.1
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+ORDERER_BATCH_TIMEOUT=2
+ORDERER_DOMAIN=example.com
+ORDERER_GENERAL_LISTENPORT=7050
+ORDERER_NAME=orderer
+ORG=org1
+PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/go/bin:/opt/gopath/bin
+PEER0_PORT=7051
+PWD=/etc/hyperledger
+RAFT0_PORT=7050
+RAFT1_PORT=7150
+RAFT2_PORT=7250
+SHLVL=2
+SIGNATURE_HASH_FAMILY=SHA2
+SYSTEM_CHANNEL_ID=orderer-system-channel
+TERM=xterm
+_=/usr/bin/env
+--2020-01-22 09:11:02--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:11:02--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:11:02--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:11:02--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+Join org1 to channel testlocal28974
+Execute: channel fetch 0 crypto-config/configtx/testlocal28974.pb -o orderer.example.com:7050 -c testlocal28974 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:11:02.350 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:11:02.354 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-22 09:11:02.471 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:11:02.723 UTC [channelCmd] executeJoin -> INFO 002[0m Successfully submitted proposal to join channel
 Step 7: exit code 0
 Step: 8
-PEER0_PORT=8051 TEST_CHANNEL_NAME=testlocal14485 ORG=org2 ./curl/join-channel.sh
-[1;36mJoining org2.example.com to the testlocal14485 channel using API...[m[m[m
+PEER0_PORT=8051 TEST_CHANNEL_NAME=testlocal28974 ORG=org2 ./cli/join-channel.sh
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-join.sh testlocal28974[m[m[m
+CORE_PEER_ADDRESS=peer0.org2.example.com:8051
+CORE_PEER_LOCALMSPID=org2
+CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+DOMAIN=example.com
+ENROLL_ID=admin
+ENROLL_SECRET=adminpw
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+GOPATH=/opt/gopath
+GOROOT=/opt/go
+HOME=/root
+HOSTNAME=965538839c8b
+JAVA_HOME=/opt/java/openjdk
+JAVA_TOOL_OPTIONS=-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+JAVA_VERSION=jdk8u222-b10_openj9-0.15.1
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+ORDERER_BATCH_TIMEOUT=2
+ORDERER_DOMAIN=example.com
+ORDERER_GENERAL_LISTENPORT=7050
+ORDERER_NAME=orderer
+ORG=org2
+PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/go/bin:/opt/gopath/bin
+PEER0_PORT=8051
+PWD=/etc/hyperledger
+RAFT0_PORT=7050
+RAFT1_PORT=7150
+RAFT2_PORT=7250
+SHLVL=2
+SIGNATURE_HASH_FAMILY=SHA2
+SYSTEM_CHANNEL_ID=orderer-system-channel
+TERM=xterm
+_=/usr/bin/env
+--2020-01-22 09:11:05--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:11:05--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:11:05--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-22 09:11:05--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+Join org2 to channel testlocal28974
+Execute: channel fetch 0 crypto-config/configtx/testlocal28974.pb -o orderer.example.com:7050 -c testlocal28974 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-22 09:11:05.356 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:11:05.360 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-22 09:11:05.470 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-22 09:11:05.687 UTC [channelCmd] executeJoin -> INFO 002[0m Successfully submitted proposal to join channel
+Step 8: exit code 0
+Step: 9
+PEER0_PORT=7051 TEST_CHANNEL_NAME=testlocal28974 ORG=org1 ./verify/test-join-channel.sh
+[34m2020-01-22 09:11:06.604 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+configtxlator output for .channel_id: testlocal28974
+Step 9: exit code 0
+Step: 10
+PEER0_PORT=8051 TEST_CHANNEL_NAME=testlocal28974 ORG=org2 ./verify/test-join-channel.sh
+[34m2020-01-22 09:11:07.088 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+configtxlator output for .channel_id: testlocal28974
+Step 10: exit code 0
+Step: 11
+PEER0_PORT=7051 CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG=org1 ./cli/chaincode-install.sh testlocal28974
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+CORE_PEER_LOCALMSPID=org1
+CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+DOMAIN=example.com
+ENROLL_ID=admin
+ENROLL_SECRET=adminpw
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+GOPATH=/opt/gopath
+GOROOT=/opt/go
+HOME=/root
+HOSTNAME=25819ba68cc6
+JAVA_HOME=/opt/java/openjdk
+JAVA_TOOL_OPTIONS=-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+JAVA_VERSION=jdk8u222-b10_openj9-0.15.1
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+ORDERER_BATCH_TIMEOUT=2
+ORDERER_GENERAL_LISTENPORT=7050
+ORDERER_NAME=orderer
+ORG=org1
+PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/go/bin:/opt/gopath/bin
+PEER0_PORT=7051
+PWD=/etc/hyperledger
+RAFT0_PORT=7050
+RAFT1_PORT=7150
+RAFT2_PORT=7250
+SHLVL=1
+SIGNATURE_HASH_FAMILY=SHA2
+SYSTEM_CHANNEL_ID=orderer-system-channel
+_=/usr/bin/env
+Install chaincode referencetestlocal28974  /opt/chaincode/node/referencetestlocal28974 node 1.0
+[34m2020-01-22 09:11:07.903 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001[0m Using default escc
+[34m2020-01-22 09:11:07.903 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002[0m Using default vscc
+[34m2020-01-22 09:11:08.127 UTC [chaincodeCmd] install -> INFO 003[0m Installed remotely response:<status:200 payload:"OK" >
+Step 11: exit code 0
+Step: 12
+PEER0_PORT=7051 CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG=org2 ./cli/chaincode-install.sh testlocal28974
+mkdir: cannot create directory ‘/opt/chaincode/node/referencetestlocal28974’: File exists
+CORE_PEER_ADDRESS=peer0.org2.example.com:8051
+CORE_PEER_LOCALMSPID=org2
+CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
+CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+DOMAIN=example.com
+ENROLL_ID=admin
+ENROLL_SECRET=adminpw
+FABRIC_CFG_PATH=/etc/hyperledger/fabric
+FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+GOPATH=/opt/gopath
+GOROOT=/opt/go
+HOME=/root
+HOSTNAME=7376fc36ebff
+JAVA_HOME=/opt/java/openjdk
+JAVA_TOOL_OPTIONS=-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
+JAVA_VERSION=jdk8u222-b10_openj9-0.15.1
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+ORDERER_BATCH_TIMEOUT=2
+ORDERER_GENERAL_LISTENPORT=7050
+ORDERER_NAME=orderer
+ORG=org2
+PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/go/bin:/opt/gopath/bin
+PEER0_PORT=8051
+PWD=/etc/hyperledger
+RAFT0_PORT=7050
+RAFT1_PORT=7150
+RAFT2_PORT=7250
+SHLVL=1
+SIGNATURE_HASH_FAMILY=SHA2
+SYSTEM_CHANNEL_ID=orderer-system-channel
+_=/usr/bin/env
+Install chaincode referencetestlocal28974  /opt/chaincode/node/referencetestlocal28974 node 1.0
+[34m2020-01-22 09:11:09.008 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001[0m Using default escc
+[34m2020-01-22 09:11:09.008 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002[0m Using default vscc
+[34m2020-01-22 09:11:09.220 UTC [chaincodeCmd] install -> INFO 003[0m Installed remotely response:<status:200 payload:"OK" >
+Step 12: exit code 0
+Step: 13
+PEER0_PORT=7051 CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG=org1 ./verify/test-chaincode-install.sh
+peer chaincode list --installed output for .channel_id: referencetestlocal28974
+Step 13: exit code 0
+Step: 14
+PEER0_PORT=8051 CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG=org2 ./verify/test-chaincode-install.sh
+peer chaincode list --installed output for .channel_id: referencetestlocal28974
+Step 14: exit code 0
+Step: 15
+PEER0_PORT=7051 CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG=org1 ./cli/chaincode-instantiate.sh testlocal28974
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/chaincode-instantiate.sh testlocal28974 referencetestlocal28974 '[]' 1.0  [m[m[m
+Instantiate chaincode testlocal28974 referencetestlocal28974 '[]' 1.0  
+[34m2020-01-22 09:11:13.139 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001[0m Using default escc
+[34m2020-01-22 09:11:13.139 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002[0m Using default vscc
+Step 15: exit code 0
+Step: 16
+PEER0_PORT=7051 CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG=org1 ./verify/test-chaincode-instantiated.sh testlocal28974
+peer chaincode list --instantiated output for .channel_id: referencetestlocal28974
+Step 16: exit code 0
+Step: 17
+CHAINCODE_NAME=reference TEST_CHANNEL_NAME=testlocal28974 ORG1=org1 ORG2=org2 ./verify/test-chaincode-data-exchange.sh
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/chaincode-invoke.sh  testlocal28974 referencetestlocal28974 '["put","testlocal28974","testlocal28974"]'[m[m[m
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051 peer chaincode invoke -n referencetestlocal28974 -C testlocal28974 -c '{"Args":["put","testlocal28974","testlocal28974"]}'
+[34m2020-01-22 09:12:07.956 UTC [chaincodeCmd] InitCmdFactory -> INFO 001[0m Retrieved channel (testlocal28974) orderer endpoint: orderer.example.com:7050
+[34m2020-01-22 09:12:08.003 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 002[0m Chaincode invoke successful. result: status:200 
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/chaincode-query.sh testlocal28974 referencetestlocal28974 '["get","testlocal28974"]'[m[m[m
+CORE_PEER_ADDRESS=peer0.org2.example.com:8051 peer chaincode query -n referencetestlocal28974 -C testlocal28974 -c '{"Args":["get","testlocal28974"]}'
+testlocal28974
+Step 17: exit code 0

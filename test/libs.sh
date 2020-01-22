@@ -85,6 +85,39 @@ printLogScreen() {
 }
 
 
+getAPIPort()
+{
+port=$(docker inspect api.${1}.${2} | jq -r '.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].HostPort)"')
+echo $port
+}
+
+getAPIHost()
+{
+#echo "docker inspect api.${1}.${2} "
+
+ipaddr=$(docker inspect api.${1}.${2} | jq -r '.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].HostIp)"')
+addr=$(echo $ipaddr | sed -e 's/0\.0\.0\.0/127.0.0.1/')
+echo $addr
+}
+
+
+getPeer0Port()
+{
+port=$(docker inspect peer0.${1}.${2} | jq -r '.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].HostPort)"')
+echo $port
+}
+
+getPeer0Host()
+{
+#echo "docker inspect api.${1}.${2} "
+
+ipaddr=$(docker inspect peer0.${1}.${2} | jq -r '.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].HostIp)"')
+addr=$(echo $ipaddr | sed -e 's/0\.0\.0\.0/127.0.0.1/')
+echo $addr
+}
+
+
+
 
 CURRENT_DIR=$(pwd)
 cd ${FABRIC_DIR} && source ./lib/util/util.sh && source ./lib.sh

@@ -58,6 +58,8 @@ if [ $createResult -eq 0 ]; then
     fi
 fi
 
+invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
+
 if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
     sleep 3
     if [[ -n "$ORG_IP" || -n "$MY_IP" ]]; then # ORG_IP is deprecated
