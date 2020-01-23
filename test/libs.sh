@@ -93,7 +93,6 @@ echo $port
 
 getAPIHost()
 {
-#echo "docker inspect api.${1}.${2} "
 
 ipaddr=$(docker inspect api.${1}.${2} | jq -r '.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].HostIp)"')
 addr=$(echo $ipaddr | sed -e 's/0\.0\.0\.0/127.0.0.1/')
@@ -109,11 +108,28 @@ echo $port
 
 getPeer0Host()
 {
-#echo "docker inspect api.${1}.${2} "
 
 ipaddr=$(docker inspect peer0.${1}.${2} | jq -r '.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].HostIp)"')
 addr=$(echo $ipaddr | sed -e 's/0\.0\.0\.0/127.0.0.1/')
 echo $addr
+}
+
+
+curlItGet()
+{
+local url=$1
+local cdata=$2
+local wtoken=$3
+
+    res=$(curl -sw "%{http_code}"  "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    http_code="${res:${#res}-3}"
+    if [ ${#res} -eq 3 ]; then
+      body=""
+    else
+      body="${res:0:${#res}-3}"
+    fi
+    jwt=$(echo ${body}) 
+    echo "$jwt $http_code"
 }
 
 

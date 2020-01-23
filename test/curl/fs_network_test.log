@@ -1,180 +1,257 @@
-[1;36mCreating  channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating  channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ta12 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ta12 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating org1 channel in org1.example.com using CLI...[m[m[m
-[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-join.sh org1[m[m[m
-CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-CORE_PEER_LOCALMSPID=org1
-CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
-CORE_PEER_TLS_ENABLED=true
-CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
-CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-DOMAIN=example.com
-ENROLL_ID=admin
-ENROLL_SECRET=adminpw
-FABRIC_CFG_PATH=/etc/hyperledger/fabric
-FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
-GOPATH=/opt/gopath
-GOROOT=/opt/go
-HOME=/root
-HOSTNAME=83c9d19c1d35
-JAVA_HOME=/opt/java/openjdk
-JAVA_TOOL_OPTIONS=-XX:+IgnoreUnrecognizedVMOptions -XX:+UseContainerSupport -XX:+IdleTuningCompactOnIdle -XX:+IdleTuningGcOnIdle
-JAVA_VERSION=jdk8u222-b10_openj9-0.15.1
-LANG=en_US.UTF-8
-LANGUAGE=en_US:en
-LC_ALL=en_US.UTF-8
-ORDERER_BATCH_TIMEOUT=2
-ORDERER_DOMAIN=example.com
-ORDERER_GENERAL_LISTENPORT=7050
-ORDERER_NAME=orderer
-ORG=org1
-PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/go/bin:/opt/gopath/bin
-PEER0_PORT=7051
-PWD=/etc/hyperledger
-RAFT0_PORT=7050
-RAFT1_PORT=7150
-RAFT2_PORT=7250
-SHLVL=2
-SIGNATURE_HASH_FAMILY=SHA2
-SYSTEM_CHANNEL_ID=orderer-system-channel
-TERM=xterm
-_=/usr/bin/env
---2020-01-13 11:47:19--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
-Resolving www.example.com (www.example.com)... 172.29.0.4
-Connecting to www.example.com (www.example.com)|172.29.0.4|:80... connected.
-HTTP request sent, awaiting response... 304 Not Modified
-File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
-
---2020-01-13 11:47:19--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
-Resolving www.example.com (www.example.com)... 172.29.0.4
-Connecting to www.example.com (www.example.com)|172.29.0.4|:80... connected.
-HTTP request sent, awaiting response... 304 Not Modified
-File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
-
---2020-01-13 11:47:19--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-Resolving www.example.com (www.example.com)... 172.29.0.4
-Connecting to www.example.com (www.example.com)|172.29.0.4|:80... connected.
-HTTP request sent, awaiting response... 304 Not Modified
-File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
-
---2020-01-13 11:47:19--  http://www.example.com/msp/orderer.example.com/tls/server.crt
-Resolving www.example.com (www.example.com)... 172.29.0.4
-Connecting to www.example.com (www.example.com)|172.29.0.4|:80... connected.
-HTTP request sent, awaiting response... 304 Not Modified
-File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
-
-Join org1 to channel org1
-Execute: channel fetch 0 crypto-config/configtx/org1.pb -o orderer.example.com:7050 -c org1 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-[34m2020-01-13 11:47:19.741 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-01-13 11:47:19.744 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
-Error: can't read the block: &{NOT_FOUND}
-[34m2020-01-13 11:47:19.837 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-Error: genesis block file not found open crypto-config/configtx/org1.pb: no such file or directory
-^C[1;31mError occurred. See console output above.[m[1;33m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve1 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve2 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve2 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve2 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve2 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve2 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve2 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve3 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve3 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve3 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve3 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve3 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve3 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve4 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve4 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve5 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve5 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve6 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve6 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve6 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve6 channel using CLI...[m[m[m
-[1;36mCreating uve7 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mCreating uve6 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve7 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mJoining org3.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mJoining org1.example.com to the uve7 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mCreating uve8 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve8 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve8 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org1.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve8 channel using CLI...[m[m[m
-[1;36mCreating uve9 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve9 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating uve9 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org1.example.com to the uve9 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve9 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the uve9 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the testlocal23966 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the testlocal23966 channel using CLI...[m[m[m
-[1;36mJoining org2.example.com to the testlocal23966 channel using CLI...[m[m[m
-[1;36mCreating ufa111 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ufa111 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ufa111 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org1.example.com to the ufa111 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the ufa111 channel using API...[m[m[m
-[1;36mJoining org1.example.com to the ufa111 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the ufa111 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the ufa111 channel using API...[m[m[m
-[1;36mJoining org1.example.com to the ufa111 channel using API...[m[m[m
-[1;36mCreating ufa222 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ufa222 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ufa222 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the ufa222 channel using API...[m[m[m
-[1;36mJoining org1.example.com to the ufa222 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the ufa222 channel using API...[m[m[m
-[1;36mCreating tulpan12 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating tulpan12 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating tulpan12 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the tulpan12 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the tulpan12 channel using API...[m[m[m
-[1;36mCreating tulpan14 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating tulpan14 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the tulpan14 channel using API...[m[m[m
-[1;36mCreating tulpan15 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org2.example.com to the tulpan15 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the tulpan15 channel using API...[m[m[m
-[1;36mJoining org2.example.com to the tulpan15 channel using API...[m[m[m
-[1;36mCreating tulpan16 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating tulpan16 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating tulpan17 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating tulpan17 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org1.example.com to the tulpan17 channel using API...[m[m[m
-[1;36mCreating ze12 channel in org1.example.com using CLI...[m[m[m
-[1;36mCreating ze12 channel in org1.example.com using CLI...[m[m[m
-[1;36mJoining org3.example.com to the ze12 channel using API...[m[m[m
-[1;36mJoining org3.example.com to the ze12 channel using API...[m[m[m
-[1;36mJoining org3.example.com to the ze12 channel using API...[m[m[m
-[1;36mCreating qwert channel in org1.example.com using CLI...[m[m[m
-[1;36mAdd org2 to the qwert channel using API...[m[m[m
-[1;36mJoining org2.example.com to the qwert channel using API...[m[m[m
-[1;36mJoining org2.example.com to the qwert channel using API...[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+"Error:
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+"Error:
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Error 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"5 00 
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"5 00 
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the ./t-chaincode-install.sh channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"5 00 
+[1;31m
+ERROR: joining org1 to ./t-chaincode-install.sh failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"5 00 
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Eo: eo istallig chaicode code efeece7:1.0(chaicode /va/hypeledge/poductio/chaicodes/efeece7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)" 500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+500
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error:
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mJoining org1.example.com to the  channel using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"
+[1;31m
+ERROR: joining org1 to  failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mInstalling reference7.zip chaincode on org2.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Chaincode reference7:1.0 successfully installed"
+[1;32m
+OK: reference7.zip installed to org2[m[m[m
+[1;36mInstalling reference7.zip chaincode on org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"
+[1;31m
+ERROR: installing reference7.zip on org1 failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mInstalling /tmp/reference9090.zip chaincode on org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Error: error installing chaincode code reference7:1.0(chaincode /var/hyperledger/production/chaincodes/reference7.1.0 exists)"
+[1;31m
+ERROR: installing /tmp/reference9090.zip on org1 failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mInstalling /tmp/reference9090.zip chaincode on org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"ENOENT: no such file or directory, scandir '/tmp/reference9090'"
+[1;31m
+ERROR: installing /tmp/reference9090.zip on org1 failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mInstalling /tmp/reference9090.zip chaincode on org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mInstalling /tmp/reference9090.zip chaincode on org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Chaincode reference9090:1.0 successfully installed"
+[1;32m
+OK: /tmp/reference9090.zip installed to org1[m[m[m
+[1;36mInstalling /tmp/reference9090.zip chaincode on org2.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"Chaincode reference9090:1.0 successfully installed"
+[1;32m
+OK: /tmp/reference9090.zip installed to org2[m[m[m

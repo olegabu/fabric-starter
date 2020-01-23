@@ -14,9 +14,9 @@ ORG2=${ORG2:-org1}
 
 
 #FSTEST_LOG_FILE=${BASEDIR}
-DEBUG=${DEBUG:-false}
+#DEBUG=${DEBUG:-false}
 
-printInColor "1;36" "Adding the <$ORG2> org to <$TEST_CHANNEL_NAME> channel ..."
+printInColor "1;36" "Adding the <$ORG2> org to <$TEST_CHANNEL_NAME> channel ..." | printDbg
 
 DOMAIN=${DOMAIN:-example.com}
 PEER0_PORT=${PEER0_PORT:7051}
