@@ -1,9 +1,0 @@
-Random channel name = testlocal9164
-Chaincode name = reference
-Chaincode name = Running test for org1.example.com
-Step: 1
-TEST_CHANNEL_NAME=testlocal9164 ./cli/test-create-channel.sh
-Step 1: exit code 127
-Step: 2
-TEST_CHANNEL_NAME=testlocal9164 ./verify/test-exist-channel.sh
-Step 2: exit code 127

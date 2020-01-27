@@ -1,9 +1,0 @@
-Test channel name = testlocal10011
-Chaincode name = reference
-Chaincode name = Running test for org1.example.com
-Step: 1
-Step 1 exit code 0
-Step: 2
-Step 2 exit code 0
-Step: 3
-Step 3 exit code 0
