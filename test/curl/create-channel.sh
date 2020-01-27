@@ -6,7 +6,7 @@ source ${BASEDIR}/../libs.sh
 export ORG=${ORG:-org1}
 TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}} #($1, if set, or ${TEST_CHANNEL_NAME})
 
-printInColor "1;36" "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." | printDbg
+printInColor "1;36" "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." | printLogScreen
 
 
 api_ip=$(getAPIHost ${ORG} ${DOMAIN})
@@ -22,10 +22,10 @@ printDbg "JWT obtained: $jwt"
 
 
 if [[ "$jwt_http_code" -eq 200 ]]; then
-    printGreen "\nOK: JWT token obtained." | printDbg
+    printGreen "\nOK: JWT token obtained." | printLogScreen
 
 else
-    printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." | printDbg
+    printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." | printLogScreen
 
     exit 1
 fi
@@ -49,11 +49,11 @@ fi
 printDbg $message
 
 if [[ "$create_http_code" -eq 200 ]]; then
-    printGreen "\nOK: ${TEST_CHANNEL_NAME}: ${message}" | printDbg
+    printGreen "\nOK: ${TEST_CHANNEL_NAME}: ${message}" | printLogScreen
 
     exit 0
 else
-    printError "\nERROR: creating ${TEST_CHANNEL_NAME} channel!\nSee ${FSTEST_LOG_FILE} for logs." | printDbg
+    printError "\nERROR: creating ${TEST_CHANNEL_NAME} channel!\nSee ${FSTEST_LOG_FILE} for logs." | printLogScreen
 
     exit 1
 fi

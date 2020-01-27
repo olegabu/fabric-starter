@@ -13,7 +13,7 @@ export ORG2=${ORG2:-org2}
 
 
 TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}} #($1, if set, or ${TEST_CHANNEL_NAME})
-printInColor "1;36" "Add ${ORG2} to the ${TEST_CHANNEL_NAME} channel using API..." | printDbg
+printInColor "1;36" "Add ${ORG2} to the ${TEST_CHANNEL_NAME} channel using API..." | printLogScreen
 
 
 api_ip=$(getAPIHost ${ORG} ${DOMAIN})
@@ -24,9 +24,9 @@ read jwt jwt_http_code < <(curlItGet "http://${api_ip}:${api_port}/users" "{\"us
 jwt=$(echo $jwt | tr -d '"')
 
 if [[ "$jwt_http_code" -eq 200 ]]; then
-    printGreen "\nOK: JWT token obtained." | printDbg
+    printGreen "\nOK: JWT token obtained." | printLogScreen
 else
-    printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." | printDbg
+    printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." | printLogScreen
     exit 1
 fi
 
@@ -47,10 +47,10 @@ read reply_code create_http_code < <(curlItGet  "http://${api_ip}:${api_port}/ch
 #fi
 
 if [[ "$reply_code" -eq 200 ]]; then
-    printGreen "\nOK: ${ORG2} added to ${TEST_CHANNEL_NAME} channel" | printDbg
+    printGreen "\nOK: ${ORG2} added to ${TEST_CHANNEL_NAME} channel" | printLogScreen
     exit 0
 else
-    printError "\nERROR: adding ${ORG2} to ${TEST_CHANNEL_NAME} failed!\nSee ${FSTEST_LOG_FILE} for logs." | printDbg
+    printError "\nERROR: adding ${ORG2} to ${TEST_CHANNEL_NAME} failed!\nSee ${FSTEST_LOG_FILE} for logs." | printLogScreen
     exit 1
 fi
 

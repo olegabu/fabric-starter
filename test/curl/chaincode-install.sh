@@ -10,8 +10,28 @@ export ORG
 : ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
 
 
-CHAINCODE_ZIP_PATH=${1:-${CHAINCODE_ZIP_PATH}}
-printInColor "1;36" "Installing ${CHAINCODE_ZIP_PATH} chaincode on ${ORG}.${DOMAIN} using API..." | printDbg
+TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}}
+CHAINCODE_PREFIX=${CHAINCODE_PREFIX:-reference}
+
+printInColor "1;36" "Creating  /tmp/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}.zip test chaincode zip-archive" | printLogScreen
+
+#new chaincode archive file (based on reference)
+ZIP_FILE_PATH=/tmp/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}.zip
+
+
+if [ ! -z "${TEST_CHANNEL_NAME}" ] #If Test channel set
+then
+    cd ${FABRIC_DIR}/chaincode/node/
+    mkdir ${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}
+    cp ${FABRIC_DIR}/chaincode/node/reference/* ${FABRIC_DIR}/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}
+    (cd ${FABRIC_DIR}/chaincode/node/ && zip -r ${ZIP_FILE_PATH} ./${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}/*) | printDbg
+    rm -rf ${FABRIC_DIR}/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}
+    trap "rm -f ${ZIP_FILE_PATH}" EXIT;
+else
+    printLogScreen "Can not create test chaincode! Set TEST_CHANNEL_NAME var."
+fi
+
+printInColor "1;36" "Installing ${CHAINCODE_ZIP_PATH} chaincode on ${ORG}.${DOMAIN} using API..." | printLogScreen
 
 
 api_ip=$(getAPIHost ${ORG} ${DOMAIN})
@@ -28,14 +48,10 @@ else
 fi
 
 
-function multipartBoudary() {
-    echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
-}
 
-
-filepath=${CHAINCODE_ZIP_PATH}
+filepath=${ZIP_FILE_PATH}
 filename=$(basename $filepath)
-boundary=$(multipartBoudary)
+boundary=$(generateMultipartBoudary)
 
 multipart_header='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
 multipart_header+=${filename}'"\r\nContent-Type: "application/zip"\r\n\r\n'
@@ -48,7 +64,7 @@ multipart_tail+=${boundary}'--\r\n'
 
 TMP_OUT_FILE=$(tempfile); trap "rm -f ${TMP_OUT_FILE}" EXIT;
 
-#
+# Composing one binary file to POST to API                 
 echo -n -e ${multipart_header} > "${TMP_OUT_FILE}"
 cat   ${filepath} >> "${TMP_OUT_FILE}"
 echo -n -e ${multipart_tail} >> "${TMP_OUT_FILE}"
@@ -72,7 +88,7 @@ read reply_code reply_text < <(\
     echo "$http_code $text"
 )
 
-echo ${reply_code}
+echo ${reply_code} | printDbg
 
 printDbg ${reply_text}
 

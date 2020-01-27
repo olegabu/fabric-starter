@@ -132,6 +132,28 @@ local wtoken=$3
     echo "$jwt $http_code"
 }
 
+function generateMultipartBoudary() {
+    echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
+}
+
+function generateMultipartHeader() {
+multipart_header='----'${1}'\r\nContent-Disposition: form-data; name="file"; filename="'
+multipart_header+=${2}'"\r\nContent-Type: "application/zip"\r\n\r\n'
+echo -n -e  ${multipart_header}
+}
+
+function generateMultipartTail() {
+boundary=${1}
+
+multipart_tail='\r\n\r\n----'
+multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
+multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
+multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
+multipart_tail+=${boundary}'--\r\n'
+echo -n -e ${multipart_tail}
+}
+
+
 
 
 
