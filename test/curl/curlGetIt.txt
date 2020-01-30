@@ -1,0 +1,5 @@
+curlItGet http://0.0.0.0:4000/users {"channelId":"test1234818298736","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM4MDkzN30.5TIogOHQoSikWLaLNZCGirpq-DrKBShCH7MTA51FnhA
+curlItGet http://0.0.0.0:4000/users {"username":"user4","password":"passw"} 
+curlItGet http://0.0.0.0:4000/users {"channelId":"test1234818298736","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM4MTAxMn0.ztXa48FiQmLD_kVC8w5rMZrjj-QbWrk2LQMfj3QXKA8
+curlItGet http://0.0.0.0:4000/users {"username":"user4","password":"passw"} 
+curlItGet http://0.0.0.0:4000/users {"channelId":"test1234818298736","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM4MTA3NH0.tdq7qei-COh3QPSvkpvP6fXF6_1qwonFYKBcWY61NHs

@@ -1,0 +1,676 @@
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test1234[m[m[m
+example.com
+
+Create channel org1 test1234
+--2020-01-30 09:18:06--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-30 09:18:06--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-30 09:18:06--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-30 09:18:06--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-30 09:18:06.240 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-30 09:18:06.311 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-30 09:18:06.374 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-30 09:18:06.375 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-30 09:18:06.375 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-30 09:18:06.375 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-30 09:18:06.375 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-30 09:18:06.376 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-30 09:18:06.376 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-30 09:18:06.376 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-30 09:18:06.480 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test1234': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test1234.pb -o orderer.example.com:7050 -c test1234 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-30 09:18:06.565 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 09:18:06.567 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-30 09:18:06.569 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-30 09:18:06.569 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test1234
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test1234 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-30 09:18:06.855 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test1234': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application/org1 be at version 0, but it is currently at version 1
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3NzcyN30.82aMvhgxeCNB0JcxcTp66zsjUmLX23WghAy3fpvTPkE"
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3Nzc0Mn0.4wczg3K-Mg6kV4cBUeNoD1YR5Tv2u4Ez0GY3Hezguok"
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: 
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: 
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3NzgzNH0.ZPAUUXj2HFooXTsy_OokLBh2n-JjXC1M4mBjWFVT-4E
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3NzgzNn0.Cyav590sSHTRtif7YczZpHW7DOLycTkJnHVneRI3nGA
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3Nzg0OX0.207f0jFNy790TJbYcBMA9qP7kftwIk2S4F9nOjnZlow
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: /eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3NzkwM30.5WJKkpMOMfYfobu3l0ti1ZlRMaC0OBn5AORAklX4QXo"
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: /eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3NzkzMn0.q33f0jFksSE4qatASimKBXxmnUcmXxW4xBQa1hgEwW0/
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3Nzk0Nn0.M0Hu27GM6iAv_5zcfyGpzQTc2qbFfsUcPxl_tEt6Vjw
+[1;36mCreating test1234888 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3Nzk1MH0.-oqkuBCu4QMb5hdhjVu5EHsES7SEilCdn9x45zUrTjM
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODIzN30.9sexGwN1pbW6cV22mjTFV_4pgroPg6PmfgQXmCA-4KQ
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODI1Nn0.StF10mYhcFb7aIpsCMz0XTuHUqMS_k2AnE6_gPTohNA
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODI3Nn0.R0rDlXosrCCVD8wcmUzWhRDRwvOqtg9WWg9rHKMPtRQ
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODMxMn0._s3e_by5JOx4-yck2bTEnFUUwqo-Qw64OIXDYbMQnNY
+Result: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODMxMn0._s3e_by5JOx4-yck2bTEnFUUwqo-Qw64OIXDYbMQnNY"
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODMyN30.bn-Sh52oB7IlC94cxFXVKtbT-mHY9-1sh8kq4N3nWkk
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODM0Mn0.25uTlifCzORtFAZONpyUp2zhzFF2E1_BJcBjCB5gg7o
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODM1NX0.Kd3u1i-x5znpg0myM-fpElcs4fhDShru4JT9MVK2-MQ
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODQxOX0.y47OvDigoCXeAaSf088fk9q81wO4YnZIxTLmSvW0xJk
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODQ0MX0.3MxjiCgoDLpWJQtPhiOu5dCGf7DD9tAja77X5911en8
+Result: 200
+[1;32m
+OK: JWT token obtained.[m[m[m
+JWT obtained: 
+Result: 
+JWT obtained: 
+Result: 
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODU4N30.9bFVcYs76l8U061n9UIBHNtN8gPtFsVjZH1t5qXOUOE
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODU5OX0.59_tsFblbBJyy2CfCL7t-v3OSV-xwRDhICzKiDNp9QI
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODYyOX0.nvSra_FzqjgcH9Pg3Zq_0DkjWCVtfu8UPfAAcpOPAmk
+Result: 200
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODY0M30.6CokqgcaVaPyq7Cubp2X6TPZCtqDJ640XSRLkvVRGKs
+Result: 200
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3ODY2M30.zhFW1wUisr1G24uAWO1sYprGeV9gtPny27v7v5DqgtU
+Result: 200
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+JWT obtained: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM3OTkyNH0.g8dk_VyxLPs0Fvu2yp98YnDrp3Ut9A80qVOHpP-kWGk
+Result: 200
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test1234818298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel created.
+[1;32m
+OK: test1234818298736: Channel created.[m[m[m
+[1;36mCreating test123488298736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel created.
+[1;32m
+OK: test123488298736: Channel created.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel created.
+[1;32m
+OK: test12348736: Channel created.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1cd.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[A
+
+
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+[1;36mCreating test12348736 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test12348736: Channel already exists.[m[m[m
+Channel created.
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+getJWT org1
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM4OTQ4NX0.c5C3nBK9_YFPWT9DhWOR_IyuOgx-hw91OnlY9s_W9Fg" 200
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDM4OTUyNH0.6uTEm2ajK6zdnsA4mNnNsp0RhpiWDjTQLirOc-DkTJg" 200
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[A
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;31m
+ERROR: creating test123487e36 channel!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: JWT token obtained.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: Can not authorize. Failed to get JWT token!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m ERROR: Can not authorize. Failed to get JWT token! See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m ERROR: Can not authorize. Failed to get JWT token! See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m ERROR: Can not authorize. Failed to get JWT token! See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m ERROR: Can not authorize. Failed to get JWT token! See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m ERROR: Can not authorize. Failed to get JWT token! See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m ERROR: Can not authorize. Failed to get JWT token! See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+Channel already exists.
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+Channel already exists.
+[1;32m
+OK: test123487e36: Channel already exists.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: creating  channel!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: creating  channel!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e36 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;31m
+ERROR: creating gh12343 channel!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: gh12343: Channel already exists.[m[m[m
+[1;36mCreating test123487e363 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test123487e363: Channel already exists.[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test123482227e363: Channel created.[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test123482227e363: Channel already exists.[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;36mCreating test123482227e363 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test123482227e363: Channel already exists.[m[m[m
+[1;36mCreating test0987654 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test0987654: Channel created.[m[m[m
+[1;36mCreating test0987654 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test0987654: Channel already exists.[m[m[m
+[1;36mCreating test0987654 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test0987654: Channel already exists.[m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: Channel created.[m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: Channel already exists.[m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: Channel already exists.[m[m[m
+[1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test09876544: [m[m[m

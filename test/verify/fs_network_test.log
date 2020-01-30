@@ -1,0 +1,111 @@
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 11:55:12.643 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 11:55:12.644 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 11:55:12.645 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 11:55:12.645 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 11:56:01.190 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 11:56:01.192 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 11:56:01.193 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 11:56:01.193 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 11:56:16.553 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 11:56:16.555 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 11:56:16.556 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 11:56:16.556 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 11:56:41.197 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 11:56:41.198 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 11:56:41.199 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 11:56:41.199 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 12:00:14.106 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:00:14.108 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:00:14.109 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:00:14.109 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 12:00:21.933 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:00:21.936 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:00:21.937 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:00:21.937 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 12:01:41.097 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:01:41.099 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:01:41.100 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:01:41.100 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 12:02:34.425 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:02:34.427 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:02:34.428 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:02:34.428 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 5:  : command not found
+[34m2020-01-30 12:03:17.192 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:03:17.193 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:03:17.194 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:03:17.194 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id:  
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 12:04:28.164 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:04:28.166 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:04:28.167 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:04:28.167 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+/bin/bash: line 4:  : command not found
+[34m2020-01-30 12:05:00.866 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-30 12:05:00.868 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-30 12:05:00.869 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-30 12:05:00.869 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test12348736> failed!
+See ./fs_network_test.log for logs.[m[m[m

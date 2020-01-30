@@ -25,6 +25,10 @@ function printRedYellow() {
     printInColor "1;31" "$1" "1;33" "$2"
 }
 
+function printCyan() {
+    printInColor "1;36" "$1"
+}
+
 function printUsage() {
     usageMsg=$1
     exampleMsg=$2

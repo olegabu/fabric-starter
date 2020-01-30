@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+unset DOCKER_TLS_VERIFY
+unset DOCKER_HOST
+unset DOCKER_CERT_PATH
+unset DOCKER_MACHINE_NAME
+
+
 source ./libs.sh
 BASEDIR=$(dirname $0)
 

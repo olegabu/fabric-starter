@@ -14,10 +14,10 @@ DOMAIN=${DOMAIN:-example.com}
 CHAINCODE_PREFIX=${CHAINCODE_PREFIX:-reference}
 
 
-printInColor "1;36" "$ORG (Port:$PEER0_PORT) Installing the <${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}> chaincode ont the cli.${ORG}.${DOMAIN} machine"
+printInColor "1;36" "$ORG (Port:$PEER0_PORT) Installing the <${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}> chaincode on the cli.${ORG}.${DOMAIN} machine"
 
 
-docker exec -i cli.${ORG}.${DOMAIN} sh -c "mkdir /opt/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME} ; cp -R /opt/chaincode/node/reference/* \
+docker exec -i cli.${ORG}.${DOMAIN} sh -c "mkdir -p /opt/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME} ; cp -R /opt/chaincode/node/reference/* \
                                            /opt/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}"  2>&1 | printDbg
 docker exec -i cli.${ORG}.${DOMAIN} sh -c "./container-scripts/network/chaincode-install.sh ${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}" 2>&1 | printDbg
 
