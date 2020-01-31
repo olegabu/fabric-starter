@@ -65,6 +65,26 @@ function printLog() {
     fi
 }
 
+function printLogScreenCyan() {
+    if (( $# == 0 )) ; then
+        while read -r line ; do
+            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
+        done
+    else
+        printInColor "1;36" "$@" | tee -a ${FSTEST_LOG_FILE}
+    fi
+}
+
+function printNoColors() {   #filter out set color terminal commands
+    if (( $# == 0 )) ; then
+        while read -r line ; do
+            echo "${line}" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+        done
+    else
+        echo  "$@" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+    fi
+}
+
 function printLogScreen() {
     if (( $# == 0 )) ; then
         while read -r line ; do
@@ -75,14 +95,17 @@ function printLogScreen() {
     fi
 }
 
+
 function printAndCompareResults() {
     
     messageOK=${1}
     messageERR=${2}
-    var=${3:-?}
+    var=${3:-"$?"}
     value=${4:-0}
-    
-    if [[ "$var" -eq "$value" ]]; then
+#$var='null'
+#echo "var: $var value: $value" >/dev/tty
+
+    if [ "$var" = "$value" ]; then
         printGreen "${messageOK}"
         exit 0
     else
@@ -221,6 +244,26 @@ function createChannelAPI() {
     ${create_http_code} 200 | printLogScreen > /dev/tty
 }
 
+function verifyChannelExists() {
+    local channel=${1}
+    local org=${2}
+    #store container stderr for debug in TMP_LOG_FILE, trap deletes it on exit
+TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+
+#connectMachine ${ORG}   
+local result=$(docker exec cli.${org}.${DOMAIN} /bin/bash -c \
+'source container-scripts/lib/container-lib.sh; \
+        peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
+        configtxlator  proto_decode --type "common.Block"  | \
+        jq .data.data[0].payload.header.channel_header | \
+        tee /dev/stderr | \
+        jq .channel_id | \
+        sed -E -e "s/\"|\n|\r//g"' 2>"${TMP_LOG_FILE}")
+
+       cat "${TMP_LOG_FILE}" | printDbg >/dev/tty
+       printLog "configtxlator output for .channel_id: $result" >/dev/tty
+       echo $result
+}
 
 CURRENT_DIR=$(pwd)
 cd ${FABRIC_DIR} && source ./lib/util/util.sh && source ./lib.sh

@@ -109,3 +109,5 @@ configtxlator output for .channel_id:
 [1;31m
 ERROR: Creating channel <test12348736> failed!
 See ./fs_network_test.log for logs.[m[m[m
+Error: No such container: cli.org1.
+configtxlator output for .channel_id: 

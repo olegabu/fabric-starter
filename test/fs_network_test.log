@@ -674,3 +674,1755 @@ OK: test09876544: Channel already exists.[m[m[m
 [1;36mCreating test09876544 channel in org1.example.com using API...[m[m[m
 [1;32m
 OK: test09876544: [m[m[m
+[1;36mCreating test8888888888 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test8888888888: Channel created.[m[m[m
+[1;36mCreating test6666666666 channel in org2.example.com using API...[m[m[m
+[1;32m
+OK: test6666666666: Channel created.[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 08:12:37--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:12:37--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:12:37--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:12:37--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 08:12:37.838 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 08:12:37.894 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 08:12:37.894 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 08:12:37.894 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 08:12:37.894 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 08:12:37.894 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 08:12:37.894 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 08:12:37.895 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 08:12:37.895 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 08:12:37.962 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 08:12:37.963 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 08:12:37.963 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 08:12:37.963 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 08:12:37.963 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 08:12:37.964 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 08:12:37.964 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 08:12:38.054 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:12:38.101 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 08:12:38.236 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:12:38.239 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-31 08:12:38.241 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-31 08:12:38.242 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org1 for channel test7777777777
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 08:12:38.588 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:12:38.599 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777776[m[m[m
+example.com
+
+Create channel org1 test7777777776
+--2020-01-31 08:15:02--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:15:02--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:15:02--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:15:02--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 08:15:02.710 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 08:15:02.777 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 08:15:02.847 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 08:15:02.848 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 08:15:02.848 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 08:15:02.848 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 08:15:02.848 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 08:15:02.848 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 08:15:02.850 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 08:15:02.850 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 08:15:02.932 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:15:02.970 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test7777777776.pb -o orderer.example.com:7050 -c test7777777776 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 08:15:03.044 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:15:03.052 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-31 08:15:03.054 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-31 08:15:03.054 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org1 for channel test7777777776
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777776 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 08:15:03.377 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:15:03.395 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 08:15:13--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:15:13--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:15:13--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 08:15:13--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 08:15:13.952 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 08:15:14.025 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 08:15:14.093 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 08:15:14.094 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 08:15:14.094 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 08:15:14.094 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 08:15:14.094 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 08:15:14.095 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 08:15:14.095 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 08:15:14.182 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 08:15:14.266 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 08:15:14.268 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 08:15:14.276 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 08:15:14.276 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 08:15:14.587 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:36:57--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:36:57--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:36:57--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:36:57--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:36:58.051 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:36:58.117 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:36:58.117 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:36:58.117 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:36:58.117 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:36:58.117 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:36:58.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:36:58.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:36:58.118 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:36:58.188 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:36:58.188 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:36:58.188 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:36:58.188 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:36:58.189 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:36:58.189 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:36:58.189 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:36:58.189 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:36:58.190 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:36:58.190 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:36:58.190 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:36:58.190 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:36:58.190 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:36:58.191 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:36:58.281 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:36:58.369 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:36:58.371 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:36:58.376 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:36:58.376 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:36:58.694 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:37:06--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:06--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:06--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:06--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:37:06.864 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:37:06.932 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:37:06.996 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:37:06.996 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:37:06.996 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:37:06.996 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:37:06.996 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:37:06.996 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:37:06.997 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:37:06.997 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:37:06.997 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:37:06.997 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:37:06.997 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:37:06.998 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:37:06.998 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:37:06.999 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:37:07.093 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:37:07.180 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:37:07.182 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:37:07.184 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:37:07.184 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:37:07.487 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:37:24--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:24--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:24--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:24--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:37:24.635 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:37:24.708 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:37:24.777 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:37:24.778 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:37:24.778 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:37:24.778 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:37:24.778 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:37:24.779 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:37:24.779 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:37:24.779 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:37:24.866 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:37:24.950 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:37:24.953 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:37:24.959 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:37:24.959 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:37:25.254 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:37:48--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:48--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:48--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:37:48--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:37:48.297 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:37:48.374 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:37:48.375 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:37:48.466 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:37:48.467 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:37:48.467 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:37:48.467 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:37:48.467 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:37:48.468 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:37:48.468 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:37:48.469 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:37:48.567 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:37:48.653 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:37:48.659 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:37:48.661 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:37:48.661 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:37:49.054 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:38:25--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:38:25--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:38:25--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:38:25--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:38:26.042 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:38:26.106 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:38:26.178 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:38:26.179 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:38:26.179 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:38:26.179 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:38:26.179 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:38:26.180 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:38:26.180 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:38:26.180 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:38:26.267 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:38:26.351 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:38:26.356 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:38:26.358 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:38:26.358 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:38:26.670 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:39:30--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:30--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:30--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:30--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:39:30.891 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:39:30.975 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:39:30.976 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:39:31.046 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:39:31.047 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:39:31.047 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:39:31.048 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:39:31.048 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:39:31.048 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:39:31.048 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:39:31.049 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:39:31.141 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:39:31.222 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:39:31.224 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:39:31.225 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:39:31.225 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:39:31.526 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:39:37--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:37--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:37--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:37--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:39:37.554 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:39:37.624 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:39:37.690 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:39:37.691 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:39:37.691 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:39:37.692 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:39:37.692 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:39:37.692 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:39:37.692 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:39:37.693 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:39:37.783 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:39:37.863 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:39:37.867 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:39:37.872 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:39:37.872 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:39:38.168 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:39:47--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:47--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:47--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:39:47--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:39:47.823 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:39:47.883 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:39:47.884 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:39:47.951 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:39:47.951 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:39:47.951 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:39:47.951 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:39:47.951 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:39:47.951 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:39:47.952 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:39:47.952 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:39:47.952 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:39:47.953 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:39:47.953 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:39:47.953 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:39:47.953 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:39:47.954 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:39:48.055 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:39:48.151 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:39:48.153 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:39:48.156 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:39:48.156 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:39:48.461 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:41:19--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:41:19--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:41:19--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:41:19--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:41:19.303 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:41:19.376 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:41:19.376 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:41:19.376 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:41:19.376 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:41:19.377 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:41:19.377 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:41:19.377 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:41:19.377 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:41:19.470 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:41:19.473 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:41:19.473 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:41:19.473 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:41:19.473 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:41:19.474 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:41:19.474 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:41:19.474 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:41:19.569 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:41:19.640 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:41:19.642 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:41:19.644 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:41:19.644 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:41:19.915 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:41:33--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:41:33--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:41:33--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:41:33--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:41:33.871 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:41:33.918 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:41:33.974 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:41:33.975 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:41:33.976 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:41:33.976 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:41:33.976 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:41:33.976 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:41:33.976 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:41:33.977 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:41:34.058 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:41:34.130 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:41:34.133 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:41:34.135 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:41:34.135 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:41:34.397 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:42:07--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:42:07--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:42:07--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:42:07--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:42:07.371 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:42:07.431 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:42:07.431 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:42:07.432 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:42:07.432 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:42:07.432 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:42:07.432 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:42:07.432 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:42:07.432 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:42:07.501 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:42:07.502 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:42:07.502 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:42:07.502 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:42:07.502 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:42:07.503 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:42:07.503 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:42:07.584 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:42:07.655 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:42:07.658 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:42:07.659 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:42:07.659 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:42:07.929 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 09:49:41--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:49:41--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:49:41--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:49:41--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:49:41.548 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:49:41.690 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:49:41.691 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:49:41.787 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:49:41.787 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:49:41.787 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:49:41.787 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:49:41.787 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:49:41.787 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:49:41.788 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:49:41.789 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:49:41.789 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:49:41.789 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:49:41.789 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:49:41.790 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:49:41.790 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:49:41.791 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:49:41.904 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:49:42.021 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:49:42.025 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:49:42.031 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:49:42.031 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:49:42.366 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777777776' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777779[m[m[m
+example.com
+
+Create channel org1 test7777777779
+--2020-01-31 09:50:03--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:50:03--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:50:03--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:50:03--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:50:03.790 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:50:03.861 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:50:03.925 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:50:03.926 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:50:03.926 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:50:03.926 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:50:03.926 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:50:03.927 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:50:03.934 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:50:04.021 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:50:04.064 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test7777777779.pb -o orderer.example.com:7050 -c test7777777779 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:50:04.212 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:50:04.214 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-31 09:50:04.216 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-31 09:50:04.216 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org1 for channel test7777777779
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777779 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:50:04.555 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:50:04.566 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test77777779[m[m[m
+example.com
+
+Create channel org1 test77777779
+--2020-01-31 09:50:56--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:50:56--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:50:56--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:50:56--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:50:56.791 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:50:56.851 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:50:56.916 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:50:56.916 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:50:56.916 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:50:56.916 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:50:56.916 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:50:56.916 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:50:56.917 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:50:56.917 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:50:56.917 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:50:56.918 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:50:56.918 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:50:56.918 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:50:56.918 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:50:56.919 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:50:57.001 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:50:57.049 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test77777779.pb -o orderer.example.com:7050 -c test77777779 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:50:57.195 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:50:57.199 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-31 09:50:57.201 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-31 09:50:57.201 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org1 for channel test77777779
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test77777779 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:50:57.582 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:50:57.599 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;36mCreating the <test77777779> channel for org1.example.com...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test77777779[m[m[m
+^CError response from daemon: OCI runtime start failed: cannot start a container that has stopped: unknown
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;36mCreating the <test7777779> channel for org1.example.com...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777779[m[m[m
+example.com
+
+Create channel org1 test7777779
+--2020-01-31 09:53:40--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:53:40--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:53:40--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 09:53:40--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 09:53:40.487 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 09:53:40.586 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:53:40.654 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:53:40.655 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 09:53:40.655 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 09:53:40.655 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 09:53:40.655 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 09:53:40.656 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 09:53:40.657 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 09:53:40.744 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:53:40.789 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test7777779.pb -o orderer.example.com:7050 -c test7777779 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:53:40.925 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:53:40.927 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-01-31 09:53:40.929 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-01-31 09:53:40.930 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org1 for channel test7777779
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777779 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 09:53:41.266 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:53:41.277 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;36mCreating test77777779 channel in org1.example.com using API...[m[m[m
+[1;32m
+OK: test77777779: Channel created.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+configtxlator output for .channel_id: 
+[1;31m
+ERROR: Creating channel <test77777779> failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 09:58:52.106 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:58:52.109 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:58:52.109 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:58:52.109 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+"test77777779"
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 09:59:03.623 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 09:59:03.624 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 09:59:03.625 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 09:59:03.626 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+"test77777779"
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:26:17.181 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:26:17.182 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:26:17.183 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:26:17.183 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:26:26.429 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:26:26.432 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:26:26.433 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:26:26.433 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:28:41.812 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:28:41.814 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:28:41.814 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:28:41.814 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;31m
+ERROR: Creating channel <test77777779> failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:29:08.718 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:29:08.719 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:29:08.720 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:29:08.720 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;31m
+ERROR: Creating channel <test77777779> failed!
+See ./fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:29:23.793 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:29:23.795 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:29:23.796 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:29:23.796 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:29:59.962 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:29:59.964 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:29:59.965 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:29:59.965 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:30:16.132 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:30:16.134 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:30:16.135 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:30:16.135 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:31:18.469 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:31:18.471 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:31:18.472 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:31:18.472 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:31:24.764 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:31:24.766 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:31:24.767 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:31:24.767 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:32:48.757 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:32:48.759 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:32:48.760 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:32:48.760 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:33:29.482 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:33:29.484 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:33:29.485 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:33:29.485 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:33:34.441 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:33:34.443 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:33:34.445 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:33:34.445 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:33:42.021 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:33:42.023 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:33:42.024 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:33:42.024 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;32m
+OK: The channel <test77777779> exists.[m[m[m
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:35:35.483 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:35:35.484 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:35:35.485 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:35:35.485 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:35:56.845 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:35:56.847 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 10:35:56.848 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 10:35:56.848 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test77777779",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T09:50:57Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test77777779
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:36:04.781 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:36:04.782 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:36:16.765 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:36:16.767 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:36:42.667 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:36:42.668 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:37:00.828 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:37:00.830 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:37:33.777 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:37:33.778 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:40:34.207 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:40:34.208 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:40:42.622 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:40:42.624 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:41:45.242 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:41:45.242 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:42:09.721 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:42:09.723 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 10:42:24.754 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 10:42:24.755 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_77777779> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:35:03.751 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:35:03.753 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mCreating the <test7777777777> channel for org1.example.com...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test7777777777[m[m[m
+example.com
+
+Create channel org1 test7777777777
+--2020-01-31 11:35:24--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 11:35:24--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 11:35:24--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-01-31 11:35:24--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.4
+Connecting to www.example.com (www.example.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-01-31 11:35:24.818 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-01-31 11:35:24.873 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 11:35:24.873 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 11:35:24.873 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-01-31 11:35:24.873 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-01-31 11:35:24.873 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-01-31 11:35:24.874 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-01-31 11:35:24.874 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-01-31 11:35:24.874 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 11:35:24.943 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-01-31 11:35:24.943 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-01-31 11:35:24.943 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-01-31 11:35:24.943 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-01-31 11:35:24.943 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-01-31 11:35:24.943 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 11:35:24.944 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 11:35:24.944 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 11:35:24.946 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-01-31 11:35:24.946 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-01-31 11:35:24.946 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-01-31 11:35:24.947 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-01-31 11:35:24.947 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-01-31 11:35:24.948 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-01-31 11:35:25.029 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test7777777777.pb -o orderer.example.com:7050 -c test7777777777 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 11:35:25.125 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:35:25.127 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:35:25.131 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:35:25.131 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org1 for channel test7777777777
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test7777777777 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-01-31 11:35:25.444 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test7777777777': error authorizing update: ConfigUpdate for channel 'test7777779' but envelope for channel 'test7777777777'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;36mVerifing if the <test7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:35:58.725 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:35:58.727 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:35:58.728 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:35:58.728 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test7777777777",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T08:12:38Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test7777777777
+[1;36mVerifing if the <test_7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:36:08.289 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:36:08.290 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:37:02.750 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:37:02.751 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:37:19.878 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:37:19.879 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:37:19.880 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:37:19.880 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test7777777777",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T08:12:38Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test7777777777
+[1;36mVerifing if the <test_7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:37:22.330 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:37:22.331 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test_7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:38:41.355 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:38:41.356 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:38:53.505 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:38:53.507 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:38:53.508 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:38:53.508 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test7777777777",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T08:12:38Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test7777777777
+[1;36mVerifing if the <test7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:39:51.303 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:39:51.305 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:39:51.306 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:39:51.306 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test7777777777",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T08:12:38Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test7777777777
+[1;36mVerifing if the <test77777777770> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:39:56.745 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:39:56.746 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test77777777770> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:40:05.618 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:40:05.620 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test77777777770> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:40:52.537 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:40:52.539 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test77777777770> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:41:05.226 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:41:05.227 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test77777777770> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:41:32.838 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:41:32.840 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+configtxlator output for .channel_id: null
+[1;36mVerifing if the <test7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:41:38.569 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:41:38.571 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:41:38.572 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:41:38.572 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test7777777777",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T08:12:38Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test7777777777
+[1;36mVerifing if the <testlocal26196> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:42:57.809 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:42:57.810 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:42:57.811 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:42:57.811 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "testlocal26196",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-29T13:57:27Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: testlocal26196
+[1;36mVerifing if the <test7777777777> channel exists in org1.example.com...[m[m[m
+[34m2020-01-31 11:47:34.548 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-01-31 11:47:34.549 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-01-31 11:47:34.550 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-01-31 11:47:34.550 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test7777777777",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-01-31T08:12:38Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+configtxlator output for .channel_id: test7777777777
