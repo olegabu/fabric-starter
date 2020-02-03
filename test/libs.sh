@@ -45,7 +45,7 @@ export output
 
 
 function printDbg() {
-    
+    #echo " ____ $? _____"  > /dev/tty
     if [[ "$DEBUG" = "false" ]]; then
         outputdev=/dev/null
     else
@@ -120,9 +120,9 @@ function printAndCompareResults() {
     messageERR=${2}
     var=${3:-"$?"}
     value=${4:-0}
-#$var='null'
-#echo "var: $var value: $value" >/dev/tty
-
+    #$var='null'
+    #echo "var: $var value: $value" >/dev/tty
+    
     if [ "$var" = "$value" ]; then
         printGreen "${messageOK}"
         exit 0
@@ -134,13 +134,13 @@ function printAndCompareResults() {
 
 function printResultAndSetExitCode() {
     if [ $? -eq 0 ]
-then
-  printGreen "OK: ""$@" | printLogScreen
-  exit 0
-else
-  printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrLogScreen
-  exit 1
-fi
+    then
+        printGreen "OK: ""$@" | printLogScreen
+        exit 0
+    else
+        printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrLogScreen
+        exit 1
+    fi
 }
 
 function querryAPI() {
@@ -234,8 +234,6 @@ function getJWT() {
     restQuerry ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
 }
 
-
-
 function APIAuthorize() {
     result=($(getJWT ${1}))
     
@@ -256,11 +254,11 @@ function createChannelAPI() {
     local jwt=${3}
     #printLogScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." > /dev/tty
     result=($(restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}")) 2>&1 | printDbg
-   
-    create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status')
+    
+    create_status=$(echo -n ${result[0]} | jq -r '.[0].status + .[0].response.status')
     state=$(DeleteSpacesLineBreaks "${create_status}")
     create_http_code=${result[1]}
-   
+    
     if [[ "${state}" -eq 200 ]]; then
         message="Channel created."
     fi
@@ -276,24 +274,38 @@ function queryPeer() {
     local org=${2}
     local querry=${3}
     local subquerry=${4:-.}
-   
     
-TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-
+    
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    
     local result=$(docker exec cli.${org}.${DOMAIN} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
         peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
         configtxlator  proto_decode --type "common.Block"  | \
-        jq '${querry}' | tee /dev/stderr | jq -r '${subquerry}' ' 2>"${TMP_LOG_FILE}") 
-        cat "${TMP_LOG_FILE}" | printDbg > /dev/tty
-    echo $result    
+    jq '${querry}' | tee /dev/stderr | jq -r '${subquerry}' ' 2>"${TMP_LOG_FILE}")
+    cat "${TMP_LOG_FILE}" | printDbg > /dev/tty
+    echo $result
 }
 
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-
+    
     local result=$(queryPeer ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
+    
     [ "${result}" = "${channel}" ]
 }
 
+function runInFabricDir() {
+    pushd ${FABRIC_DIR} >/dev/null
+
+    local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    local exit_code
+
+    eval $@ > "${TMP_LOG_FILE}"; exit_code=$?
+
+    cat "${TMP_LOG_FILE}" | printDbg
+    popd >/dev/null
+    
+    [ "${exit_code}" = "0" ]
+}
