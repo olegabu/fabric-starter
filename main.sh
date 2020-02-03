@@ -18,8 +18,6 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-com
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 
 
-info "Cleaning up"
-./clean.sh all
 unset ORG COMPOSE_PROJECT_NAME
 
 export DOCKER_REGISTRY=docker.io
@@ -39,6 +37,9 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set +x
 fi
 
+info "Cleaning up"
+./clean.sh all
+
 # Create orderer organization
 
 #docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
@@ -52,10 +53,10 @@ info "Creating orderer organization for $DOMAIN"
 shopt -s nocasematch
 if [ "${ORDERER_TYPE}" == "SOLO" ]; then
     WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
-    #-f environments/dev/docker-compose-orderer-debug.yaml
 else
     WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
 fi
+shopt -u nocasematch
 
 sleep 3
 
@@ -65,7 +66,8 @@ source ${first_org}_env;
 COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
 
 echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
-docker wait post-install.${first_org}.${DOMAIN}
+docker wait post-install.${first_org}.${DOMAIN} > /dev/null
+
 for org in ${@:2}; do
     source ${org}_env
     info "      Creating member organization $ORG with api $API_PORT"
