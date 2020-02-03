@@ -3,8 +3,10 @@
 export export DOCKER_COMPOSE_ARGS=" -f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml \
          -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml -f environments/dev/docker-compose-debug.yaml -f https/docker-compose-generate-tls-certs-debug.yaml"
 
+ORDERER_TYPE=RAFT
+
 cat > org1_env << END
-export ORDERER_TYPE=RAFT
+export ORDERER_TYPE=$ORDERER_TYPE
 export ORDERER_WWW_PORT=79
 
 export ORG=org1
@@ -21,7 +23,7 @@ export LDAP_PORT_HTTP=6080
 END
 
 cat > org2_env << END
-export ORDERER_TYPE=SOLO
+export ORDERER_TYPE=$ORDERER_TYPE
 export ORDERER_WWW_PORT=79
 
 export ORG=org2
