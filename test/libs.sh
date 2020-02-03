@@ -36,6 +36,7 @@ else
 fi
 export output
 
+SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/tty}
 
 
 function printDbg() {
@@ -112,7 +113,7 @@ function printAndCompareResults() {
     var=${3:-"$?"}
     value=${4:-0}
     #$var='null'
-    #echo "var: $var value: $value" >/dev/tty
+    #echo "var: $var value: $value" >${SCREEN_OUTPUT_DEVICE}
     
     if [ "$var" = "$value" ]; then
         printGreen "${messageOK}"
@@ -140,9 +141,12 @@ function querryAPI() {
     local organization="${3}"
     local domain="${4}"
     
+    local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local querry='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
-    echo $(docker inspect ${container}.${organization}.${domain} | jq -r "${querry}")
+    local result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${querry}" 2>${TMP_LOG_FILE}); 
     
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    echo $result
 }
 
 function getAPIPort() {
@@ -171,8 +175,7 @@ function curlItGet()
     local url=$1
     local cdata=$2
     local wtoken=$3
-    
-    res=$(curl -sw "%{http_code}"  "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    res=$(curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     http_code="${res:${#res}-3}"
     if [ ${#res} -eq 3 ]; then
         body=""
@@ -230,22 +233,36 @@ function APIAuthorize() {
     
     local jwt=${result[0]//\"/} #remove quotation marks
     local jwt_http_code=${result[1]}
+    echo "Got JWT: ${jwt}" | printLog
     echo "${jwt}"
-    printAndCompareResults "\nOK: JWT token obtained." "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." \
-    "${jwt_http_code}" "200" > /dev/tty
+    
+    [ "${jwt_http_code}" = "200" ]
+    printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
 }
 
 function DeleteSpacesLineBreaks() {
     echo ${1} | sed -E -e 's/\n|\r|\s//g'
 }
 
+function createChannelAPI_()
+{
+    local channel=${1}
+    local org=${2}
+    local jwt=${3}
+    
+    restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}" 2>&1 | printDbg
+}
+
 function createChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
-    result=($(restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}")) 2>&1 | printDbg
     
-    create_status=$(echo -n ${result[0]} | jq -r '.[0].status + .[0].response.status')
+    local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    local result=($(createChannelAPI_ "${channel}" "${org}" "${jwt}"))
+    create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})  
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    
     state=$(DeleteSpacesLineBreaks "${create_status}")
     create_http_code=${result[1]}
     
@@ -273,7 +290,7 @@ function queryPeer() {
         peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
         configtxlator  proto_decode --type "common.Block"  | \
     jq '${querry}' | tee /dev/stderr | jq -r '${subquerry}' ' 2>"${TMP_LOG_FILE}")
-    cat "${TMP_LOG_FILE}" | printDbg > /dev/tty
+    cat "${TMP_LOG_FILE}" | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
 }
 
