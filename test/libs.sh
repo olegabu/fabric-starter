@@ -1,21 +1,6 @@
 #!/usr/bin/env bash
 
-
 BASEDIR=$(dirname $0)
-CURRENT_DIR=$(pwd)
-FULL_PATH=${CURRENT_DIR}
-
-: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
-export FSTEST_LOG_FILE
-
-# Do not be too much verbose
-DEBUG=${DEBUG:-true}
-if [[ "$DEBUG" = "false" ]]; then
-    output='/dev/null'
-else
-    output='/dev/stdout'
-fi
-export output
 
 
 function getFabricStarterPath() {
@@ -35,6 +20,29 @@ function getFabricStarterPath() {
         fi
     fi
 }
+
+
+#Exporting current Fabric Starter dir
+export START_DIR=$(pwd)
+FOUND_FABRIC_DIR=$(getFabricStarterPath ${START_DIR})
+export FABRIC_DIR=${FABRIC_DIR:-"${FOUND_FABRIC_DIR}"}
+
+
+pushd ${FABRIC_DIR} > /dev/null && source ./lib/util/util.sh && source ./lib.sh && popd > /dev/null
+
+: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
+export FSTEST_LOG_FILE
+
+# Do not be too much verbose
+DEBUG=${DEBUG:-false}
+if [[ "$DEBUG" = "false" ]]; then
+    output='/dev/null'
+else
+    output='/dev/stdout'
+fi
+export output
+
+
 
 function printDbg() {
     
@@ -95,6 +103,16 @@ function printLogScreen() {
     fi
 }
 
+function printErrLogScreen() {
+    if (( $# == 0 )) ; then
+        while read -r line ; do
+            echo "${line}" | tee -a ${FSTEST_LOG_FILE} >/dev/stderr
+        done
+    else
+        echo "$@" | tee -a ${FSTEST_LOG_FILE} > /dev/stderr
+    fi
+}
+
 
 function printAndCompareResults() {
     
@@ -114,6 +132,16 @@ function printAndCompareResults() {
     fi
 }
 
+function printResultAndSetExitCode() {
+    if [ $? -eq 0 ]
+then
+  printGreen "OK: ""$@" | printLogScreen
+  exit 0
+else
+  printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrLogScreen
+  exit 1
+fi
+}
 
 function querryAPI() {
     local parameter="${1}" # [HostPort|HostIp]
@@ -226,8 +254,8 @@ function createChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
-
-    result=($(restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}"))
+    #printLogScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." > /dev/tty
+    result=($(restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}")) 2>&1 | printDbg
    
     create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status')
     state=$(DeleteSpacesLineBreaks "${create_status}")
@@ -240,31 +268,32 @@ function createChannelAPI() {
         message="Channel already exists."
     fi
     
-    printAndCompareResults "\nOK: ${channel}: ${message}" "\nERROR: creating ${channel} channel!\nSee ${FSTEST_LOG_FILE} for logs." \
-    ${create_http_code} 200 | printLogScreen > /dev/tty
+    [ "${create_http_code}" = "200" ]
+}
+
+function queryPeer() {
+    local channel=${1}
+    local org=${2}
+    local querry=${3}
+    local subquerry=${4:-.}
+   
+    
+TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+
+    local result=$(docker exec cli.${org}.${DOMAIN} /bin/bash -c \
+        'source container-scripts/lib/container-lib.sh; \
+        peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
+        configtxlator  proto_decode --type "common.Block"  | \
+        jq '${querry}' | tee /dev/stderr | jq -r '${subquerry}' ' 2>"${TMP_LOG_FILE}") 
+        cat "${TMP_LOG_FILE}" | printDbg > /dev/tty
+    echo $result    
 }
 
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-    #store container stderr for debug in TMP_LOG_FILE, trap deletes it on exit
-TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
 
-#connectMachine ${ORG}   
-local result=$(docker exec cli.${org}.${DOMAIN} /bin/bash -c \
-'source container-scripts/lib/container-lib.sh; \
-        peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
-        configtxlator  proto_decode --type "common.Block"  | \
-        jq .data.data[0].payload.header.channel_header | \
-        tee /dev/stderr | \
-        jq .channel_id | \
-        sed -E -e "s/\"|\n|\r//g"' 2>"${TMP_LOG_FILE}")
-
-       cat "${TMP_LOG_FILE}" | printDbg >/dev/tty
-       printLog "configtxlator output for .channel_id: $result" >/dev/tty
-       echo $result
+    local result=$(queryPeer ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
+    [ "${result}" = "${channel}" ]
 }
 
-CURRENT_DIR=$(pwd)
-cd ${FABRIC_DIR} && source ./lib/util/util.sh && source ./lib.sh
-cd ${CURRENT_DIR}
