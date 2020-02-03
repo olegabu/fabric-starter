@@ -2,7 +2,6 @@
 
 BASEDIR=$(dirname $0)
 
-
 function getFabricStarterPath() {
     dirname=${1}
     libpath=$(realpath ${dirname}/lib.sh)
@@ -21,17 +20,12 @@ function getFabricStarterPath() {
     fi
 }
 
-
-#Exporting current Fabric Starter dir
-export START_DIR=$(pwd)
-FOUND_FABRIC_DIR=$(getFabricStarterPath ${START_DIR})
-export FABRIC_DIR=${FABRIC_DIR:-"${FOUND_FABRIC_DIR}"}
-
+export FABRIC_DIR=${FABRIC_DIR:-$(getFabricStarterPath $(pwd))}
 
 pushd ${FABRIC_DIR} > /dev/null && source ./lib/util/util.sh && source ./lib.sh && popd > /dev/null
 
 : ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
-export FSTEST_LOG_FILE
+export FSTEST_LOG_FILE=$(realpath ${FSTEST_LOG_FILE})
 
 # Do not be too much verbose
 DEBUG=${DEBUG:-false}
@@ -45,18 +39,15 @@ export output
 
 
 function printDbg() {
-    #echo " ____ $? _____"  > /dev/tty
     if [[ "$DEBUG" = "false" ]]; then
         outputdev=/dev/null
     else
         outputdev=/dev/stdout
     fi
-    
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
         done
-        #	echo $(cat < /dev/stdin) | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
     else
         echo "$@" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
     fi
@@ -252,7 +243,6 @@ function createChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
-    #printLogScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." > /dev/tty
     result=($(restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}")) 2>&1 | printDbg
     
     create_status=$(echo -n ${result[0]} | jq -r '.[0].status + .[0].response.status')
@@ -298,12 +288,12 @@ function verifyChannelExists() {
 
 function runInFabricDir() {
     pushd ${FABRIC_DIR} >/dev/null
-
+    
     local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local exit_code
-
+    
     eval $@ > "${TMP_LOG_FILE}"; exit_code=$?
-
+    
     cat "${TMP_LOG_FILE}" | printDbg
     popd >/dev/null
     
