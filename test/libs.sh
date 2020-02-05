@@ -112,8 +112,6 @@ function printAndCompareResults() {
     messageERR=${2}
     var=${3:-"$?"}
     value=${4:-0}
-    #$var='null'
-    #echo "var: $var value: $value" >${SCREEN_OUTPUT_DEVICE}
     
     if [ "$var" = "$value" ]; then
         printGreen "${messageOK}"
@@ -135,39 +133,39 @@ function printResultAndSetExitCode() {
     fi
 }
 
-function querryAPI() {
+function queryContainerNetworkSettings() {
     local parameter="${1}" # [HostPort|HostIp]
     local container="${2}"
     local organization="${3}"
     local domain="${4}"
     
     local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    local querry='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
-    local result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${querry}" 2>${TMP_LOG_FILE}); 
-    
+    local query='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
+    local result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE}); 
+    echo  "queryContainerNetworkSettings returns:" ${result} | printLog 
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
 }
 
 function getAPIPort() {
     local container="${1}" organization="${2}" domain="${3}"
-    querryAPI "HostPort" ${container} ${organization} ${domain}
+    queryContainerNetworkSettings "HostPort" ${container} ${organization} ${domain}
 }
 
 function getAPIHost() {
     local container="${1}" organization="${2}" domain="${3}"
-    querryAPI "HostIp" ${container} ${organization} ${domain}
+    queryContainerNetworkSettings "HostIp" ${container} ${organization} ${domain}
 }
 
 function getPeer0Port() {
     local container="${1}" organization="${2}" domain="${3}"
-    querryAPI "HostPort" ${container} ${organization} ${domain}
+    queryContainerNetworkSettings "HostPort" ${container} ${organization} ${domain}
 }
 
 
 function getPeer0Host() {
     local container="${1}" organization="${2}" domain="${3}"
-    querryAPI "HostIp" ${container} ${organization} ${domain}
+    queryContainerNetworkSettings "HostIp" ${container} ${organization} ${domain}
 }
 
 function curlItGet()
@@ -176,6 +174,7 @@ function curlItGet()
     local cdata=$2
     local wtoken=$3
     res=$(curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+#    echo " +++++++ $res +++++++"  >/dev/tty
     http_code="${res:${#res}-3}"
     if [ ${#res} -eq 3 ]; then
         body=""
@@ -207,25 +206,28 @@ function generateMultipartTail() { #expecting boundaty as an arg
     echo -n -e ${multipart_tail}
 }
 
-function restQuerry {
+function restquery {
     local org=${1}
     local path=${2}
-    local querry=${3}
+    local query=${3}
     local jwt=${4}
     
-    local api_ip=$(getAPIHost api ${org} ${DOMAIN})
-    local api_port=$(getAPIPort api ${org} ${DOMAIN})
-    
-    curlItGet "http://${api_ip}:${api_port}/${path}" "${querry}" "${jwt}"
+    local ip_var_name="API_${org}_HOST"
+    local port_var_name="API_${org}_PORT"
+     
+    local api_ip=${!ip_var_name}
+    local api_port=${!port_var_name}
+
+    curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}"
 }
 
 
 function getJWT() {
     local org=${1}
-    local api_ip=$(getAPIHost api ${org} ${DOMAIN})
-    local api_port=$(getAPIPort api ${org} ${DOMAIN})
+#    local api_ip=$(getAPIHost api ${org} ${DOMAIN})
+#    local api_port=$(getAPIPort api ${org} ${DOMAIN})
     
-    restQuerry ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
+    restquery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
 }
 
 function APIAuthorize() {
@@ -249,9 +251,14 @@ function createChannelAPI_()
     local channel=${1}
     local org=${2}
     local jwt=${3}
-    
-    restQuerry ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}" 2>&1 | printDbg
+
+    local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    local result=$(restquery ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE} 
+    printDbg $result > ${SCREEN_OUTPUT_DEVICE}
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    echo ${result}
 }
+
 
 function createChannelAPI() {
     local channel=${1}
@@ -261,26 +268,53 @@ function createChannelAPI() {
     local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local result=($(createChannelAPI_ "${channel}" "${org}" "${jwt}"))
     create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})  
+    
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     
     state=$(DeleteSpacesLineBreaks "${create_status}")
     create_http_code=${result[1]}
     
-    if [[ "${state}" -eq 200 ]]; then
-        message="Channel created."
-    fi
-    if [[ "${state}" -eq 500 ]]; then
-        message="Channel already exists."
-    fi
+    # if [[ "${state}" -eq 200 ]]; then
+    #     message="Channel created."
+    # fi
+    # if [[ "${state}" -eq 500 ]]; then
+    #     message="Channel already exists."
+    # fi
     
+    [ "${create_http_code}" = "200" ]
+}
+
+function addOrgToChannel_(){
+    local result=$(restquery ${2} "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE} 
+    printDbg $result > ${SCREEN_OUTPUT_DEVICE}
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    #echo ${result}> ${SCREEN_OUTPUT_DEVICE}
+    echo ${result}
+}
+
+function addOrgToChannel() {
+    local channel=${1}
+    local org=${2}
+    local jwt=${3}
+    local org2=${4}
+
+    local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    local result=($(addOrgToChannel_ "${channel}" "${org}" "${jwt}" "${org2}"))
+    #is just a 200 code
+    create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE}) 
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+
+    state=$(DeleteSpacesLineBreaks "${create_status}")
+    create_http_code=${result[1]}
+
     [ "${create_http_code}" = "200" ]
 }
 
 function queryPeer() {
     local channel=${1}
     local org=${2}
-    local querry=${3}
-    local subquerry=${4:-.}
+    local query=${3}
+    local subquery=${4:-.}
     
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
@@ -289,7 +323,7 @@ function queryPeer() {
         'source container-scripts/lib/container-lib.sh; \
         peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
         configtxlator  proto_decode --type "common.Block"  | \
-    jq '${querry}' | tee /dev/stderr | jq -r '${subquerry}' ' 2>"${TMP_LOG_FILE}")
+    jq '${query}' | tee /dev/stderr | jq -r '${subquery}' ' 2>"${TMP_LOG_FILE}")
     cat "${TMP_LOG_FILE}" | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
 }

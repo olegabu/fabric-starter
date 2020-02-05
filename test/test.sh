@@ -1,11 +1,6 @@
 #!/bin/bash
-
-
-if [ "${MULTIHOST}" = true ]; then
-    LOCAL_PEER_PORT=7051
-    eval $(docker-machine env org2.example.com)
-else 
-    LOCAL_PEER_PORT=8051
-fi
-
-echo $LOCAL_PEER_PORT
+org='org1'
+API_org1_IP='192.168.0.1'
+var_name="API_${org}_IP"
+echo $var_name
+echo "${!var_name}"
