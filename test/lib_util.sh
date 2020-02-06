@@ -20,7 +20,7 @@ export output
 
 
 printDbg() {
-: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
+: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-"${BASEDIR}/fs_network_test.log"}}
 
 	if [[ "$DEBUG" = "false" ]]; then
 	    outputdev=/dev/null
@@ -39,7 +39,7 @@ printDbg() {
 }
 
 printLog() {
-: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
+: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-"${BASEDIR}/fs_network_test.log"}}
 
 	if (( $# == 0 )) ; then
 	    while read -r line ; do

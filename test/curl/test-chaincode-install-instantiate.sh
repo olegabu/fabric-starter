@@ -6,7 +6,7 @@
 #cd ${FABRIC_DIR}; source ./lib/util/util.sh
 #cd ${FABRIC_DIR}; source ./lib.sh
 
-BASEDIR=$(dirname $0)
+[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source ${BASEDIR}/../libs.sh
 
 

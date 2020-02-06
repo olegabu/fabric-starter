@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-BASEDIR=$(dirname $0)
+[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source ${BASEDIR}/../libs.sh
 
 
-: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-${BASEDIR}/fs_network_test.log}}
+: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-"${BASEDIR}/fs_network_test.log"}}
 
 TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}}
 

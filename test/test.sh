@@ -1,6 +1,17 @@
 #!/bin/bash
-org='org1'
-API_org1_IP='192.168.0.1'
-var_name="API_${org}_IP"
-echo $var_name
-echo "${!var_name}"
+
+
+function exit_test() {
+[ 1 = 2 ] 
+#&& exit 0 || exit 1
+}
+
+
+function exit_code_print() {
+exit_test
+echo $?
+}
+
+exit_code_print
+
+
