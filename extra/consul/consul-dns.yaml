@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+
+  consul-agent-1: &consul-agent
+    image: consul:latest
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-server-1: &consul-server
+    <<: *consul-agent
+    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
+
+  consul-server-bootstrap:
+    <<: *consul-agent
+    ports:
+      - "8400:8400"
+      - "8501:8500"
+      - "8601:8600"
+      - "8601:8600/udp"
+    command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0"
+
+
+networks:
+  default:
+    external: false
+    name: fabric-starter_default

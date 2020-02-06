@@ -299,7 +299,9 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - /var/run/docker.sock:/var/run/docker.sock
-    command: sh -c "npm start"
+    init: true
+    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -dev -client 0.0.0.0 &' && npm start"
+    dns: 1.1.1.1
 
   # simple http server to disseminate certificates
   www.peer:
