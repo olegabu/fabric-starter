@@ -20,18 +20,20 @@ main() {
     export output
     
     SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/tty}
-    
+}
+
+function setExitCode() {
+eval "${@}"
 }
 
 function getFabricStarterPath() {
-    dirname=${1}
-    libpath=$(realpath "${dirname}"/lib.sh)
+    local dirname=${1}
+    local libpath=$(realpath "${dirname}"/lib.sh)
     
     if [[ ! -f ${libpath} ]]; then
         dirname=$(realpath "${dirname}"/../)
         getFabricStarterPath ${dirname}
     else
-        
         if [[ $dirname != '/' ]]; then
             echo ${dirname}
         else
@@ -45,9 +47,9 @@ function getFabricStarterPath() {
 
 function printDbg() {
     if [[ "$DEBUG" = "false" ]]; then
-        outputdev=/dev/null
+        local outputdev=/dev/null
     else
-        outputdev=/dev/stdout
+        local outputdev=/dev/stdout
     fi
     if (( $# == 0 )) ; then
         while read -r line ; do
@@ -112,10 +114,10 @@ function printErrLogScreen() {
 
 function printAndCompareResults() {
     
-    messageOK=${1}
-    messageERR=${2}
-    var=${3:-"$?"}
-    value=${4:-0}
+    local messageOK=${1}
+    local messageERR=${2}
+    local var=${3:-"$?"}
+    local value=${4:-0}
     
     if [ "$var" = "$value" ]; then
         printGreen "${messageOK}"
@@ -151,27 +153,6 @@ function queryContainerNetworkSettings() {
     echo $result
 }
 
-# function getAPIPort() {
-#     local container="${1}" organization="${2}" domain="${3}"
-#     queryContainerNetworkSettings "HostPort" ${container} ${organization} ${domain}
-# }
-
-# function getAPIHost() {
-#     local container="${1}" organization="${2}" domain="${3}"
-#     queryContainerNetworkSettings "HostIp" ${container} ${organization} ${domain}
-# }
-
-# function getPeer0Port() {
-#     local container="${1}" organization="${2}" domain="${3}"
-#     queryContainerNetworkSettings "HostPort" ${container} ${organization} ${domain}
-# }
-
-
-# function getPeer0Host() {
-#     local container="${1}" organization="${2}" domain="${3}"
-#     queryContainerNetworkSettings "HostIp" ${container} ${organization} ${domain}
-# }
-
 function getContainerPort () {
     local org="${1:?Org name is required}"
     local container_name="${2:?Container name is required}"
@@ -179,14 +160,13 @@ function getContainerPort () {
     echo $(queryContainerNetworkSettings "HostPort" "${container_name}" "${org}" "${domain}")
 }
 
-
 function setActiveOrg() {
     local org="${1:?Org name is required}"
     export ACTIVE_ORG=${org}
 }
 
 function resetActiveOrg {
-
+    
     export ACTIVE_ORG=
 }
 
@@ -212,19 +192,19 @@ function generateMultipartBoudary() {
 }
 
 function generateMultipartHeader() { #expecting boundary and filename as args
-    multipart_header='----'${1}'\r\nContent-Disposition: form-data; name="file"; filename="'
-    multipart_header+=${2}'"\r\nContent-Type: "application/zip"\r\n\r\n'
+    local multipart_header='----'${1}'\r\nContent-Disposition: form-data; name="file"; filename="'
+    local multipart_header+=${2}'"\r\nContent-Type: "application/zip"\r\n\r\n'
     echo -n -e  ${multipart_header}
 }
 
 function generateMultipartTail() { #expecting boundaty as an arg
-    boundary=${1}
+    local boundary=${1}
     
-    multipart_tail='\r\n\r\n----'
-    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
-    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
-    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
-    multipart_tail+=${boundary}'--\r\n'
+    local multipart_tail='\r\n\r\n----'
+    local multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
+    local multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
+    local multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
+    local multipart_tail+=${boundary}'--\r\n'
     echo -n -e ${multipart_tail}
 }
 
@@ -246,8 +226,6 @@ function restquery {
 
 function getJWT() {
     local org=${1}
-    #    local api_ip=$(getAPIHost api ${org} ${DOMAIN})
-    #    local api_port=$(getAPIPort api ${org} ${DOMAIN})
     
     restquery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
 }
@@ -260,7 +238,7 @@ function APIAuthorize() {
     echo "Got JWT: ${jwt}" | printLog
     echo "${jwt}"
     
-    [ "${jwt_http_code}" = "200" ]
+    setExitCode [ "${jwt_http_code}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
 }
 
@@ -297,14 +275,13 @@ function createChannelAPI() {
     local create_http_code=${result[1]}
     
     #setExitCode
-    [ "${create_http_code}" = "200" ]
+    setExitCode [ "${create_http_code}" = "200" ]
 }
 
 function addOrgToChannel_(){
     local result=$(restquery ${2} "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    #echo ${result}> ${SCREEN_OUTPUT_DEVICE}
     echo ${result}
 }
 
@@ -323,7 +300,7 @@ function addOrgToChannel() {
     local state=$(DeleteSpacesLineBreaks "${create_status}")
     local create_http_code=${result[1]}
     
-    [ "${create_http_code}" = "200" ]
+    setExitCode [ "${create_http_code}" = "200" ]
 }
 
 function queryPeer() {
@@ -350,7 +327,7 @@ function verifyChannelExists() {
     
     local result=$(queryPeer ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
     
-    [ "${result}" = "${channel}" ]
+    setExitCode [ "${result}" = "${channel}" ]
 }
 
 function runInFabricDir() {
@@ -364,7 +341,7 @@ function runInFabricDir() {
     cat "${TMP_LOG_FILE}" | printDbg
     popd >/dev/null
     
-    [ "${exit_code}" = "0" ]
+    setExitCode [ "${exit_code}" = "0" ]
 }
 
 

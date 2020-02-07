@@ -1,0 +1,1406 @@
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+[1;36mCreating testlocal26582 channel in vtb.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDkxNDI0Nn0.Je0sMai6fEm5PR8AEkZL3ufMIq1E_31xtnkKQfQo6Eo
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.vtb.example.network:7051","name":"peer0.vtb.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.network:7051","grpc.default_authority":"peer0.vtb.example.network:7051"}}}] 200
+[1;32mOK: Channel <testlocal26582> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <testlocal26582> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <testlocal26582> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <testlocal26582> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <testlocal26582> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <testlocal26582> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test56789> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-05 14:56:04.889 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 14:56:04.894 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test56789> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-05 14:56:34.263 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 14:56:34.265 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating test10101010 channel in sberbank.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDkxNDY3MX0.vKgS1dDHF0_WdHol5pCpNgzI58JeXQY8fpfNsvQfs-o
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.network:7051","name":"peer0.sberbank.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.network:7051","grpc.default_authority":"peer0.sberbank.example.network:7051"}}}] 200
+[1;32mOK: Channel <test10101010> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test10101010> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-05 14:58:13.245 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 14:58:13.247 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-05 14:58:13.249 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+{
+"channel_id": "test10101010",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-05T14:57:51Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test10101010> exists and visible to sberbank[m[m[m
+[1;36mCreating the <test101010101> channel for vtb.example.network...[m[m[m
+[1;36mVerifing if the <test101010101> channel exists in vtb.example.network...[m[m[m
+[34m2020-02-05 15:02:34.621 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 15:02:34.624 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-05 15:02:34.625 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+{
+"channel_id": "test101010101",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-05T15:01:00Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test101010101> exists and visible to vtb[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+[1;36mCreating the <test0001> channel for sberbank1.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test0001[m[m[m
+example.net
+
+Create channel sberbank1 test0001
+--2020-02-05 15:36:39--  http://www.example.net/msp/admincerts/Admin@example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/admincerts/Admin@example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-05 15:36:39--  http://www.example.net/msp/cacerts/ca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/cacerts/ca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-05 15:36:39--  http://www.example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-05 15:36:39--  http://www.example.net/msp/orderer.example.net/tls/server.crt
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/orderer.example.net/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-02-05 15:36:39.417 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-05 15:36:39.485 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-05 15:36:39.557 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-05 15:36:39.557 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-05 15:36:39.557 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-05 15:36:39.557 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-05 15:36:39.557 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-05 15:36:39.557 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-05 15:36:39.558 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-05 15:36:39.558 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-05 15:36:39.558 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank1 in configtx.yaml
+[33m2020-02-05 15:36:39.559 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-05 15:36:39.559 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-05 15:36:39.559 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-05 15:36:39.559 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank1 in configtx.yaml
+[34m2020-02-05 15:36:39.559 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-05 15:36:39.633 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 15:36:39.676 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test0001.pb -o orderer.example.net:7050 -c test0001 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-05 15:36:39.745 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 15:36:39.747 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-05 15:36:39.749 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-05 15:36:39.749 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from sberbank1 for channel test0001
+>> sberbank1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test0001 -o orderer.example.net:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-05 15:36:40.151 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 15:36:40.161 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <test0001> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test0001> channel exists in sberbank1.example.net...[m[m[m
+[34m2020-02-05 15:41:11.136 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 15:41:11.138 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-05 15:41:11.139 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-05 15:41:11.139 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test0001",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-05T15:36:40Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test0001> exists and visible to sberbank1[m[m[m
+[1;36mCreating test0001 channel in vtb1.example.net using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDkxNzI4OH0.b5yZWbIz1JWSGzRzBKOTFTLaXDoHZ_RgsXBskkzZ8mg
+[1;32mOK: JWT token obtained.[m[m[m
+"Invalid results returned ::FORBIDDEN" 500
+parse error: Unfinished string at EOF at line 1, column 8
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating test0001 channel in vtb1.example.net using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDkxNzMwNX0.3FaRsZeuRmWk_Iz2nKVIgCXzSw7AQgS3jx2Sqg6mofs
+[1;32mOK: JWT token obtained.[m[m[m
+"Invalid results returned ::FORBIDDEN" 500
+parse error: Unfinished string at EOF at line 1, column 8
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating test00001 channel in vtb1.example.net using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDkxNzU2MH0.oBlHcAZPkbl2sBYxSt4_9RwGOHYfBgvhK3dWc3of_0Q
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.vtb1.example.net:8051","name":"peer0.vtb1.example.net:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb1.example.net:8051","grpc.default_authority":"peer0.vtb1.example.net:8051"}}}] 200
+[1;32mOK: Channel <test00001> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test00001> channel exists in меи1.example.net...[m[m[m
+Error: No such container: cli.меи1.example.net
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test00001> channel exists in vtb1.example.net...[m[m[m
+[34m2020-02-05 15:46:35.923 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-05 15:46:35.926 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-05 15:46:35.927 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-05 15:46:35.927 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+{
+"channel_id": "test00001",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-05T15:46:01Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test00001> exists and visible to vtb1[m[m[m
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 8051
+[1;36mCreating the <test999999> channel for sberbank1.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test999999[m[m[m
+example.net
+
+Create channel sberbank1 test999999
+--2020-02-06 10:49:10--  http://www.example.net/msp/admincerts/Admin@example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/admincerts/Admin@example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-06 10:49:10--  http://www.example.net/msp/cacerts/ca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/cacerts/ca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-06 10:49:10--  http://www.example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-06 10:49:10--  http://www.example.net/msp/orderer.example.net/tls/server.crt
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/orderer.example.net/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-02-06 10:49:10.512 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 10:49:10.558 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 10:49:10.605 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 10:49:10.606 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 10:49:10.606 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank1 in configtx.yaml
+[33m2020-02-06 10:49:10.606 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 10:49:10.606 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 10:49:10.606 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 10:49:10.607 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank1 in configtx.yaml
+[34m2020-02-06 10:49:10.607 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 10:49:10.659 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 10:49:10.701 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test999999.pb -o orderer.example.net:7050 -c test999999 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-06 10:49:10.781 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 10:49:10.783 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 10:49:10.784 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-06 10:49:10.784 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from sberbank1 for channel test999999
+>> sberbank1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test999999 -o orderer.example.net:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-06 10:49:11.092 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 10:49:11.102 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <test999999> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test999999> channel exists in sberbank1.example.net...[m[m[m
+[34m2020-02-06 10:49:44.566 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 10:49:44.568 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 10:49:44.569 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-06 10:49:44.569 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "test999999",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T10:49:11Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test999999> exists and visible to sberbank1[m[m[m
+[1;36mCreating test888888 channel in sberbank1.example.net using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDk4NjIyM30.p73NV0U5GvwC4lk5l6dk77taRfodsdnvzecxaAFWT04
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank1.example.net:7051","name":"peer0.sberbank1.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank1.example.net:7051","grpc.default_authority":"peer0.sberbank1.example.net:7051"}}}] 200
+[1;32mOK: Channel <test888888> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test888888> channel exists in sberbank1.example.net...[m[m[m
+[34m2020-02-06 10:50:34.101 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 10:50:34.104 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 10:50:34.105 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-06 10:50:34.105 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+{
+"channel_id": "test888888",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T10:50:23Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test888888> exists and visible to sberbank1[m[m[m
+[1;36mVerifing if the <test8888888> channel exists in sberbank1.example.net...[m[m[m
+[34m2020-02-06 10:50:41.275 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 10:50:41.276 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+[1;36mCreating the <test999999> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test999999[m[m[m
+latest: Pulling from olegabu/fabric-tools-extended
+Digest: sha256:94a99579875cf4fd61237e20b7cbfbfec0e23144231e93bbe7f39c858473babd
+Status: Downloaded newer image for olegabu/fabric-tools-extended:latest
+example.network
+
+Create channel sberbank test999999
+--2020-02-06 11:09:42--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 11:09:42--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 11:09:42--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 11:09:42--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 11:09:42.184 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 11:09:42.207 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 11:09:42.208 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 11:09:42.208 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 11:09:42.209 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 11:09:42.209 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 11:09:42.210 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 11:09:42.210 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 11:09:42.210 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 11:09:42.233 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 11:09:42.233 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 11:09:42.234 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 11:09:42.234 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 11:09:42.234 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 11:09:42.235 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 11:09:42.235 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 11:09:42.236 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 11:09:42.237 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-06 11:09:42.237 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 11:09:42.238 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 11:09:42.239 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 11:09:42.240 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-06 11:09:42.241 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 11:09:42.312 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 11:09:42.339 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test999999.pb -o orderer.example.network:7050 -c test999999 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 11:09:42.406 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 11:09:42.409 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 11:09:42.411 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+>> Prepare config update from sberbank for channel test999999
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test999999 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 11:09:42.748 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 11:09:42.769 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <test999999> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test999999> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-06 11:10:10.129 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 11:10:10.132 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 11:10:10.133 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+{
+"channel_id": "test999999",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T11:09:42Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test999999> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <test888888> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating test888888 channel in sberbank.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDk4NzQ0N30.9j-1PM3LSWvMHJYV73wPRcxA_TENuPovu_wW_ICVeDk
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.network:7051","name":"peer0.sberbank.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.network:7051","grpc.default_authority":"peer0.sberbank.example.network:7051"}}}] 200
+[1;32mOK: Channel <test888888> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test888888> channel exists in vtb.example.network...[m[m[m
+Error: No such container: cli.vtb.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <test888888> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-06 11:11:05.612 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 11:11:05.614 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 11:11:05.615 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+{
+"channel_id": "test888888",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T11:10:48Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test888888> exists and visible to sberbank[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <testlocal4704> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testlocal4704[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+[1;36mCreating test22222 channel in sberbank.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MDk5NTczNH0.8npG4LZkiB14yRxChkVx5S1drm7eLE6lXwEab0mmNgc
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.network:7051","name":"peer0.sberbank.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.network:7051","grpc.default_authority":"peer0.sberbank.example.network:7051"}}}] 200
+[1;32mOK: Channel <test22222> creation run sucsessfuly.[m[m[m
+[1;36mCreating the <test33333> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test33333[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <test333330> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test333330[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <test333330> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test333330[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <test333330> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test333330[m[m[m
+example.network
+
+Create channel sberbank test333330
+--2020-02-06 13:32:27--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 13:32:27--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 13:32:27--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 13:32:27--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 13:32:27.990 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 13:32:28.012 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 13:32:28.012 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 13:32:28.013 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 13:32:28.013 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 13:32:28.013 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 13:32:28.014 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 13:32:28.014 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 13:32:28.014 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 13:32:28.036 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 13:32:28.037 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 13:32:28.037 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 13:32:28.037 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 13:32:28.038 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 13:32:28.038 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 13:32:28.038 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 13:32:28.039 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 13:32:28.040 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-06 13:32:28.041 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 13:32:28.041 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 13:32:28.042 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 13:32:28.043 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-06 13:32:28.044 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 13:32:28.141 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 13:32:28.161 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test333330.pb -o orderer.example.network:7050 -c test333330 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 13:32:28.229 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 13:32:28.232 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 13:32:28.234 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+>> Prepare config update from sberbank for channel test333330
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test333330 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 13:32:28.523 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 13:32:28.540 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <test333330> creation run sucsessfuly.[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+[1;36mCreating the <test123456> channel for sberbank.example.network...[m[m[m
+[1;36mCreating the <test123456> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test123456[m[m[m
+example.network
+
+Create channel sberbank test123456
+--2020-02-06 15:00:15--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:00:15--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:00:15--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:00:15--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 15:00:15.739 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 15:00:15.760 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:00:15.761 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:00:15.761 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 15:00:15.761 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 15:00:15.762 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 15:00:15.762 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 15:00:15.762 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 15:00:15.763 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:00:15.785 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:00:15.786 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:00:15.786 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 15:00:15.787 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:00:15.787 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 15:00:15.788 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:00:15.788 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:00:15.792 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:00:15.796 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-06 15:00:15.797 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:00:15.797 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:00:15.798 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:00:15.800 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-06 15:00:15.800 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 15:00:15.856 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:00:15.876 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test123456.pb -o orderer.example.network:7050 -c test123456 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:00:15.945 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:00:15.948 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 15:00:15.949 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+>> Prepare config update from sberbank for channel test123456
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test123456 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:00:16.260 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:00:16.278 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+[1;36mCreating the <test123456> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test123456[m[m[m
+example.network
+
+Create channel sberbank test123456
+--2020-02-06 15:00:35--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:00:35--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:00:35--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:00:35--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 15:00:35.101 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 15:00:35.123 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:00:35.123 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:00:35.124 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 15:00:35.124 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 15:00:35.124 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 15:00:35.125 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 15:00:35.125 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 15:00:35.125 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:00:35.153 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:00:35.154 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:00:35.154 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 15:00:35.155 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:00:35.155 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 15:00:35.156 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:00:35.156 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:00:35.157 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:00:35.159 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-06 15:00:35.161 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:00:35.162 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:00:35.163 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:00:35.164 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-06 15:00:35.165 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 15:00:35.222 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test123456': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test123456.pb -o orderer.example.network:7050 -c test123456 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:00:35.294 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:00:35.297 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 15:00:35.298 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+>> Prepare config update from sberbank for channel test123456
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test123456 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:00:35.591 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test123456': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application/sberbank be at version 0, but it is currently at version 1
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating the <test123456> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test123456[m[m[m
+example.network
+
+Create channel sberbank test123456
+--2020-02-06 15:18:58--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:18:58--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:18:58--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:18:58--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 15:18:58.605 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 15:18:58.625 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:18:58.626 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:18:58.626 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 15:18:58.627 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 15:18:58.627 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 15:18:58.627 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 15:18:58.628 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 15:18:58.628 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:18:58.650 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:18:58.650 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:18:58.651 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 15:18:58.651 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:18:58.651 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 15:18:58.652 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:18:58.652 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:18:58.653 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:18:58.654 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-06 15:18:58.654 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:18:58.655 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:18:58.656 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:18:58.657 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-06 15:18:58.658 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 15:18:58.715 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test123456': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test123456.pb -o orderer.example.network:7050 -c test123456 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:18:58.786 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:18:58.788 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 15:18:58.790 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+>> Prepare config update from sberbank for channel test123456
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test123456 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:18:59.060 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test123456': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application/sberbank be at version 0, but it is currently at version 1
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mOK: Channel <test123456> creation run sucsessfuly.[m[m[m
+[1;36mCreating the <test123456> channel for sberbank.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test123456[m[m[m
+example.network
+
+Create channel sberbank test123456
+--2020-02-06 15:19:48--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:19:48--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:19:48--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:19:48--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 172.18.0.3
+Connecting to www.example.network (www.example.network)|172.18.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 15:19:48.751 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 15:19:48.771 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:19:48.772 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:19:48.772 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 15:19:48.773 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 15:19:48.773 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 15:19:48.774 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 15:19:48.774 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 15:19:48.774 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:19:48.796 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:19:48.797 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:19:48.797 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 15:19:48.797 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:19:48.798 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 15:19:48.798 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:19:48.799 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:19:48.799 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:19:48.801 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-06 15:19:48.802 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:19:48.803 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:19:48.803 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:19:48.804 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-06 15:19:48.805 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 15:19:48.857 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test123456': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/test123456.pb -o orderer.example.network:7050 -c test123456 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:19:48.927 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:19:48.930 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 15:19:48.931 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+>> Prepare config update from sberbank for channel test123456
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test123456 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:19:49.192 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'test123456': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application/sberbank be at version 0, but it is currently at version 1
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;32mOK: Channel <test123456> creation run sucsessfuly.[m[m[m
+[1;36mCreating test1234567 channel in sberbank.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MTAwMjQwMX0.nywPwju1zq6K31hS3Zk1pexzSHH6X-m1mWKSQzoJ1sM
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.network:7051","name":"peer0.sberbank.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.network:7051","grpc.default_authority":"peer0.sberbank.example.network:7051"}}}] 200
+[1;32mOK: Channel <test1234567> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test123456> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-06 15:20:28.093 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:20:28.095 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 15:20:28.096 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+{
+"channel_id": "test123456",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T15:00:16Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test123456> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <test1234567> channel exists in sberbank.example.network...[m[m[m
+[34m2020-02-06 15:20:33.688 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:20:33.693 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 15:20:33.694 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+{
+"channel_id": "test1234567",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T15:20:01Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test1234567> exists and visible to sberbank[m[m[m
+[1;36mCreating the <test1234569> channel for vtb.example.network...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh test1234569[m[m[m
+example.network
+
+Create channel vtb test1234569
+--2020-02-06 15:20:48--  http://www.example.network/msp/admincerts/Admin@example.network-cert.pem
+Resolving www.example.network (www.example.network)... 192.168.99.251
+Connecting to www.example.network (www.example.network)|192.168.99.251|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/admincerts/Admin@example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:20:48--  http://www.example.network/msp/cacerts/ca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 192.168.99.251
+Connecting to www.example.network (www.example.network)|192.168.99.251|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/cacerts/ca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:20:48--  http://www.example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+Resolving www.example.network (www.example.network)... 192.168.99.251
+Connecting to www.example.network (www.example.network)|192.168.99.251|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem' not modified on server. Omitting download.
+
+--2020-02-06 15:20:48--  http://www.example.network/msp/orderer.example.network/tls/server.crt
+Resolving www.example.network (www.example.network)... 192.168.99.251
+Connecting to www.example.network (www.example.network)|192.168.99.251|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File 'crypto-config/ordererOrganizations/example.network/msp/orderer.example.network/tls/server.crt' not modified on server. Omitting download.
+
+[34m2020-02-06 15:20:48.838 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-06 15:20:48.861 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:20:48.862 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:20:48.862 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-06 15:20:48.862 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-06 15:20:48.863 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-06 15:20:48.863 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-06 15:20:48.863 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-06 15:20:48.864 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:20:48.884 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-06 15:20:48.885 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-06 15:20:48.885 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-06 15:20:48.885 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-06 15:20:48.886 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-06 15:20:48.886 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:20:48.887 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:20:48.887 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:20:48.888 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group vtb in configtx.yaml
+[33m2020-02-06 15:20:48.889 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-06 15:20:48.889 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-06 15:20:48.890 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-06 15:20:48.891 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group vtb in configtx.yaml
+[34m2020-02-06 15:20:48.892 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-06 15:20:49.004 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:20:49.027 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/test1234569.pb -o orderer.example.network:7050 -c test1234569 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:20:49.097 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:20:49.100 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 15:20:49.102 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+>> Prepare config update from vtb for channel test1234569
+>> vtb is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c test1234569 -o orderer.example.network:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.network/msp/tlscacerts/tlsca.example.network-cert.pem
+[34m2020-02-06 15:20:49.509 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:20:49.524 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <test1234569> creation run sucsessfuly.[m[m[m
+[1;36mCreating test12345679 channel in sberbank.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MTAwMjQ2NH0.15F2fOtz55kNwpQgIGuSAk9pnxyFnYz31mgLiaL1eJc
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.network:7051","name":"peer0.sberbank.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.network:7051","grpc.default_authority":"peer0.sberbank.example.network:7051"}}}] 200
+[1;32mOK: Channel <test12345679> creation run sucsessfuly.[m[m[m
+[1;36mCreating test12345679 channel in vtb.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MTAwMjQ3MH0.2cGvhol_3oHitVqR-hWfrcv2DLsmatUACnEm14HT8m4
+[1;32mOK: JWT token obtained.[m[m[m
+"config update for existing channel did not pass initial checks: implicit policy evaluation failed - 0 sub-policies were satisfied, but this policy requires 1 of the 'Writers' sub-policies to be satisfied: permission denied" 500
+parse error: Unfinished string at EOF at line 1, column 7
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mCreating test12345678 channel in vtb.example.network using API...[m[m[m
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4MTAwMjQ3N30.3LoXpGXVvQqdsorq4ih_4NOak2cvth3efur6LpLMpaU
+[1;32mOK: JWT token obtained.[m[m[m
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.vtb.example.network:7051","name":"peer0.vtb.example.network:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.network:7051","grpc.default_authority":"peer0.vtb.example.network:7051"}}}] 200
+[1;32mOK: Channel <test12345678> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <test1234569> channel exists in vtb.example.network...[m[m[m
+[34m2020-02-06 15:21:34.568 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:21:34.572 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-06 15:21:34.573 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+{
+"channel_id": "test1234569",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T15:20:48Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test1234569> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <test12345678> channel exists in vtb.example.network...[m[m[m
+[34m2020-02-06 15:21:48.886 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-06 15:21:48.889 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-06 15:21:48.890 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+{
+"channel_id": "test12345678",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-06T15:21:17Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <test12345678> exists and visible to vtb[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 8051
+[1;36mCreating the <test123456> channel for sberbank.example.net...[m[m[m
+[1;36mVerifing if the <test12345678> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 8051
+[1;36mVerifing if the <test12345678> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 09:32:17.744 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:32:17.745 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <test12345678> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <test12345678> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 09:32:30.059 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:32:30.060 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <test12345678> exists and visible to vtb[m[m[m
+[1;36mCreating the <channel01> channel for sberbank.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh channel01[m[m[m
+example.net
+
+Create channel sberbank channel01
+--2020-02-07 09:33:34--  http://www.example.net/msp/admincerts/Admin@example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/admincerts/Admin@example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-07 09:33:34--  http://www.example.net/msp/cacerts/ca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/cacerts/ca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-07 09:33:34--  http://www.example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-07 09:33:34--  http://www.example.net/msp/orderer.example.net/tls/server.crt
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/orderer.example.net/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-02-07 09:33:34.083 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-07 09:33:34.128 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-07 09:33:34.129 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-07 09:33:34.173 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-07 09:33:34.174 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-07 09:33:34.174 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-07 09:33:34.174 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-07 09:33:34.174 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-07 09:33:34.174 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-07 09:33:34.175 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-07 09:33:34.175 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-07 09:33:34.226 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:33:34.258 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/channel01.pb -o orderer.example.net:7050 -c channel01 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-07 09:33:34.317 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:33:34.319 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-07 09:33:34.320 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-07 09:33:34.320 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from sberbank for channel channel01
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c channel01 -o orderer.example.net:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-07 09:33:34.587 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:33:34.597 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <channel01> creation run sucsessfuly.[m[m[m
+[1;36mCreating the <channel02> channel for vtb.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh channel02[m[m[m
+example.net
+
+Create channel vtb channel02
+--2020-02-07 09:33:45--  http://www.example.net/msp/admincerts/Admin@example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/admincerts/Admin@example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-07 09:33:45--  http://www.example.net/msp/cacerts/ca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/cacerts/ca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-07 09:33:45--  http://www.example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-07 09:33:45--  http://www.example.net/msp/orderer.example.net/tls/server.crt
+Resolving www.example.net (www.example.net)... 172.19.0.3
+Connecting to www.example.net (www.example.net)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/orderer.example.net/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-02-07 09:33:46.004 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-07 09:33:46.053 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-07 09:33:46.053 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-07 09:33:46.053 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-07 09:33:46.053 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-07 09:33:46.054 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-07 09:33:46.054 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-07 09:33:46.054 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-07 09:33:46.054 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-07 09:33:46.098 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-07 09:33:46.099 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-07 09:33:46.099 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group vtb in configtx.yaml
+[33m2020-02-07 09:33:46.099 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-07 09:33:46.099 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-07 09:33:46.099 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-07 09:33:46.100 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group vtb in configtx.yaml
+[34m2020-02-07 09:33:46.100 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-07 09:33:46.150 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:33:46.186 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/channel02.pb -o orderer.example.net:7050 -c channel02 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-07 09:33:46.268 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:33:46.269 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-07 09:33:46.270 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-07 09:33:46.270 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from vtb for channel channel02
+>> vtb is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c channel02 -o orderer.example.net:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-07 09:33:46.543 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:33:46.551 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <channel02> creation run sucsessfuly.[m[m[m
+[1;36mVerifing if the <channel01> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:34:01.702 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:34:01.705 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 09:34:01.706 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 09:34:01.706 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel01",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:34Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel01> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <channel02> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 09:34:09.332 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:34:09.334 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 09:34:09.335 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 09:34:09.335 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel02",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel02> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <channel02> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:34:14.876 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:34:14.878 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+[1;32mOK: The channel <channel02> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <channel03> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:34:24.139 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:34:24.140 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <channel03> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <channelasddad03> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:34:33.439 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:34:33.440 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <channelasddad03> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <channelasddad03> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 09:34:42.262 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:34:42.264 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <channelasddad03> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <testlocal2803> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:35:38.223 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:35:38.224 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <testlocal2803> exists and visible to sberbank[m[m[m
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 8051
+[1;36mVerifing if the <test1234567ewr8> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:37:13.191 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:37:13.192 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <test1234567ewr8> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <test1234567ewr8> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:37:19.765 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:37:19.766 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;32mOK: The channel <test1234567ewr8> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <test1234567ewr8> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:40:31.169 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:40:31.170 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <channel01> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 09:40:43.088 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:40:43.090 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 09:40:43.091 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 09:40:43.091 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel01",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:34Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel01> exists and visible to sberbank[m[m[m
+[1;36mVerifing if the <channel01> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 09:42:41.337 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:42:41.338 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;36mVerifing if the <channel02> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 09:42:43.989 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 09:42:43.990 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 09:42:43.991 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 09:42:43.991 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel02",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel02> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <channel02> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 10:03:14.322 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 10:03:14.323 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 10:03:14.324 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 10:03:14.324 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel02",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel02> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <channel02> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 10:03:19.322 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 10:03:19.324 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 10:03:19.325 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 10:03:19.325 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel02",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel02> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <channel02> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-07 10:40:27.808 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 10:40:27.810 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-07 10:40:27.811 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-07 10:40:27.811 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "channel02",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-07T09:33:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <channel02> exists and visible to vtb[m[m[m
+[1;36mVerifing if the <channel02> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-07 10:40:33.584 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-07 10:40:33.586 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
