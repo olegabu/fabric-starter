@@ -9,16 +9,18 @@ main() {
     export MULTIHOST=true
     
     source ${BASEDIR}/common-test-env.sh $@
+    export -f setCurrentActiveOrg
+    export -f resetCurrentActiveOrg
+    
 }
 
 function setCurrentActiveOrg() {
-    local org="${1}"
+    local org="${1:?Org name is required}"
     connectMachine ${org} 1>&2
-    setActiveOrg "${org}"
+    export $ORG=$org
 }
 
 function resetCurrentActiveOrg {
-    resetActiveOrg
     eval $(docker-machine env -u) >/dev/null
 }
 

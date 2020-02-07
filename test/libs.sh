@@ -160,15 +160,15 @@ function getContainerPort () {
     echo $(queryContainerNetworkSettings "HostPort" "${container_name}" "${org}" "${domain}")
 }
 
-function setActiveOrg() {
-    local org="${1:?Org name is required}"
-    export ACTIVE_ORG=${org}
-}
+# function setActiveOrg() {
+#     local org="${1:?Org name is required}"
+#     export ACTIVE_ORG=${org}
+# }
 
-function resetActiveOrg {
+# function resetActiveOrg {
     
-    export ACTIVE_ORG=
-}
+#     export ACTIVE_ORG=
+# }
 
 function curlItGet()
 {
@@ -176,15 +176,14 @@ function curlItGet()
     local cdata=$2
     local wtoken=$3
     res=$(curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
-    #    echo " +++++++ $res +++++++"  >/dev/tty
-    http_code="${res:${#res}-3}"
+    local http_code="${res:${#res}-3}"
     if [ ${#res} -eq 3 ]; then
         body=""
     else
         body="${res:0:${#res}-3}"
     fi
-    local res=$(echo ${body})
-    echo "$res $http_code"
+    #local res=$(echo ${body})
+    echo "$body $http_code"
 }
 
 function generateMultipartBoudary() {
@@ -205,7 +204,7 @@ function generateMultipartTail() { #expecting boundaty as an arg
     local multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
     local multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
     local multipart_tail+=${boundary}'--\r\n'
-    echo -n -e ${multipart_tail}
+    echo -n -e "${multipart_tail}"
 }
 
 function restquery {
@@ -243,7 +242,7 @@ function APIAuthorize() {
 }
 
 function DeleteSpacesLineBreaks() {
-    echo ${1} | sed -E -e 's/\n|\r|\s//g'
+    echo "${1}"| sed -E -e 's/\n|\r|\s//g'
 }
 
 function createChannelAPI_()
@@ -279,7 +278,7 @@ function createChannelAPI() {
 }
 
 function addOrgToChannel_(){
-    local result=$(restquery ${2} "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
+    local result=$(restquery "${2}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo ${result}

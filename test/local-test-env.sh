@@ -4,6 +4,9 @@ source ${BASEDIR}/libs.sh
 
 main() {
     source ${BASEDIR}/common-test-env.sh $@
+    
+    export -f setCurrentActiveOrg
+    export -f resetCurrentActiveOrg
 }
 
 
@@ -16,12 +19,12 @@ function getOrgContainerPort () {
 }
 
 function setCurrentActiveOrg() {
-    local org="${1}"
-    setActiveOrg "${org}"
+    local org="${1:?Org name is required}"
+    export $ORG=${org}
 }
 
 function resetCurrentActiveOrg {
-    resetActiveOrg
+    :
 }
 
 main $@
