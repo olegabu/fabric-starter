@@ -196,6 +196,8 @@ services:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     tty: true
+    dns: consul-server:8600
+    dns_search: example.com
     env_file:
       - ${ENV_FILE:-.env}
     environment:
@@ -239,7 +241,7 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-test}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
@@ -300,8 +302,8 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - /var/run/docker.sock:/var/run/docker.sock
     init: true
-    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -dev -client 0.0.0.0 &' && npm start"
-    dns: 1.1.1.1
+    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -retry-join consul-server-bootstrap -client 0.0.0.0 &' && npm start"
+    dns: consul-server:8600
 
   # simple http server to disseminate certificates
   www.peer:

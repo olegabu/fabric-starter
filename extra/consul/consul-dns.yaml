@@ -8,17 +8,26 @@ services:
 
   consul-server-1: &consul-server
     <<: *consul-agent
-    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
+    command: "agent -server -retry-join consul-server -client 0.0.0.0"
 
   consul-server-bootstrap:
     <<: *consul-agent
+    container_name: consul-server
     ports:
       - "8400:8400"
-      - "8501:8500"
-      - "8601:8600"
-      - "8601:8600/udp"
+      - "${CONSUL_SERVER_PORT:-8500}:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
     command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0"
 
+#    -bootstrap-expect 1
+
+  dns-registrator:
+    image: gliderlabs/registrator:latest
+    container_name: registrator
+    command: consul://consul-server:8500
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
 
 networks:
   default:
