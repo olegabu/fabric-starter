@@ -179,6 +179,17 @@ function getContainerPort () {
     echo $(queryContainerNetworkSettings "HostPort" "${container_name}" "${org}" "${domain}")
 }
 
+
+function setActiveOrg() {
+    local org="${1:?Org name is required}"
+    export ACTIVE_ORG=${org}
+}
+
+function resetActiveOrg {
+
+    export ACTIVE_ORG=
+}
+
 function curlItGet()
 {
     local url=$1

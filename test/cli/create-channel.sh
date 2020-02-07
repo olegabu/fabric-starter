@@ -6,6 +6,8 @@ source "${BASEDIR}"/../parse-common-params.sh $@
 
 printLogScreenCyan "Creating the <$TEST_CHANNEL_NAME> channel for ${ORG}.${DOMAIN}..."
 
+setActiveOrg ${ORG}
+
 runInFabricDir ./channel-create.sh ${TEST_CHANNEL_NAME} 
 
 printResultAndSetExitCode "Channel <$TEST_CHANNEL_NAME> creation run sucsessfuly."
