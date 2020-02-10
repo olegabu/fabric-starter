@@ -24,6 +24,7 @@ export API_"${ORG2}"_HOST=${API2_HOST}
 export PEER0_"${ORG1}"_HOST=${PEER1_HOST}
 export PEER0_"${ORG2}"_HOST=${PEER2_HOST}
 
+
 export API1_PORT=$(getOrgContainerPort  "${ORG1}" "${API_NAME}" "${DOMAIN}")
 export PEER1_PORT=$(getOrgContainerPort "${ORG1}" "${PEER_NAME}" "${DOMAIN}")
 export API2_PORT=$(getOrgContainerPort "${ORG2}" "${API_NAME}" "${DOMAIN}")
@@ -34,6 +35,8 @@ export API_"${ORG1}"_PORT=${API1_PORT}
 export API_"${ORG2}"_PORT=${API2_PORT}
 export PEER0_"${ORG1}"_PORT=${PEER1_PORT}
 export PEER0_"${ORG2}"_PORT=${PEER2_PORT}
+
+#if [ -z ${API1_PORT} ] || [ -z ${API2_PORT} ]; then printError "Wrong domain ot orgs! Try <${gDomain}> for domain and <${gOrgs}> for organizations"; fi
 
 #____________________________________________________
 

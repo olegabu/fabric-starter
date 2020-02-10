@@ -337,5 +337,18 @@ function runInFabricDir() {
     setExitCode [ "${exit_code}" = "0" ]
 }
 
+function guessDomain() {
+echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
+}
+
+function guessOrgs() {
+local domain=$(guessDomain)
+
+docker ps --format "table {{.Names}}" | \
+tail -n+2 | sed -e 's/orderer\.//' | \
+grep "${domain}" | sed -e "s/${domain}//" | \
+grep -v peer0 | cut -d '.' -f 2 \
+| sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+}
 
 main $@

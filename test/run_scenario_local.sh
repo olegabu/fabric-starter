@@ -3,26 +3,33 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source ${BASEDIR}/libs.sh
 
-runCLI=false && runAPI=false
 declare -a FOLDERS
 
 main () {
     selectFolders $@
-    #echo "cli: $runCLI api: $runAPI"
     
     for SCRIIPT_FOLDER in "${FOLDERS[@]}"
     do
         export TEST_CHANNEL_NAME=$(getRandomChannelName)
+        printYellow "================="
+        printYellow "Running ${SCRIIPT_FOLDER} tests"
+        printYellow "================="
 
+        
         runTest ${BASEDIR}/${SCRIIPT_FOLDER}/create-channel.sh
         runTest ${BASEDIR}/verify/test-exist-channel.sh
         runTest ${BASEDIR}/verify/test-exist-channel.sh ${TEST_CHANNEL_NAME} ${ORG2}
         runTest ${BASEDIR}/${SCRIIPT_FOLDER}/create-channel.sh ${TEST_CHANNEL_NAME}"0" ${ORG2}
-        runTest ${BASEDIR}/verify/test-exist-channel.sh ${TEST_CHANNEL_NAME}_ ${ORG1}
+        runTest ${BASEDIR}/verify/test-exist-channel.sh ${TEST_CHANNEL_NAME}0 ${ORG1}
     done
 }
 
+
+
+
+
 function selectFolders() {
+    runCLI=false && runAPI=false
     for var in "$@"
     do
         [ "$var" = "cli" ] && runCLI=true
@@ -45,13 +52,3 @@ function runTest() {
 
 
 main $@
-
-
-#SCRIIPT_FOLDER
-
-#export TEST_CHANNEL_NAME=
-#export DOMAIN=test.net
-#source ./local-test-env.sh test.net sberbank vtb
-#./curl/create-channel.sh
-#./verify/test-exist-channel.sh
-#./curl/add-org-to-channel.sh
