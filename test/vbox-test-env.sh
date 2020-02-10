@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-#echo " $0 _____ ${BASH_SOURCE[0]} ____ $BASEDIR"
-#BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 source ${BASEDIR}/libs.sh
 

@@ -44,6 +44,11 @@ function getFabricStarterPath() {
 }
 
 
+function getRandomChannelName() {
+    echo testchannel"${RANDOM}"
+}
+
+
 
 function printDbg() {
     if [[ "$DEBUG" = "false" ]]; then
@@ -160,29 +165,18 @@ function getContainerPort () {
     echo $(queryContainerNetworkSettings "HostPort" "${container_name}" "${org}" "${domain}")
 }
 
-# function setActiveOrg() {
-#     local org="${1:?Org name is required}"
-#     export ACTIVE_ORG=${org}
-# }
-
-# function resetActiveOrg {
-    
-#     export ACTIVE_ORG=
-# }
-
 function curlItGet()
 {
     local url=$1
     local cdata=$2
     local wtoken=$3
     res=$(curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
-    local http_code="${res:${#res}-3}"
+    local http_code="${res:${#res}-3}" #only 3 last symbols
     if [ ${#res} -eq 3 ]; then
         body=""
     else
-        body="${res:0:${#res}-3}"
+        body="${res:0:${#res}-3}" #everything but the 3 last symbols
     fi
-    #local res=$(echo ${body})
     echo "$body $http_code"
 }
 

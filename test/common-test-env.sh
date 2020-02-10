@@ -5,7 +5,7 @@ source ${BASEDIR}/libs.sh
 
 export DOMAIN=${1:-${DOMAIN:-example.com}}
 
-export TEST_CHANNEL_NAME=${TEST_CHANNEL_NAME:-'testlocal'$RANDOM}
+export TEST_CHANNEL_NAME=${TEST_CHANNEL_NAME:-$(getRandomChannelName)}
 
 source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $2 $3
 
