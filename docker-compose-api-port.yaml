@@ -7,6 +7,10 @@ version: '3.7'
 services:
 
   api:
+    environment:
+      - SERVICE_3000_NAME=api
+      - SERVICE_3000_TAGS=api.${ORG:-org1}.${DOMAIN:-example.com}
+      - SERVICE_8500_IGNORE=true
     ports:
       - ${API_PORT:-4000}:3000
 #      - 8600:8600
