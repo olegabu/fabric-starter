@@ -19,7 +19,6 @@ main () {
         runTest ${BASEDIR}/verify/test-exist-channel.sh ${TEST_CHANNEL_NAME} ${ORG2}
         runTest ${BASEDIR}/${SCRIIPT_FOLDER}/create-channel.sh ${TEST_CHANNEL_NAME}"0" ${ORG2}
         runTest ${BASEDIR}/verify/test-exist-channel.sh ${TEST_CHANNEL_NAME}_ ${ORG1}
-
     done
 }
 
