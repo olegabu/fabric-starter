@@ -13,14 +13,25 @@ services:
   consul-server-bootstrap:
     <<: *consul-agent
     container_name: consul-server
+    environment:
+      - CONSUL_ALLOW_PRIVILEGED_PORTS=yes
+#    networks:
+#      default:
+#      test:
+#        ipv4_address: 172.16.0.100
+
     ports:
       - "8400:8400"
       - "${CONSUL_SERVER_PORT:-8500}:8500"
-      - "8600:8600"
-      - "8600:8600/udp"
-    command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0"
+      - "8600:53"
+      - "8600:53/udp"
+    command: "agent -server -bootstrap-expect 1 -ui -client 0.0.0.0 -dns-port 53"
+    volumes:
+      - ./data/dns:/dns
 
-#    -bootstrap-expect 1
+#  dns-server-determiner:
+#    image:
+#    command: echo DNS_SERVER=`host consul-server | grep -Po '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'` > /dns/env
 
   dns-registrator:
     image: gliderlabs/registrator:latest
@@ -33,3 +44,9 @@ networks:
   default:
     external: false
     name: fabric-starter_default
+
+  test:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24

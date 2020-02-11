@@ -244,6 +244,7 @@ services:
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-test}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
+    hostname: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -302,8 +303,10 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - /var/run/docker.sock:/var/run/docker.sock
     init: true
-    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -retry-join consul-server-bootstrap -client 0.0.0.0 &' && npm start"
-    dns: consul-server:8600
+    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -retry-join consul-server -ui  -client 0.0.0.0 &' && npm start"
+#    dns:
+#      - 8.8.8.8
+#      - 172.20.0.6
 
   # simple http server to disseminate certificates
   www.peer:
