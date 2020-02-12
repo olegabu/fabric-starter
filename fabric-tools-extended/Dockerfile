@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y \
     vim \
   && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir /wait-for-it && wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o /wait-for-it/wait-for-it.sh \
+  && chmod +x /wait-for-it/wait-for-it.sh
+
 COPY templates /etc/hyperledger/templates
 COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
