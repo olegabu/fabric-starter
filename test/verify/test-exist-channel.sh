@@ -4,7 +4,7 @@
 source ${BASEDIR}/../libs.sh
 source ${BASEDIR}/../parse-common-params.sh $@
 
-printLogScreenCyan "Verifing if the <$TEST_CHANNEL_NAME> channel exists in ${ORG}.${DOMAIN}..."
+printLogScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${ORG}.${DOMAIN}..."
 
 setCurrentActiveOrg ${ORG}
 

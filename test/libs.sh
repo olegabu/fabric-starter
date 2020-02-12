@@ -19,7 +19,8 @@ main() {
     fi
     export output
     
-    SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/tty}
+    SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/stderr}
+    #exec 3>/dev/stdout
 }
 
 function setExitCode() {
@@ -86,6 +87,19 @@ function printLogScreenCyan() {
     fi
 }
 
+
+function printLogScreenBlue() {
+    if (( $# == 0 )) ; then
+        while read -r line ; do
+            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
+        done
+    else
+        printInColor "1;34" "$@" | tee -a ${FSTEST_LOG_FILE}
+    fi
+}
+
+
+
 function printNoColors() {   #filter out set color terminal commands
     if (( $# == 0 )) ; then
         while read -r line ; do
@@ -94,6 +108,10 @@ function printNoColors() {   #filter out set color terminal commands
     else
         echo  "$@" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
     fi
+}
+
+function printExitCode() {
+    if [ "$1" == "0" ]; then printGreen "Exit code: $1"; else printError "Exit code: $1"; fi
 }
 
 function printLogScreen() {
@@ -233,6 +251,7 @@ function APIAuthorize() {
     
     setExitCode [ "${jwt_http_code}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
+ 
 }
 
 function DeleteSpacesLineBreaks() {
@@ -317,7 +336,6 @@ function queryPeer() {
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-    
     local result=$(queryPeer ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
     
     setExitCode [ "${result}" = "${channel}" ]
@@ -349,6 +367,45 @@ tail -n+2 | sed -e 's/orderer\.//' | \
 grep "${domain}" | sed -e "s/${domain}//" | \
 grep -v peer0 | cut -d '.' -f 2 \
 | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+}
+
+
+function printTestResultTable() {
+    echo -e "\n\n"
+    for result in "$@"
+    do
+        local BLACK=$(tput setaf 0)
+        local RED=$(tput setaf 1)
+        local GREEN=$(tput setaf 2)
+        local YELLOW=$(tput setaf 3)
+        local LIME_YELLOW=$(tput setaf 190)
+        local POWDER_BLUE=$(tput setaf 153)
+        local BLUE=$(tput setaf 4)
+        local MAGENTA=$(tput setaf 5)
+        local CYAN=$(tput setaf 6)
+        local WHITE=$(tput setaf 7)
+
+        local BRIGHT=$(tput bold)
+        local NORMAL=$(tput sgr0)
+        local BLINK=$(tput blink)
+        local REVERSE=$(tput smso)
+        local UNDERLINE=$(tput smul)
+        
+        local test_step="$(echo ${result} | cut -d '|' -f 1)"
+        local test_name="$(echo ${result} | cut -d '|' -f 2)"
+        local exit_code="$(echo ${result} | cut -d '|' -f 3)"
+        
+        if [ "${exit_code}" = "0" ]
+        then
+            exit_code="${BRIGHT}${GREEN}${exit_code}${NORMAL}"
+        elif [[ ! ${exit_code} =~ ^[0-9]+$ ]]
+        then
+            :
+        else  exit_code="${BRIGHT}${RED}${exit_code}${NORMAL}"
+        fi
+        
+        printf '%-10s %-35s %-10s\n' "${test_step}" "${test_name}" "${exit_code}"
+    done
 }
 
 main $@
