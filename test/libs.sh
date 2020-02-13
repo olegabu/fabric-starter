@@ -21,6 +21,21 @@ main() {
     exportColors
     SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/stderr}
     
+    export VERIFY_SCRIPT_FOLDER='verify'
+    export -a RESULTS
+    export step
+    export rowSeparator='-|-|-'
+
+}
+
+function initScenario() {
+
+RESULTS+=("STEP|TEST NAME|RESULT")
+}
+
+function addTableRowSeparator() {
+:
+#mcRESULTS+=($rowSeparator)    
 }
 
 function exportColors() {
@@ -176,11 +191,11 @@ function printResultAndSetExitCode() {
         printGreen "OK: $@" | printToLogAndToScreen
         exit 0
     else
-            if [ "${NO_RED_OUTPUT}" = true ]; then 
-                    printWhite "See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen 
-            else         
-                    printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen
-            fi
+        if [ "${NO_RED_OUTPUT}" = true ]; then
+            printWhite "See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen
+        else
+            printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen
+        fi
         exit 1
     fi
 }
@@ -416,8 +431,10 @@ function printTestResultTable() {
     local length
     
     echo -e "\n\n"
+    #echo "${RESULTS[@]}"
     
-    for line_n in "$@"
+    for line_n in "${RESULTS[@]}"
+    #printTestResultTable "${RESULTS[@]}"
     do
         local line="$(echo ${line_n} | cut -d '|' -f 2)"
         local length=$(expr length "${line}")
@@ -425,14 +442,20 @@ function printTestResultTable() {
             textlength=${length}
         fi
     done
+
+    
     
     local l1=10
     local l2=$((textlength + 3))
     local l3=10
     
-    separator=$(printNSymbols '-' ${l1})"|"$(printNSymbols '-' ${l2})"|"$(printNSymbols '-' ${l3})
+    local separator=$(printNSymbols '-' ${l1})"|"$(printNSymbols '-' ${l2})"|"$(printNSymbols '-' ${l3})
     
-    for result in "$@"
+    
+    local total_errors=0
+    local tests_run=0
+    
+    for result in "${RESULTS[@]}"
     do
         if [ "${result}" = "-|-|-" ]; then result=${separator}; fi
         local test_step="$(echo ${result} | cut -d '|' -f 1)"
@@ -441,15 +464,56 @@ function printTestResultTable() {
         
         if [ "${exit_code}" = "0" ]
         then
+            tests_run=$(($tests_run + 1))
             exit_code="${BRIGHT}${GREEN}OK:  (${exit_code})${NORMAL}"
         elif [[ ! ${exit_code} =~ ^[0-9]+$ ]]
         then
             :
-        else  exit_code="${BRIGHT}${RED}ERR: (${exit_code})${NORMAL}"
+        else
+            exit_code="${BRIGHT}${RED}ERR: (${exit_code})${NORMAL}"
+            total_errors=$(($total_errors + 1))
+            tests_run=$(($tests_run + 1))
         fi
         
         printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s\n' "${test_step}" "${test_name}" "${exit_code}"
     done
+    echo ${separator//|/ }
+    
+    if [ "${total_errors}" = 0 ]; then
+        printYellow "Totat tests run: ${tests_run}; Total errors: ${total_errors}"
+    else
+        printYellowRed "Totat tests run: ${tests_run}; " "Total errors: ${total_errors}"
+    fi
+}
+
+function runStep() {
+    local message=${1};
+    local script_folder=${2}
+    shift 2
+    local COMMAND=$@
+
+    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" ; ${BASEDIR}/${SCRIPT_FOLDER}/"}
+    COMMAND=${COMMAND//VERIFY:[[:space:]]/" ; ${BASEDIR}/${VERIFY_SCRIPT_FOLDER}/"}
+    COMMAND=${COMMAND//RUN:[[:space:]]/;}
+    COMMAND=$(echo ${COMMAND} | sed -e s'/^;//')
+
+
+    printWhite "\nStep $((++step))_${script_folder}: ${message}"
+    printLog "Step: ${step}_${script_folder} ${message}"
+    printLog "$@"
+    
+    #SET INDENTATION FOR /dev/stdout (1 tabulation symbol)
+    exec 3>&1; exec 1> >(paste /dev/null -)
+    eval "${COMMAND}" 2>&1
+    local exit_code=$?
+    
+    printDbg "Step ${step}_${script_folder}: exit code $exit_code"
+
+    #RESET INDENTATION FOR /dev/stdout
+    exec 1>&3 3>&-
+    
+    printExitCode "${exit_code}"
+    RESULTS+=("${step}_${script_folder}|${message}|${exit_code}")
 }
 
 main $@

@@ -25,6 +25,11 @@ function printRedYellow() {
     printInColor "1;31" "$1" "1;33" "$2"
 }
 
+function printYellowRed() {
+    printInColor "1;33" "$1" "1;31" "$2"
+}
+
+
 function printCyan() {
     printInColor "1;36" "$1"
 }
