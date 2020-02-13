@@ -3,7 +3,7 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source ${BASEDIR}/../libs.sh
 source ${BASEDIR}/../parse-common-params.sh $@
-printLogScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." 
+printToLogAndToScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." 
 JWT=$(APIAuthorize ${ORG})
 
 if [ $? -eq 0 ]; then  

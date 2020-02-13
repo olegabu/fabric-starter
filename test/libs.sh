@@ -18,13 +18,32 @@ main() {
         output='/dev/stdout'
     fi
     export output
-    
+    exportColors
     SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/stderr}
-    #exec 3>/dev/stdout
+    
 }
 
+function exportColors() {
+    export  BLACK=$(tput setaf 0)
+    export  RED=$(tput setaf 1)
+    export  GREEN=$(tput setaf 2)
+    export  YELLOW=$(tput setaf 3)
+    export  LIME_YELLOW=$(tput setaf 190)
+    export  POWDER_BLUE=$(tput setaf 153)
+    export  BLUE=$(tput setaf 4)
+    export  MAGENTA=$(tput setaf 5)
+    export  CYAN=$(tput setaf 6)
+    export  WHITE=$(tput setaf 7)
+    export  BRIGHT=$(tput bold)
+    export  NORMAL=$(tput sgr0)
+    export  BLINK=$(tput blink)
+    export  REVERSE=$(tput smso)
+    export  UNDERLINE=$(tput smul)
+}
+
+
 function setExitCode() {
-eval "${@}"
+    eval "${@}"
 }
 
 function getFabricStarterPath() {
@@ -77,7 +96,7 @@ function printLog() {
     fi
 }
 
-function printLogScreenCyan() {
+function printToLogAndToScreenCyan() {
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE}
@@ -88,7 +107,7 @@ function printLogScreenCyan() {
 }
 
 
-function printLogScreenBlue() {
+function printToLogAndToScreenBlue() {
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE}
@@ -114,7 +133,7 @@ function printExitCode() {
     if [ "$1" == "0" ]; then printGreen "Exit code: $1"; else printError "Exit code: $1"; fi
 }
 
-function printLogScreen() {
+function printToLogAndToScreen() {
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE}
@@ -124,7 +143,7 @@ function printLogScreen() {
     fi
 }
 
-function printErrLogScreen() {
+function printErrToLogAndToScreen() {
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE} >/dev/stderr
@@ -154,10 +173,14 @@ function printAndCompareResults() {
 function printResultAndSetExitCode() {
     if [ $? -eq 0 ]
     then
-        printGreen "OK: $@" | printLogScreen
+        printGreen "OK: $@" | printToLogAndToScreen
         exit 0
     else
-        printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrLogScreen
+            if [ "${NO_RED_OUTPUT}" = true ]; then 
+                    printWhite "See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen 
+            else         
+                    printError "ERROR! See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen
+            fi
         exit 1
     fi
 }
@@ -251,7 +274,7 @@ function APIAuthorize() {
     
     setExitCode [ "${jwt_http_code}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
- 
+    
 }
 
 function DeleteSpacesLineBreaks() {
@@ -356,55 +379,76 @@ function runInFabricDir() {
 }
 
 function guessDomain() {
-echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
+    echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
 }
 
 function guessOrgs() {
-local domain=$(guessDomain)
+    local domain=$(guessDomain)
+    
+    docker ps --format "table {{.Names}}" | \
+    tail -n+2 | sed -e 's/orderer\.//' | \
+    grep "${domain}" | sed -e "s/${domain}//" | \
+    grep -v peer0 | cut -d '.' -f 2 \
+    | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+}
 
-docker ps --format "table {{.Names}}" | \
-tail -n+2 | sed -e 's/orderer\.//' | \
-grep "${domain}" | sed -e "s/${domain}//" | \
-grep -v peer0 | cut -d '.' -f 2 \
-| sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+function printNSymbols() {
+    local string=$1
+    local num=$2
+    local res=$(printf "%-${num}s" "$string")
+    echo "${res// /${string}}"
+}
+
+function printYellowBox() {
+    
+    local length=$(expr length "$@")
+    local indent=10
+    local boundary=$(printNSymbols '=' $((length + $indent * 2)) )
+    local indentation=$(printNSymbols ' ' $indent )
+    
+    printYellow "\n${boundary}\n${indentation}$@\n${boundary}\n"
 }
 
 
+
 function printTestResultTable() {
+    local textlength=10
+    local length
+    
     echo -e "\n\n"
+    
+    for line_n in "$@"
+    do
+        local line="$(echo ${line_n} | cut -d '|' -f 2)"
+        local length=$(expr length "${line}")
+        if [ "${length}" -gt "${textlength}" ]; then
+            textlength=${length}
+        fi
+    done
+    
+    local l1=10
+    local l2=$((textlength + 3))
+    local l3=10
+    
+    separator=$(printNSymbols '-' ${l1})"|"$(printNSymbols '-' ${l2})"|"$(printNSymbols '-' ${l3})
+    
     for result in "$@"
     do
-        local BLACK=$(tput setaf 0)
-        local RED=$(tput setaf 1)
-        local GREEN=$(tput setaf 2)
-        local YELLOW=$(tput setaf 3)
-        local LIME_YELLOW=$(tput setaf 190)
-        local POWDER_BLUE=$(tput setaf 153)
-        local BLUE=$(tput setaf 4)
-        local MAGENTA=$(tput setaf 5)
-        local CYAN=$(tput setaf 6)
-        local WHITE=$(tput setaf 7)
-
-        local BRIGHT=$(tput bold)
-        local NORMAL=$(tput sgr0)
-        local BLINK=$(tput blink)
-        local REVERSE=$(tput smso)
-        local UNDERLINE=$(tput smul)
-        
+        if [ "${result}" = "-|-|-" ]; then result=${separator}; fi
         local test_step="$(echo ${result} | cut -d '|' -f 1)"
         local test_name="$(echo ${result} | cut -d '|' -f 2)"
         local exit_code="$(echo ${result} | cut -d '|' -f 3)"
         
         if [ "${exit_code}" = "0" ]
         then
-            exit_code="${BRIGHT}${GREEN}${exit_code}${NORMAL}"
+            exit_code="${BRIGHT}${GREEN}OK:  (${exit_code})${NORMAL}"
         elif [[ ! ${exit_code} =~ ^[0-9]+$ ]]
         then
             :
-        else  exit_code="${BRIGHT}${RED}${exit_code}${NORMAL}"
+        else  exit_code="${BRIGHT}${RED}ERR: (${exit_code})${NORMAL}"
         fi
         
-        printf '%-10s %-35s %-10s\n' "${test_step}" "${test_name}" "${exit_code}"
+        printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s\n' "${test_step}" "${test_name}" "${exit_code}"
     done
 }
 

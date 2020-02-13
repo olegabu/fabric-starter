@@ -50,7 +50,7 @@ printLog() {
 	fi 
 }
 
-printLogScreen() {
+printToLogAndToScreen() {
 	if (( $# == 0 )) ; then
 		while read -r line ; do
     		    echo "${line}" | tee -a ${FSTEST_LOG_FILE}

@@ -4,7 +4,7 @@
 source "${BASEDIR}"/../libs.sh
 source "${BASEDIR}"/../parse-common-params.sh $@
 
-printLogScreenCyan "\nCreating the <$TEST_CHANNEL_NAME> channel for ${ORG}.${DOMAIN}..."
+printToLogAndToScreenCyan "\nCreating the <$TEST_CHANNEL_NAME> channel for ${ORG}.${DOMAIN}..."
 
 setCurrentActiveOrg ${ORG}
 

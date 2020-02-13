@@ -7,7 +7,7 @@ source ${BASEDIR}/../parse-common-params.sh $@
 
 
 #TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}} #($1, if set, or ${TEST_CHANNEL_NAME})
-printLogScreenCyan  "Add ${ORG2} to the ${TEST_CHANNEL_NAME} channel using API..." | printLogScreen
+printToLogAndToScreenCyan  "Add ${ORG2} to the ${TEST_CHANNEL_NAME} channel using API..." | printToLogAndToScreen
 
 JWT=$(APIAuthorize ${ORG})
 
@@ -19,9 +19,9 @@ JWT=$(APIAuthorize ${ORG})
 # jwt=$(echo $jwt | tr -d '"')
 
 # if [[ "$jwt_http_code" -eq 200 ]]; then
-#     printGreen "\nOK: JWT token obtained." | printLogScreen
+#     printGreen "\nOK: JWT token obtained." | printToLogAndToScreen
 # else
-#     printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." | printLogScreen
+#     printError "\nERROR: Can not authorize. Failed to get JWT token!\nSee ${FSTEST_LOG_FILE} for logs." | printToLogAndToScreen
 #     exit 1
 # fi
 
@@ -42,10 +42,10 @@ JWT=$(APIAuthorize ${ORG})
 #fi
 
 # if [[ "$reply_code" -eq 200 ]]; then
-#     printGreen "\nOK: ${ORG2} added to ${TEST_CHANNEL_NAME} channel" | printLogScreen
+#     printGreen "\nOK: ${ORG2} added to ${TEST_CHANNEL_NAME} channel" | printToLogAndToScreen
 #     exit 0
 # else
-#     printError "\nERROR: adding ${ORG2} to ${TEST_CHANNEL_NAME} failed!\nSee ${FSTEST_LOG_FILE} for logs." | printLogScreen
+#     printError "\nERROR: adding ${ORG2} to ${TEST_CHANNEL_NAME} failed!\nSee ${FSTEST_LOG_FILE} for logs." | printToLogAndToScreen
 #     exit 1
 # fi
 
@@ -63,7 +63,7 @@ fi
 # source ${BASEDIR}/../libs.sh
 # source ${BASEDIR}/../parse-common-params.sh $@
 
-# printLogScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." 
+# printToLogAndToScreenCyan "Creating ${TEST_CHANNEL_NAME} channel in ${ORG}.${DOMAIN} using API..." 
 
 # JWT=$(APIAuthorize ${ORG})
 

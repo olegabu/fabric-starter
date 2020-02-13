@@ -13,7 +13,7 @@ export ORG
 TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}}
 CHAINCODE_PREFIX=${CHAINCODE_PREFIX:-reference}
 
-printInColor "1;36" "Creating  /tmp/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}.zip test chaincode zip-archive" | printLogScreen
+printInColor "1;36" "Creating  /tmp/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}.zip test chaincode zip-archive" | printToLogAndToScreen
 
 #new chaincode archive file (based on reference)
 ZIP_FILE_PATH=/tmp/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}.zip
@@ -28,10 +28,10 @@ then
     rm -rf ${FABRIC_DIR}/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}
     trap "rm -f ${ZIP_FILE_PATH}" EXIT;
 else
-    printLogScreen "Can not create test chaincode! Set TEST_CHANNEL_NAME var."
+    printToLogAndToScreen "Can not create test chaincode! Set TEST_CHANNEL_NAME var."
 fi
 
-printInColor "1;36" "Installing ${CHAINCODE_ZIP_PATH} chaincode on ${ORG}.${DOMAIN} using API..." | printLogScreen
+printInColor "1;36" "Installing ${CHAINCODE_ZIP_PATH} chaincode on ${ORG}.${DOMAIN} using API..." | printToLogAndToScreen
 
 
 api_ip=$(getAPIHost ${ORG} ${DOMAIN})

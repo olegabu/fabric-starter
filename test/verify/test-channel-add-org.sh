@@ -31,10 +31,10 @@ result=$(docker exec cli.org1.${DOMAIN} /bin/bash -c \
 
 
 if [ "${result}" = "${ORG2}" ]; then
-    printGreen "\nOK: <$ORG2> is in the channel <$TEST_CHANNEL_NAME>." | sed -e "s/\n//g" | printLogScreen
+    printGreen "\nOK: <$ORG2> is in the channel <$TEST_CHANNEL_NAME>." | sed -e "s/\n//g" | printToLogAndToScreen
     exit 0
 else
-    printError "\nERROR: <$ORG2> org is not in the <$TEST_CHANNEL_NAME> channel!\n See ${FSTEST_LOG_FILE} for logs." | sed -e "s/\n//g"| printLogScreen
+    printError "\nERROR: <$ORG2> org is not in the <$TEST_CHANNEL_NAME> channel!\n See ${FSTEST_LOG_FILE} for logs." | sed -e "s/\n//g"| printToLogAndToScreen
     exit 1
 fi
 
