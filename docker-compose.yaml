@@ -49,7 +49,7 @@ services:
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -86,8 +86,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}//crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}//crypto-config/hosts:/etc/hosts
 #      - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -112,8 +112,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
     volumes:
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
     << : *peer-defaults
@@ -153,9 +153,9 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
     volumes:
-    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer0:/var/hyperledger/production
-    - ./crypto-config/hosts:/etc/hosts
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/:/host/var/run/
 
 #  peer1:
@@ -198,8 +198,6 @@ services:
     tty: true
     dns: consul-server:8600
     dns_search: example.com
-    env_file:
-      - ${ENV_FILE:-.env}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -232,8 +230,8 @@ services:
     - /var/run/:/host/var/run/
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
-    - ./crypto-config:/etc/hyperledger/crypto-config
-    - ./crypto-config/hosts:/etc/hosts
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -241,11 +239,11 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-test}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     hostname: api.${ORG:-org1}.${DOMAIN:-example.com}
-    domainname: ${DOMAIN:-example.com}
+#    domainname: ${DOMAIN:-example.com}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -292,25 +290,27 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
       - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
 #      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
-      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - /var/run/docker.sock:/var/run/docker.sock
     init: true
-    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -retry-join consul-server -ui  -client 0.0.0.0 &' && npm start"
-    env_file:
-      - .env
-      - extra/consul/data/dns/.env
+    command: npm start
+#    command: sh -c "sh -c '/usr/local/bin/docker-entrypoint.sh agent -retry-join consul-server -ui  -client 0.0.0.0 &' && npm start"
+#    env_file:
+#      - .env
+#      - crypto-config/dns/dns-env
     dns:
       - 8.8.8.8
       - ${DNS_SERVER}
+      - ${DOCKER_REGISTRY}
 
   # simple http server to disseminate certificates
   www.peer:
