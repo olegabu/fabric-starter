@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 main() {
@@ -140,7 +140,6 @@ function printToLogAndToScreenBlue() {
 }
 
 
-
 function printNoColors() {   #filter out set color terminal commands
     if (( $# == 0 )) ; then
         while read -r line ; do
@@ -155,6 +154,7 @@ function printExitCode() {
     if [ "$1" = "0" ]; then printGreen "Exit code: $1"; else printError "Exit code: $1"; fi
 }
 
+
 function printToLogAndToScreen() {
     if (( $# == 0 )) ; then
         while read -r line ; do
@@ -164,6 +164,7 @@ function printToLogAndToScreen() {
         echo "$@" | tee -a ${FSTEST_LOG_FILE}
     fi
 }
+
 
 function printErrToLogAndToScreen() {
     if (( $# == 0 )) ; then
@@ -192,6 +193,7 @@ function printAndCompareResults() {
     fi
 }
 
+
 function printResultAndSetExitCode() {
     if [ $? -eq 0 ]
     then
@@ -207,6 +209,7 @@ function printResultAndSetExitCode() {
     fi
 }
 
+
 function queryContainerNetworkSettings() {
     local parameter="${1}" # [HostPort|HostIp]
     local container="${2}"
@@ -221,12 +224,14 @@ function queryContainerNetworkSettings() {
     echo $result
 }
 
+
 function getContainerPort () {
     local org="${1:?Org name is required}"
     local container_name="${2:?Container name is required}"
     local domain="${3:-${DOMAIN:?Domain is required}}"
     echo $(queryContainerNetworkSettings "HostPort" "${container_name}" "${org}" "${domain}")
 }
+
 
 function curlItGet()
 {
@@ -243,15 +248,18 @@ function curlItGet()
     echo "$body $http_code"
 }
 
+
 function generateMultipartBoudary() {
     echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
 }
+
 
 function generateMultipartHeader() { #expecting boundary and filename as args
     local multipart_header='----'${1}'\r\nContent-Disposition: form-data; name="file"; filename="'
     local multipart_header+=${2}'"\r\nContent-Type: "application/zip"\r\n\r\n'
     echo -n -e  ${multipart_header}
 }
+
 
 function generateMultipartTail() { #expecting boundaty as an arg
     local boundary=${1}
@@ -263,6 +271,7 @@ function generateMultipartTail() { #expecting boundaty as an arg
     local multipart_tail+=${boundary}'--\r\n'
     echo -n -e "${multipart_tail}"
 }
+
 
 function restquery {
     local org=${1}
@@ -286,6 +295,7 @@ function getJWT() {
     restquery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
 }
 
+
 function APIAuthorize() {
     result=($(getJWT ${1}))
     
@@ -299,9 +309,11 @@ function APIAuthorize() {
     
 }
 
+
 function DeleteSpacesLineBreaks() {
     echo "${1}"| sed -E -e 's/\n|\r|\s//g'
 }
+
 
 function createChannelAPI_()
 {
@@ -335,12 +347,14 @@ function createChannelAPI() {
     setExitCode [ "${create_http_code}" = "200" ]
 }
 
+
 function addOrgToChannel_(){
     local result=$(restquery "${2}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo ${result}
 }
+
 
 function addOrgToChannel() {
     local channel=${1}
@@ -360,6 +374,7 @@ function addOrgToChannel() {
     setExitCode [ "${create_http_code}" = "200" ]
 }
 
+
 function queryPeer() {
     local channel=${1}
     local org=${2}
@@ -378,6 +393,7 @@ function queryPeer() {
     echo $result
 }
 
+
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
@@ -385,6 +401,7 @@ function verifyChannelExists() {
     
     setExitCode [ "${result}" = "${channel}" ]
 }
+
 
 function runInFabricDir() {
     pushd ${FABRIC_DIR} >/dev/null
@@ -400,9 +417,11 @@ function runInFabricDir() {
     setExitCode [ "${exit_code}" = "0" ]
 }
 
+
 function guessDomain() {
     echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
 }
+
 
 function guessOrgs() {
     local domain=$(guessDomain)
@@ -414,12 +433,14 @@ function guessOrgs() {
     | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
 }
 
+
 function printNSymbols() {
     local string=$1
     local num=$2
     local res=$(printf "%-${num}s" "$string")
     echo "${res// /${string}}"
 }
+
 
 function printYellowBox() {
     
@@ -430,7 +451,6 @@ function printYellowBox() {
     
     printYellow "\n${boundary}\n${indentation}$@\n${boundary}\n"
 }
-
 
 
 function printTestResultTable() {
@@ -449,8 +469,6 @@ function printTestResultTable() {
             textlength=${length}
         fi
     done
-    
-    
     
     local l1=10
     local l2=$((textlength + 3))
@@ -493,19 +511,21 @@ function printTestResultTable() {
     fi
 }
 
+
 function runStep() {
     local message=${1};
     local script_folder=${2}
     shift 2
     local COMMAND=$@
     
-    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" ; ${BASEDIR}/${SCRIPT_FOLDER}/"}
+    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" ; NO_RED_OUTPUT=false ${BASEDIR}/${SCRIPT_FOLDER}/"}
+    COMMAND=${COMMAND//RUN!TEST:[[:space:]]/" ; NO_RED_OUTPUT=true ${BASEDIR}/${SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ; ${BASEDIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
     COMMAND=$(echo ${COMMAND} | sed -e s'/^;//')
-    
-    
+        
     printWhite "\nStep $((++step))_${script_folder}: ${message}"
+    printDbg $COMMAND
     printLog "Step: ${step}_${script_folder} ${message}"
     printLog "$@"
     

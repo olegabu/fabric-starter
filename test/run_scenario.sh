@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source ${BASEDIR}/libs.sh
@@ -12,15 +12,10 @@ ARGS_REQUIRED=(
 #    "Domain":DOMAIN
 )
 
-
-echo ${ARGS_PASSED[0]}
-
-scenarioArgsParse #ARGS_REQUIRED ARGS_PASSED
+scenarioArgsParse #using ARGS_REQUIRED ARGS_PASSED
 initResultsTable
 
 TYPES=($(sed -e 's/,/ /g' <<<${interface_type}))
-
-export NO_RED_OUTPUT=false
 
 #run scenario
 main () {
@@ -33,20 +28,19 @@ main () {
         addTableRowSeparator
 
         runStep "Test 'Create Channel in ORG1'" "${SCRIPT_FOLDER}" \
+            RUN:        echo $(date) \
             RUNTEST:    create-channel.sh       ${TEST_CHANNEL_NAME} ${org1} \
-            VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1}
+            VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1} 
 
         runStep "Test 'The channel is not visible in ORG2'" "${SCRIPT_FOLDER}" \
             VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
 
         runStep "Test 'Can not create the channel with incorrect name in ORG1'" "${SCRIPT_FOLDER}" \
-            RUNTEST:    create-channel.sh       "^^^^^^"${TEST_CHANNEL_NAME} ${org1} \
-            VERIFY:     test-exit-code.sh
+            RUN!TEST:   create-channel.sh       "^^^^^^"${TEST_CHANNEL_NAME} ${org1} \
+            VERIFY:     test-channel-does-not-exist.sh  "^^^^^^"${TEST_CHANNEL_NAME} ${org1}
 
         runStep "Test 'Can not create channel in ORG2 with the same name'" "${SCRIPT_FOLDER}" \
-            RUN:        export NO_RED_OUTPUT=true \
-            RUNTEST:    create-channel.sh  ${TEST_CHANNEL_NAME} ${org2} \
-            RUN:        export NO_RED_OUTPUT=false \
+            RUN!TEST:   create-channel.sh  ${TEST_CHANNEL_NAME} ${org2} \
             VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
 
         runStep "Test 'Create another channel in ORG2" "${SCRIPT_FOLDER}" \
@@ -57,12 +51,9 @@ main () {
             VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME}"0" ${org1}
 
         runStep "Test 'Can not create channel in ORG1 with the same name'" "${SCRIPT_FOLDER}" \
-            RUN:        export NO_RED_OUTPUT=true \
-            RUNTEST:    create-channel.sh  ${TEST_CHANNEL_NAME}"0" ${org1} \
-            RUN:        export NO_RED_OUTPUT= \
-            VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME}"0" ${org1}
-
-
+            RUN!TEST:   create-channel.sh  ${TEST_CHANNEL_NAME}"0" ${org1} \
+            VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME}"0" ${org1} \
+            RUN:        echo $(date) 
     done
 
     printTestResultTable

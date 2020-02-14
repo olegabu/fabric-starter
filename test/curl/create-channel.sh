@@ -8,6 +8,7 @@ JWT=$(APIAuthorize ${ORG})
 
 if [ $? -eq 0 ]; then  
     createChannelAPI ${TEST_CHANNEL_NAME} ${ORG} ${JWT}
+    #printError "BEXITCODE: $?"
     printResultAndSetExitCode "Channel <$TEST_CHANNEL_NAME> creation run sucsessfuly."
 else 
     exit 1
