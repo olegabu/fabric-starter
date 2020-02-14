@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   consul-agent:
-    image: ${DOCKER_REGISTRY:-docker.io}/consul:1.6.3
+    image: ${DOCKER_REGISTRY:-docker.io}/consul:latest
     container_name: consul-agent-${CONSUL_UI_PORT:-8500}
     restart: always
     environment:
@@ -16,8 +16,8 @@ services:
     #      - "8600:53"
     #      - "8600:53/udp"
     entrypoint: ""
-    command: sh -c "if [ '${AGENT_MODE:-server}' = 'server' ]; then /usr/local/bin/docker-entrypoint.sh agent -ui -client 0.0.0.0 -dns-port 53 -server -bootstrap-expect 1 -advertise ${MY_IP}; fi;
-      if [ '${AGENT_MODE}' = 'server-join' ]; then /usr/local/bin/docker-entrypoint.sh agent -ui -client 0.0.0.0 -dns-port 53 -server -retry-join ${BOOTSTRAP_IP} -advertise ${MY_IP}; fi;
+    command: sh -c "if [[ -z '${BOOTSTRAP_IP}' && '${AGENT_MODE}' != 'client' ]]; then /usr/local/bin/docker-entrypoint.sh agent -ui -client 0.0.0.0 -dns-port 53 -server -bootstrap-expect 1 -advertise ${MY_IP}; fi;
+      if [[ -n '${BOOTSTRAP_IP}' && '${AGENT_MODE}' != 'client' ]]; then /usr/local/bin/docker-entrypoint.sh agent -ui -client 0.0.0.0 -dns-port 53 -server -retry-join ${BOOTSTRAP_IP} -advertise ${MY_IP}; fi;
       if [ '${AGENT_MODE}' = 'client' ]; then /usr/local/bin/docker-entrypoint.sh agent -ui -retry-join ${BOOTSTRAP_IP} -client 0.0.0.0 -dns-port 53 -advertise ${MY_IP}; fi"
 
   #  -advertise ${MY_IP}
@@ -33,11 +33,12 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
 
-  dns-server-ip:
+  dns-ip-domain:
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-    container_name: dns-server-ip
-    entrypoint: []
-    command: /bin/sh -c 'set -x; echo DNS_SERVER=`getent ahostsv4 consul-agent-${CONSUL_UI_PORT:-8500} | head -n 1 | grep -Po "\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}"` > /dns/dns-env'
+    container_name: dns-ip-domain
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}
+    command: /bin/sh -c 'set -x; echo DOMAIN_SUFFIX=$${DOMAIN##*.}\\nDOMAIN_PREFIX=$${DOMAIN%.*}\\nDNS_SERVER=`getent ahostsv4 consul-agent-${CONSUL_UI_PORT:-8500} | head -n 1 | grep -Po "\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}"` > /dns/dns-env'
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/dns:/dns
     depends_on:
