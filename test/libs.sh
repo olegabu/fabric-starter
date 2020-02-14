@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 main() {
@@ -25,17 +25,24 @@ main() {
     export -a RESULTS
     export step
     export rowSeparator='-|-|-'
-
+    
 }
 
-function initScenario() {
 
-RESULTS+=("STEP|TEST NAME|RESULT")
+function arrayStartIndex() {
+    local array=(1 0)
+    echo ${array[1]}
+}
+
+
+function initResultsTable() {
+    
+    RESULTS+=("STEP|TEST NAME|RESULT")
 }
 
 function addTableRowSeparator() {
-:
-#mcRESULTS+=($rowSeparator)    
+    :
+    RESULTS+=("${rowSeparator}")
 }
 
 function exportColors() {
@@ -145,7 +152,7 @@ function printNoColors() {   #filter out set color terminal commands
 }
 
 function printExitCode() {
-    if [ "$1" == "0" ]; then printGreen "Exit code: $1"; else printError "Exit code: $1"; fi
+    if [ "$1" = "0" ]; then printGreen "Exit code: $1"; else printError "Exit code: $1"; fi
 }
 
 function printToLogAndToScreen() {
@@ -442,7 +449,7 @@ function printTestResultTable() {
             textlength=${length}
         fi
     done
-
+    
     
     
     local l1=10
@@ -491,13 +498,13 @@ function runStep() {
     local script_folder=${2}
     shift 2
     local COMMAND=$@
-
+    
     COMMAND=${COMMAND//RUNTEST:[[:space:]]/" ; ${BASEDIR}/${SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ; ${BASEDIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
     COMMAND=$(echo ${COMMAND} | sed -e s'/^;//')
-
-
+    
+    
     printWhite "\nStep $((++step))_${script_folder}: ${message}"
     printLog "Step: ${step}_${script_folder} ${message}"
     printLog "$@"
@@ -508,12 +515,45 @@ function runStep() {
     local exit_code=$?
     
     printDbg "Step ${step}_${script_folder}: exit code $exit_code"
-
+    
     #RESET INDENTATION FOR /dev/stdout
     exec 1>&3 3>&-
     
     printExitCode "${exit_code}"
     RESULTS+=("${step}_${script_folder}|${message}|${exit_code}")
+}
+
+
+function scenarioArgsParse() {
+    
+    
+    local num_args_required="${#ARGS_REQUIRED[@]}"
+    local num_args_passed="${#ARGS_PASSED[@]}"
+    
+    if [ ${num_args_required} != ${num_args_passed} ];
+    then
+        
+        for argument in "${ARGS_REQUIRED[@]}"
+        do
+            arg_desc+="\"$(echo $argument | cut -d ':' -f 1)\" "
+        done
+        
+        printError "\nERROR: Number of args required and args passed differs!"
+        printUsage \
+        "The following args shoud be supplied: ${WHITE}${arg_desc}" \
+        "run_scenario.sh cli,api organization1 organization2"
+        
+        exit 1
+    fi
+    
+    local position=$(arrayStartIndex)
+    
+    for argument in "${ARGS_REQUIRED[@]}"
+    do
+        local varname=$(echo $argument | cut -d ':' -f 2)
+        eval "export \"${varname}\"=\${ARGS_PASSED[$position]}"
+        position=$(($position + 1))
+    done
 }
 
 main $@
