@@ -1,0 +1,97 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+services:
+
+  pre-install:
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+
+  post-install:
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/ca.crt
+      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:${PEER0_PORT:-7051}
+    env_file:
+      - .env
+      - ./crypto-config/dns/dns-env
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  ca:
+    container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+    environment:
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}-cert.pem
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}-cert.pem
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/ca/:/etc/hyperledger/fabric-ca-server-config
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  peer0:
+    container_name: peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+    environment:
+      - SERVICE_7051_NAME=${DOMAIN_SUFFIX:-com}
+      - SERVICE_7051_TAGS=peer0.${ORG:-org1}.${DOMAIN_PREFIX:-example}
+
+      - CORE_PEER_ID=peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:${PEER0_PORT:-7051}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:${PEER0_PORT:-7051}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:${PEER0_PORT:-7051}
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/:/etc/hyperledger/crypto/peer
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  cli.peer:
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp
+      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:${PEER0_PORT:-7051}
+      - PEER0_PORT=${PEER0_PORT:-7051}
+      - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/server.key
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/server.crt
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/ca.crt
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+
+  api:
+    container_name: api.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+    environment:
+      - SERVICE_3000_NAME=${DOMAIN_SUFFIX:-com}
+      - SERVICE_3000_TAGS=api.${ORG:-org1}.${DOMAIN_PREFIX:-example}
+
+      - DOMAIN=${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp:/etc/hyperledger/msp:ro
+    env_file:
+      - .env
+      - ./crypto-config/dns/dns-env
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  # simple http server to disseminate certificates
+  www.peer:
+    container_name: www.${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+    volumes:
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp:/usr/share/nginx/html/msp:ro
+      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp/well-known:/usr/share/nginx/html/.well-known:ro
+

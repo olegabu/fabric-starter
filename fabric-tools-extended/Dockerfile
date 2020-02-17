@@ -30,6 +30,7 @@ RUN mkdir /wait-for-it && wget https://raw.githubusercontent.com/vishnubob/wait-
   && chmod +x /wait-for-it/wait-for-it.sh
 
 COPY templates /etc/hyperledger/templates
+COPY extra /etc/hyperledger/extra
 COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
 

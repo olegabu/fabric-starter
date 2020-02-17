@@ -1,0 +1,70 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+
+services:
+
+  pre-install:
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - ORDERER_DOMAIN
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  post-install:
+    environment:
+      - CORE_PEER_LOCALMSPID=${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/users/Admin@${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  orderer:
+    container_name: ${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+
+    environment:
+      - SERVICE_7050_NAME=${DOMAIN_SUFFIX:-com}
+      - SERVICE_7050_TAGS=${ORDERER_NAME:-orderer}.${DOMAIN_PREFIX:-example}
+
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/genesis.pb
+      - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/ca.crt]
+
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/tls/ca.crt]
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/orderers/:/etc/hyperledger/crypto/orderer
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  cli.orderer:
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - CORE_PEER_LOCALMSPID=orderer.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+      - ORDERER_DOMAIN
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/orderers/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:/etc/hyperledger/crypto/orderer
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/users/Admin@${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}:/etc/hyperledger/crypto/ordereradmin
+    dns:
+      - ${GLOBAL_DNS_SERVER:-8.8.8.8}
+      - ${LOCAL_DNS_SERVER}
+
+  www.orderer:
+    container_name: www.${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}
+    environment:
+      - SERVICE_80_NAME=${DOMAIN_SUFFIX:-com}
+      - SERVICE_80_TAGS=www.${DOMAIN_PREFIX:-example}
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp:/usr/share/nginx/html/msp
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}.${DNS_GLOBAL_DOMAIN:-service.consul}/msp/well-known:/usr/share/nginx/html/.well-known

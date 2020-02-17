@@ -3,7 +3,7 @@
 backup
 crypto-config
 docs
-extra
+extra/**/data
 data
 **/node_modules
 https/certs

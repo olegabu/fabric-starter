@@ -147,3 +147,8 @@ The _`master`_ branch as well as potentially _`feature branches`_ are used for d
     - use _fabric-starter-rest:snapshot-0.2-1.4_
 - snapshot-0.1-1.4
     - start snapshot branching
+
+
+
+MY_IP=192.168.99.102 FABRIC_STARTER_HOME=/home/docker dco -f docker-compose-remote-starter.yaml up --force-recreate
+ORG=org2 FABRIC_STARTER_HOME=/home/docker AGENT_MODE=server-join BOOTSTRAP_IP=192.168.99.102 MY_IP=192.168.99.103 dco -f docker-compose-remote-starter.yaml up --force-recreate

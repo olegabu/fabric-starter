@@ -15,7 +15,7 @@ services:
       - BOOTSTRAP_IP
       - MY_IP
       - AGENT_MODE
-    command: sh -c 'docker-compose -f docker-compose-this-folder.yaml -f /etc/hyperledger/container-scripts/dns/consul-dns.yaml up --force-recreate -d; docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml --env-file=./crypto-config/dns/dns-env up --force-recreate api'
+    command: sh -c 'docker-compose -f docker-compose-this-folder.yaml -f /etc/hyperledger/extra/dns/consul-dns.yaml up --force-recreate -d; docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml --env-file=./crypto-config/dns/dns-env up --force-recreate api'
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
       - /var/run/docker.sock:/var/run/docker.sock
