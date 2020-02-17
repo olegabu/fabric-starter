@@ -24,7 +24,7 @@ main() {
     export VERIFY_SCRIPT_FOLDER='verify'
     export -a RESULTS
     export step
-    export rowSeparator='-|-|-'
+    export rowSeparator='-|-|-|-'
     
 }
 
@@ -37,7 +37,7 @@ function arrayStartIndex() {
 
 function initResultsTable() {
     
-    RESULTS+=("STEP|TEST NAME|RESULT")
+    RESULTS+=("STEP|TEST NAME|RESULT|TIME ELAPSED (s)")
 }
 
 function addTableRowSeparator() {
@@ -279,11 +279,16 @@ function restquery {
     local query=${3}
     local jwt=${4}
     
-    local ip_var_name="API_${org}_HOST"
-    local port_var_name="API_${org}_PORT"
+    # local ip_var_name="API_${org}_HOST"
+    # local port_var_name="API_${org}_PORT"
     
-    local api_ip=${!ip_var_name}
-    local api_port=${!port_var_name}
+    # local api_ip=${!ip_var_name}
+    # local api_port=${!port_var_name}
+
+    local api_ip=$(getOrgIp "${org}")
+    local api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
+
+#    printYellowBox "${org} ${API_NAME} ${DOMAIN}" > /dev/tty
     
     curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}"
 }
@@ -378,13 +383,14 @@ function addOrgToChannel() {
 function queryPeer() {
     local channel=${1}
     local org=${2}
-    local query=${3}
-    local subquery=${4:-.}
+    local domain=${3}
+    local query=${4}
+    local subquery=${5:-.}
     
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     
-    local result=$(docker exec cli.${org}.${DOMAIN} /bin/bash -c \
+    local result=$(docker exec cli.${org}.${domain} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
         peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
         configtxlator  proto_decode --type "common.Block"  | \
@@ -397,7 +403,8 @@ function queryPeer() {
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-    local result=$(queryPeer ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
+    local domain=${3}
+    local result=$(queryPeer ${channel} ${org} ${domain} '.data.data[0].payload.header.channel_header' '.channel_id')
     
     setExitCode [ "${result}" = "${channel}" ]
 }
@@ -422,6 +429,11 @@ function guessDomain() {
     echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
 }
 
+function vbox_guessDomain() {
+    echo $(docker-machine ls -q  | tail -n+1 | head -n+1 | cut -d '.' -f 2,3)
+}
+
+
 
 function guessOrgs() {
     local domain=$(guessDomain)
@@ -431,6 +443,12 @@ function guessOrgs() {
     grep "${domain}" | sed -e "s/${domain}//" | \
     grep -v peer0 | cut -d '.' -f 2 \
     | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+}
+
+function vbox_guessOrgs() {
+    local domain=$(vbox_guessDomain)
+    
+    docker-machine ls -q  | grep "${domain}" | cut -d '.' -f1  | xargs -I {} echo -n {}" "| sed -e 's/ $//'
 }
 
 
@@ -471,10 +489,11 @@ function printTestResultTable() {
     done
     
     local l1=10
-    local l2=$((textlength + 3))
+    local l2=$((textlength + 5))
     local l3=10
+    local l4=10
     
-    local separator=$(printNSymbols '-' ${l1})"|"$(printNSymbols '-' ${l2})"|"$(printNSymbols '-' ${l3})
+    local separator=$(printNSymbols '-' ${l1})"|"$(printNSymbols '-' ${l2})"|"$(printNSymbols '-' ${l3})"|"$(printNSymbols '-' ${l4})
     
     
     local total_errors=0
@@ -482,14 +501,16 @@ function printTestResultTable() {
     
     for result in "${RESULTS[@]}"
     do
-        if [ "${result}" = "-|-|-" ]; then result=${separator}; fi
+        if [ "${result}" = "-|-|-|-" ]; then result=${separator}; fi
         local test_step="$(echo ${result} | cut -d '|' -f 1)"
         local test_name="$(echo ${result} | cut -d '|' -f 2)"
         local exit_code="$(echo ${result} | cut -d '|' -f 3)"
+        local elapsed_time="$(echo ${result} | cut -d '|' -f 4)"
         
         if [ "${exit_code}" = "0" ]
         then
             tests_run=$(($tests_run + 1))
+            total_time=$(awk "BEGIN{print ${total_time} + ${elapsed_time}}")
             exit_code="${BRIGHT}${GREEN}OK:  (${exit_code})${NORMAL}"
         elif [[ ! ${exit_code} =~ ^[0-9]+$ ]]
         then
@@ -498,16 +519,17 @@ function printTestResultTable() {
             exit_code="${BRIGHT}${RED}ERR: (${exit_code})${NORMAL}"
             total_errors=$(($total_errors + 1))
             tests_run=$(($tests_run + 1))
+            total_time=$(awk "BEGIN{print ${total_time} + ${elapsed_time}}")
         fi
         
-        printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s\n' "${test_step}" "${test_name}" "${exit_code}"
+        printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s %-'${l4}'s\n' "${test_step}" "${test_name}" "${exit_code}" "${elapsed_time}"
     done
     echo ${separator//|/ }
     
     if [ "${total_errors}" = 0 ]; then
-        printYellow "Totat tests run: ${tests_run}; Total errors: ${total_errors}"
+        printYellow "Totat tests run: ${WHITE}${tests_run}${YELLOW}; Total test runtime: ${WHITE}${total_time}${YELLOW} seconds; Total errors: ${WHITE}${total_errors}${YELLOW}"
     else
-        printYellowRed "Totat tests run: ${tests_run}; " "Total errors: ${total_errors}"
+        printYellowRed "Totat tests run: ${WHITE}${tests_run}${YELLOW}; Total tests runtime: ${WHITE}${total_time}${YELLOW} seconds; " "Total errors: ${total_errors}"
     fi
 }
 
@@ -518,12 +540,21 @@ function runStep() {
     shift 2
     local COMMAND=$@
     
+    if [[ "$COMMAND" =~ "SKIP:" ]]; then
+    local exit_code=0
+    printWhite "\nStep x_${script_folder}: ${message} -- SKIPPING"
+    printExitCode "${exit_code}"
+    RESULTS+=("x_${script_folder}|${message}|skipped|0")
+    return $exit_code
+    fi
+
+
     COMMAND=${COMMAND//RUNTEST:[[:space:]]/" ; NO_RED_OUTPUT=false ${BASEDIR}/${SCRIPT_FOLDER}/"}
-    COMMAND=${COMMAND//RUN!TEST:[[:space:]]/" ; NO_RED_OUTPUT=true ${BASEDIR}/${SCRIPT_FOLDER}/"}
+    COMMAND=${COMMAND//RUNTESTNOERRPRINT:[[:space:]]/" ; NO_RED_OUTPUT=true ${BASEDIR}/${SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ; ${BASEDIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
     COMMAND=$(echo ${COMMAND} | sed -e s'/^;//')
-        
+    
     printWhite "\nStep $((++step))_${script_folder}: ${message}"
     printDbg $COMMAND
     printLog "Step: ${step}_${script_folder} ${message}"
@@ -531,16 +562,20 @@ function runStep() {
     
     #SET INDENTATION FOR /dev/stdout (1 tabulation symbol)
     exec 3>&1; exec 1> >(paste /dev/null -)
+    local start_time=$(date +"%s.%3N")
     eval "${COMMAND}" 2>&1
     local exit_code=$?
+    local stop_time=$(date +"%s.%3N")
     
+    local time_elapsed=$(awk "BEGIN{print ${stop_time} - ${start_time}}")
+    #     echo "Time elapsed: ${time_elapsed}"
     printDbg "Step ${step}_${script_folder}: exit code $exit_code"
     
     #RESET INDENTATION FOR /dev/stdout
     exec 1>&3 3>&-
     
     printExitCode "${exit_code}"
-    RESULTS+=("${step}_${script_folder}|${message}|${exit_code}")
+    RESULTS+=("${step}_${script_folder}|${message}|${exit_code}|${time_elapsed}")
 }
 
 

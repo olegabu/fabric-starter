@@ -2,8 +2,8 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0)
 
 function arrayStart() {
-local a=(1 0)
-echo ${a[1]}
+    local a=(1 0)
+    echo ${a[1]}
 }
 
 a=(1 0)
@@ -11,8 +11,11 @@ echo (0 1)
 echo ${a[1]}
 
 
+timeNowSecondsEpoch=`date +%s`
+
 
 sleep 100
+
 
 
 

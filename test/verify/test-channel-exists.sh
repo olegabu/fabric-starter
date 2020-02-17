@@ -8,6 +8,6 @@ printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists
 
 setCurrentActiveOrg ${ORG}
 
-verifyChannelExists "${TEST_CHANNEL_NAME}" "${ORG}"
+verifyChannelExists "${TEST_CHANNEL_NAME}" "${ORG}" "${DOMAIN}"
 
 printResultAndSetExitCode "The channel <$TEST_CHANNEL_NAME> exists and visible to ${ORG}"

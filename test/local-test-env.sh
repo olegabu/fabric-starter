@@ -10,18 +10,21 @@ main() {
     local gDomain=$(guessDomain) 
     local gOrgs=$(guessOrgs)
 
-    if [ $# = 0 ]; then
-    printUsage " local-test-env <DOMAIN> <ORG1> <ORG2> ..." " source ./local-test-env.sh ${gDomain} ${gOrgs}"
+    if [ $# -lt 2 ]; then
+    printUsage " local-test-env <DOMAIN> <ORG1> [<ORG2>] [<ORG3>]..." " source ./local-test-env.sh ${gDomain} ${gOrgs}"
     return 1
     fi
 
     printCyan "Local domain '${gDomain}' and '${gOrgs}' orgs found"
 
     export MULTIHOST=
-    source ${BASEDIR}/common-test-env.sh $@
-    
+
     export -f setCurrentActiveOrg
     export -f resetCurrentActiveOrg
+    export -f getOrgIp
+    export -f getOrgContainerPort
+    
+    source ${BASEDIR}/common-test-env.sh $@
 }
 
 
