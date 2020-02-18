@@ -7188,3 +7188,272 @@ Error: can't read the block: &{FORBIDDEN}
 null
 [1;32mOK: The channel <testchannel18015-02> does not exist and in not visible to sberbank[m[m[m
 Step 10_cli: exit code 0
+RUNTEST: create-channel.sh testchannel31634 sberbank VERIFY: test-channel-exists.sh testchannel31634 sberbank
+Step: 1_api Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel31634 sberbank VERIFY: test-channel-exists.sh testchannel31634 sberbank
+Step 1_api: exit code 127
+VERIFY: test-channel-does-not-exist.sh testchannel31634 vtb
+Step: 2_api Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel31634 vtb
+Step 2_api: exit code 127
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel31634 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel31634 sberbank
+Step: 3_api Test 'Can not create the channel with incorrect name in ORG1'
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel31634 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel31634 sberbank
+Step 3_api: exit code 127
+RUNTESTNOERRPRINT: create-channel.sh testchannel31634 vtb VERIFY: test-channel-does-not-exist.sh testchannel31634 vtb
+Step: 4_api Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel31634 vtb VERIFY: test-channel-does-not-exist.sh testchannel31634 vtb
+Step 4_api: exit code 127
+RUNTEST: create-channel.sh testchannel31634-02 vtb VERIFY: test-channel-exists.sh testchannel31634-02 vtb
+Step: 5_api Test 'Create another channel in ORG2
+RUNTEST: create-channel.sh testchannel31634-02 vtb VERIFY: test-channel-exists.sh testchannel31634-02 vtb
+Step 5_api: exit code 127
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel31634-02 sberbank [1;37m Step x_api: Test 'This new channel is not visible in ORG1' -- SKIPPING (due to SKIP: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 6_api Test 'This new channel is not visible in ORG1'
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel31634-02 sberbank
+Step 6_api: exit code 1
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel31634-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel31634-02 sberbank [1;37m Step x_api: Test 'Can not create channel in ORG1 with the same name' -- SKIPPING (due to SKIPAPI: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 7_api Test 'Can not create channel in ORG1 with the same name'
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel31634-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel31634-02 sberbank
+Step 7_api: exit code 1
+RUNTEST: create-channel.sh testchannel19455 sberbank VERIFY: test-channel-exists.sh testchannel19455 sberbank
+Step: 8_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel19455 sberbank VERIFY: test-channel-exists.sh testchannel19455 sberbank
+Step 8_cli: exit code 127
+VERIFY: test-channel-does-not-exist.sh testchannel19455 vtb
+Step: 9_cli Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel19455 vtb
+Step 9_cli: exit code 127
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel19455 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel19455 sberbank [1;37m Step x_cli: Test 'Can not create the channel with incorrect name in ORG1' -- SKIPPING (due to SKIPCLI: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 10_cli Test 'Can not create the channel with incorrect name in ORG1'
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel19455 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel19455 sberbank
+Step 10_cli: exit code 1
+RUNTESTNOERRPRINT: create-channel.sh testchannel19455 vtb VERIFY: test-channel-does-not-exist.sh testchannel19455 vtb
+Step: 11_cli Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel19455 vtb VERIFY: test-channel-does-not-exist.sh testchannel19455 vtb
+Step 11_cli: exit code 127
+RUNTEST: create-channel.sh testchannel19455-02 vtb VERIFY: test-channel-exists.sh testchannel19455-02 vtb
+Step: 12_cli Test 'Create another channel in ORG2
+RUNTEST: create-channel.sh testchannel19455-02 vtb VERIFY: test-channel-exists.sh testchannel19455-02 vtb
+Step 12_cli: exit code 127
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel19455-02 sberbank [1;37m Step x_cli: Test 'This new channel is not visible in ORG1' -- SKIPPING (due to SKIP: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 13_cli Test 'This new channel is not visible in ORG1'
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel19455-02 sberbank
+Step 13_cli: exit code 1
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel19455-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel19455-02 sberbank
+Step: 14_cli Test 'Can not create channel in ORG1 with the same name'
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel19455-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel19455-02 sberbank
+Step 14_cli: exit code 127
+RUNTEST: create-channel.sh testchannel18859 sberbank VERIFY: test-channel-exists.sh testchannel18859 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel18859 sberbank VERIFY: test-channel-exists.sh testchannel18859 sberbank
+Step 1_cli: exit code 127
+VERIFY: test-channel-does-not-exist.sh testchannel18859 vtb
+Step: 2_cli Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel18859 vtb
+Step 2_cli: exit code 127
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel18859 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel18859 sberbank [1;37m Step x_cli: Test 'Can not create the channel with incorrect name in ORG1' -- SKIPPING (due to SKIPCLI: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 3_cli Test 'Can not create the channel with incorrect name in ORG1'
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel18859 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel18859 sberbank
+Step 3_cli: exit code 1
+RUNTESTNOERRPRINT: create-channel.sh testchannel18859 vtb VERIFY: test-channel-does-not-exist.sh testchannel18859 vtb
+Step: 4_cli Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel18859 vtb VERIFY: test-channel-does-not-exist.sh testchannel18859 vtb
+Step 4_cli: exit code 127
+RUNTEST: create-channel.sh testchannel18859-02 vtb VERIFY: test-channel-exists.sh testchannel18859-02 vtb
+Step: 5_cli Test 'Create another channel in ORG2
+RUNTEST: create-channel.sh testchannel18859-02 vtb VERIFY: test-channel-exists.sh testchannel18859-02 vtb
+Step 5_cli: exit code 127
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel18859-02 sberbank [1;37m Step x_cli: Test 'This new channel is not visible in ORG1' -- SKIPPING (due to SKIP: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 6_cli Test 'This new channel is not visible in ORG1'
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel18859-02 sberbank
+Step 6_cli: exit code 1
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel18859-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel18859-02 sberbank
+Step: 7_cli Test 'Can not create channel in ORG1 with the same name'
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel18859-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel18859-02 sberbank
+Step 7_cli: exit code 127
+Channel in ORG1' cli RUNTEST: create-channel.sh testchannel11556 sberbank VERIFY: test-channel-exists.sh testchannel11556 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel11556 sberbank VERIFY: test-channel-exists.sh testchannel11556 sberbank
+Step 1_cli: exit code 1
+channel is not visible in ORG2' cli VERIFY: test-channel-does-not-exist.sh testchannel11556 vtb
+Step: 2_cli Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel11556 vtb
+Step 2_cli: exit code 1
+not create the channel with incorrect name in ORG1' cli SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel11556 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel11556 sberbank
+Step: 3_cli Test 'Can not create the channel with incorrect name in ORG1'
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel11556 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel11556 sberbank
+Step 3_cli: exit code 1
+not create channel in ORG2 with the same name' cli RUNTESTNOERRPRINT: create-channel.sh testchannel11556 vtb VERIFY: test-channel-does-not-exist.sh testchannel11556 vtb
+Step: 4_cli Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel11556 vtb VERIFY: test-channel-does-not-exist.sh testchannel11556 vtb
+Step 4_cli: exit code 1
+another channel in ORG2 cli RUNTEST: create-channel.sh testchannel11556-02 vtb VERIFY: test-channel-exists.sh testchannel11556-02 vtb
+Step: 5_cli Test 'Create another channel in ORG2
+RUNTEST: create-channel.sh testchannel11556-02 vtb VERIFY: test-channel-exists.sh testchannel11556-02 vtb
+Step 5_cli: exit code 127
+new channel is not visible in ORG1' cli SKIP: VERIFY: test-channel-does-not-exist.sh testchannel11556-02 sberbank [1;37m Step x_'This: Test -- SKIPPING (due to SKIP: command)[m[m[m [1;32mExit code: 0[m[m[m
+Step: 6_cli Test 'This new channel is not visible in ORG1'
+SKIP: VERIFY: test-channel-does-not-exist.sh testchannel11556-02 sberbank
+Step 6_cli: exit code 1
+not create channel in ORG1 with the same name' cli SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel11556-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel11556-02 sberbank
+Step: 7_cli Test 'Can not create channel in ORG1 with the same name'
+SKIPAPI: RUNTESTNOERRPRINT: create-channel.sh testchannel11556-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel11556-02 sberbank
+Step 7_cli: exit code 1
+Channel in ORG1' cli RUNTEST: create-channel.sh testchannel13649 sberbank VERIFY: test-channel-exists.sh testchannel13649 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel13649 sberbank VERIFY: test-channel-exists.sh testchannel13649 sberbank
+Step 1_cli: exit code 1
+channel is not visible in ORG2' cli VERIFY: test-channel-does-not-exist.sh testchannel13649 vtb
+Step: 2_cli Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel13649 vtb
+Step 2_cli: exit code 1
+not create the channel with incorrect name in ORG1' cli SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel13649 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel13649 sberbank
+Step: 3_cli Test 'Can not create the channel with incorrect name in ORG1'
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel13649 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel13649 sberbank
+Step 3_cli: exit code 1
+not create channel in ORG2 with the same name' cli RUNTESTNOERRPRINT: create-channel.sh testchannel13649 vtb VERIFY: test-channel-does-not-exist.sh testchannel13649 vtb
+Step: 4_cli Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel13649 vtb VERIFY: test-channel-does-not-exist.sh testchannel13649 vtb
+Step 4_cli: exit code 1
+create-channel.sh testchannel30739 sberbank VERIFY: test-channel-exists.sh testchannel30739 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel30739 sberbank VERIFY: test-channel-exists.sh testchannel30739 sberbank
+Step 1_cli: exit code 127
+test-channel-does-not-exist.sh testchannel30739 vtb
+Step: 2_cli Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel30739 vtb
+Step 2_cli: exit code 127
+RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel30739 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel30739 sberbank
+Step: 3_cli Test 'Can not create the channel with incorrect name in ORG1'
+SKIPCLI: RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel30739 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel30739 sberbank
+Step 3_cli: exit code 127
+create-channel.sh testchannel30739 vtb VERIFY: test-channel-does-not-exist.sh testchannel30739 vtb
+Step: 4_cli Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel30739 vtb VERIFY: test-channel-does-not-exist.sh testchannel30739 vtb
+Step 4_cli: exit code 127
+create-channel.sh testchannel32120 sberbank VERIFY: test-channel-exists.sh testchannel32120 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel32120 sberbank VERIFY: test-channel-exists.sh testchannel32120 sberbank
+Step 1_cli: exit code 127
+testchannel20255 sberbank VERIFY: test-channel-exists.sh testchannel20255 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel20255 sberbank VERIFY: test-channel-exists.sh testchannel20255 sberbank
+Step 1_cli: exit code 127
+NO_RED_OUTPUT=false ./cli/create-channel.sh testchannel32572 sberbank ; ./verify/test-channel-exists.sh testchannel32572 sberbank
+Step: 1_cli Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel32572 sberbank VERIFY: test-channel-exists.sh testchannel32572 sberbank
+[1;36m
+Creating the <testchannel32572> channel for sberbank.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testchannel32572[m[m[m
+example.net
+
+Create channel sberbank testchannel32572
+--2020-02-18 23:26:04--  http://www.example.net/msp/admincerts/Admin@example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.9
+Connecting to www.example.net (www.example.net)|172.19.0.9|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/admincerts/Admin@example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-18 23:26:04--  http://www.example.net/msp/cacerts/ca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.9
+Connecting to www.example.net (www.example.net)|172.19.0.9|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/cacerts/ca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-18 23:26:04--  http://www.example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+Resolving www.example.net (www.example.net)... 172.19.0.9
+Connecting to www.example.net (www.example.net)|172.19.0.9|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem’ not modified on server. Omitting download.
+
+--2020-02-18 23:26:04--  http://www.example.net/msp/orderer.example.net/tls/server.crt
+Resolving www.example.net (www.example.net)... 172.19.0.9
+Connecting to www.example.net (www.example.net)|172.19.0.9|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.net/msp/orderer.example.net/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-02-18 23:26:05.033 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-02-18 23:26:05.083 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-18 23:26:05.133 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-18 23:26:05.134 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[33m2020-02-18 23:26:05.134 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-02-18 23:26:05.134 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-02-18 23:26:05.134 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-02-18 23:26:05.134 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group sberbank in configtx.yaml
+[34m2020-02-18 23:26:05.135 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-02-18 23:26:05.189 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-18 23:26:05.229 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+Execute: channel fetch config crypto-config/configtx/testchannel32572.pb -o orderer.example.net:7050 -c testchannel32572 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-18 23:26:05.318 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-18 23:26:05.322 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-02-18 23:26:05.323 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-02-18 23:26:05.323 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from sberbank for channel testchannel32572
+>> sberbank is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c testchannel32572 -o orderer.example.net:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem
+[34m2020-02-18 23:26:05.662 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-18 23:26:05.691 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+[1;32mOK: Channel <testchannel32572> creation run sucsessfuly.[m[m[m
+[1;34m
+Verifing if the <testchannel32572> channel exists in sberbank.example.net...[m[m[m
+[34m2020-02-18 23:26:08.041 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-18 23:26:08.044 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-02-18 23:26:08.046 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-02-18 23:26:08.046 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"channel_id": "testchannel32572",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-02-18T23:26:05Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+[1;32mOK: The channel <testchannel32572> exists and visible to sberbank[m[m[m
+Step 1_cli: exit code 0
+./verify/test-channel-does-not-exist.sh testchannel32572 vtb
+Step: 2_cli Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel32572 vtb
+[1;34m
+Verifing if the <testchannel32572> channel exists in vtb.example.net...[m[m[m
+[34m2020-02-18 23:26:08.705 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-18 23:26:08.707 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+[1;32mOK: The channel <testchannel32572> does not exist and in not visible to vtb[m[m[m
+Step 2_cli: exit code 0
+NO_RED_OUTPUT=true ./cli/create-channel.sh testchannel32572 vtb ; ./verify/test-channel-does-not-exist.sh testchannel32572 vtb
+Step: 3_cli Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel32572 vtb VERIFY: test-channel-does-not-exist.sh testchannel32572 vtb
+[1;36m
+Creating the <testchannel32572> channel for vtb.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testchannel32572[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
+[34m2020-02-18 23:26:10.159 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-02-18 23:26:10.162 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+Step 3_cli: exit code 0
+NO_RED_OUTPUT=false ./cli/create-channel.sh testchannel32572-02 vtb ; ./verify/test-channel-exists.sh testchannel32572-02 vtb
+Step: 4_cli Test 'Create another channel in ORG2
+RUNTEST: create-channel.sh testchannel32572-02 vtb VERIFY: test-channel-exists.sh testchannel32572-02 vtb
+[1;36m
+Creating the <testchannel32572-02> channel for vtb.example.net...[m[m[m
+[1;32mExecute: docker-compose -f docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testchannel32572-02[m[m[m
+[1;31mError occurred. See console output above.[m[1;33m[m
