@@ -9,7 +9,7 @@ main() {
 
     local gDomain=$(guessDomain) 
     local gOrgs=$(guessOrgs)
-
+#channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
     if [ $# -lt 2 ]; then
     printUsage " local-test-env <DOMAIN> <ORG1> [<ORG2>] [<ORG3>]..." " source ./local-test-env.sh ${gDomain} ${gOrgs}"
     return 1
