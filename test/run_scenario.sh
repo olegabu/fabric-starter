@@ -16,7 +16,9 @@ SCENARIO() {
     
     SCRIPT_FOLDER=$1 #cli|curl
     TEST_CHANNEL_NAME=$2
-    
+
+# Creating channels    
+
     TEST_CHANNEL_WRONG_NAME="^^^^^^"${TEST_CHANNEL_NAME}
     TEST_SECOND_CHANNEL_NAME=${TEST_CHANNEL_NAME}"-02"
     
@@ -48,6 +50,20 @@ SCENARIO() {
     SKIPAPI: \
     RUNTESTNOERRPRINT:   create-channel.sh  ${TEST_SECOND_CHANNEL_NAME} ${org1} \
     VERIFY:     test-channel-does-not-exist.sh      ${TEST_SECOND_CHANNEL_NAME} ${org1}
+
+# Adding org to channel
+
+# Joining channels
+
+# Chaincode install
+
+# Chaincode instantiate
+
+# Chaincode verify
+
+
+
+
 }
 
 export -f SCENARIO

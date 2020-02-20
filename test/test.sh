@@ -1,39 +1,56 @@
 #!/usr/bin/env zsh
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0)
 
-function arrayStart() {
-    local a=(1 0)
-    echo ${a[1]}
-}
-
-a=(1 0)
-echo (0 1)
-echo ${a[1]}
+source ${BASEDIR}/libs.sh
 
 
-timeNowSecondsEpoch=`date +%s`
+#echo ${#BRIGHT}
+#echo ${#GREEN}
+#echo ${#NORMAL}
+
+a=1234567890
+
+c="${BRIGHT}${GREEN}${a}${a}${a}${NORMAL}"
+c="${BRIGHT}${GREEN}${a}${a}${a}"
+# echo ${#c}
+# echo ${c}
+# d=$(printNoColors $c)
+# echo ${#d}
+# echo ${d}
 
 
-sleep 100
+# function printNSpaces() {
+#     local count=0 ;
+#     local output=""
+
+#     while [[ $count -lt $1 ]];
+#     do output+='_';
+#         let count++;
+#     done
+#     echo ${output//_/ }
+# }
+
+
+# function printPaddingSpaces() {
+#     local string=$1
+#     local string2=$2
+#     local plain_string=$(printNoColors $string)
+#     local full_length=${#string}
+#     local symbol_length=${#plain_string}
+#     local spaces=$(( full_length - symbol_length ))
+
+#     echo "$(printNSpaces ${spaces})""${string2}"
+# }
+
+printPaddingSpaces "${c}" "OK"
 
 
 
 
-a="1,2,3,4,5,6,7"
-b="a,b,c,d,e,f,g"
 
-arrA=($(sed -e 's/,/ /g' <<<$a))
-arrB=($(sed -e 's/,/ /g' <<<$b))
+# printNoColors
+# a=123456789
+# printf '%-10s %-41s %-10s\n' "${a}${a}${a}" "${a}${a}${a}" "${a}${a}${a}"
+#
 
-
-function printArr() {
-local -n FIRST_ARR=$1
-local -n SECOND_ARR=$2
-
-
-echo ${FIRST_ARR[1]}
-echo ${SECOND_ARR[2]}
-
-}
-
-printArr arrA arrB
+# printf '%-10s %-41s %-10s\n' "${a}${a}${a}" "${a}${GREEN}${a}${NORMAL}${a}" "${a}${a}${a}"
