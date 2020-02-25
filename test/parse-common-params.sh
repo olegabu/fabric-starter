@@ -26,7 +26,7 @@ function scenarioArgsParse() {
         
         printError "\nERROR: Number of args required and args passed differs!"
         printUsage \
-        "The following args shoud be supplied: ${WHITE}${arg_desc}" \
+        "The following args shoud b e supplied: ${WHITE}${arg_desc}" \
         "run_scenario.sh cli,api organization1 organization2"
         
         exit 1

@@ -11,4 +11,3 @@ newOrgDomain=${4:-$DOMAIN}
 
 downloadOrgMSP ${newOrg} $newOrgDomain
 addOrgToChannel $channelName $newOrg $newOrgAnchorPeerPort $newOrgDomain
-

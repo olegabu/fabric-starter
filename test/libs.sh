@@ -311,7 +311,8 @@ function restquery {
     local api_ip=$(getOrgIp "${org}")
     local api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     
-    
+    echo     curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" >/dev/tty
+
     curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}"
 }
 
@@ -409,20 +410,15 @@ function addOrgToChannel_(){
 }
 
 
-function addOrgToChannel() {
+function addOrgToTheChannel() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     local org2=${4}
-    
     local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local result=($(addOrgToChannel_ "${channel}" "${org}" "${jwt}" "${org2}"))
-    local create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})
+    local create_http_code=$(echo -n ${result[0]} 2>${TMP_LOG_FILE})
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    
-    local state=$(DeleteSpacesLineBreaks "${create_status}")
-    local create_http_code=${result[1]}
-    
     setExitCode [ "${create_http_code}" = "200" ]
 }
 
@@ -450,11 +446,26 @@ function queryPeer() {
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
-    local result=$(queryPeer ${channel} ${org} ${domain} '.data.data[0].payload.header.channel_header' '.channel_id')
+  #  local domain=${3}
+    
+    local result=$(queryPeer ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
     
     setExitCode [ "${result}" = "${channel}" ]
 }
+
+
+function verifyOrgIsInChannel() {
+    local channel=${1}
+    local org2_=${2}
+   # local domain_=${3}
+
+#echo queryPeer ${channel} ${ORG} ${DOMAIN}
+    local result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
+    printDbg ${result} 
+
+    setExitCode [ "${result}" = "${org2_}" ]
+}
+
 
 
 function runInFabricDir() {

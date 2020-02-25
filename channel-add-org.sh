@@ -11,5 +11,4 @@ newOrgDomain=${4:-$DOMAIN}
 
 #downloadMSP ${newOrg}
 #addOrgToChannel $channelName $newOrg
-
 ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} runCLI "container-scripts/network/channel-add-org.sh $channelName ${newOrg} ${newOrgPeer0Port} ${newOrgDomain}"
