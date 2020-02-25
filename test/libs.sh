@@ -142,13 +142,13 @@ function printNSymbols() {
     local num=$2
     local res=$(printf "%-${num}s" "$string")
     echo "${res// /"${string}"}"
-
+    
 }
 
 function printNSpaces() {
     local count=0 ;
     local output=""
-
+    
     while [[ $count -lt $1 ]];
     do output+='_';
         let count++;
@@ -164,7 +164,7 @@ function printPaddingSpaces() {
     local full_length=${#string}
     local symbol_length=${#plain_string}
     local spaces=$(( full_length - symbol_length - shifter))
-
+    
     echo "$(printNSpaces ${spaces})""${string2}"
 }
 
@@ -312,7 +312,7 @@ function restquery {
     local api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     
     echo     curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" >/dev/tty
-
+    
     curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}"
 }
 
@@ -369,7 +369,7 @@ function createChannelAPI() {
 }
 
 function joinChannelAPI_() {
-
+    
     local channel=${1}
     local org=${2}
     local jwt=${3}
@@ -383,13 +383,13 @@ function joinChannelAPI_() {
 
 
 function joinChannelAPI() {
-#    ${TEST_CHANNEL_NAME} ${ORG} ${JWT}
+    #    ${TEST_CHANNEL_NAME} ${ORG} ${JWT}
     local channel=${1}
     local org=${2}
     local jwt=${3}
     local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local result=($(joinChannelAPI_ "${channel}" "${org}" "${jwt}"))
-
+    
     local create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})
     
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -401,8 +401,34 @@ function joinChannelAPI() {
 }
 
 
+function ListPeerChannels() {
+    
 
-function addOrgToChannel_(){
+
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    local result=$(docker exec cli.${ORG}.${DOMAIN} /bin/bash -c \
+        'source container-scripts/lib/container-lib.sh; \
+    peer channel list -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS' 2>"${TMP_LOG_FILE}")
+    cat "${TMP_LOG_FILE}" | printDbg
+    set -f
+    IFS=
+    echo ${result}   
+    set +f
+}
+
+
+function verifyOrgJoinedChannel() {
+    local channel=${1}
+    local org2_=${2}
+    
+    local result=$(ListPeerChannels |  grep -E "^${channel}$")
+
+    printDbg ${result}
+    setExitCode [ "${result}" = "${channel}" ]
+}
+
+
+function addOrgToChannel_() {
     local result=$(restquery "${2}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -443,10 +469,12 @@ function queryPeer() {
 }
 
 
+
+
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-  #  local domain=${3}
+    #  local domain=${3}
     
     local result=$(queryPeer ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
     
@@ -457,12 +485,12 @@ function verifyChannelExists() {
 function verifyOrgIsInChannel() {
     local channel=${1}
     local org2_=${2}
-   # local domain_=${3}
-
-#echo queryPeer ${channel} ${ORG} ${DOMAIN}
+    # local domain_=${3}
+    
+    #echo queryPeer ${channel} ${ORG} ${DOMAIN}
     local result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
-    printDbg ${result} 
-
+    printDbg ${result}
+    
     setExitCode [ "${result}" = "${org2_}" ]
 }
 

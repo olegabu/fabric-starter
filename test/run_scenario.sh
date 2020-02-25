@@ -59,7 +59,6 @@ fi
         VERIFY:  test-channel-add-org.sh ${TEST_CHANNEL_NAME} ${org1} ${org2}
 
     runStep "Test 'Add <${org1}> to channel <${TEST_SECOND_CHANNEL_NAME}> created by the <${org2}> org'" "${SCRIPT_FOLDER}" \
-	SKIP: \
         RUNTESTNOERRPRINT: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1} \
         VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1}
 

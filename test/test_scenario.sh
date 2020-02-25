@@ -23,6 +23,11 @@ ARGS_REQUIRED=(
 #RUN: run any command
 
 
+channel=testchannel9746-
+export ORG=vtb; result=$(ListPeerChannels |  grep -E "^${channel}$")
+echo "+++${result}++++"
+
+exit
 
 SCENARIO() {
     
@@ -34,9 +39,9 @@ SCENARIO() {
     TEST_CHANNEL_WRONG_NAME="^^^^^^"${TEST_CHANNEL_NAME}
     TEST_SECOND_CHANNEL_NAME=${TEST_CHANNEL_NAME}"-02"
 
-    runStep "Test 'Create Channel in ORG1'" "${SCRIPT_FOLDER}" \
-        RUNTEST:    create-channel.sh       ${TEST_CHANNEL_NAME} ${org1} \
-        VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1}
+#    runStep "Test 'Create Channel in ORG1'" "${SCRIPT_FOLDER}" \
+#        RUNTEST:    create-channel.sh       ${TEST_CHANNEL_NAME} ${org1} \
+#        VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1}
 
 }
 
