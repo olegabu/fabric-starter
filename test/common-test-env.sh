@@ -10,6 +10,9 @@ source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $2 $3
 
 echo "API ${ORG1}: $(getOrgIp $2):$(getOrgContainerPort  "$2" "${API_NAME}" "${DOMAIN}")"
 echo "API ${ORG2}: $(getOrgIp $3):$(getOrgContainerPort  "$3" "${API_NAME}" "${DOMAIN}")"
+echo "PEER0 ${ORG1}: $(getOrgIp $2):$(getOrgContainerPort  "$2" "${PEER_NAME}" "${DOMAIN}")"
+echo "PEER0 ${ORG2}: $(getOrgIp $3):$(getOrgContainerPort  "$3" "${PEER_NAME}" "${DOMAIN}")"
+
 
 echo ${FSTEST_LOG_FILE}
 echo ${FABRIC_DIR}

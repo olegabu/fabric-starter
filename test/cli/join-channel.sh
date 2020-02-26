@@ -9,6 +9,8 @@ printToLogAndToScreenCyan "\nJoining  ${ORG} to the ${TEST_CHANNEL_NAME} channel
 
 setCurrentActiveOrg ${ORG}
 
+#echo "ORG: $ORG PEER0_PORT: $PEER0_PORT"
+
 runInFabricDir ./channel-join.sh ${TEST_CHANNEL_NAME} 
 
 printResultAndSetExitCode "Organization ${ORG} has been joined to ${TEST_CHANNEL_NAME} channel"

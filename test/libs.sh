@@ -412,7 +412,8 @@ function ListPeerChannels() {
     cat "${TMP_LOG_FILE}" | printDbg
     set -f
     IFS=
-    echo ${result}   
+    #echo ${result} >/dev/tty
+    echo ${result}
     set +f
 }
 
@@ -420,11 +421,17 @@ function ListPeerChannels() {
 function verifyOrgJoinedChannel() {
     local channel=${1}
     local org2_=${2}
+    #echo $(date) >/dev/tty
     
     local result=$(ListPeerChannels |  grep -E "^${channel}$")
+    #echo $(date) >/dev/tty
 
-    printDbg ${result}
+   # echo ${result} >/dev/tty
+
+   # echo $(date) >/dev/tty
+
     setExitCode [ "${result}" = "${channel}" ]
+
 }
 
 
