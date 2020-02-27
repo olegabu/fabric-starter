@@ -138,7 +138,6 @@ function printToLogAndToScreenBlue() {
 }
 
 
-
 function printNSymbols() {
     local string=$1
     local num=$2
@@ -418,6 +417,46 @@ function ListPeerChannels() {
 }
 
 
+function ListPeerChaincodes() {
+
+local channel=${1}
+local org2_=${2}
+local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+
+pushd ${FABRIC_DIR} > /dev/null 
+
+result=$(ORG=${org2_} runCLI "peer chaincode list --installed -C '${TEST_CHANNEL_NAME}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS") 
+local exit_code=$? 
+
+#echo ${result} | tail -n+2 | cut -d ':' -f 2 | cut -d ',' -f 1 | sed -Ee 's/ |\n|\r//g' >/dev/tty
+
+
+popd > /dev/null
+
+printDbg "${result}"
+
+set -f
+IFS=
+echo ${result}
+set +f
+
+setExitCode [ "${exit_code}" = "0" ]
+}
+
+function verifyChiancodeInstalled() {
+    local channel=${1}
+    local org2_=${2}
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    local chaincode_name=${chaincode_init_name}_${TEST_CHANNEL_NAME}
+    local result=$(ListPeerChaincodes ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
+
+    echo "${result}" 
+    
+    setExitCode [ "${result}" = "${chaincode_name}" ]
+}
+
+
+
 function verifyOrgJoinedChannel() {
     local channel=${1}
     local org2_=${2}
@@ -506,31 +545,6 @@ function runInFabricDir() {
     
     setExitCode [ "${exit_code}" = "0" ]
 }
-
-
-# function copyTestChiancodeCLI() {
-# local channel=${1}
-# local org2_=${2}
-# local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-# docker exec -i ${CLI_NAME}.${org2_}.${DOMAIN} sh -c \
-# "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
-# cp -R /opt/chaincode/node/reference/* \
-# /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}"  2>&1 | printDbg
-# exit_code=$?
-# setExitCode [ "${exit_code}" = "0" ]
-# }
-
-
-# function installTestChiancodeCLI() {
-# local channel=${1}
-# local org2_=${2}
-# local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-# docker exec -i ${CLI_NAME}.${org2_}.${DOMAIN} sh -c \
-# "./container-scripts/network/chaincode-install.sh ${chaincode_init_name}_${TEST_CHANNEL_NAME}" 2>&1 | printDbg
-
-# exit_code=$?
-# setExitCode [ "${exit_code}" = "0" ]
-# }
 
 
 function copyTestChiancodeCLI() {

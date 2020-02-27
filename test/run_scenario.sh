@@ -78,10 +78,12 @@ fi
 
 # Chaincode install
     runStep "Test 'Install test chaincode by <${org1}> to the <${TEST_CHANNEL_NAME}> channel'" "${SCRIPT_FOLDER}" \
-	RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org1}
+	    RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org1} \
+        VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org1}
 
 
-
+# ListPeerChaincodes ${TEST_CHANNEL_NAME} ${org1}
+#    verifyChiancodeInstalled ${TEST_CHANNEL_NAME} ${org1}
 # Chaincode instantiate
 
 # Chaincode verify
