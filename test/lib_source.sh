@@ -20,6 +20,7 @@ ORG2=${ORG2:-org2}
 DOMAIN=${DOMAIN:-example.com}
 PEER_NAME=${PEER_NAME:-peer0}
 API_NAME=${API_NAME:-api}
+CLI_NAME=${CLI_NAME:-cli}
 
 export TEST_TARGET='local'
 

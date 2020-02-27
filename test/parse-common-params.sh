@@ -7,7 +7,8 @@ main() {
     
     export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
-    
+    export CLI_NAME=${CLI_NAME:-cli}
+
     export -f scenarioArgsParse
 }
 

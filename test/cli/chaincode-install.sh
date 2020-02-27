@@ -1,27 +1,35 @@
 #!/usr/bin/env bash
 
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-source ${BASEDIR}/../libs.sh
+
+source "${BASEDIR}"/../libs.sh
+source "${BASEDIR}"/../parse-common-params.sh $@
+
+org2_=$2
+
+printToLogAndToScreenCyan "\nInstalling test chaincode in ${org2_}..."
+
+setCurrentActiveOrg ${ORG}
+
+copyTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org2_}
+
+if [ $? -eq 0 ]; then  
+    installTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org2_}
+
+    printResultAndSetExitCode "Test chaincode installed in ${org2_}"
+else 
+    exit 1
+fi
 
 
-: ${FSTEST_LOG_FILE:=${FSTEST_LOG_FILE:-"${BASEDIR}/fs_network_test.log"}}
-
-TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME}}
-
-ORG=${ORG:-org1}
-DOMAIN=${DOMAIN:-example.com} 
-
-CHAINCODE_PREFIX=${CHAINCODE_PREFIX:-reference}
 
 
-printInColor "1;36" "$ORG (Port:$PEER0_PORT) Installing the <${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}> chaincode on the cli.${ORG}.${DOMAIN} machine"
 
 
-docker exec -i cli.${ORG}.${DOMAIN} sh -c "mkdir -p /opt/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME} ; cp -R /opt/chaincode/node/reference/* \
-                                           /opt/chaincode/node/${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}"  2>&1 | printDbg
-docker exec -i cli.${ORG}.${DOMAIN} sh -c "./container-scripts/network/chaincode-install.sh ${CHAINCODE_PREFIX}${TEST_CHANNEL_NAME}" 2>&1 | printDbg
 
-exit
+
+#!/usr/bin/env bash
+
 
 
 #echo "(cd ${BASEDIR}/.. && PEER0_PORT=$PEER0_PORT ORG=$ORG ./chaincode-instantiate.sh $TEST_CHANNEL_NAME $CHAINCODE_NAME | tee -a $FSTEST_LOG_FILE > "${output}")"

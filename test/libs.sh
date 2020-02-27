@@ -89,6 +89,7 @@ function getFabricStarterPath() {
 
 
 function printDbg() {
+    local exit_code=$?
     if [[ "$DEBUG" = "false" ]]; then
         local outputdev=/dev/null
     else
@@ -101,6 +102,7 @@ function printDbg() {
     else
         echo "$@" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
     fi
+    return $exit_code
 }
 
 function printLog() {
@@ -267,6 +269,7 @@ function curlItGet() {
     local url=$1
     local cdata=$2
     local wtoken=$3
+    echo curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}" >/dev/tty
     res=$(curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     local http_code="${res:${#res}-3}" #only 3 last symbols
     if [ ${#res} -eq 3 ]; then
@@ -402,8 +405,6 @@ function joinChannelAPI() {
 
 
 function ListPeerChannels() {
-    
-
 
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local result=$(docker exec cli.${ORG}.${DOMAIN} /bin/bash -c \
@@ -412,7 +413,6 @@ function ListPeerChannels() {
     cat "${TMP_LOG_FILE}" | printDbg
     set -f
     IFS=
-    #echo ${result} >/dev/tty
     echo ${result}
     set +f
 }
@@ -421,22 +421,16 @@ function ListPeerChannels() {
 function verifyOrgJoinedChannel() {
     local channel=${1}
     local org2_=${2}
-    #echo $(date) >/dev/tty
     
     local result=$(ListPeerChannels |  grep -E "^${channel}$")
-    #echo $(date) >/dev/tty
-
-   # echo ${result} >/dev/tty
-
-   # echo $(date) >/dev/tty
 
     setExitCode [ "${result}" = "${channel}" ]
-
 }
 
 
 function addOrgToChannel_() {
-    local result=$(restquery "${2}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
+    orgIP=$(getOrgIp $org2)
+    local result=$(restquery "${2}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo ${result}
@@ -476,8 +470,6 @@ function queryPeer() {
 }
 
 
-
-
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
@@ -494,13 +486,11 @@ function verifyOrgIsInChannel() {
     local org2_=${2}
     # local domain_=${3}
     
-    #echo queryPeer ${channel} ${ORG} ${DOMAIN}
     local result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
     printDbg ${result}
     
     setExitCode [ "${result}" = "${org2_}" ]
 }
-
 
 
 function runInFabricDir() {
@@ -516,6 +506,67 @@ function runInFabricDir() {
     
     setExitCode [ "${exit_code}" = "0" ]
 }
+
+
+# function copyTestChiancodeCLI() {
+# local channel=${1}
+# local org2_=${2}
+# local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+# docker exec -i ${CLI_NAME}.${org2_}.${DOMAIN} sh -c \
+# "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
+# cp -R /opt/chaincode/node/reference/* \
+# /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}"  2>&1 | printDbg
+# exit_code=$?
+# setExitCode [ "${exit_code}" = "0" ]
+# }
+
+
+# function installTestChiancodeCLI() {
+# local channel=${1}
+# local org2_=${2}
+# local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+# docker exec -i ${CLI_NAME}.${org2_}.${DOMAIN} sh -c \
+# "./container-scripts/network/chaincode-install.sh ${chaincode_init_name}_${TEST_CHANNEL_NAME}" 2>&1 | printDbg
+
+# exit_code=$?
+# setExitCode [ "${exit_code}" = "0" ]
+# }
+
+
+function copyTestChiancodeCLI() {
+local channel=${1}
+local org2_=${2}
+local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+
+pushd ${FABRIC_DIR} > /dev/null 
+
+result=$(ORG=${org2_} runCLI \
+"mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
+cp -R /opt/chaincode/node/reference/* \
+/opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}")
+exit_code=$?
+printDbg "${result}"
+
+popd > /dev/null
+setExitCode [ "${exit_code}" = "0" ]
+}
+
+
+function installTestChiancodeCLI() {
+local channel=${1}
+local org2_=${2}
+local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+pushd ${FABRIC_DIR} > /dev/null 
+
+
+result=$(ORG=${org2_} runCLI "./container-scripts/network/chaincode-install.sh ${chaincode_init_name}_${TEST_CHANNEL_NAME}") 
+local exit_code=$? 
+
+printDbg "${result}"
+popd > /dev/null
+setExitCode [ "${exit_code}" = "0" ]
+}
+
 
 
 function guessDomain() {
