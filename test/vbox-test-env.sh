@@ -25,8 +25,8 @@ main() {
     export -f getOrgIp
     export -f getOrgContainerPort
 
-    copyChaincodeToMachine ${2} "reference"
-    copyChaincodeToMachine ${3} "reference"
+    copyChaincodeToMachine ${2} "reference"  #????????
+    copyChaincodeToMachine ${3} "reference"  #TODO
 
 
 }
@@ -59,8 +59,15 @@ local org=${1}
 local chaincode=${2}
 local machine=$(getDockerMachineName ${org})
 #echo $machine
+printDbg "${LIGHT}${CYAN}Making a copy of ${chaincode} chaincode on ${machine} for ${org1} ${NORMAL}"
+
+
 docker-machine scp -r ${FABRIC_DIR}/chaincode/node/${chaincode} ${machine}:/tmp/
-docker-machine ssh ${machine} sudo cp -r /tmp/${chaincode}/* /home/docker/chaincode/node/
+docker-machine ssh ${machine} ls -al /tmp | printDbg
+docker-machine ssh ${machine} sudo mkdir -p /home/docker/chaincode/node/$chaincode
+docker-machine ssh ${machine} sudo cp -r /tmp/${chaincode}/* /home/docker/chaincode/node/${chaincode}
+docker-machine ssh ${machine} ls -al /home/docker/chaincode/node | printDbg
+
 }
 
 

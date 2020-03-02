@@ -487,6 +487,24 @@ function createChaincodeArchiveAndReturnPath() {
 }
 
 
+function instantiateTestChaincodeCLI() {
+    local channel=${1}
+    local org=${2}
+    local chaincode_name=$(getTestChaincodeName ${channel})
+
+    pushd ${FABRIC_DIR} > /dev/null
+
+    result=$(ORG=${org} runCLI "./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name}")
+    local exit_code=$?
+
+    printDbg "${result}"
+    popd > /dev/null
+    setExitCode [ "${exit_code}" = "0" ]
+
+}
+
+
+
 function InstalZippedChaincodeAPI() {
     local channel=${1}
     local org=${2}
@@ -633,7 +651,7 @@ function copyTestChiancodeCLI() {
     
     result=$(ORG=${org2_} runCLI \
         "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
-    cp -R /opt/chaincode/node/reference/* \
+    hostname; pwd; ls -la ./; ls -la  /opt/chaincode/node;  cp -R /opt/chaincode/node/reference/* \
     /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}")
     exit_code=$?
     printDbg "${result}"

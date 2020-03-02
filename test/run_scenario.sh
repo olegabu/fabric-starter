@@ -25,8 +25,10 @@ SCENARIO() {
     runStep "Test 'Create Channel in ORG1'" "${SCRIPT_FOLDER}" \
         RUNTEST:    create-channel.sh       ${TEST_CHANNEL_NAME} ${org1} \
         VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1}
-if false; then    
-    
+
+
+
+#if false; then    
     runStep "Test 'The channel is not visible in ORG2'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
     
@@ -42,12 +44,12 @@ if false; then
 #    runStep "Test 'Add ${org2} to the default consortium'"  "${SCRIPT_FOLDER}" \
 #        RUNTEST:  add-org-to-consortium.sh ${TEST_CHANNEL_NAME} ${org1} ${org2}
 #return 0
-fi    
+#fi    
     runStep "Test 'Create another channel in ORG2" "${SCRIPT_FOLDER}" \
         RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY:     test-channel-exists.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
-if false; then    
+#if false; then    
     
     runStep "Test 'This new channel is not visible in ORG1'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-does-not-exist.sh      ${TEST_SECOND_CHANNEL_NAME} ${org1}
@@ -55,17 +57,24 @@ if false; then
     runStep "Test 'Can not create channel in ORG1 with the same name'" "${SCRIPT_FOLDER}" \
         RUNTESTNOERRPRINT:   create-channel.sh  ${TEST_SECOND_CHANNEL_NAME} ${org1} \
         VERIFY:     test-channel-does-not-exist.sh      ${TEST_SECOND_CHANNEL_NAME} ${org1}
-fi
+#fi
 # Adding org to channel
     runStep "Test 'Add <${org2}> to channel <${TEST_CHANNEL_NAME}> created by the <${org1}> org'" "${SCRIPT_FOLDER}" \
         RUNTESTNOERRPRINT: add-org-to-channel.sh ${TEST_CHANNEL_NAME} ${org1} ${org2} \
         VERIFY:  test-channel-add-org.sh ${TEST_CHANNEL_NAME} ${org1} ${org2}
-if false; then    
+
+
+#if false; then    
     runStep "Test 'Add <${org1}> to channel <${TEST_SECOND_CHANNEL_NAME}> created by the <${org2}> org'" "${SCRIPT_FOLDER}" \
         RUNTESTNOERRPRINT: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1} \
         VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1}
 
 # Joining channels
+
+    runStep "Test 'Join <${org1}> to the <${TEST_CHANNEL_NAME}> chanel created by the <${org1}> org'" "${SCRIPT_FOLDER}" \
+        RUNTESTNOERRPRINT: join-channel.sh ${TEST_CHANNEL_NAME} ${org1} \
+        VERIFY:  test-join-channel.sh ${TEST_CHANNEL_NAME} ${org1}
+
 
     runStep "Test 'Join <${org2}> to the <${TEST_CHANNEL_NAME}> chanel created by the <${org1}> org'" "${SCRIPT_FOLDER}" \
         RUNTESTNOERRPRINT: join-channel.sh ${TEST_CHANNEL_NAME} ${org2} \
@@ -74,27 +83,38 @@ if false; then
     runStep "Test 'Join <${org1}> to the <${TEST_SECOND_CHANNEL_NAME}> chanel created by the <${org2}> org'" "${SCRIPT_FOLDER}" \
         RUNTESTNOERRPRINT: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org1} \
         VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org1}
-fi
+
+
+    runStep "Test 'Join <${org2}> to the <${TEST_SECOND_CHANNEL_NAME}> chanel created by the <${org2}> org'" "${SCRIPT_FOLDER}" \
+        RUNTESTNOERRPRINT: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} \
+        VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
+
+
+#fi
 
 # Chaincode install
     runStep "Test 'Install test chaincode by <${org1}> to the <${TEST_CHANNEL_NAME}> channel'" "${SCRIPT_FOLDER}" \
 	RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org1} \
         VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org1}
 
-
     runStep "Test 'Install test chaincode by <${org2}> to the <${TEST_SECOND_CHANNEL_NAME}> channel'" "${SCRIPT_FOLDER}" \
+	SKIP: \
 	RUNTEST: chaincode-install.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY: test-chaincode-installed.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
 
 # ListPeerChaincodes ${TEST_CHANNEL_NAME} ${org1}
 #    verifyChiancodeInstalled ${TEST_CHANNEL_NAME} ${org1}
+
 # Chaincode instantiate
 
-# Chaincode verify
+    runStep "Test 'Instantiate test chaincode by <${org1}> to the <${TEST_CHANNEL_NAME}> channel'" "${SCRIPT_FOLDER}" \
+	RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org1} 
+#        VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org1}
 
 
 
+# Chaincode verify operation
 
 }
 
