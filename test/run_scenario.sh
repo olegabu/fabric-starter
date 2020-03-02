@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-source ${BASEDIR}/libs.sh
+source ${BASEDIR}/libs/libs.sh
 
 ARGS_PASSED=("$@")
 
@@ -28,7 +28,7 @@ SCENARIO() {
 
 
 
-#if false; then    
+if false; then    
     runStep "Test 'The channel is not visible in ORG2'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
     
@@ -44,7 +44,7 @@ SCENARIO() {
 #    runStep "Test 'Add ${org2} to the default consortium'"  "${SCRIPT_FOLDER}" \
 #        RUNTEST:  add-org-to-consortium.sh ${TEST_CHANNEL_NAME} ${org1} ${org2}
 #return 0
-#fi    
+fi    
     runStep "Test 'Create another channel in ORG2" "${SCRIPT_FOLDER}" \
         RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY:     test-channel-exists.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
@@ -90,6 +90,8 @@ SCENARIO() {
         VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
 
+
+
 #fi
 
 # Chaincode install
@@ -98,7 +100,6 @@ SCENARIO() {
         VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org1}
 
     runStep "Test 'Install test chaincode by <${org2}> to the <${TEST_SECOND_CHANNEL_NAME}> channel'" "${SCRIPT_FOLDER}" \
-	SKIP: \
 	RUNTEST: chaincode-install.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY: test-chaincode-installed.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
@@ -109,8 +110,8 @@ SCENARIO() {
 # Chaincode instantiate
 
     runStep "Test 'Instantiate test chaincode by <${org1}> to the <${TEST_CHANNEL_NAME}> channel'" "${SCRIPT_FOLDER}" \
-	RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org1} 
-#        VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org1}
+	RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org1} \
+        VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org1}
 
 
 
@@ -119,4 +120,4 @@ SCENARIO() {
 }
 
 export -f SCENARIO
-source ${BASEDIR}/lib-scenario.sh $@
+source ${BASEDIR}/libs/lib-scenario.sh $@

@@ -2,8 +2,8 @@
 
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
-source "${BASEDIR}"/../libs.sh
-source "${BASEDIR}"/../parse-common-params.sh $@
+source "${BASEDIR}"/../libs/libs.sh
+source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
 printToLogAndToScreenCyan "\nCreating the <$TEST_CHANNEL_NAME> channel for ${ORG}.${DOMAIN}..."
 
