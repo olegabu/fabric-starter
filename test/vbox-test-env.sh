@@ -24,6 +24,11 @@ main() {
     export -f resetCurrentActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
+
+    copyChaincodeToMachine ${2} "reference"
+    copyChaincodeToMachine ${3} "reference"
+
+
 }
 
 function setCurrentActiveOrg() {
@@ -48,5 +53,15 @@ function getOrgContainerPort () {
     getContainerPort $@
     resetCurrentActiveOrg
 }
+
+function copyChaincodeToMachine() {
+local org=${1}
+local chaincode=${2}
+local machine=$(getDockerMachineName ${org})
+#echo $machine
+docker-machine scp -r ${FABRIC_DIR}/chaincode/node/${chaincode} ${machine}:/tmp/
+docker-machine ssh ${machine} sudo cp -r /tmp/${chaincode}/* /home/docker/chaincode/node/
+}
+
 
 main $@

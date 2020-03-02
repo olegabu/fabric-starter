@@ -93,7 +93,7 @@ function printDbg() {
     if [[ "$DEBUG" = "false" ]]; then
         local outputdev=/dev/null
     else
-        local outputdev=/dev/stdout
+        local outputdev=/dev/stderr
     fi
     if (( $# == 0 )) ; then
         while read -r line ; do
@@ -268,7 +268,7 @@ function curlItGet() {
     local url=$1
     local cdata=$2
     local wtoken=$3
-    echo curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}" >/dev/tty
+    echo curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}" | printDbg
     res=$(curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     local http_code="${res:${#res}-3}" #only 3 last symbols
     if [ ${#res} -eq 3 ]; then
@@ -404,7 +404,7 @@ function joinChannelAPI() {
 
 
 function ListPeerChannels() {
-
+    
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     local result=$(docker exec cli.${ORG}.${DOMAIN} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
@@ -416,31 +416,38 @@ function ListPeerChannels() {
     set +f
 }
 
+function getCurrentChaincodeName() {
+    echo ${CHAINCODE_PREFIX:-reference}
+}
+
+
+function getTestChaincodeName() {
+    local channel=${1}
+    echo ${CHAINCODE_PREFIX:-$(getCurrentChaincodeName)}_${channel}
+}
+
 
 function ListPeerChaincodes() {
-
-local channel=${1}
-local org2_=${2}
-local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-
-pushd ${FABRIC_DIR} > /dev/null 
-
-result=$(ORG=${org2_} runCLI "peer chaincode list --installed -C '${TEST_CHANNEL_NAME}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS") 
-local exit_code=$? 
-
-#echo ${result} | tail -n+2 | cut -d ':' -f 2 | cut -d ',' -f 1 | sed -Ee 's/ |\n|\r//g' >/dev/tty
-
-
-popd > /dev/null
-
-printDbg "${result}"
-
-set -f
-IFS=
-echo ${result}
-set +f
-
-setExitCode [ "${exit_code}" = "0" ]
+    
+    local channel=${1}
+    local org2_=${2}
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    
+    pushd ${FABRIC_DIR} > /dev/null
+    
+    result=$(ORG=${org2_} runCLI "peer chaincode list --installed -C '${TEST_CHANNEL_NAME}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
+    local exit_code=$?
+    
+    popd > /dev/null
+    
+    printDbg "${result}"
+    
+    set -f
+    IFS=
+    echo ${result}
+    set +f
+    
+    setExitCode [ "${exit_code}" = "0" ]
 }
 
 function verifyChiancodeInstalled() {
@@ -449,10 +456,80 @@ function verifyChiancodeInstalled() {
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
     local chaincode_name=${chaincode_init_name}_${TEST_CHANNEL_NAME}
     local result=$(ListPeerChaincodes ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
-
-    echo "${result}" 
+    
+    echo "${result}"
     
     setExitCode [ "${result}" = "${chaincode_name}" ]
+}
+
+function createChaincodeArchiveAndReturnPath() {
+    local channel=${1}
+    local chaincode_name=$(getTestChaincodeName ${channel})
+    local chaincode_init_name=$(getCurrentChaincodeName)
+    local chaincode_file_name=${chaincode_name}.zip
+    local zip_chaincode_path="/tmp/${chaincode_file_name}"
+    
+    
+    pushd ${FABRIC_DIR}/chaincode/node/ >/dev/null
+    mkdir ${chaincode_name}
+    cp ${FABRIC_DIR}/chaincode/node/${chaincode_init_name}/* ${FABRIC_DIR}/chaincode/node/${chaincode_name}
+    cd ${FABRIC_DIR}/chaincode/node/ && zip -r ${zip_chaincode_path} ./${chaincode_name}/* | printDbg
+    echo "Chaincode archive created:  $(ls -la ${zip_chaincode_path})" | printDbg
+    rm -rf ${FABRIC_DIR}/chaincode/node/${chaincode_name}
+    popd >/dev/null
+    
+    echo "${zip_chaincode_path}" | printDbg
+    echo "${zip_chaincode_path}"
+    if [ ! -e "${zip_chaincode_path}" ];
+    then
+        exit 1
+    fi
+}
+
+
+function InstalZippedChaincodeAPI() {
+    local channel=${1}
+    local org=${2}
+    local jwt=${3}
+    
+    local zip_file_path=$(createChaincodeArchiveAndReturnPath ${channel})
+    local boundary=$(generateMultipartBoudary)
+    local multipart_header='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
+    multipart_header+=${zip_file_path}'"\r\nContent-Type: "application/zip"\r\n\r\n'
+    
+    local multipart_tail='\r\n\r\n----'
+    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
+    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
+    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
+    multipart_tail+=${boundary}'--\r\n'
+    
+    local tmp_out_file=$(tempfile);
+    trap "rm -f ${tmp_out_file}" EXIT;
+    
+    local api_ip=$(getOrgIp "${org}")
+    local api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
+    trap "rm -f ${zip_chaincode_path}" EXIT;
+    
+    # Composing single binary file to POST via API
+    echo -n -e "${multipart_header}" > "${tmp_out_file}"
+    cat   "${zip_file_path}" >> "${tmp_out_file}"
+    echo -n -e "${multipart_tail}" >> "${tmp_out_file}"
+    
+    
+    res=$(curl http://${api_ip}:${api_port}/chaincodes \
+        -sw ":%{http_code}" \
+        -H "Authorization: Bearer ${jwt}" \
+        -H 'Content-Type: multipart/form-data; boundary=--'${boundary} \
+    --data-binary @"${tmp_out_file}" )
+    
+    
+    http_code=$(echo "${res}" | cut -d':' -f 3)
+    body='"'$(echo "${res}" | cut -d':' -f 1,2)'"'
+    
+    echo ${http_code} | printDbg
+    printDbg ${body}
+    
+    setExitCode [ "${http_code}" = "200" ]
 }
 
 
@@ -462,7 +539,7 @@ function verifyOrgJoinedChannel() {
     local org2_=${2}
     
     local result=$(ListPeerChannels |  grep -E "^${channel}$")
-
+    
     setExitCode [ "${result}" = "${channel}" ]
 }
 
@@ -548,37 +625,37 @@ function runInFabricDir() {
 
 
 function copyTestChiancodeCLI() {
-local channel=${1}
-local org2_=${2}
-local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-
-pushd ${FABRIC_DIR} > /dev/null 
-
-result=$(ORG=${org2_} runCLI \
-"mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
-cp -R /opt/chaincode/node/reference/* \
-/opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}")
-exit_code=$?
-printDbg "${result}"
-
-popd > /dev/null
-setExitCode [ "${exit_code}" = "0" ]
+    local channel=${1}
+    local org2_=${2}
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    
+    pushd ${FABRIC_DIR} > /dev/null
+    
+    result=$(ORG=${org2_} runCLI \
+        "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
+    cp -R /opt/chaincode/node/reference/* \
+    /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}")
+    exit_code=$?
+    printDbg "${result}"
+    
+    popd > /dev/null
+    setExitCode [ "${exit_code}" = "0" ]
 }
 
 
 function installTestChiancodeCLI() {
-local channel=${1}
-local org2_=${2}
-local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-pushd ${FABRIC_DIR} > /dev/null 
-
-
-result=$(ORG=${org2_} runCLI "./container-scripts/network/chaincode-install.sh ${chaincode_init_name}_${TEST_CHANNEL_NAME}") 
-local exit_code=$? 
-
-printDbg "${result}"
-popd > /dev/null
-setExitCode [ "${exit_code}" = "0" ]
+    local channel=${1}
+    local org2_=${2}
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    pushd ${FABRIC_DIR} > /dev/null
+    
+    
+    result=$(ORG=${org2_} runCLI "./container-scripts/network/chaincode-install.sh ${chaincode_init_name}_${TEST_CHANNEL_NAME}")
+    local exit_code=$?
+    
+    printDbg "${result}"
+    popd > /dev/null
+    setExitCode [ "${exit_code}" = "0" ]
 }
 
 
