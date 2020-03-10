@@ -58,7 +58,7 @@ if [ $createResult -eq 0 ]; then
     fi
 fi
 
-invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
+#invokeChaincode ${DNS_CHANNEL:-common} dns "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
 
 if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
     sleep 3

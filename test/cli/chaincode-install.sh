@@ -11,12 +11,17 @@ printToLogAndToScreenCyan "\nInstalling test chaincode in ${org2_}..."
 
 setCurrentActiveOrg ${ORG}
 
+printToLogAndToScreenCyan "\nCopying test chaincode in ${org2_}..."
+
 copyTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org2_}
 
-if [ $? -eq 0 ]; then  
+#if [ $? -eq 0 ]; then  
+
+    printToLogAndToScreenCyan "\nInstalling ${TEST_CHANNEL_NAME}  chaincode in ${org2_}..."
+
     installTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org2_}
 
     printResultAndSetExitCode "Test chaincode installed in ${org2_}"
-else 
-    exit 1
-fi
+#else 
+#    exit 1
+#fi

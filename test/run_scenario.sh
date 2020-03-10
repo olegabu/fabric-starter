@@ -16,6 +16,7 @@ SCENARIO() {
     
     SCRIPT_FOLDER=$1 #cli|curl
     TEST_CHANNEL_NAME=$2
+    TEST_CHAINCODE_NAME=$3
 
 # Creating channels    
 
@@ -28,7 +29,7 @@ SCENARIO() {
 
 
 
-if false; then    
+#if false; then    
     runStep "Test 'The channel is not visible in ORG2'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
     
@@ -44,7 +45,7 @@ if false; then
 #    runStep "Test 'Add ${org2} to the default consortium'"  "${SCRIPT_FOLDER}" \
 #        RUNTEST:  add-org-to-consortium.sh ${TEST_CHANNEL_NAME} ${org1} ${org2}
 #return 0
-fi    
+#fi    
     runStep "Test 'Create another channel in ORG2" "${SCRIPT_FOLDER}" \
         RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY:     test-channel-exists.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
@@ -89,9 +90,6 @@ fi
         RUNTESTNOERRPRINT: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
-
-
-
 #fi
 
 # Chaincode install
@@ -117,6 +115,12 @@ fi
 
 # Chaincode verify operation
 
+    runStep "Test 'Test chaincode invocation and query:  <${org1}> <-> <$org2>'" "${SCRIPT_FOLDER}" \
+	RUN: sleep 15 \
+	RUNTEST: chaincode-invoke.sh ${TEST_CHANNEL_NAME} ${org1} ${TEST_CHAINCODE_NAME} \
+	RUN: sleep 15 \
+	RUNTEST: chaincode-query.sh ${TEST_CHANNEL_NAME} ${org1} ${TEST_CHAINCODE_NAME}
+#        VERIFY: test-chaincode-invoke-result.sh ${TEST_CHANNEL_NAME} ${org2}
 }
 
 export -f SCENARIO

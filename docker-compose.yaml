@@ -255,7 +255,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - PEER0_PORT=${PEER0_PORT:-7051}
       - DISCOVER_AS_LOCALHOST=false
-      - USE_SERVICE_DISCOVERY=false
+#      - USE_SERVICE_DISCOVERY=false
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
       - DNS_USERNAME=${DNS_USERNAME:-common}
       - DNS_PASSWORD=${DNS_PASSWORD:-common}

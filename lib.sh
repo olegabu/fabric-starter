@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source ./lib/util/util.sh
+#source ./lib/util/util.sh
+source lib/util/util.sh
 
 : ${DOMAIN:="example.com"}
 : ${ORDERER_DOMAIN:=${DOMAIN}}
@@ -57,7 +58,12 @@ function runCLIWithComposerOverrides() {
         docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service}
     fi
 
-    [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1 || exit 0
+    if [ $? -ne 0 ]; then  
+        printRedYellow "Error occurred. See console output above." 
+        exit 1
+    else    
+        exit 0
+    fi
 }
 
 
