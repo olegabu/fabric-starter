@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
+export TEST_LAUNCH_DIR=$(pwd)
 
-echo ${BASEDIR}
-source ${BASEDIR}/../../libs/libs.sh
+pushd ${BASEDIR}/../../ >/dev/null
+BASEDIR=.
+source libs/libs.sh 
+
+#echo "run_scenario.sh $$ : Starting in $BRIGHT $RED $(pwd), $WHITE Basedir is $BASEDIR $NORMAL"
 
 ARGS_PASSED=("$@")
 
@@ -126,4 +129,6 @@ SCENARIO() {
 }
 
 export -f SCENARIO
-source ${BASEDIR}/../../libs/lib-scenario.sh $@
+source libs/lib-scenario.sh $@
+
+popd >/dev/null

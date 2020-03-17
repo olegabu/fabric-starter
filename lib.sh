@@ -38,7 +38,7 @@ function runCLIWithComposerOverrides() {
     local command=${3}
     IFS=' ' composeCommandSplitted=($composeCommand)
 
-    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="docker-compose-orderer.yaml" || composeTemplateFile="docker-compose.yaml"
+    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="${FABRIC_STARTER_HOME}/docker-compose-orderer.yaml" || composeTemplateFile="${FABRIC_STARTER_HOME}/docker-compose.yaml"
 
     if [ "${MULTIHOST}" ]; then
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-fdocker-compose-orderer-multihost.yaml" || multihostComposeFile="-fdocker-compose-multihost.yaml"
