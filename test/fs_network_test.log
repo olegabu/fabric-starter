@@ -1,0 +1,2017 @@
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:38 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of  chaincode on reference.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:40 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of  chaincode on reference.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:41 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of  chaincode on reference.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:41 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of  chaincode on reference.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:42 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of  chaincode on reference.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.org1 for  (B[m
+[36mMaking a copy of  chaincode on reference.org1 for  (B[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:43 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:43 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:46 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:46 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:46 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:46 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:47 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:47 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:47 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:47 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:48 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:48 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:48 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:48 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:49 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:49 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:49 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:49 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:50 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:50 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:51 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:51 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:52 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:52 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:52 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:52 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:53 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:53 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:54 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 11:54 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:07 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:07 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:08 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:08 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:08 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:08 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:09 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:09 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:09 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:09 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:09 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:09 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:11 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:11 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on or1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:33 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on or1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:35 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on or1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:35 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[36mMaking a copy of reference chaincode on or1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 16 16:49 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    4 root     root            80 Mar 16 20:06 .
+drwxr-sr-x    4 root     root            80 Mar 16 17:52 ..
+drwxr-sr-x    2 root     root           120 Mar 17 12:36 reference
+drwxr-sr-x    2 root     root           120 Mar 16 20:06 reference_testchannel9925-02
+[1;34m
+Verifing if the - has joined the <-> channel...[m[m[m
+[1;34m
+Verifing if the - has joined the <-> channel...[m[m[m
+[1;34m
+Verifing if the - has joined the <-> channel...[m[m[m
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 13:01 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     staff           60 Mar 17 13:08 .
+drwxr-sr-x    3 root     staff           60 Mar 17 13:08 ..
+drwxr-sr-x    2 root     staff          120 Mar 17 13:08 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 13:01 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     staff           60 Mar 17 13:08 .
+drwxr-sr-x    3 root     staff           60 Mar 17 13:08 ..
+drwxr-sr-x    2 root     staff          120 Mar 17 13:08 reference
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 13:10 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 13:20 .
+drwxr-sr-x    4 root     root            80 Mar 17 13:20 ..
+drwxr-sr-x    2 root     root           120 Mar 17 13:20 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 13:10 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 13:20 .
+drwxr-sr-x    4 root     root            80 Mar 17 13:20 ..
+drwxr-sr-x    2 root     root           120 Mar 17 13:20 reference
+[1;34m
+Verifing if the example.com has joined the <-> channel...[m[m[m
+[1;34m
+Verifing if the example.com has joined the <-> channel...[m[m[m
+[1;34m
+Verifing if the example.com has joined the <-> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:12 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:18 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:18 ..
+drwxr-sr-x    2 root     root           120 Mar 17 14:18 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:12 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:18 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:18 ..
+drwxr-sr-x    2 root     root           120 Mar 17 14:18 reference
+[1;34m
+Verifing if the example.net has joined the <-> channel...[m[m[m
+[1;34m
+Verifing if the example.com has joined the <-> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:12 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:18 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:18 ..
+drwxr-sr-x    2 root     root           120 Mar 17 14:24 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:12 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:18 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:18 ..
+drwxr-sr-x    2 root     root           120 Mar 17 14:24 reference
+[1;34m
+Verifing if the org1 has joined the <org1> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 17 14:47 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 17 14:47 reference
+[1;34m
+Verifing if the org1 has joined the <-example.com> channel...[m[m[m
+[1;34m
+Verifing if the org1 has joined the <-example.com> channel...[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+These containers <	t.org1.example.com
+	t.org2.example.com> are missing or not running
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+These containers <	t.org1.example.com
+	t.org2.example.com> are missing or not running
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[31mThese containers <	t.org1.example.com
+	t.org2.example.com> are missing or not running(B[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[31mThese containers:\n	t.org1.example.com
+	t.org2.example.com\n are missing or not running(B[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[31mThese containers are missing or are not running:	t.org1.example.com
+	t.org2.example.com (B[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing all test network containers example.com are up and running[m[m[m
+[1;32mOK: All the Fabric Starter Test docker containers are up and running[m[m[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+[31mThese containers are missing or are not running:api.org1.example.com
+api.org2.example.com
+	api.org2.org1
+ca.org1.example.com
+ca.org2.example.com
+	ca.org2.org1
+couchdb.peer0.org1.example.com
+couchdb.peer0.org2.example.com
+	couchdb.peer0.org2.org1
+dev-peer0.org1.example.com-dns-1.0
+dev-peer0.org2.example.com-dns-1.0
+orderer.example.com
+	orderer.org1
+peer0.org1.example.com
+peer0.org2.example.com
+	peer0.org2.org1
+www.example.com
+	www.org1
+www.org1.example.com
+www.org2.example.com
+	www.org2.org1 (B[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+[1;32mOK: All the test network containers are up and running[m[m[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+[31mThese containers are missing or are not running:api.org2.example.com
+	api.org3.example.com
+ca.org2.example.com
+	ca.org3.example.com
+couchdb.peer0.org2.example.com
+	couchdb.peer0.org3.example.com
+peer0.org2.example.com
+	peer0.org3.example.com
+www.org2.example.com
+	www.org3.example.com (B[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+[31mThese containers are missing or are not running:	api.org3.example.com
+	ca.org3.example.com
+	couchdb.peer0.org3.example.com
+	peer0.org3.example.com
+	www.org3.example.com (B[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+[31mThese containers are missing or are not running:	api.org3.example.com
+	ca.org3.example.com
+	couchdb.peer0.org3.example.com
+	peer0.org3.example.com
+	www.org3.example.com (B[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+[31mThese containers are missing or are not running:api.org1.example.com
+api.org2.example.com
+ca.org1.example.com
+ca.org2.example.com
+couchdb.peer0.org1.example.com
+couchdb.peer0.org2.example.com
+dev-peer0.org1.example.com-dns-1.0
+dev-peer0.org2.example.com-dns-1.0
+	orderer.
+orderer.example.com
+peer0.org1.example.com
+peer0.org2.example.com
+	www.
+www.example.com
+www.org1.example.com
+www.org2.example.com (B[m
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 4001
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 18 09:20 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 18 09:20 reference
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 08:35 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 08:35 reference
+[1;34m
+Verifing if the <sberbank> channel exists in sberbank.test.network...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-03-19 12:01:01.776 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-03-19 12:01:01.778 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 12:49 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 12:49 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 12:55 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 12:55 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 12:59 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 12:59 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:00 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:00 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:04 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:04 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:06 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:06 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:12 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:12 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:15 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:15 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:16 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:16 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:17 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:17 reference
+[36mMaking a copy of reference chaincode on org1.exa,ple.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.exa,ple.com for  (B[m
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:20 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:20 reference
+[1;34m
+Verifing if the <org1> channel exists in org1.example.com...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:26 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:26 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:31 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:31 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:32 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:32 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:34 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:34 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:35 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:35 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:37 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:37 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:38 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:38 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:42 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:42 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:42 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:42 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:48 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:48 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:49 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:49 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:51 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:51 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:52 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:52 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:53 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:53 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:53 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:53 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:57 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:57 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:57 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 13:57 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:02 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:02 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:03 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:03 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:06 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:06 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:06 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:06 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:07 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:07 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:07 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:07 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:07 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:07 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:08 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:08 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:09 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:09 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:09 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:09 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:10 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:10 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:10 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:10 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:12 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:12 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:12 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:12 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:12 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:12 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:13 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:13 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:14 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:14 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:15 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:15 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:30 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:30 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:31 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:31 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:31 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:31 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:32 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 19 14:32 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 20 10:37 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 17 14:40 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 17 14:47 .
+drwxr-sr-x    4 root     root            80 Mar 17 14:47 ..
+drwxr-sr-x    2 root     root           120 Mar 20 10:37 reference
+[1;34m
+Verifing if the <sber> channel exists in sberbank.example.network...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-03-22 16:02:14.081 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-03-22 16:02:14.082 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+Differences found: 1
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+Differences found: 1
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+Differences found: 1
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+1 differences found: 
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+0 differences found: 
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network rca.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+0 differences found: ca.sberbank.example.network rca.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network rca.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+Differences found: ca.sberbank.example.network rca.sberbank.example.network
+api.alpha.example.network api.sberbank.example.network ca.alpha.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network api.alpha.example.network api.sberbank.example.network ca.alpha.example.network ca.sberbank.example.network cli.alpha.example.network cli.orderer.example.network cli.sberbank.example.network couchdb.peer0.alpha.example.network couchdb.peer0.sberbank.example.network orderer.example.network peer0.alpha.example.network peer0.sberbank.example.network www.alpha.example.network www.example.network www.sberbank.example.network
+Differences found: ca.sberbank.example.network
+api.sberbank.example.network api.alpha.example.network ca.alpha.example.network cli.orderer.example.network cli.sberbank.example.network cli.alpha.example.network couchdb.peer0.sberbank.example.network couchdb.peer0.alpha.example.network orderer.example.network peer0.sberbank.example.network peer0.alpha.example.network www.sberbank.example.network www.example.network www.alpha.example.network cli.alpha.example.network peer0.alpha.example.network www.alpha.example.network api.alpha.example.network ca.alpha.example.network couchdb.peer0.alpha.example.network cli.sberbank.example.network peer0.sberbank.example.network ca.sberbank.example.network api.sberbank.example.network www.sberbank.example.network couchdb.peer0.sberbank.example.network cli.orderer.example.network orderer.example.network www.example.network
+Differences found: ca.sberbank.example.network
+->api.sberbank.example.network ->api.alpha.example.network ->ca.alpha.example.network ->cli.orderer.example.network ->cli.sberbank.example.network ->cli.alpha.example.network ->couchdb.peer0.sberbank.example.network ->couchdb.peer0.alpha.example.network ->orderer.example.network ->peer0.sberbank.example.network ->peer0.alpha.example.network ->www.sberbank.example.network ->www.example.network ->www.alpha.example.network <-cli.alpha.example.network <-peer0.alpha.example.network <-www.alpha.example.network <-api.alpha.example.network <-ca.alpha.example.network <-couchdb.peer0.alpha.example.network <-cli.sberbank.example.network <-peer0.sberbank.example.network <-ca.sberbank.example.network <-api.sberbank.example.network <-www.sberbank.example.network <-couchdb.peer0.sberbank.example.network <-cli.orderer.example.network <-orderer.example.network <-www.example.network
+Differences found: <-api.alpha.example.network ->api.alpha.example.network <-api.sberbank.example.network ->api.sberbank.example.network <-ca.alpha.example.network ->ca.alpha.example.network <-ca.sberbank.example.network <-cli.alpha.example.network ->cli.alpha.example.network <-cli.orderer.example.network ->cli.orderer.example.network <-cli.sberbank.example.network ->cli.sberbank.example.network <-couchdb.peer0.alpha.example.network ->couchdb.peer0.alpha.example.network <-couchdb.peer0.sberbank.example.network ->couchdb.peer0.sberbank.example.network <-orderer.example.network ->orderer.example.network <-peer0.alpha.example.network ->peer0.alpha.example.network <-peer0.sberbank.example.network ->peer0.sberbank.example.network <-www.alpha.example.network ->www.alpha.example.network <-www.example.network ->www.example.network <-www.sberbank.example.network ->www.sberbank.example.network
+->api.sberbank.example.network ->api.alpha.example.network ->ca.alpha.example.network ->cli.orderer.example.network ->cli.sberbank.example.network ->cli.alpha.example.network ->couchdb.peer0.sberbank.example.network ->couchdb.peer0.alpha.example.network ->orderer.example.network ->peer0.sberbank.example.network ->peer0.alpha.example.network ->www.sberbank.example.network ->www.example.network ->www.alpha.example.network <-cli.alpha.example.network <-peer0.alpha.example.network <-www.alpha.example.network <-api.alpha.example.network <-ca.alpha.example.network <-couchdb.peer0.alpha.example.network <-cli.sberbank.example.network <-peer0.sberbank.example.network <-ca.sberbank.example.network <-api.sberbank.example.network <-www.sberbank.example.network <-couchdb.peer0.sberbank.example.network <-cli.orderer.example.network <-orderer.example.network <-www.example.network
+Differences found: <-ca.sberbank.example.network
+->api.sberbank.example.network ->api.alpha.example.network ->ca.sberbank.example.network ->ca.alpha.example.network ->cli.orderer.example.network ->cli.sberbank.example.network ->cli.alpha.example.network ->couchdb.peer0.sberbank.example.network ->couchdb.peer0.alpha.example.network ->orderer.example.network ->peer0.sberbank.example.network ->peer0.alpha.example.network ->www.sberbank.example.network ->www.example.network ->www.alpha.example.network <-cli.alpha.example.network <-peer0.alpha.example.network <-www.alpha.example.network <-api.alpha.example.network <-ca.alpha.example.network <-couchdb.peer0.alpha.example.network <-cli.sberbank.example.network <-peer0.sberbank.example.network <-ca.sberbank.example.network <-api.sberbank.example.network <-www.sberbank.example.network <-couchdb.peer0.sberbank.example.network <-cli.orderer.example.network <-orderer.example.network <-www.example.network
+Differences found: 
+
+Differences found: 
+Differences found: 
+Differences found: 
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->ca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+Differences found: 
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->ca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+Differences found: 
+Orgs_running:
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->ca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+
+Orgsin_list:
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+Differences found: 
+Orgs_running:
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->ca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+
+Orgs_in_list:
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+Differences found: 
+Orgs_running:
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->ca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+
+Orgs_in_list:
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+
+Differences found: 
+Orgs_running:
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->rca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+
+Orgs_in_list:
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+
+Differences found: <-ca.alpha.example.network ->rca.alpha.example.network
+Containers_running:
+->api.sberbank.example.network
+->api.alpha.example.network
+->ca.sberbank.example.network
+->rca.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->cli.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->orderer.example.network
+->peer0.sberbank.example.network
+->peer0.alpha.example.network
+->www.sberbank.example.network
+->www.example.network
+->www.alpha.example.network
+
+Containers_in_list:
+<-cli.alpha.example.network
+<-peer0.alpha.example.network
+<-www.alpha.example.network
+<-api.alpha.example.network
+<-ca.alpha.example.network
+<-couchdb.peer0.alpha.example.network
+<-cli.sberbank.example.network
+<-peer0.sberbank.example.network
+<-ca.sberbank.example.network
+<-api.sberbank.example.network
+<-www.sberbank.example.network
+<-couchdb.peer0.sberbank.example.network
+<-cli.orderer.example.network
+<-orderer.example.network
+<-www.example.network
+
+Differences found: <-ca.alpha.example.network ->rca.alpha.example.network
+Containers_running:
+->api.alpha.example.network
+->api.sberbank.example.network
+->ca.sberbank.example.network
+->cli.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->orderer.example.network
+->peer0.alpha.example.network
+->peer0.sberbank.example.network
+->rca.alpha.example.network
+->www.alpha.example.network
+->www.example.network
+->www.sberbank.example.network
+
+Containers_in_list:
+<-api.alpha.example.network
+<-api.sberbank.example.network
+<-ca.alpha.example.network
+<-ca.sberbank.example.network
+<-cli.alpha.example.network
+<-cli.orderer.example.network
+<-cli.sberbank.example.network
+<-couchdb.peer0.alpha.example.network
+<-couchdb.peer0.sberbank.example.network
+<-orderer.example.network
+<-peer0.alpha.example.network
+<-peer0.sberbank.example.network
+<-www.alpha.example.network
+<-www.example.network
+<-www.sberbank.example.network
+
+Differences found: <-ca.alpha.example.network ->rca.alpha.example.network
+Containers_running:
+->api.alpha.example.network
+->api.sberbank.example.network
+->ca.sberbank.example.network
+->cli.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->orderer.example.network
+->peer0.alpha.example.network
+->peer0.sberbank.example.network
+->rca.alpha.example.network
+->www.alpha.example.network
+->www.example.network
+->www.sberbank.example.network
+
+Containers_in_list:
+<-api.alpha.example.network
+<-api.sberbank.example.network
+<-ca.alpha.example.network
+<-ca.sberbank.example.network
+<-cli.alpha.example.network
+<-cli.orderer.example.network
+<-cli.sberbank.example.network
+<-couchdb.peer0.alpha.example.network
+<-couchdb.peer0.sberbank.example.network
+<-orderer.example.network
+<-peer0.alpha.example.network
+<-peer0.sberbank.example.network
+<-www.alpha.example.network
+<-www.example.network
+<-www.sberbank.example.network
+
+Differences found: <-ca.alpha.example.network ->rca.alpha.example.network
+Containers_running:
+->api.alpha.example.network
+->api.sberbank.example.network
+->ca.alpha.example.network
+->ca.sberbank.example.network
+->cli.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->orderer.example.network
+->peer0.alpha.example.network
+->peer0.sberbank.example.network
+->www.alpha.example.network
+->www.example.network
+->www.sberbank.example.network
+
+Containers_in_list:
+<-api.alpha.example.network
+<-api.sberbank.example.network
+<-ca.alpha.example.network
+<-ca.sberbank.example.network
+<-cli.alpha.example.network
+<-cli.orderer.example.network
+<-cli.sberbank.example.network
+<-couchdb.peer0.alpha.example.network
+<-couchdb.peer0.sberbank.example.network
+<-orderer.example.network
+<-peer0.alpha.example.network
+<-peer0.sberbank.example.network
+<-www.alpha.example.network
+<-www.example.network
+<-www.sberbank.example.network
+
+Differences found: 
+[1;34m
+Verifing that all the test network containers example.network are up and running[m[m[m
+Containers_running:
+->api.alpha.example.network
+->api.sberbank.example.network
+->ca.alpha.example.network
+->ca.sberbank.example.network
+->cli.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->orderer.example.network
+->peer0.alpha.example.network
+->peer0.sberbank.example.network
+->www.alpha.example.network
+->www.example.network
+->www.sberbank.example.network
+
+Containers_in_list:
+<-api.alpha.example.network
+<-api.sberbank.example.network
+<-ca.alpha.example.network
+<-ca.sberbank.example.network
+<-cli.alpha.example.network
+<-cli.orderer.example.network
+<-cli.sberbank.example.network
+<-couchdb.peer0.alpha.example.network
+<-couchdb.peer0.sberbank.example.network
+<-orderer.example.network
+<-peer0.alpha.example.network
+<-peer0.sberbank.example.network
+<-www.alpha.example.network
+<-www.example.network
+<-www.sberbank.example.network
+
+Differences found: 
+[1;32mOK: All the test network containers are up and running[m[m[m
+[1;34m
+Verifing that all the test network containers example.network are up and running[m[m[m
+Containers_running:
+->api.alpha.example.network
+->api.sberbank.example.network
+->ca.alpha.example.network
+->ca.sberbank.example.network
+->cli.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->orderer.example.network
+->peer0.alpha.example.network
+->peer0.sberbank.example.network
+->www.alpha.example.network
+->www.example.network
+->www.sberbank.example.network
+
+Containers_in_list:
+<-api.alpha.example.network
+<-api.sberbank.example.network
+<-ca.alpha.example.network
+<-ca.sberbank.example.network
+<-cli.alpha.example.network
+<-cli.orderer.example.network
+<-cli.sberbank.example.network
+<-couchdb.peer0.alpha.example.network
+<-couchdb.peer0.sberbank.example.network
+<-orderer.example.network
+<-peer0.alpha.example.network
+<-peer0.sberbank.example.network
+<-www.alpha.example.network
+<-www.example.network
+<-www.sberbank.example.network
+
+Differences found: 
+[1;32mOK: All the test network containers are up and running[m[m[m
+[1;34m
+Verifing that all the test network containers example.network are up and running[m[m[m
+Containers_running:
+->api.alpha.example.network
+->api.sberbank.example.network
+->ca.sberbank.example.network
+->cli.alpha.example.network
+->cli.orderer.example.network
+->cli.sberbank.example.network
+->couchdb.peer0.alpha.example.network
+->couchdb.peer0.sberbank.example.network
+->orderer.example.network
+->peer0.alpha.example.network
+->peer0.sberbank.example.network
+->rca.alpha.example.network
+->www.alpha.example.network
+->www.example.network
+->www.sberbank.example.network
+
+Containers_in_list:
+<-api.alpha.example.network
+<-api.sberbank.example.network
+<-ca.alpha.example.network
+<-ca.sberbank.example.network
+<-cli.alpha.example.network
+<-cli.orderer.example.network
+<-cli.sberbank.example.network
+<-couchdb.peer0.alpha.example.network
+<-couchdb.peer0.sberbank.example.network
+<-orderer.example.network
+<-peer0.alpha.example.network
+<-peer0.sberbank.example.network
+<-www.alpha.example.network
+<-www.example.network
+<-www.sberbank.example.network
+
+Differences found: <-ca.alpha.example.network ->rca.alpha.example.network
+[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[36mMaking a copy of reference chaincode on vtb.example.network for  (B[m
+[36mMaking a copy of reference chaincode on mib.example.network for  (B[m
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 23 07:50 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 23 07:50 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 23 07:50 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 23 07:50 reference
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh example.com org1 api.org2.example.com,ca.org2.example.com,cli.org2.example.com,couchdb.peer0.org2.example.com,peer0.org2.example.com,www.org2.example.com
+Step: 1_cli Test 'Docker containers for vbox <org1> machine are up and running'
+VERIFY: ./test-containers-list.sh example.com org1 api.org2.example.com,ca.org2.example.com,cli.org2.example.com,couchdb.peer0.org2.example.com,peer0.org2.example.com,www.org2.example.com
+Step 1_cli: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh example.com org2 api.org2.example.com,ca.org2.example.com,cli.org2.example.com,couchdb.peer0.org2.example.com,peer0.org2.example.com,www.org2.example.com
+Step: 2_cli Test 'Docker containers for vbox <org2> machine are up and running'
+VERIFY: ./test-containers-list.sh example.com org2 api.org2.example.com,ca.org2.example.com,cli.org2.example.com,couchdb.peer0.org2.example.com,peer0.org2.example.com,www.org2.example.com
+Step 2_cli: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
+Step: 3_cli Test 'Organization org1 is in <common> channel'
+VERIFY: test-channel-exists.sh common org1
+queryContainerNetworkSettings returns:
+Step 3_cli: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
+Step: 4_cli Test 'Organization org2 is in <common> channel'
+VERIFY: test-channel-exists.sh common org2
+queryContainerNetworkSettings returns:
+Step 4_cli: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
+Step: 5_cli Test 'Organization org1 joined the <common> channel'
+VERIFY: test-join-channel.sh common org1
+queryContainerNetworkSettings returns:
+Error: No such container: cli.org1.example.com
+Step 5_cli: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
+Step: 6_cli Test 'Organization org2 joined the <common> channel'
+VERIFY: test-join-channel.sh common org2
+queryContainerNetworkSettings returns:
+Error: No such container: cli.org2.example.com
+Step 6_cli: exit code 1

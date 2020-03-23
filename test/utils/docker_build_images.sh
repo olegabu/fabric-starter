@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+unset DOCKER_REGISTRY
 
 pushd ../../
 
