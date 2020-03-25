@@ -12,15 +12,15 @@ main() {
     
     
     
-    local gDomain=$(vbox_guessDomain)
-    local gOrgs=$(vbox_guessOrgs)
+#    local gDomain=$(vbox_guessDomain)
+#    local gOrgs=$(vbox_guessOrgs)
     
     if [ $# -lt 2 ]; then
         printUsage " vbox-test-env <DOMAIN> <ORG1> [<ORG2>] [<ORG3>]..." " source ./vbox-test-env.sh ${gDomain} ${gOrgs}"
         return 1
     fi
     
-    printCyan "Local domain '${gDomain}' and '${gOrgs}' orgs found"
+#    printCyan "Local domain '${gDomain}' and '${gOrgs}' orgs found"
     
     
     
@@ -30,11 +30,12 @@ main() {
     export -f resetCurrentActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
-    export -f getFabricContainersList
-    export -f getContainersList
+    export -f  copyChaincodeToMachine
+#    export -f getFabricContainersList
+#    export -f getContainersList
     
-    copyChaincodeToMachine ${2} "reference"  #????????
-    copyChaincodeToMachine ${3} "reference"  #TODO
+#    copyChaincodeToMachine ${2} "reference"  #????????
+#    copyChaincodeToMachine ${3} "reference"  #TODO
     
 }
 
@@ -78,18 +79,18 @@ function copyChaincodeToMachine() {
 }
 
 
-function getContainersList() {
-    local org=${1}
-    local machine=$(getDockerMachineName ${org})
-    printDbg "Retrieving container list from ${machine} for ${org}"
-    local result=$(docker-machine ssh ${machine} -- sh -c "'docker container ls -a -q | xargs docker container inspect -f \"{{index .NetworkSettings.Networks}} {{.Name}} {{.State.Running}}\"'" |\
-    cut -d '[' -f 2 | cut -d ']' --output-delimiter='' -f 1,2 | cut -d ':' --output-delimiter=' ' -f 1,2,3 | cut -d ' ' -f 1,3,4 | sed -e 's/\///' )
+# function getContainersList() {
+#     local org=${1}
+#     local machine=$(getDockerMachineName ${org})
+#     printDbg "Retrieving container list from ${machine} for ${org}"
+#     local result=$(docker-machine ssh ${machine} -- sh -c "'docker container ls -a -q | xargs docker container inspect -f \"{{index .NetworkSettings.Networks}} {{.Name}} {{.State.Running}}\"'" |\
+#     cut -d '[' -f 2 | cut -d ']' --output-delimiter='' -f 1,2 | cut -d ':' --output-delimiter=' ' -f 1,2,3 | cut -d ' ' -f 1,3,4 | sed -e 's/\///' )
 
-    set -f
-    IFS=
-    echo "${result}"
-    set +f
-}
+#     set -f
+#     IFS=
+#     echo "${result}"
+#     set +f
+# }
 
 
 main $@

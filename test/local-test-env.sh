@@ -15,7 +15,7 @@ main() {
     return 1
     fi
 
-    printCyan "Local domain '${gDomain}' and '${gOrgs}' orgs found"
+#    printCyan "Local domain '${gDomain}' and '${gOrgs}' orgs found"
 
     unset MULTIHOST
     
@@ -25,8 +25,8 @@ main() {
     export -f resetCurrentActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
-    export -f getContainersList
-    export -f getFabricContainersList
+#    export -f getContainersList
+#    export -f getFabricContainersList
 
     source ${BASEDIR}/common-test-env.sh $@
 #    getFabricContainersList
@@ -61,17 +61,17 @@ echo ${result}
 set +f
 }
 
-function getContainersList() {
-local org_server=${1}
+# function getContainersList() {
+# local org_server=${1}
 
-local result=$(docker container ls -a -q | xargs -I {} docker container inspect -f "{{index .NetworkSettings.Networks}} {{.Name}} {{.State.Running}}" {} | \
-	       cut -d '[' -f 2 | cut -d ']' --output-delimiter='' -f 1,2 | cut -d ':' --output-delimiter=' ' -f 1,2,3 | cut -d ' ' -f 1,3,4 | sed -e 's/\///' )
+# local result=$(docker container ls -a -q | xargs -I {} docker container inspect -f "{{index .NetworkSettings.Networks}} {{.Name}} {{.State.Running}}" {} | \
+# 	       cut -d '[' -f 2 | cut -d ']' --output-delimiter='' -f 1,2 | cut -d ':' --output-delimiter=' ' -f 1,2,3 | cut -d ' ' -f 1,3,4 | sed -e 's/\///' )
 
-set -f
-IFS=
-echo ${result}
-set +f
-}
+# set -f
+# IFS=
+# echo ${result}
+# set +f
+# }
 
 
 

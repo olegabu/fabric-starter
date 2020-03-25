@@ -2015,3 +2015,204 @@ VERIFY: test-join-channel.sh common org2
 queryContainerNetworkSettings returns:
 Error: No such container: cli.org2.example.com
 Step 6_cli: exit code 1
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 24 12:59 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 24 12:59 reference
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel25524 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel25524 sberbank
+Step: 1_api Test 'Create Channel in ORG1'
+RUNTEST: create-channel.sh testchannel25524 sberbank VERIFY: test-channel-exists.sh testchannel25524 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0NH0.lm8xkIxf8R-_AVMy0xYqEJOn4Qhy9oaSuBwMZSnQIc0"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0NH0.lm8xkIxf8R-_AVMy0xYqEJOn4Qhy9oaSuBwMZSnQIc0", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0NH0.lm8xkIxf8R-_AVMy0xYqEJOn4Qhy9oaSuBwMZSnQIc0
+queryContainerNetworkSettings returns: 7051
+Step 1_api: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel25524 alphaj
+Step: 2_api Test 'The channel is not visible in ORG2'
+VERIFY: test-channel-does-not-exist.sh testchannel25524 alphaj
+queryContainerNetworkSettings returns:
+Step 2_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh ^^^^^^testchannel25524 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh ^^^^^^testchannel25524 sberbank
+Step: 3_api Test 'Can not create the channel with incorrect name in ORG1'
+RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel25524 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel25524 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0NX0.pclr35Y_D3gfsaKhNwdfRTQ7hyYo_VItieVjwkqO4CA"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0NX0.pclr35Y_D3gfsaKhNwdfRTQ7hyYo_VItieVjwkqO4CA", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0NX0.pclr35Y_D3gfsaKhNwdfRTQ7hyYo_VItieVjwkqO4CA
+queryContainerNetworkSettings returns: 7051
+Step 3_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel25524 alphaj ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel25524 alphaj
+Step: 4_api Test 'Can not create channel in ORG2 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel25524 alphaj VERIFY: test-channel-does-not-exist.sh testchannel25524 alphaj
+queryContainerNetworkSettings returns:
+curlItGet http://127.0.0.1:/users {"username":"user4","password":"passw"}
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+Got JWT: 000
+queryContainerNetworkSettings returns:
+Step 4_api: exit code 0
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel25524-02 alphaj ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel25524-02 alphaj
+Step: 5_api Test 'Create another channel in ORG2
+RUNTEST: create-channel.sh testchannel25524-02 alphaj VERIFY: test-channel-exists.sh testchannel25524-02 alphaj
+queryContainerNetworkSettings returns:
+curlItGet http://127.0.0.1:/users {"username":"user4","password":"passw"}
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+Got JWT: 000
+queryContainerNetworkSettings returns:
+Step 5_api: exit code 1
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel25524-02 sberbank
+Step: 6_api Test 'This new channel is not visible in ORG1'
+VERIFY: test-channel-does-not-exist.sh testchannel25524-02 sberbank
+queryContainerNetworkSettings returns: 7051
+Step 6_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel25524-02 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel25524-02 sberbank
+Step: 7_api Test 'Can not create channel in ORG1 with the same name'
+RUNTESTNOERRPRINT: create-channel.sh testchannel25524-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel25524-02 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0N30.0LEo4u8Lb-6RSEWOQaSq-srlUCvezHb90cozl6HHeH8"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0N30.0LEo4u8Lb-6RSEWOQaSq-srlUCvezHb90cozl6HHeH8", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0N30.0LEo4u8Lb-6RSEWOQaSq-srlUCvezHb90cozl6HHeH8
+queryContainerNetworkSettings returns: 7051
+Step 7_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/add-org-to-channel.sh testchannel25524 sberbank alphaj ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel25524 sberbank alphaj
+Step: 8_api Test 'Add <alphaj> to channel <testchannel25524> created by the <sberbank> org'
+RUNTESTNOERRPRINT: add-org-to-channel.sh testchannel25524 sberbank alphaj VERIFY: test-channel-add-org.sh testchannel25524 sberbank alphaj
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0OH0.kKripKXKNSlhEYflkFlrd9LBeTp9fGdWCyW75Cm0hlc"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0OH0.kKripKXKNSlhEYflkFlrd9LBeTp9fGdWCyW75Cm0hlc", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0OH0.kKripKXKNSlhEYflkFlrd9LBeTp9fGdWCyW75Cm0hlc
+queryContainerNetworkSettings returns: 7051
+Step 8_api: exit code 1
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/add-org-to-channel.sh testchannel25524-02 alphaj sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel25524-02 alphaj sberbank
+Step: 9_api Test 'Add <sberbank> to channel <testchannel25524-02> created by the <alphaj> org'
+RUNTESTNOERRPRINT: add-org-to-channel.sh testchannel25524-02 alphaj sberbank VERIFY: test-channel-add-org.sh testchannel25524-02 alphaj sberbank
+queryContainerNetworkSettings returns:
+curlItGet http://127.0.0.1:/users {"username":"user4","password":"passw"}
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+Got JWT: 000
+queryContainerNetworkSettings returns:
+Step 9_api: exit code 1
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel25524 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel25524 sberbank
+Step: 10_api Test 'Join <sberbank> to the <testchannel25524> chanel created by the <sberbank> org'
+RUNTESTNOERRPRINT: join-channel.sh testchannel25524 sberbank VERIFY: test-join-channel.sh testchannel25524 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0OX0.ujBlE3mvwo-u6hx9ibMRzY1sgda_-ubKyzTMWUixglQ"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0OX0.ujBlE3mvwo-u6hx9ibMRzY1sgda_-ubKyzTMWUixglQ", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg0OX0.ujBlE3mvwo-u6hx9ibMRzY1sgda_-ubKyzTMWUixglQ
+queryContainerNetworkSettings returns: 7051
+[34m2020-03-24 15:14:09.807 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Step 10_api: exit code 1
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel25524 alphaj ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel25524 alphaj
+Step: 11_api Test 'Join <alphaj> to the <testchannel25524> chanel created by the <sberbank> org'
+RUNTESTNOERRPRINT: join-channel.sh testchannel25524 alphaj VERIFY: test-join-channel.sh testchannel25524 alphaj
+queryContainerNetworkSettings returns:
+curlItGet http://127.0.0.1:/users {"username":"user4","password":"passw"}
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+Got JWT: 000
+queryContainerNetworkSettings returns:
+Error: No such container: cli.alphaj.example.network
+Step 11_api: exit code 1
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel25524-02 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel25524-02 sberbank
+Step: 12_api Test 'Join <sberbank> to the <testchannel25524-02> chanel created by the <alphaj> org'
+RUNTESTNOERRPRINT: join-channel.sh testchannel25524-02 sberbank VERIFY: test-join-channel.sh testchannel25524-02 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1MH0.MUxzRI6vY2zRckzwh0ncs_lRpRopYTpXeob0XkNGooY"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1MH0.MUxzRI6vY2zRckzwh0ncs_lRpRopYTpXeob0XkNGooY", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1MH0.MUxzRI6vY2zRckzwh0ncs_lRpRopYTpXeob0XkNGooY
+queryContainerNetworkSettings returns: 7051
+[34m2020-03-24 15:14:11.102 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Step 12_api: exit code 1
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel25524-02 alphaj ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel25524-02 alphaj
+Step: 13_api Test 'Join <alphaj> to the <testchannel25524-02> chanel created by the <alphaj> org'
+RUNTESTNOERRPRINT: join-channel.sh testchannel25524-02 alphaj VERIFY: test-join-channel.sh testchannel25524-02 alphaj
+queryContainerNetworkSettings returns:
+curlItGet http://127.0.0.1:/users {"username":"user4","password":"passw"}
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+Got JWT: 000
+queryContainerNetworkSettings returns:
+Error: No such container: cli.alphaj.example.network
+Step 13_api: exit code 1
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-install.sh testchannel25524 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel25524 sberbank
+Step: 14_api Test 'Install test chaincode by <sberbank> to the <testchannel25524> channel'
+RUNTEST: chaincode-install.sh testchannel25524 sberbank VERIFY: test-chaincode-installed.sh testchannel25524 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1MX0.NTsse_PFZ-FI3WFsRiKsYCotW31l5pMlrTaTZplmc6Q"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1MX0.NTsse_PFZ-FI3WFsRiKsYCotW31l5pMlrTaTZplmc6Q", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1MX0.NTsse_PFZ-FI3WFsRiKsYCotW31l5pMlrTaTZplmc6Q
+queryContainerNetworkSettings returns: 7051
+Step 14_api: exit code 1
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-install.sh testchannel25524-02 alphaj ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel25524-02 alphaj
+Step: 15_api Test 'Install test chaincode by <alphaj> to the <testchannel25524-02> channel'
+RUNTEST: chaincode-install.sh testchannel25524-02 alphaj VERIFY: test-chaincode-installed.sh testchannel25524-02 alphaj
+queryContainerNetworkSettings returns:
+curlItGet http://127.0.0.1:/users {"username":"user4","password":"passw"}
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+Got JWT: 000
+queryContainerNetworkSettings returns:
+Step 15_api: exit code 1
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-instantiate.sh testchannel25524 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-instantiated.sh testchannel25524 sberbank
+Step: 16_api Test 'Instantiate test chaincode by <sberbank> to the <testchannel25524> channel'
+RUNTEST: chaincode-instantiate.sh testchannel25524 sberbank VERIFY: test-chaincode-instantiated.sh testchannel25524 sberbank
+queryContainerNetworkSettings returns: 4000
+curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1Mn0.Mr8zq9pcFlXL-wQIpL-GfqJWJytqqOIQF216BWnRB_c"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1Mn0.Mr8zq9pcFlXL-wQIpL-GfqJWJytqqOIQF216BWnRB_c", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTA2Mjg1Mn0.Mr8zq9pcFlXL-wQIpL-GfqJWJytqqOIQF216BWnRB_c
+queryContainerNetworkSettings returns: 7051
+Step 16_api: exit code 1
+sleep 15 ; NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-invoke.sh testchannel25524 sberbank reference_testchannel25524 ;sleep 15 ; NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-query.sh testchannel25524 sberbank reference_testchannel25524
+Step: 17_api Test 'Test chaincode invocation and query:  <sberbank> <-> <alphaj>'
+RUN: sleep 15 RUNTEST: chaincode-invoke.sh testchannel25524 sberbank reference_testchannel25524 RUN: sleep 15 RUNTEST: chaincode-query.sh testchannel25524 sberbank reference_testchannel25524
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 25 07:45 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 25 07:45 reference
+[36mMaking a copy of reference chaincode on org1.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 25 07:48 reference
+[36mMaking a copy of reference chaincode on org2.example.com for  (B[m
+lrwxrwxrwx    1 root     root            13 Mar 23 07:35 /tmp -> /mnt/sda1/tmp
+total 0
+drwxr-sr-x    3 root     root            60 Mar 23 07:50 .
+drwxr-sr-x    4 root     root            80 Mar 23 07:50 ..
+drwxr-sr-x    2 root     root           120 Mar 25 07:48 reference
+[36mMaking a copy of reference chaincode on org1.exaple.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.exaple.com for  (B[m
+[36mMaking a copy of reference chaincode on org1.exaple.com for  (B[m
+[36mMaking a copy of reference chaincode on org2.exaple.com for  (B[m
+[1;34m
+Verifing that all the test network containers example.com are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
