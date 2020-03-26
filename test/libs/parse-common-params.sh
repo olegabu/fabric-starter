@@ -6,7 +6,7 @@
 main() {
     export TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME:? Channel name is required.}}
     # export active org
-    export ORG=${2:-${ORG1:-org1}}
+    # export ORG=${2:-${ORG1:-org1}} #deprecated
     
     export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}

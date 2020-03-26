@@ -69,17 +69,17 @@ function startOrg() {
     local org=${1?: org is required}
     local ordererMachineName=${2?: ordererMachineName is required}
 
-#    info "Copying custom chaincodes and middleware to remote machine ${machine}"
-#    copyDirToMachine ${org} templates ${WORK_DIR}/templates
-#    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
-#    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
-#    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
+    info "Copying custom chaincodes and middleware to remote machine ${machine}"
+    copyDirToMachine ${org} templates ${WORK_DIR}/templates
+    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
+    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
+    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
 #
-#    info "Copying dns chaincode and middleware to remote machine ${machine}"
-#    orgMachineName=`getDockerMachineName $org`
-#    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
-#    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
-#    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
+    info "Copying dns chaincode and middleware to remote machine ${machine}"
+    orgMachineName=`getDockerMachineName $org`
+    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
+    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
+    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
 
 
     info "Creating member organization $org"

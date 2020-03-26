@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+
+    orgs=${@}
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
-    echo "Deploing network for <${DEPLOYMENT_TARGET}> target. Domain: $DOMAIN, Orgs: ${ORG1} ${ORG2}"
+
+    echo "Deploing network for <${DEPLOYMENT_TARGET}> target. Domain: $DOMAIN, Orgs: ${orgs[@]}"
     echo "\${DOCKER_REGISTRY} is set to: <${DOCKER_REGISTRY}>"
     echo "\${MULTIHOST} is set to: <${MULTIHOST}>"
     sleep 2
@@ -11,12 +14,12 @@
         local)
 	    unset MULTIHOST
 	    pushd ../../ >/dev/null
-	    ./network-create-local.sh ${ORG1} ${ORG2}
+	    ./network-create-local.sh ${@}
 	    popd >/dev/null
         ;;
         vbox)
 	    pushd ../../ >/dev/null
-	    ./network-docker-machine-create.sh  ${ORG1} ${ORG2}
+	    ./network-docker-machine-create.sh  ${@}
     #VBOX_HOST_IP=${VBOX_HOST_IP:-$(virtualboxHostIpAddr)}
     #REGISTRY="${VBOX_HOST_IP}:5000"
     #export DOCKER_REGISTRY=${DOCKER_REGISTRY:-${REGISTRY}}

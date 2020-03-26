@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-export TEST_LAUNCH_DIR=$(pwd)
+#export TEST_LAUNCH_DIR=$(pwd)
 
 pushd ${BASEDIR}/../../ >/dev/null
 BASEDIR=.
@@ -18,7 +18,7 @@ ARGS_REQUIRED=(
 
 
 SCENARIO() {
-
+    
     runStep "Test 'Docker containers for orderer are up and running'" "${SCRIPT_FOLDER}" \
         VERIFY:   ./test-containers-list.sh ${org1} ${DOMAIN} orderer www cli.orderer 
 
@@ -42,6 +42,8 @@ SCENARIO() {
 }
 
 export -f SCENARIO
+
+
 source libs/lib-scenario.sh $@
 
 popd >/dev/null
