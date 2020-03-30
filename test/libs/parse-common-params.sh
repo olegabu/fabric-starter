@@ -6,7 +6,7 @@
 main() {
     export TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME:? Channel name is required.}}
     # export active org
-    # export ORG=${2:-${ORG1:-org1}} #deprecated
+#    export ORG=${2:-${ORG1:-org1}} #deprecated
     
     export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
@@ -19,8 +19,11 @@ main() {
 function scenarioArgsParse() {
     local num_args_required="${#ARGS_REQUIRED[@]}"
     local num_args_passed="${#ARGS_PASSED[@]}"
+
+    echo "${num_args_required} ${num_args_passed}" >/dev/tty
+
     
-    if [ ${num_args_required} != ${num_args_passed} ];
+    if [ ${num_args_required} -gt ${num_args_passed} ];
     then
         
         for argument in "${ARGS_REQUIRED[@]}"

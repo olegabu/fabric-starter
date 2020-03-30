@@ -5,10 +5,12 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-printToLogAndToScreenCyan "\nJoining  ${ORG} to the ${TEST_CHANNEL_NAME} channel..."
+org=${2}
 
-setCurrentActiveOrg ${ORG}
+printToLogAndToScreenCyan "\nJoining  ${org} to the ${TEST_CHANNEL_NAME} channel..."
+
+setCurrentActiveOrg ${org}
 
 runInFabricDir ./channel-join.sh ${TEST_CHANNEL_NAME} 
 
-printResultAndSetExitCode "Organization ${ORG} has been joined to ${TEST_CHANNEL_NAME} channel"
+printResultAndSetExitCode "Organization ${org} has been joined to ${TEST_CHANNEL_NAME} channel"

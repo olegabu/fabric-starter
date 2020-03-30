@@ -5,23 +5,23 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=$2
+org=${2}
 
-printToLogAndToScreenCyan "\nInstalling test chaincode in ${org2_}..."
+printToLogAndToScreenCyan "\nInstalling test chaincode in ${org}..."
 
-setCurrentActiveOrg ${ORG}
+setCurrentActiveOrg ${org}
 
-printToLogAndToScreenCyan "\nCopying test chaincode in ${org2_}..."
+printToLogAndToScreenCyan "\nCopying test chaincode in ${org}..."
 
-copyTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org2_}
+copyTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org}
 
 #if [ $? -eq 0 ]; then  
 
-    printToLogAndToScreenCyan "\nInstalling ${TEST_CHANNEL_NAME}  chaincode in ${org2_}..."
+    printToLogAndToScreenCyan "\nInstalling ${TEST_CHANNEL_NAME}  chaincode in ${org}..."
 
-    installTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org2_}
+    installTestChiancodeCLI ${TEST_CHANNEL_NAME} ${org}
 
-    printResultAndSetExitCode "Test chaincode installed in ${org2_}"
+    printResultAndSetExitCode "Test chaincode installed in ${org}"
 #else 
 #    exit 1
 #fi

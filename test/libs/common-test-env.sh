@@ -6,6 +6,7 @@ source ${BASEDIR}/libs.sh
 export DOMAIN=${1:-${DOMAIN:-example.com}}
 
 source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $2 $3
+#source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $@
 
 export ORG1=${2:-org1}
 export ORG2=${3:-org2}

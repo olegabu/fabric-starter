@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
+
+echo $BASEDIR
+
+ARGS_PASSED=("$@")
+source ../libs/libs.sh
+source ../libs/parse-common-params.sh $@
+#scenarioArgsParse
+
+#sleep 10
 
     orgs=${@}
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}

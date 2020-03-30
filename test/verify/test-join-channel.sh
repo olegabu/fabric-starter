@@ -4,10 +4,13 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-printToLogAndToScreenBlue "\nVerifing if the ${ORG} has joined the <$TEST_CHANNEL_NAME> channel..."
+org=${2}
 
-setCurrentActiveOrg ${ORG}
 
-verifyOrgJoinedChannel "${TEST_CHANNEL_NAME}" "${ORG}" "${DOMAIN}"
+printToLogAndToScreenBlue "\nVerifing if the ${org} has joined the <$TEST_CHANNEL_NAME> channel..."
 
-printResultAndSetExitCode "The ${ORG} has joined the <$TEST_CHANNEL_NAME> channel"
+setCurrentActiveOrg ${org}
+
+verifyOrgJoinedChannel "${TEST_CHANNEL_NAME}" "${org}" "${DOMAIN}"
+
+printResultAndSetExitCode "The ${org} has joined the <$TEST_CHANNEL_NAME> channel"

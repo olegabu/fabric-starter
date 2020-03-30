@@ -1,0 +1,34 @@
+api/create-channel.sh:JWT=$(APIAuthorize ${ORG})
+api/create-channel.sh:    createChannelAPI ${TEST_CHANNEL_NAME} ${ORG} ${JWT}
+api/add-org-to-channel.sh:JWT=$(APIAuthorize ${ORG})
+api/add-org-to-channel.sh:    addOrgToTheChannel ${TEST_CHANNEL_NAME} ${ORG} ${JWT} ${org2_}
+api/chaincode-query.sh:setCurrentActiveOrg ${ORG}
+api/can-not-create-channel.sh:JWT=$(APIAuthorize ${ORG})
+api/can-not-create-channel.sh:    ! createChannelAPI ${TEST_CHANNEL_NAME} ${ORG} ${JWT}
+cli/add-org-to-consortium.sh:setCurrentActiveOrg ${ORG}
+cli/chaincode-install.sh:setCurrentActiveOrg ${ORG}
+cli/join-channel.sh:setCurrentActiveOrg ${ORG}
+cli/chaincode-invoke.sh:setCurrentActiveOrg ${ORG}
+cli/create-channel.sh:setCurrentActiveOrg ${ORG}
+cli/add-org-to-channel.sh:setCurrentActiveOrg ${ORG}
+cli/chaincode-query.sh:setCurrentActiveOrg ${ORG}
+cli/can-not-create-channel.sh:setCurrentActiveOrg ${ORG}
+cli/chaincode-instantiate.sh:setCurrentActiveOrg ${ORG}
+libs/libs.sh:    local result=$(docker exec cli.${ORG}.${DOMAIN} /bin/bash -c \
+libs/libs.sh:    local result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
+libs/common-test-env.sh:export ORG1=${2:-org1}
+libs/common-test-env.sh:export ORG2=${3:-org2}
+local-test-env.sh:    export $ORG=${org}
+local-test-env.sh:    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+vbox-test-env.sh:    export $ORG=$org
+vbox-test-env.sh:    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+verify/test-channel-add-org.sh:setCurrentActiveOrg ${ORG}
+verify/test-chaincode-installed.sh:setCurrentActiveOrg ${ORG}
+verify/test-channel-exists.sh:printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${ORG}.${DOMAIN}..."
+verify/test-channel-exists.sh:setCurrentActiveOrg ${ORG}
+verify/test-channel-exists.sh:verifyChannelExists "${TEST_CHANNEL_NAME}" "${ORG}" "${DOMAIN}"
+verify/test-join-channel.sh:setCurrentActiveOrg ${ORG}
+verify/test-join-channel.sh:verifyOrgJoinedChannel "${TEST_CHANNEL_NAME}" "${ORG}" "${DOMAIN}"
+verify/test-chaincode-instantiated.sh:setCurrentActiveOrg ${ORG}
+verify/test-channel-does-not-exist.sh:setCurrentActiveOrg ${ORG}
+verify/test-channel-does-not-exist.sh:! verifyChannelExists "${TEST_CHANNEL_NAME}" "${ORG}" "$DOMAIN"

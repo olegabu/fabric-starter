@@ -5,14 +5,14 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=$2
+org=${2}
 
-printToLogAndToScreenCyan "\nInstantiate test chaincode in ${TEST_CHANNEL_NAME} in ${org2_}..."
+printToLogAndToScreenCyan "\nInstantiate test chaincode in ${TEST_CHANNEL_NAME} in ${org}..."
 
-setCurrentActiveOrg ${ORG}
+setCurrentActiveOrg ${org}
 
-instantiateTestChaincodeCLI ${TEST_CHANNEL_NAME} ${org2_}
+instantiateTestChaincodeCLI ${TEST_CHANNEL_NAME} ${org}
 
-printResultAndSetExitCode "Test chaincode instantiated in ${TEST_CHANNEL_NAME} by ${org2_}"
+printResultAndSetExitCode "Test chaincode instantiated in ${TEST_CHANNEL_NAME} by ${org}"
 
 

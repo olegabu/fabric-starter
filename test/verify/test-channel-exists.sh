@@ -4,10 +4,12 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${ORG}.${DOMAIN}..."
+org=${2}
 
-setCurrentActiveOrg ${ORG}
+printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${org}.${DOMAIN}..."
 
-verifyChannelExists "${TEST_CHANNEL_NAME}" "${ORG}" "${DOMAIN}"
+setCurrentActiveOrg ${org}
 
-printResultAndSetExitCode "The channel <$TEST_CHANNEL_NAME> exists and visible to ${ORG}"
+verifyChannelExists "${TEST_CHANNEL_NAME}" "${org}" "${DOMAIN}"
+
+printResultAndSetExitCode "The channel <$TEST_CHANNEL_NAME> exists and visible to ${org}"

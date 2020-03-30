@@ -4,15 +4,16 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=$3
+org=${2}
+orgAdd=${3}
 
-printToLogAndToScreenCyan  "Add ${org2_} to the ${TEST_CHANNEL_NAME} channel using API..." | printToLogAndToScreen
-JWT=$(APIAuthorize ${ORG})
+printToLogAndToScreenCyan  "Add ${orgAdd} to the ${TEST_CHANNEL_NAME} channel using API..." | printToLogAndToScreen
+JWT=$(APIAuthorize ${org})
 
 
 if [ $? -eq 0 ]; then  
-    addOrgToTheChannel ${TEST_CHANNEL_NAME} ${ORG} ${JWT} ${org2_}
-    printResultAndSetExitCode "Organization ${org2_} added to ${TEST_CHANNEL_NAME} channel"
+    addOrgToTheChannel ${TEST_CHANNEL_NAME} ${org} ${JWT} ${orgAdd}
+    printResultAndSetExitCode "Organization ${orgAdd} added to ${TEST_CHANNEL_NAME} channel"
 else 
     exit 1
 fi

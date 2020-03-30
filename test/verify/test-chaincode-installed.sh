@@ -4,13 +4,13 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=${2}
+org=${2}
 
 
-printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in ${org2_} org..."
+printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in ${org} org..."
 
-setCurrentActiveOrg ${ORG}
+setCurrentActiveOrg ${org}
 
-verifyChiancodeInstalled "${TEST_CHANNEL_NAME}" "${org2_}"
+verifyChiancodeInstalled "${TEST_CHANNEL_NAME}" "${org}"
 
-printResultAndSetExitCode "The test chaincode installed in ${org2_}"
+printResultAndSetExitCode "The test chaincode installed in ${org}"

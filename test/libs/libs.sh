@@ -46,7 +46,11 @@ function getRandomChannelName() {
 
 
 function setExitCode() {
-    eval "${@}" 2>/dev/null
+    #echo $? >/dev/tty
+    #eval "echo aaaa; ${@}" 2>/dev/tty
+    #echo "Executing: ${@}" >/dev/tty
+    eval "${@}"
+    #echo $? >/dev/tty
 }
 
 
@@ -512,7 +516,10 @@ function verifyChannelExists() {
     #  local domain=${3}
     
     local result=$(queryPeer ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
+    printDbg "Expect: ${channel}, got: ${result}" 
     
+    #echo $( [ "a" = "b" ]; echo $? >/dev/tty)
+    #echo $([ "${result}" = "${channel}_" ] ; echo $? >/dev/tty)
     setExitCode [ "${result}" = "${channel}" ]
 }
 

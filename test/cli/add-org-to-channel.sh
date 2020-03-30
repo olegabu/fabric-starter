@@ -5,12 +5,13 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=$3
+org=$2
+orgAdd=$3
 
-printToLogAndToScreenCyan "\nAdd ${org2_} to the ${TEST_CHANNEL_NAME} channel..."
+printToLogAndToScreenCyan "\nAdd ${orgAdd} to the ${TEST_CHANNEL_NAME} channel..."
 
-setCurrentActiveOrg ${ORG}
+setCurrentActiveOrg ${org}
 
-runInFabricDir ./channel-add-org.sh ${TEST_CHANNEL_NAME} ${org2_}
+runInFabricDir ./channel-add-org.sh ${TEST_CHANNEL_NAME} ${orgAdd}
 
-printResultAndSetExitCode "Organization ${org2_} added to ${TEST_CHANNEL_NAME} channel"
+printResultAndSetExitCode "Organization ${orgAdd} added to ${TEST_CHANNEL_NAME} channel"

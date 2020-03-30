@@ -4,10 +4,15 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${ORG}.${DOMAIN}..."
+org=${2}
 
-setCurrentActiveOrg ${ORG}
 
-! verifyChannelExists "${TEST_CHANNEL_NAME}" "${ORG}" "$DOMAIN"
+printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${org}.${DOMAIN}..."
 
-printResultAndSetExitCode "The channel <$TEST_CHANNEL_NAME> does not exist and in not visible to ${ORG}"
+setCurrentActiveOrg ${org}
+
+! verifyChannelExists "${TEST_CHANNEL_NAME}" "${org}" "$DOMAIN"
+
+#echo "Exit code: $?" >/dev/tty
+
+printResultAndSetExitCode "The channel <$TEST_CHANNEL_NAME> does not exist and in not visible to ${org}"

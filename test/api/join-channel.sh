@@ -4,14 +4,14 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org_=$2
+org=${2}
 
-printToLogAndToScreenCyan "Joining ${org_}.${DOMAIN} to the ${TEST_CHANNEL_NAME} channel using API..." | printToLogAndToScreen 
-JWT=$(APIAuthorize ${org_})
+printToLogAndToScreenCyan "Joining ${org}.${DOMAIN} to the ${TEST_CHANNEL_NAME} channel using API..." | printToLogAndToScreen 
+JWT=$(APIAuthorize ${org})
 
 if [ $? -eq 0 ]; then
-    joinChannelAPI ${TEST_CHANNEL_NAME} ${org_} ${JWT}
-    printResultAndSetExitCode " ${org_} joined to ${TEST_CHANNEL_NAME} channel "
+    joinChannelAPI ${TEST_CHANNEL_NAME} ${org} ${JWT}
+    printResultAndSetExitCode " ${org} joined to ${TEST_CHANNEL_NAME} channel "
 else 
     exit 1
 fi

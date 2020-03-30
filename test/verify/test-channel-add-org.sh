@@ -3,12 +3,13 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
-org2_=$3
+org=$2
+orgAdd=$3
 
-printToLogAndToScreenBlue "\nVerifing if the <$org2_> added to ${TEST_CHANNEL_NAME} ..."
+printToLogAndToScreenBlue "\nVerifing if the <$orgAdd> added to ${TEST_CHANNEL_NAME} ..."
 
-setCurrentActiveOrg ${ORG}
+setCurrentActiveOrg ${orgAdd}
 
-verifyOrgIsInChannel "${TEST_CHANNEL_NAME}" "${org2_}" "${DOMAIN}"
+verifyOrgIsInChannel "${TEST_CHANNEL_NAME}" "${orgAdd}" "${DOMAIN}"
 
-printResultAndSetExitCode "Organization <$org2_> is in the channel <$TEST_CHANNEL_NAME>."
+printResultAndSetExitCode "Organization <$orgAdd> is in the channel <$TEST_CHANNEL_NAME>."
