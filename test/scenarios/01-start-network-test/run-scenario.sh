@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-#export TEST_LAUNCH_DIR=$(pwd)
+export TEST_LAUNCH_DIR=$(pwd)
 
 pushd ${BASEDIR}/../../ >/dev/null
 BASEDIR=.
@@ -34,11 +34,11 @@ SCENARIO() {
     runStep "Test 'Organization <${org2}> is in <common> channel'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-exists.sh 'common' ${org2} 
 
-    runStep "Test 'Organization <${org1}> joined the <common> channel'" "${SCRIPT_FOLDER}" \
-        VERIFY:  test-join-channel.sh 'common' ${org1}
+     runStep "Test 'Organization <${org1}> joined the <common> channel'" "${SCRIPT_FOLDER}" \
+         VERIFY:  test-join-channel.sh 'common' ${org1}
 
-    runStep "Test 'Organization <${org2}> joined the <common> channel'" "${SCRIPT_FOLDER}" \
-        VERIFY:  test-join-channel.sh 'common' ${org2}
+     runStep "Test 'Organization <${org2}> joined the <common> channel'" "${SCRIPT_FOLDER}" \
+         VERIFY:  test-join-channel.sh 'common' ${org2}
 }
 
 export -f SCENARIO

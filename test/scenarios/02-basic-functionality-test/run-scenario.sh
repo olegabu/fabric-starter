@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-#export TEST_LAUNCH_DIR=$(pwd)
+export TEST_LAUNCH_DIR=$(pwd)
+
 
 pushd ${BASEDIR}/../../ >/dev/null
 BASEDIR=.
 source libs/libs.sh 
+echo > ${FSTEST_LOG_FILE}    
 
 #echo "run_scenario.sh $$ : Starting in $BRIGHT $RED $(pwd), $WHITE Basedir is $BASEDIR $NORMAL"
 
@@ -24,7 +26,6 @@ SCENARIO() {
     TEST_CHAINCODE_NAME=$3
 
 echo "Running scenario for ${TEST_CHANNEL_NAME} ${org1} ${org2}"
-sleep 3
 
 
 # Creating channels    
@@ -32,14 +33,14 @@ sleep 3
     TEST_CHANNEL_WRONG_NAME="^^^^^^"${TEST_CHANNEL_NAME}
     TEST_SECOND_CHANNEL_NAME=${TEST_CHANNEL_NAME}"-02"
 
-    runStep "Test 'Create <${TEST_CHANNEL_NAME}> Channel in ORG1'" "${SCRIPT_FOLDER}" \
+    runStep "Test 'Create <${TEST_CHANNEL_NAME}> channel in ORG1: <${org1}>'" "${SCRIPT_FOLDER}" \
         RUNTEST:    create-channel.sh       ${TEST_CHANNEL_NAME} ${org1} \
         VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1}
 
 
 
 #if false; then    
-    runStep "Test 'The channel is not visible in ORG2'" "${SCRIPT_FOLDER}" \
+    runStep "Test 'The channel is not visible in ORG2: <${org2}>'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
     
     runStep "Test 'Can not create the channel with incorrect name in ORG1'" "${SCRIPT_FOLDER}" \
@@ -55,7 +56,7 @@ sleep 3
 #        RUNTEST:  add-org-to-consortium.sh ${TEST_CHANNEL_NAME} ${org1} ${org2}
 #return 0
 #fi    
-    runStep "Test 'Create another channel in ORG2'" "${SCRIPT_FOLDER}" \
+    runStep "Test 'Create new channel <${TEST_SECOND_CHANNEL_NAME}> in ORG2'" "${SCRIPT_FOLDER}" \
         RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
         VERIFY:     test-channel-exists.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
 

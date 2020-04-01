@@ -1,13 +1,10 @@
 #!/usr/bin/env bash 
 
-# source #
+[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
+source "${BASEDIR}"/../../libs/libs.sh
+source "${BASEDIR}"/../../libs/parse-common-params.sh $@
 
-# ARGS_PASSED=("$@")
-
-export ARGS_REQUIRED=(
-     "First_organization":org1
-     "Second_organization":org2
- )
+export ARGS_REQUIRED="First_organization:org1 Second_organization:org2"
 
 pushd ../>/dev/null
 ./create-standard-network.sh $@

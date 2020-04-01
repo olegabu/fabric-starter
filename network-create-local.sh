@@ -104,7 +104,7 @@ do
     export COMPOSE_PROJECT_NAME=${ORG}
     peer0_port=$((peer0_port + 1000))
     info "Joining $org to channel ${channel}"
-    PEER0_PORT=$peer0_port ./channel-join.sh ${channel}
+###    PEER0_PORT=$peer0_port ./channel-join.sh ${channel}
     if [ -n "${chaincode_install_args}" ]; then
         PEER0_PORT=$peer0_port ./chaincode-install.sh ${chaincode_install_args}
     fi

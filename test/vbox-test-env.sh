@@ -15,8 +15,8 @@ main() {
 #    local gDomain=$(vbox_guessDomain)
 #    local gOrgs=$(vbox_guessOrgs)
     
-    if [ $# -lt 2 ]; then
-        printUsage " vbox-test-env <DOMAIN> <ORG1> [<ORG2>] [<ORG3>]..." " source ./vbox-test-env.sh ${gDomain} ${gOrgs}"
+    if [ $# -lt 1 ]; then
+        printYellow "source ./vbox-test-env <DOMAIN>" " source ./vbox-test-env.sh ${gDomain} ${gOrgs}"
         return 1
     fi
     
@@ -41,9 +41,13 @@ main() {
 
 function setCurrentActiveOrg() {
     local org="${1:?Org name is required}"
-    connectMachine ${org} 1>&2
+#echo "........................." >/dev/tty
+    connectMachine ${org} 1>&2 2>/dev/null 1>/dev/null
+#echo ".................*........" >/dev/tty
+
     export $ORG=$org
     export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+
 }
 
 function resetCurrentActiveOrg {
@@ -57,8 +61,11 @@ function getOrgIp() {
 
 function getOrgContainerPort () {
     local org="${1:?Org name is required}"
+
     setCurrentActiveOrg "${org}"
+
     getContainerPort $@
+
     resetCurrentActiveOrg
 }
 

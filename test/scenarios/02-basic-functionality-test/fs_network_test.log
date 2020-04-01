@@ -1,0 +1,688 @@
+
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 api sberbank vtb 
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel4166 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel4166 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_api Test 'Create <testchannel4166> channel in ORG1: <sberbank>'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: create-channel.sh testchannel4166 sberbank VERIFY: test-channel-exists.sh testchannel4166 sberbank
+[1;36mCreating testchannel4166 channel in sberbank.example.net using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYxMX0.xTdpAe6yLKQtzYG41GC9NEGOvWp_vZS6sfl8-5u_JAU"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYxMX0.xTdpAe6yLKQtzYG41GC9NEGOvWp_vZS6sfl8-5u_JAU", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYxMX0.xTdpAe6yLKQtzYG41GC9NEGOvWp_vZS6sfl8-5u_JAU
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels {"channelId":"testchannel4166","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYxMX0.xTdpAe6yLKQtzYG41GC9NEGOvWp_vZS6sfl8-5u_JAU
+curlGetIt got _ [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.net:7051","name":"peer0.sberbank.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.net:7051","grpc.default_authority":"peer0.sberbank.example.net:7051"}}}]200 _ result
+body is [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.net:7051","name":"peer0.sberbank.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.net:7051","grpc.default_authority":"peer0.sberbank.example.net:7051"}}}], code is 200
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.sberbank.example.net:7051","name":"peer0.sberbank.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.net:7051","grpc.default_authority":"peer0.sberbank.example.net:7051"}}}] 200
+[1;32mOK: Channel <testchannel4166> creation run sucsessfuly.[m[m[m
+[1;34m
+Verifing if the <testchannel4166> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:40:17.420 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:40:17.423 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-04-01 10:40:17.425 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-04-01 10:40:17.425 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+{
+"channel_id": "testchannel4166",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T10:40:14Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileIaEnKc _testchannel4166_
+Expect: testchannel4166, got: testchannel4166
+[1;32mOK: The channel <testchannel4166> exists and visible to sberbank[m[m[m
+Step 1_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel4166 vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_api Test 'The channel is not visible in ORG2: <vtb>'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-does-not-exist.sh testchannel4166 vtb
+[1;34m
+Verifing if the <testchannel4166> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:40:19.875 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:40:19.878 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+cat /tmp/filercEl0R _null_
+Expect: testchannel4166, got: null
+[1;32mOK: The channel <testchannel4166> does not exist and in not visible to vtb[m[m[m
+Step 2_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh ^^^^^^testchannel4166 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh ^^^^^^testchannel4166 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_api Test 'Can not create the channel with incorrect name in ORG1'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: create-channel.sh ^^^^^^testchannel4166 sberbank VERIFY: test-channel-does-not-exist.sh ^^^^^^testchannel4166 sberbank
+[1;36mCreating ^^^^^^testchannel4166 channel in sberbank.example.net using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYyM30.9tGOCJ7rR9kf7lRq3Wb894VxiUKjxpuR0nl2sAqPw-Y"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYyM30.9tGOCJ7rR9kf7lRq3Wb894VxiUKjxpuR0nl2sAqPw-Y", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYyM30.9tGOCJ7rR9kf7lRq3Wb894VxiUKjxpuR0nl2sAqPw-Y
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels {"channelId":"^^^^^^testchannel4166","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYyM30.9tGOCJ7rR9kf7lRq3Wb894VxiUKjxpuR0nl2sAqPw-Y
+curlGetIt got _ "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel4166\""500 _ result
+body is "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel4166\"", code is 500
+"Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel4166\"" 500
+parse error: Unfinished string at EOF at line 1, column 7
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the <^^^^^^testchannel4166> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:40:30.111 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:40:30.114 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+cat /tmp/fileB0o0zy _null_
+Expect: ^^^^^^testchannel4166, got: null
+[1;32mOK: The channel <^^^^^^testchannel4166> does not exist and in not visible to sberbank[m[m[m
+Step 3_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel4166 vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel4166 vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_api Test 'Can not create channel in ORG2 with the same name'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: create-channel.sh testchannel4166 vtb VERIFY: test-channel-does-not-exist.sh testchannel4166 vtb
+[1;36mCreating testchannel4166 channel in vtb.example.net using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYzM30.xtlG31vPXCMWiIs5iX4MFt-brl5e0VwJdYTYRmTZSfs"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYzM30.xtlG31vPXCMWiIs5iX4MFt-brl5e0VwJdYTYRmTZSfs", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYzM30.xtlG31vPXCMWiIs5iX4MFt-brl5e0VwJdYTYRmTZSfs
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/channels {"channelId":"testchannel4166","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzYzM30.xtlG31vPXCMWiIs5iX4MFt-brl5e0VwJdYTYRmTZSfs
+curlGetIt got _ "Invalid results returned ::FORBIDDEN"500 _ result
+body is "Invalid results returned ::FORBIDDEN", code is 500
+"Invalid results returned ::FORBIDDEN" 500
+parse error: Unfinished string at EOF at line 1, column 8
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the <testchannel4166> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:40:40.672 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:40:40.677 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+cat /tmp/filexIma9x _null_
+Expect: testchannel4166, got: null
+[1;32mOK: The channel <testchannel4166> does not exist and in not visible to vtb[m[m[m
+Step 4_api: exit code 0
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel4166-02 vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel4166-02 vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_api Test 'Create new channel <testchannel4166-02> in ORG2'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: create-channel.sh testchannel4166-02 vtb VERIFY: test-channel-exists.sh testchannel4166-02 vtb
+[1;36mCreating testchannel4166-02 channel in vtb.example.net using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY0M30.HM1TgxV30OWE8VSFnO-Y5Vi-QjftS0u7uZiv-G8Y4PM"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY0M30.HM1TgxV30OWE8VSFnO-Y5Vi-QjftS0u7uZiv-G8Y4PM", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY0M30.HM1TgxV30OWE8VSFnO-Y5Vi-QjftS0u7uZiv-G8Y4PM
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/channels {"channelId":"testchannel4166-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY0M30.HM1TgxV30OWE8VSFnO-Y5Vi-QjftS0u7uZiv-G8Y4PM
+curlGetIt got _ [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.vtb.example.net:7051","name":"peer0.vtb.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.net:7051","grpc.default_authority":"peer0.vtb.example.net:7051"}}}]200 _ result
+body is [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.vtb.example.net:7051","name":"peer0.vtb.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.net:7051","grpc.default_authority":"peer0.vtb.example.net:7051"}}}], code is 200
+[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.vtb.example.net:7051","name":"peer0.vtb.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.net:7051","grpc.default_authority":"peer0.vtb.example.net:7051"}}}] 200
+[1;32mOK: Channel <testchannel4166-02> creation run sucsessfuly.[m[m[m
+[1;34m
+Verifing if the <testchannel4166-02> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:40:50.725 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:40:50.728 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-04-01 10:40:50.731 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-04-01 10:40:50.732 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+{
+"channel_id": "testchannel4166-02",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T10:40:47Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/file1ebaK2 _testchannel4166-02_
+Expect: testchannel4166-02, got: testchannel4166-02
+[1;32mOK: The channel <testchannel4166-02> exists and visible to vtb[m[m[m
+Step 5_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel4166-02 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 6_api Test 'This new channel is not visible in ORG1'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-does-not-exist.sh testchannel4166-02 sberbank
+[1;34m
+Verifing if the <testchannel4166-02> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:40:53.443 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:40:53.446 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+cat /tmp/fileEP7SoU _null_
+Expect: testchannel4166-02, got: null
+[1;32mOK: The channel <testchannel4166-02> does not exist and in not visible to sberbank[m[m[m
+Step 6_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/create-channel.sh testchannel4166-02 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-does-not-exist.sh testchannel4166-02 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 7_api Test 'Can not create channel in ORG1 with the same name'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: create-channel.sh testchannel4166-02 sberbank VERIFY: test-channel-does-not-exist.sh testchannel4166-02 sberbank
+[1;36mCreating testchannel4166-02 channel in sberbank.example.net using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY1Nn0.s1NQHLwaNp253efMtLOwnQ1SOTvK_TRKZQRsh8lTLCE"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY1Nn0.s1NQHLwaNp253efMtLOwnQ1SOTvK_TRKZQRsh8lTLCE", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY1Nn0.s1NQHLwaNp253efMtLOwnQ1SOTvK_TRKZQRsh8lTLCE
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels {"channelId":"testchannel4166-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY1Nn0.s1NQHLwaNp253efMtLOwnQ1SOTvK_TRKZQRsh8lTLCE
+curlGetIt got _ "Invalid results returned ::FORBIDDEN"500 _ result
+body is "Invalid results returned ::FORBIDDEN", code is 500
+"Invalid results returned ::FORBIDDEN" 500
+parse error: Unfinished string at EOF at line 1, column 8
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the <testchannel4166-02> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:41:03.372 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:41:03.375 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+Error: can't read the block: &{FORBIDDEN}
+null
+cat /tmp/fileK5tJTi _null_
+Expect: testchannel4166-02, got: null
+[1;32mOK: The channel <testchannel4166-02> does not exist and in not visible to sberbank[m[m[m
+Step 7_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/add-org-to-channel.sh testchannel4166 sberbank sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel4166 sberbank sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 8_api Test 'Add <sberbank> to channel <testchannel4166> created by the <sberbank> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: add-org-to-channel.sh testchannel4166 sberbank sberbank VERIFY: test-channel-add-org.sh testchannel4166 sberbank sberbank
+[1;36mAdd sberbank to the testchannel4166 channel using API...[m[m[m
+[1;36mAdd sberbank to the testchannel4166 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY2NX0.LDf1s1cRhk5tblxVGuagPByWXtdRpuOptwpnFk8ktiE"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY2NX0.LDf1s1cRhk5tblxVGuagPByWXtdRpuOptwpnFk8ktiE", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY2NX0.LDf1s1cRhk5tblxVGuagPByWXtdRpuOptwpnFk8ktiE
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels/testchannel4166/orgs {"orgId":"sberbank","orgIp":"192.168.99.100","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY2NX0.LDf1s1cRhk5tblxVGuagPByWXtdRpuOptwpnFk8ktiE
+curlGetIt got _ 200 _ result
+body is empty, code is 200
+200
+[1;32mOK: Organization sberbank added to testchannel4166 channel[m[m[m
+[1;34m
+Verifing if the <sberbank> added to testchannel4166 ...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:41:19.103 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:41:19.105 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-04-01 10:41:19.107 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-04-01 10:41:19.108 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"config": {
+"admins": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKVENDQWN1Z0F3SUJBZ0lRTm9rL3ZTckZDWVFzSjV2UnF5cmRFVEFLQmdncWhrak9QUVFEQWpCN01Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RWRNQnNHQTFVRUNoTVVjMkpsY21KaGJtc3VaWGhoYlhCc1pTNXVaWFF4SURBZUJnTlZCQU1UCkYyTmhMbk5pWlhKaVlXNXJMbVY0WVcxd2JHVXVibVYwTUI0WERUSXdNRFF3TVRFd01ERXdNRm9YRFRNd01ETXoKTURFd01ERXdNRm93WHpFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVQpCZ05WQkFjVERWTmhiaUJHY21GdVkybHpZMjh4SXpBaEJnTlZCQU1NR2tGa2JXbHVRSE5pWlhKaVlXNXJMbVY0CllXMXdiR1V1Ym1WME1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRTZhM1llM3RJaFRjZGZSMnYKYWdsbHJjWE1XRFpiTlA0VjhtMGttZGVmeEZ1SzF5NGh6Z0hOcGdMMWJKMHZ2TzhDTEoraDg1cFo2WXJvcURoLwpxL1JNWGFOTk1Fc3dEZ1lEVlIwUEFRSC9CQVFEQWdlQU1Bd0dBMVVkRXdFQi93UUNNQUF3S3dZRFZSMGpCQ1F3CklvQWdHZUFIQ2lVVllZYzJ1a2tPZkZUNG82b3AvRFlwbUZwNWw2QlJ4alRHMHdJd0NnWUlLb1pJemowRUF3SUQKU0FBd1JRSWhBTXVzZ3lPa0thWjNobHphc2V1dlJZeFB0ODgwb0w4UGdDaGgvNlpMRjd3TkFpQjhBMmdOTXJGbgoySmpiZVBSTGZOY1Yydyswb3BsOThlVFdSV0lPdFBrSDRBPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+],
+"crypto_config": {
+"identity_identifier_hash_function": "SHA256",
+"signature_hash_family": "SHA2"
+},
+"fabric_node_ous": null,
+"intermediate_certs": [],
+"name": "sberbank",
+"organizational_unit_identifiers": [],
+"revocation_list": [],
+"root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNZVENDQWdpZ0F3SUJBZ0lSQUsrV3M1TDBhcjZjbk1OanJKa0Y2Y293Q2dZSUtvWkl6ajBFQXdJd2V6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhIVEFiQmdOVkJBb1RGSE5pWlhKaVlXNXJMbVY0WVcxd2JHVXVibVYwTVNBd0hnWURWUVFECkV4ZGpZUzV6WW1WeVltRnVheTVsZUdGdGNHeGxMbTVsZERBZUZ3MHlNREEwTURFeE1EQXhNREJhRncwek1EQXoKTXpBeE1EQXhNREJhTUhzeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZdwpGQVlEVlFRSEV3MVRZVzRnUm5KaGJtTnBjMk52TVIwd0d3WURWUVFLRXhSelltVnlZbUZ1YXk1bGVHRnRjR3hsCkxtNWxkREVnTUI0R0ExVUVBeE1YWTJFdWMySmxjbUpoYm1zdVpYaGhiWEJzWlM1dVpYUXdXVEFUQmdjcWhrak8KUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVFYYmN3ZDBFY1B3WXdHaHNCN2FtZHNvNDdzR292UXltak4vNCttZ01SaApsaysrbmRoQXVDR0dtTUdFN1dJVm53aUIxM2NoZ0llSlU5K0w1cEcrQzlRVG8yMHdhekFPQmdOVkhROEJBZjhFCkJBTUNBYVl3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdJR0NDc0dBUVVGQndNQk1BOEdBMVVkRXdFQi93UUYKTUFNQkFmOHdLUVlEVlIwT0JDSUVJQm5nQndvbEZXR0hOcnBKRG54VStLT3FLZncyS1poYWVaZWdVY1kweHRNQwpNQW9HQ0NxR1NNNDlCQU1DQTBjQU1FUUNJQzdjbTlRU2dueVNXb0FtaWJBbFR6eEdJeFE2a1EzRUpBUWxlK1RwCmZrT21BaUE3WktyT0tKMXpkS2JodXE3Z3Y3S1NxcjQ4RHZxS0NGSm5ORUtYbHpjd0RBPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+],
+"signing_identity": null,
+"tls_intermediate_certs": [],
+"tls_root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNhRENDQWc2Z0F3SUJBZ0lSQU5LdnBiTTJoMjFUQ1BONGNoMmh0eFV3Q2dZSUtvWkl6ajBFQXdJd2ZqRUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhIVEFiQmdOVkJBb1RGSE5pWlhKaVlXNXJMbVY0WVcxd2JHVXVibVYwTVNNd0lRWURWUVFECkV4cDBiSE5qWVM1elltVnlZbUZ1YXk1bGVHRnRjR3hsTG01bGREQWVGdzB5TURBME1ERXhNREF4TURCYUZ3MHoKTURBek16QXhNREF4TURCYU1INHhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saApNUll3RkFZRFZRUUhFdzFUWVc0Z1JuSmhibU5wYzJOdk1SMHdHd1lEVlFRS0V4UnpZbVZ5WW1GdWF5NWxlR0Z0CmNHeGxMbTVsZERFak1DRUdBMVVFQXhNYWRHeHpZMkV1YzJKbGNtSmhibXN1WlhoaGJYQnNaUzV1WlhRd1dUQVQKQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBUS9RaGc2SnlLenU5Vy8wTTQ3Ykl1VVM1QUF0SHFGdFdpWgpDeTJUVE9HZHAycGV1OGlZRWpmYnppTGZ6YkM3R1d5UFNia2N4dHMyOXcyS1JGT2ZaZEdUbzIwd2F6QU9CZ05WCkhROEJBZjhFQkFNQ0FhWXdIUVlEVlIwbEJCWXdGQVlJS3dZQkJRVUhBd0lHQ0NzR0FRVUZCd01CTUE4R0ExVWQKRXdFQi93UUZNQU1CQWY4d0tRWURWUjBPQkNJRUlGbVFqWGVJd1k1cDltTUdoZXZQSldZajJ5RGN4YUV2eUcvNAovcEFFVXpVYU1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRRE1VN2NIdS93dVh0TlhTK1k1WGc1UUdkTlZWRDdZCjRNY2dsK2s1SStJdWdnSWdLNnZZd1NLY1RvamVRNFFNNU9uQitlWERDakhVK0ovaXROQTdHQ1NPRHcwPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+]
+},
+"type": 0
+}
+cat /tmp/fileYJ0W5L _sberbank_
+sberbank
+[1;32mOK: Organization <sberbank> is in the channel <testchannel4166>.[m[m[m
+Step 8_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/add-org-to-channel.sh testchannel4166-02 vtb vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel4166-02 vtb vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 9_api Test 'Add <vtb> to channel <testchannel4166-02> created by the <vtb> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: add-org-to-channel.sh testchannel4166-02 vtb vtb VERIFY: test-channel-add-org.sh testchannel4166-02 vtb vtb
+[1;36mAdd vtb to the testchannel4166-02 channel using API...[m[m[m
+[1;36mAdd vtb to the testchannel4166-02 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY4Mn0.FTLH_KK8nfbVBTJaCUdc3BELpm-hma-EkiGhy0I8KK4"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY4Mn0.FTLH_KK8nfbVBTJaCUdc3BELpm-hma-EkiGhy0I8KK4", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY4Mn0.FTLH_KK8nfbVBTJaCUdc3BELpm-hma-EkiGhy0I8KK4
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/channels/testchannel4166-02/orgs {"orgId":"vtb","orgIp":"192.168.99.101","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY4Mn0.FTLH_KK8nfbVBTJaCUdc3BELpm-hma-EkiGhy0I8KK4
+curlGetIt got _ 200 _ result
+body is empty, code is 200
+200
+[1;32mOK: Organization vtb added to testchannel4166-02 channel[m[m[m
+[1;34m
+Verifing if the <vtb> added to testchannel4166-02 ...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:41:34.819 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:41:34.822 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-04-01 10:41:34.824 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-04-01 10:41:34.824 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+{
+"config": {
+"admins": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNGakNDQWJ5Z0F3SUJBZ0lRT2lTUXlQYmtXM0UzcVZnSG5wS3IxakFLQmdncWhrak9QUVFEQWpCeE1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVlNQllHQTFVRUNoTVBkblJpTG1WNFlXMXdiR1V1Ym1WME1Sc3dHUVlEVlFRREV4SmpZUzUyCmRHSXVaWGhoYlhCc1pTNXVaWFF3SGhjTk1qQXdOREF4TVRBd01UQXdXaGNOTXpBd016TXdNVEF3TVRBd1dqQmEKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVlTUJ3R0ExVUVBd3dWUVdSdGFXNUFkblJpTG1WNFlXMXdiR1V1Ym1WME1Ga3dFd1lICktvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUV1Z2daYjVPOEQ3M2EwUUlLUGRrQnhaTi95YXhHaHdESGYwdk0KRWVOQzkrYkRQUDdwc1ZyZDRqODliaTl0cDdDaGdMR3Nnd2tTN0ZiZlFYVzZUeG90TXFOTk1Fc3dEZ1lEVlIwUApBUUgvQkFRREFnZUFNQXdHQTFVZEV3RUIvd1FDTUFBd0t3WURWUjBqQkNRd0lvQWd5bE9ybmJmWjVZWkU4VitlCmcwZldHcHZnTk9WNStYOHNYOG5GeHpNY09JTXdDZ1lJS29aSXpqMEVBd0lEU0FBd1JRSWhBTGRKWE1Cd3VROWcKWjFqSzB0L3ZDS3hnQlNhTlRJYXV1T2NQVmF0VkxNYlRBaUFseVc1T253NnVUOGhLUDJxOFhFTVd0ZGgxSElYMApDVVkreWVMT3NaYzB1Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+],
+"crypto_config": {
+"identity_identifier_hash_function": "SHA256",
+"signature_hash_family": "SHA2"
+},
+"fabric_node_ous": null,
+"intermediate_certs": [],
+"name": "vtb",
+"organizational_unit_identifiers": [],
+"revocation_list": [],
+"root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNUVENDQWZPZ0F3SUJBZ0lRUmZjMGVzOEJ0ZU9LMk9VbWtoR3dtakFLQmdncWhrak9QUVFEQWpCeE1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVlNQllHQTFVRUNoTVBkblJpTG1WNFlXMXdiR1V1Ym1WME1Sc3dHUVlEVlFRREV4SmpZUzUyCmRHSXVaWGhoYlhCc1pTNXVaWFF3SGhjTk1qQXdOREF4TVRBd01UQXdXaGNOTXpBd016TXdNVEF3TVRBd1dqQngKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVZTUJZR0ExVUVDaE1QZG5SaUxtVjRZVzF3YkdVdWJtVjBNUnN3R1FZRFZRUURFeEpqCllTNTJkR0l1WlhoaGJYQnNaUzV1WlhRd1dUQVRCZ2NxaGtqT1BRSUJCZ2dxaGtqT1BRTUJCd05DQUFUbGlsWW0KWGpzb0g0NjQrQ3N2K2JoaDdPeWRmaFVuNWpwMVhKK1RQUkZWRUc1RExuWTdVYzcyaUkySUN1eTJaY3JHTkh1ZgpNSjV6TG9NTjZSUkRtQ3c4bzIwd2F6QU9CZ05WSFE4QkFmOEVCQU1DQWFZd0hRWURWUjBsQkJZd0ZBWUlLd1lCCkJRVUhBd0lHQ0NzR0FRVUZCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSU1wVHE1MjMKMmVXR1JQRmZub05IMWhxYjREVGxlZmwvTEYvSnhjY3pIRGlETUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDTgo2a2tqNUVhNWpVMGJJTGwzOTBPeENuSC81Qi9QZUc3dS9wTVVHVGlDVkFJZ1JOcnRJQUNuNVIydTJOYTVZMlNYCm9lVWY3cEFuQWRGQWVDMUtuVm5vZE9FPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+],
+"signing_identity": null,
+"tls_intermediate_certs": [],
+"tls_root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVekNDQWZtZ0F3SUJBZ0lRQTlidjZOdVdXelF1TUR4Z0pEd3BSakFLQmdncWhrak9QUVFEQWpCME1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVlNQllHQTFVRUNoTVBkblJpTG1WNFlXMXdiR1V1Ym1WME1SNHdIQVlEVlFRREV4VjBiSE5qCllTNTJkR0l1WlhoaGJYQnNaUzV1WlhRd0hoY05NakF3TkRBeE1UQXdNVEF3V2hjTk16QXdNek13TVRBd01UQXcKV2pCME1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWU1CWUdBMVVFQ2hNUGRuUmlMbVY0WVcxd2JHVXVibVYwTVI0d0hBWURWUVFECkV4VjBiSE5qWVM1MmRHSXVaWGhoYlhCc1pTNXVaWFF3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkMKQUFRMVJON0pheE1HMGp3QVFMM0kvTlVDM3dMVEQycjNzL1BrdjhGRzdKS3FPVG51UE5PdlUzSDY0SE1IVm5sOQo1ZDZGNVk1dkFZL085RHNtNGlrRWgxRFVvMjB3YXpBT0JnTlZIUThCQWY4RUJBTUNBYVl3SFFZRFZSMGxCQll3CkZBWUlLd1lCQlFVSEF3SUdDQ3NHQVFVRkJ3TUJNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdLUVlEVlIwT0JDSUUKSUZEOS8rVUtsd280MCthRndIQWc2SHk3OWlQME4wV3Y0eDdDS2o3ZWN0K2ZNQW9HQ0NxR1NNNDlCQU1DQTBnQQpNRVVDSVFEK1VMK1d1bE53cXB5eC85NmNPSVZTeHVuVkpwUk1UMW9yZU5GYzI5VWVYd0lnZlh2UHgwcFpweERJCi9FTktOUkNWVTk1U3EyL3dRa2t5UDdDMVRnUHVUSTg9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+]
+},
+"type": 0
+}
+cat /tmp/filekrz9vk _vtb_
+vtb
+[1;32mOK: Organization <vtb> is in the channel <testchannel4166-02>.[m[m[m
+Step 9_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/add-org-to-channel.sh testchannel4166 sberbank vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel4166 sberbank vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 10_api Test 'Add <vtb> to channel <testchannel4166> created by the <sberbank> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: add-org-to-channel.sh testchannel4166 sberbank vtb VERIFY: test-channel-add-org.sh testchannel4166 sberbank vtb
+[1;36mAdd vtb to the testchannel4166 channel using API...[m[m[m
+[1;36mAdd vtb to the testchannel4166 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY5N30.A3LF7PPxsD_46DWjlP6wBz0cGbiv4p-Tj7LmoeHDbjA"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY5N30.A3LF7PPxsD_46DWjlP6wBz0cGbiv4p-Tj7LmoeHDbjA", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY5N30.A3LF7PPxsD_46DWjlP6wBz0cGbiv4p-Tj7LmoeHDbjA
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels/testchannel4166/orgs {"orgId":"vtb","orgIp":"192.168.99.101","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzY5N30.A3LF7PPxsD_46DWjlP6wBz0cGbiv4p-Tj7LmoeHDbjA
+curlGetIt got _ 200 _ result
+body is empty, code is 200
+200
+[1;32mOK: Organization vtb added to testchannel4166 channel[m[m[m
+[1;34m
+Verifing if the <vtb> added to testchannel4166 ...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:41:49.987 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:41:49.991 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
+[34m2020-04-01 10:41:49.994 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-01 10:41:49.995 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+{
+"config": {
+"admins": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNGakNDQWJ5Z0F3SUJBZ0lRT2lTUXlQYmtXM0UzcVZnSG5wS3IxakFLQmdncWhrak9QUVFEQWpCeE1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVlNQllHQTFVRUNoTVBkblJpTG1WNFlXMXdiR1V1Ym1WME1Sc3dHUVlEVlFRREV4SmpZUzUyCmRHSXVaWGhoYlhCc1pTNXVaWFF3SGhjTk1qQXdOREF4TVRBd01UQXdXaGNOTXpBd016TXdNVEF3TVRBd1dqQmEKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVlTUJ3R0ExVUVBd3dWUVdSdGFXNUFkblJpTG1WNFlXMXdiR1V1Ym1WME1Ga3dFd1lICktvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUV1Z2daYjVPOEQ3M2EwUUlLUGRrQnhaTi95YXhHaHdESGYwdk0KRWVOQzkrYkRQUDdwc1ZyZDRqODliaTl0cDdDaGdMR3Nnd2tTN0ZiZlFYVzZUeG90TXFOTk1Fc3dEZ1lEVlIwUApBUUgvQkFRREFnZUFNQXdHQTFVZEV3RUIvd1FDTUFBd0t3WURWUjBqQkNRd0lvQWd5bE9ybmJmWjVZWkU4VitlCmcwZldHcHZnTk9WNStYOHNYOG5GeHpNY09JTXdDZ1lJS29aSXpqMEVBd0lEU0FBd1JRSWhBTGRKWE1Cd3VROWcKWjFqSzB0L3ZDS3hnQlNhTlRJYXV1T2NQVmF0VkxNYlRBaUFseVc1T253NnVUOGhLUDJxOFhFTVd0ZGgxSElYMApDVVkreWVMT3NaYzB1Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+],
+"crypto_config": {
+"identity_identifier_hash_function": "SHA256",
+"signature_hash_family": "SHA2"
+},
+"fabric_node_ous": null,
+"intermediate_certs": [],
+"name": "vtb",
+"organizational_unit_identifiers": [],
+"revocation_list": [],
+"root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNUVENDQWZPZ0F3SUJBZ0lRUmZjMGVzOEJ0ZU9LMk9VbWtoR3dtakFLQmdncWhrak9QUVFEQWpCeE1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVlNQllHQTFVRUNoTVBkblJpTG1WNFlXMXdiR1V1Ym1WME1Sc3dHUVlEVlFRREV4SmpZUzUyCmRHSXVaWGhoYlhCc1pTNXVaWFF3SGhjTk1qQXdOREF4TVRBd01UQXdXaGNOTXpBd016TXdNVEF3TVRBd1dqQngKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVZTUJZR0ExVUVDaE1QZG5SaUxtVjRZVzF3YkdVdWJtVjBNUnN3R1FZRFZRUURFeEpqCllTNTJkR0l1WlhoaGJYQnNaUzV1WlhRd1dUQVRCZ2NxaGtqT1BRSUJCZ2dxaGtqT1BRTUJCd05DQUFUbGlsWW0KWGpzb0g0NjQrQ3N2K2JoaDdPeWRmaFVuNWpwMVhKK1RQUkZWRUc1RExuWTdVYzcyaUkySUN1eTJaY3JHTkh1ZgpNSjV6TG9NTjZSUkRtQ3c4bzIwd2F6QU9CZ05WSFE4QkFmOEVCQU1DQWFZd0hRWURWUjBsQkJZd0ZBWUlLd1lCCkJRVUhBd0lHQ0NzR0FRVUZCd01CTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSU1wVHE1MjMKMmVXR1JQRmZub05IMWhxYjREVGxlZmwvTEYvSnhjY3pIRGlETUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDTgo2a2tqNUVhNWpVMGJJTGwzOTBPeENuSC81Qi9QZUc3dS9wTVVHVGlDVkFJZ1JOcnRJQUNuNVIydTJOYTVZMlNYCm9lVWY3cEFuQWRGQWVDMUtuVm5vZE9FPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+],
+"signing_identity": null,
+"tls_intermediate_certs": [],
+"tls_root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVekNDQWZtZ0F3SUJBZ0lRQTlidjZOdVdXelF1TUR4Z0pEd3BSakFLQmdncWhrak9QUVFEQWpCME1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVlNQllHQTFVRUNoTVBkblJpTG1WNFlXMXdiR1V1Ym1WME1SNHdIQVlEVlFRREV4VjBiSE5qCllTNTJkR0l1WlhoaGJYQnNaUzV1WlhRd0hoY05NakF3TkRBeE1UQXdNVEF3V2hjTk16QXdNek13TVRBd01UQXcKV2pCME1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWU1CWUdBMVVFQ2hNUGRuUmlMbVY0WVcxd2JHVXVibVYwTVI0d0hBWURWUVFECkV4VjBiSE5qWVM1MmRHSXVaWGhoYlhCc1pTNXVaWFF3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkMKQUFRMVJON0pheE1HMGp3QVFMM0kvTlVDM3dMVEQycjNzL1BrdjhGRzdKS3FPVG51UE5PdlUzSDY0SE1IVm5sOQo1ZDZGNVk1dkFZL085RHNtNGlrRWgxRFVvMjB3YXpBT0JnTlZIUThCQWY4RUJBTUNBYVl3SFFZRFZSMGxCQll3CkZBWUlLd1lCQlFVSEF3SUdDQ3NHQVFVRkJ3TUJNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdLUVlEVlIwT0JDSUUKSUZEOS8rVUtsd280MCthRndIQWc2SHk3OWlQME4wV3Y0eDdDS2o3ZWN0K2ZNQW9HQ0NxR1NNNDlCQU1DQTBnQQpNRVVDSVFEK1VMK1d1bE53cXB5eC85NmNPSVZTeHVuVkpwUk1UMW9yZU5GYzI5VWVYd0lnZlh2UHgwcFpweERJCi9FTktOUkNWVTk1U3EyL3dRa2t5UDdDMVRnUHVUSTg9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+]
+},
+"type": 0
+}
+cat /tmp/fileEzNFD4 _vtb_
+vtb
+[1;32mOK: Organization <vtb> is in the channel <testchannel4166>.[m[m[m
+Step 10_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/add-org-to-channel.sh testchannel4166-02 vtb sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel4166-02 vtb sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 11_api Test 'Add <sberbank> to channel <testchannel4166-02> created by the <vtb> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: add-org-to-channel.sh testchannel4166-02 vtb sberbank VERIFY: test-channel-add-org.sh testchannel4166-02 vtb sberbank
+[1;36mAdd sberbank to the testchannel4166-02 channel using API...[m[m[m
+[1;36mAdd sberbank to the testchannel4166-02 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzcxM30.qG_NrEGF-YDZe6J6jSHDvOYMBScJnzBMD_E1VVi7HRw"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzcxM30.qG_NrEGF-YDZe6J6jSHDvOYMBScJnzBMD_E1VVi7HRw", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzcxM30.qG_NrEGF-YDZe6J6jSHDvOYMBScJnzBMD_E1VVi7HRw
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/channels/testchannel4166-02/orgs {"orgId":"sberbank","orgIp":"192.168.99.100","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzcxM30.qG_NrEGF-YDZe6J6jSHDvOYMBScJnzBMD_E1VVi7HRw
+curlGetIt got _ 200 _ result
+body is empty, code is 200
+200
+[1;32mOK: Organization sberbank added to testchannel4166-02 channel[m[m[m
+[1;34m
+Verifing if the <sberbank> added to testchannel4166-02 ...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:42:07.226 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:42:07.229 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
+[34m2020-04-01 10:42:07.230 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-01 10:42:07.230 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+{
+"config": {
+"admins": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKVENDQWN1Z0F3SUJBZ0lRTm9rL3ZTckZDWVFzSjV2UnF5cmRFVEFLQmdncWhrak9QUVFEQWpCN01Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RWRNQnNHQTFVRUNoTVVjMkpsY21KaGJtc3VaWGhoYlhCc1pTNXVaWFF4SURBZUJnTlZCQU1UCkYyTmhMbk5pWlhKaVlXNXJMbVY0WVcxd2JHVXVibVYwTUI0WERUSXdNRFF3TVRFd01ERXdNRm9YRFRNd01ETXoKTURFd01ERXdNRm93WHpFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVQpCZ05WQkFjVERWTmhiaUJHY21GdVkybHpZMjh4SXpBaEJnTlZCQU1NR2tGa2JXbHVRSE5pWlhKaVlXNXJMbVY0CllXMXdiR1V1Ym1WME1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRTZhM1llM3RJaFRjZGZSMnYKYWdsbHJjWE1XRFpiTlA0VjhtMGttZGVmeEZ1SzF5NGh6Z0hOcGdMMWJKMHZ2TzhDTEoraDg1cFo2WXJvcURoLwpxL1JNWGFOTk1Fc3dEZ1lEVlIwUEFRSC9CQVFEQWdlQU1Bd0dBMVVkRXdFQi93UUNNQUF3S3dZRFZSMGpCQ1F3CklvQWdHZUFIQ2lVVllZYzJ1a2tPZkZUNG82b3AvRFlwbUZwNWw2QlJ4alRHMHdJd0NnWUlLb1pJemowRUF3SUQKU0FBd1JRSWhBTXVzZ3lPa0thWjNobHphc2V1dlJZeFB0ODgwb0w4UGdDaGgvNlpMRjd3TkFpQjhBMmdOTXJGbgoySmpiZVBSTGZOY1Yydyswb3BsOThlVFdSV0lPdFBrSDRBPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+],
+"crypto_config": {
+"identity_identifier_hash_function": "SHA256",
+"signature_hash_family": "SHA2"
+},
+"fabric_node_ous": null,
+"intermediate_certs": [],
+"name": "sberbank",
+"organizational_unit_identifiers": [],
+"revocation_list": [],
+"root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNZVENDQWdpZ0F3SUJBZ0lSQUsrV3M1TDBhcjZjbk1OanJKa0Y2Y293Q2dZSUtvWkl6ajBFQXdJd2V6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhIVEFiQmdOVkJBb1RGSE5pWlhKaVlXNXJMbVY0WVcxd2JHVXVibVYwTVNBd0hnWURWUVFECkV4ZGpZUzV6WW1WeVltRnVheTVsZUdGdGNHeGxMbTVsZERBZUZ3MHlNREEwTURFeE1EQXhNREJhRncwek1EQXoKTXpBeE1EQXhNREJhTUhzeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZdwpGQVlEVlFRSEV3MVRZVzRnUm5KaGJtTnBjMk52TVIwd0d3WURWUVFLRXhSelltVnlZbUZ1YXk1bGVHRnRjR3hsCkxtNWxkREVnTUI0R0ExVUVBeE1YWTJFdWMySmxjbUpoYm1zdVpYaGhiWEJzWlM1dVpYUXdXVEFUQmdjcWhrak8KUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVFYYmN3ZDBFY1B3WXdHaHNCN2FtZHNvNDdzR292UXltak4vNCttZ01SaApsaysrbmRoQXVDR0dtTUdFN1dJVm53aUIxM2NoZ0llSlU5K0w1cEcrQzlRVG8yMHdhekFPQmdOVkhROEJBZjhFCkJBTUNBYVl3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdJR0NDc0dBUVVGQndNQk1BOEdBMVVkRXdFQi93UUYKTUFNQkFmOHdLUVlEVlIwT0JDSUVJQm5nQndvbEZXR0hOcnBKRG54VStLT3FLZncyS1poYWVaZWdVY1kweHRNQwpNQW9HQ0NxR1NNNDlCQU1DQTBjQU1FUUNJQzdjbTlRU2dueVNXb0FtaWJBbFR6eEdJeFE2a1EzRUpBUWxlK1RwCmZrT21BaUE3WktyT0tKMXpkS2JodXE3Z3Y3S1NxcjQ4RHZxS0NGSm5ORUtYbHpjd0RBPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+],
+"signing_identity": null,
+"tls_intermediate_certs": [],
+"tls_root_certs": [
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNhRENDQWc2Z0F3SUJBZ0lSQU5LdnBiTTJoMjFUQ1BONGNoMmh0eFV3Q2dZSUtvWkl6ajBFQXdJd2ZqRUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhIVEFiQmdOVkJBb1RGSE5pWlhKaVlXNXJMbVY0WVcxd2JHVXVibVYwTVNNd0lRWURWUVFECkV4cDBiSE5qWVM1elltVnlZbUZ1YXk1bGVHRnRjR3hsTG01bGREQWVGdzB5TURBME1ERXhNREF4TURCYUZ3MHoKTURBek16QXhNREF4TURCYU1INHhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saApNUll3RkFZRFZRUUhFdzFUWVc0Z1JuSmhibU5wYzJOdk1SMHdHd1lEVlFRS0V4UnpZbVZ5WW1GdWF5NWxlR0Z0CmNHeGxMbTVsZERFak1DRUdBMVVFQXhNYWRHeHpZMkV1YzJKbGNtSmhibXN1WlhoaGJYQnNaUzV1WlhRd1dUQVQKQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBUS9RaGc2SnlLenU5Vy8wTTQ3Ykl1VVM1QUF0SHFGdFdpWgpDeTJUVE9HZHAycGV1OGlZRWpmYnppTGZ6YkM3R1d5UFNia2N4dHMyOXcyS1JGT2ZaZEdUbzIwd2F6QU9CZ05WCkhROEJBZjhFQkFNQ0FhWXdIUVlEVlIwbEJCWXdGQVlJS3dZQkJRVUhBd0lHQ0NzR0FRVUZCd01CTUE4R0ExVWQKRXdFQi93UUZNQU1CQWY4d0tRWURWUjBPQkNJRUlGbVFqWGVJd1k1cDltTUdoZXZQSldZajJ5RGN4YUV2eUcvNAovcEFFVXpVYU1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRRE1VN2NIdS93dVh0TlhTK1k1WGc1UUdkTlZWRDdZCjRNY2dsK2s1SStJdWdnSWdLNnZZd1NLY1RvamVRNFFNNU9uQitlWERDakhVK0ovaXROQTdHQ1NPRHcwPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+]
+},
+"type": 0
+}
+cat /tmp/file9dAxi7 _sberbank_
+sberbank
+[1;32mOK: Organization <sberbank> is in the channel <testchannel4166-02>.[m[m[m
+Step 11_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel4166 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel4166 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 12_api Test 'Join <sberbank> to the <testchannel4166> chanel created by the <sberbank> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: join-channel.sh testchannel4166 sberbank VERIFY: test-join-channel.sh testchannel4166 sberbank
+[1;36mJoining sberbank.example.net to the testchannel4166 channel using API...[m[m[m
+[1;36mJoining sberbank.example.net to the testchannel4166 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczMH0.Wbj6iwNAAHfbmcA7P2s1jjvfV6Z4OaqnMWiEz87NnRA"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczMH0.Wbj6iwNAAHfbmcA7P2s1jjvfV6Z4OaqnMWiEz87NnRA", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczMH0.Wbj6iwNAAHfbmcA7P2s1jjvfV6Z4OaqnMWiEz87NnRA
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels/testchannel4166 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczMH0.Wbj6iwNAAHfbmcA7P2s1jjvfV6Z4OaqnMWiEz87NnRA
+curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.sberbank.example.net:7051","name":"peer0.sberbank.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.net:7051","grpc.default_authority":"peer0.sberbank.example.net:7051"}},"isProposalResponse":true}]200 _ result
+body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.sberbank.example.net:7051","name":"peer0.sberbank.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.net:7051","grpc.default_authority":"peer0.sberbank.example.net:7051"}},"isProposalResponse":true}], code is 200
+join channel REST query returned: [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.sberbank.example.net:7051","name":"peer0.sberbank.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.sberbank.example.net:7051","grpc.default_authority":"peer0.sberbank.example.net:7051"}},"isProposalResponse":true}] 200 .
+create_http_code = 200
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the sberbank has joined the <testchannel4166> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:42:16.002 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The sberbank has joined the <testchannel4166> channel[m[m[m
+Step 12_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel4166 vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel4166 vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 13_api Test 'Join <vtb> to the <testchannel4166> chanel created by the <sberbank> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: join-channel.sh testchannel4166 vtb VERIFY: test-join-channel.sh testchannel4166 vtb
+[1;36mJoining vtb.example.net to the testchannel4166 channel using API...[m[m[m
+[1;36mJoining vtb.example.net to the testchannel4166 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczOX0.AudxJmlfgzXlMotsiERnWBJJ1eW7zOdzfQJsliHE0Bc"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczOX0.AudxJmlfgzXlMotsiERnWBJJ1eW7zOdzfQJsliHE0Bc", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczOX0.AudxJmlfgzXlMotsiERnWBJJ1eW7zOdzfQJsliHE0Bc
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/channels/testchannel4166 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzczOX0.AudxJmlfgzXlMotsiERnWBJJ1eW7zOdzfQJsliHE0Bc
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+join channel REST query returned:  000 .
+create_http_code =
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the vtb has joined the <testchannel4166> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:44:23.673 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The vtb has joined the <testchannel4166> channel[m[m[m
+Step 13_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel4166-02 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel4166-02 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 14_api Test 'Join <sberbank> to the <testchannel4166-02> chanel created by the <vtb> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: join-channel.sh testchannel4166-02 sberbank VERIFY: test-join-channel.sh testchannel4166-02 sberbank
+[1;36mJoining sberbank.example.net to the testchannel4166-02 channel using API...[m[m[m
+[1;36mJoining sberbank.example.net to the testchannel4166-02 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzg2Nn0.vAxg-diHbI7R03pgKlyRSi-0Kv1_b8oG6b2q4gwRRJk"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzg2Nn0.vAxg-diHbI7R03pgKlyRSi-0Kv1_b8oG6b2q4gwRRJk", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzg2Nn0.vAxg-diHbI7R03pgKlyRSi-0Kv1_b8oG6b2q4gwRRJk
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels/testchannel4166-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzg2Nn0.vAxg-diHbI7R03pgKlyRSi-0Kv1_b8oG6b2q4gwRRJk
+curlGetIt got _ 000 _ result
+body is empty, code is 000
+join channel REST query returned:  000 .
+create_http_code =
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the sberbank has joined the <testchannel4166-02> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:46:30.893 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The sberbank has joined the <testchannel4166-02> channel[m[m[m
+Step 14_api: exit code 0
+NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/join-channel.sh testchannel4166-02 vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel4166-02 vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 15_api Test 'Join <vtb> to the <testchannel4166-02> chanel created by the <vtb> org'(B[m
+[1m[37m---------------------------(B[m
+RUNTESTNOERRPRINT: join-channel.sh testchannel4166-02 vtb VERIFY: test-join-channel.sh testchannel4166-02 vtb
+[1;36mJoining vtb.example.net to the testchannel4166-02 channel using API...[m[m[m
+[1;36mJoining vtb.example.net to the testchannel4166-02 channel using API...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzk5NH0.WilxmYF04n2OHEnO1p_yDQt6n_eFtvCXJsKJ65PQAqo"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzk5NH0.WilxmYF04n2OHEnO1p_yDQt6n_eFtvCXJsKJ65PQAqo", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzk5NH0.WilxmYF04n2OHEnO1p_yDQt6n_eFtvCXJsKJ65PQAqo
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/channels/testchannel4166-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczNzk5NH0.WilxmYF04n2OHEnO1p_yDQt6n_eFtvCXJsKJ65PQAqo
+curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.vtb.example.net:7051","name":"peer0.vtb.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.net:7051","grpc.default_authority":"peer0.vtb.example.net:7051"}},"isProposalResponse":true}]200 _ result
+body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.vtb.example.net:7051","name":"peer0.vtb.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.net:7051","grpc.default_authority":"peer0.vtb.example.net:7051"}},"isProposalResponse":true}], code is 200
+join channel REST query returned: [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.vtb.example.net:7051","name":"peer0.vtb.example.net:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.vtb.example.net:7051","grpc.default_authority":"peer0.vtb.example.net:7051"}},"isProposalResponse":true}] 200 .
+create_http_code = 200
+[1;37mSee /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/02-basic-functionality-test/fs_network_test.log for logs.[m[m[m
+[1;34m
+Verifing if the vtb has joined the <testchannel4166-02> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:46:39.765 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The vtb has joined the <testchannel4166-02> channel[m[m[m
+Step 15_api: exit code 0
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-install.sh testchannel4166 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel4166 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 16_api Test 'Install test chaincode by <sberbank> to the <testchannel4166> channel'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: chaincode-install.sh testchannel4166 sberbank VERIFY: test-chaincode-installed.sh testchannel4166 sberbank
+[1;36m
+Installing test chaincode in sberbank...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAwMn0.M9A8NWTyH8T49R0WsIf32dLC8bhT-T7bGR9ctPCrfnk"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAwMn0.M9A8NWTyH8T49R0WsIf32dLC8bhT-T7bGR9ctPCrfnk", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAwMn0.M9A8NWTyH8T49R0WsIf32dLC8bhT-T7bGR9ctPCrfnk
+[1;32mOK: JWT token obtained.[m[m[m
+adding: reference_testchannel4166/chaincode-reference.js (deflated 27%)
+adding: reference_testchannel4166/index.js (deflated 27%)
+adding: reference_testchannel4166/package.json (deflated 41%)
+adding: reference_testchannel4166/package-lock.json (deflated 73%)
+Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12284 апр  1 13:46 /tmp/reference_testchannel4166.zip
+/tmp/reference_testchannel4166.zip
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+200
+""Chaincode reference_testchannel4166:1.0 successfully installed""
+[1;32mOK: Test chaincode installed in sberbank[m[m[m
+[1;34m
+Verifing if the test chaincode installed in sberbank org...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mExecute: docker-compose -f ./docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel4166' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem[m[m[m
+bash: /opt/chaincode/node: Is a directory
+Get installed chaincodes on peer:
+Name: dns, Version: 1.0, Path: /opt/chaincode/node/dns, Id: bf157c353c46c4b41324ef6e2d98e324d91a47e90669d9ca25c945c64f32e6c4
+Name: reference_testchannel4166, Version: 1.0, Path: /tmp/reference_testchannel4166, Id: 57fc5e954d447e53a71084d3b784914c3aff73cc76eb841939ea36d33ac358d2
+Name: reference_testchannel6595, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel6595, Id: 52aab859e83a43de5051f25b4579e5b11cb7cf8914b3ab12079aba23d8613282
+reference_testchannel4166
+[1;32mOK: The test chaincode installed in sberbank[m[m[m
+Step 16_api: exit code 0
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-install.sh testchannel4166-02 vtb ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel4166-02 vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 17_api Test 'Install test chaincode by <vtb> to the <testchannel4166-02> channel'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: chaincode-install.sh testchannel4166-02 vtb VERIFY: test-chaincode-installed.sh testchannel4166-02 vtb
+[1;36m
+Installing test chaincode in vtb...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.101:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAxMn0.E6ImX_qIhsas-havf9fRsYToDU-Ngt44F-kI3iVGKYs"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAxMn0.E6ImX_qIhsas-havf9fRsYToDU-Ngt44F-kI3iVGKYs", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAxMn0.E6ImX_qIhsas-havf9fRsYToDU-Ngt44F-kI3iVGKYs
+[1;32mOK: JWT token obtained.[m[m[m
+adding: reference_testchannel4166-02/chaincode-reference.js (deflated 27%)
+adding: reference_testchannel4166-02/index.js (deflated 27%)
+adding: reference_testchannel4166-02/package.json (deflated 41%)
+adding: reference_testchannel4166-02/package-lock.json (deflated 73%)
+Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12308 апр  1 13:46 /tmp/reference_testchannel4166-02.zip
+/tmp/reference_testchannel4166-02.zip
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+200
+""Chaincode reference_testchannel4166-02:1.0 successfully installed""
+[1;32mOK: Test chaincode installed in vtb[m[m[m
+[1;34m
+Verifing if the test chaincode installed in vtb org...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mExecute: docker-compose -f ./docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel4166-02' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem[m[m[m
+bash: /opt/chaincode/node: Is a directory
+Get installed chaincodes on peer:
+Name: dns, Version: 1.0, Path: /opt/chaincode/node/dns, Id: bf157c353c46c4b41324ef6e2d98e324d91a47e90669d9ca25c945c64f32e6c4
+Name: reference_testchannel4166-02, Version: 1.0, Path: /tmp/reference_testchannel4166-02, Id: c19cfe4f813691431d55465fc66224d96870cd49822428a28123848396cca740
+Name: reference_testchannel6595-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel6595-02, Id: 3c6f3a0b268edc0a55cbb0e802a01114b961bfc36c27d64d26c18fdd489a8a6d
+reference_testchannel4166-02
+[1;32mOK: The test chaincode installed in vtb[m[m[m
+Step 17_api: exit code 0
+NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-instantiate.sh testchannel4166 sberbank ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-instantiated.sh testchannel4166 sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 18_api Test 'Instantiate test chaincode by <sberbank> to the <testchannel4166> channel'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: chaincode-instantiate.sh testchannel4166 sberbank VERIFY: test-chaincode-instantiated.sh testchannel4166 sberbank
+[1;36m
+Installing test chaincode in sberbank...[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAyMn0.vOqrAEy3t9UQjgLHQyS6uzfdxAzUL1jc30vCtWbGXko"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAyMn0.vOqrAEy3t9UQjgLHQyS6uzfdxAzUL1jc30vCtWbGXko", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAyMn0.vOqrAEy3t9UQjgLHQyS6uzfdxAzUL1jc30vCtWbGXko
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels/testchannel4166/chaincodes {"channelId":"testchannel4166","chaincodeId":"reference_testchannel4166","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODAyMn0.vOqrAEy3t9UQjgLHQyS6uzfdxAzUL1jc30vCtWbGXko
+curlGetIt got _ {"txid":"2938f85efe1462a0dd2ba8e36c7d6c08b44382fe5165891878d52ca2d7ae2d4c","status":"VALID","blockNumber":"3"}200 _ result
+body is {"txid":"2938f85efe1462a0dd2ba8e36c7d6c08b44382fe5165891878d52ca2d7ae2d4c","status":"VALID","blockNumber":"3"}, code is 200
+[1;32mOK: Test chaincode installed in sberbank[m[m[m
+[1;34m
+Verifing if the test chaincode instantiated in channel testchannel4166 channel by sberbank org...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mExecute: docker-compose -f ./docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c peer chaincode list --instantiated -C 'testchannel4166' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.net/msp/tlscacerts/tlsca.example.net-cert.pem[m[m[m
+Get instantiated chaincodes on channel testchannel4166:
+Name: reference_testchannel4166, Version: 1.0, Path: /tmp/reference_testchannel4166, Input: <nil>, Escc: escc, Vscc: vscc
+reference_testchannel4166
+[1;32mOK: The test chaincode installed in testchannel4166 channel by sberbank org[m[m[m
+Step 18_api: exit code 0
+sleep 15 ; NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-invoke.sh testchannel4166 sberbank reference_testchannel4166 ;sleep 15 ; NO_RED_OUTPUT=false /home/kilpio/CodeLab/merge_test/fabric-starter/test/api/chaincode-query.sh testchannel4166 sberbank reference_testchannel4166
+[1m[37m---------------------------(B[m
+[1m[37mStep: 19_api Test 'Test chaincode invocation and query:  <sberbank> <-> <vtb>'(B[m
+[1m[37m---------------------------(B[m
+RUN: sleep 15 RUNTEST: chaincode-invoke.sh testchannel4166 sberbank reference_testchannel4166 RUN: sleep 15 RUNTEST: chaincode-query.sh testchannel4166 sberbank reference_testchannel4166
+[1;36m
+Invoke test chaincode on the <testchannel4166> channel'[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/users {"username":"user4","password":"passw"}
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODA5MX0.FubAo62de1sN-MUeQZ-X4XVacngrI61AWm-YeQgsCbA"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODA5MX0.FubAo62de1sN-MUeQZ-X4XVacngrI61AWm-YeQgsCbA", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODA5MX0.FubAo62de1sN-MUeQZ-X4XVacngrI61AWm-YeQgsCbA
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 4000
+curlItGet http://192.168.99.100:4000/channels/testchannel4166/chaincodes/reference_testchannel4166 {"fcn":"put","args":["testchannel4166","testchannel4166"],"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NTczODA5MX0.FubAo62de1sN-MUeQZ-X4XVacngrI61AWm-YeQgsCbA
+curlGetIt got _ {"txid":"509b5ef0d6348380126c9d30736eee5412375dc156c4161aa1b2d7cb965fd2ae","status":"VALID","blockNumber":"4"}200 _ result
+body is {"txid":"509b5ef0d6348380126c9d30736eee5412375dc156c4161aa1b2d7cb965fd2ae","status":"VALID","blockNumber":"4"}, code is 200
+[1;32mOK: Chaincode reference_testchannel4166 invoked sucsessfuly.[m[m[m
+[1;36m
+Query test chaincode on the <testchannel4166> channel'[m[m[m
+queryContainerNetworkSettings returns: 7051
+eval ./chaincode-query.sh testchannel4166 reference_testchannel4166 '["range","testchannel4166"]'
+[1;32mExecute: docker-compose -f ./docker-compose.yaml -fdocker-compose-multihost.yaml   run --no-deps --rm cli.peer bash -c container-scripts/network/chaincode-query.sh testchannel4166 reference_testchannel4166 '["range","testchannel4166"]'[m[m[m
+CORE_PEER_ADDRESS=peer0.sberbank.example.net:7051 peer chaincode query -n reference_testchannel4166 -C testchannel4166 -c '{"Args":["range","testchannel4166"]}'
+[{"key":"testchannel4166","value":"testchannel4166"}]
+[1;32mOK: Chaincode reference_testchannel4166 invoked sucsessfuly.[m[m[m
+Step 19_api: exit code 0

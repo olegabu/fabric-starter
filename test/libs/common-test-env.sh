@@ -5,17 +5,11 @@ source ${BASEDIR}/libs.sh
 
 export DOMAIN=${1:-${DOMAIN:-example.com}}
 
-source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $2 $3
-#source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $@
+#source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $2 $3
+source ${BASEDIR}/parse-common-params.sh $TEST_CHANNEL_NAME $@
 
-export ORG1=${2:-org1}
-export ORG2=${3:-org2}
-
-
-#echo "API ${ORG1}: $(getOrgIp $2):$(getOrgContainerPort  "$2" "${API_NAME}" "${DOMAIN}")"
-#echo "API ${ORG2}: $(getOrgIp $3):$(getOrgContainerPort  "$3" "${API_NAME}" "${DOMAIN}")"
-#echo "PEER0 ${ORG1}: $(getOrgIp $2):$(getOrgContainerPort  "$2" "${PEER_NAME}" "${DOMAIN}")"
-#echo "PEER0 ${ORG2}: $(getOrgIp $3):$(getOrgContainerPort  "$3" "${PEER_NAME}" "${DOMAIN}")"
+#export ORG1=${2:-org1}
+#export ORG2=${3:-org2}
 
 echo
 echo "Test log file: ${FSTEST_LOG_FILE}"

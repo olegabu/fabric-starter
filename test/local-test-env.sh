@@ -10,14 +10,15 @@ main() {
 #    local gDomain=$(guessDomain) 
 #    local gOrgs=$(guessOrgs)
 #channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
-    if [ $# -lt 2 ]; then
-    printUsage " local-test-env <DOMAIN> <ORG1> [<ORG2>] [<ORG3>]..." " source ./local-test-env.sh ${gDomain} ${gOrgs}"
+    if [ $# -lt 1 ]; then
+    printUsage " local-test-env <DOMAIN>" " source ./local-test-env.sh example.com"
     return 1
     fi
 
 #    printCyan "Local domain '${gDomain}' and '${gOrgs}' orgs found"
 
     unset MULTIHOST
+    unset DOCKER_REGISTRY
     
     export DEPLOYMENT_TARGET='local'
 
@@ -43,8 +44,10 @@ function getOrgContainerPort () {
 
 function setCurrentActiveOrg() {
     local org="${1:?Org name is required}"
-    export $ORG=${org}
-    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+    export ORG=${org}
+#    echo "Active org: ${org}"
+    export PEER0_PORT=$(getContainerPort ${org} ${PEER_NAME} ${DOMAIN})
+
 }
 
 function resetCurrentActiveOrg {

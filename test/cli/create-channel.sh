@@ -5,11 +5,13 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-organization=${2}
+org=${2}
 
-printToLogAndToScreenCyan "\nCreating the <$TEST_CHANNEL_NAME> channel for ${organization}.${DOMAIN}..."
+printToLogAndToScreenCyan "\nCreating the <$TEST_CHANNEL_NAME> channel for ${org}.${DOMAIN}..."
 
-setCurrentActiveOrg ${organization}
+setCurrentActiveOrg ${org}
+
+echo "$ORG"
 
 runInFabricDir ./channel-create.sh ${TEST_CHANNEL_NAME}
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
-#echo "libs.sh $$: Current dir is $BRIGHT $GREEN $(pwd), $WHITE Basedir is $BASEDIR $NORMAL"
-
 main() {
 
     export FABRIC_DIR=${FABRIC_DIR:-$(getFabricStarterPath $(pwd))}
@@ -46,11 +44,7 @@ function getRandomChannelName() {
 
 
 function setExitCode() {
-    #echo $? >/dev/tty
-    #eval "echo aaaa; ${@}" 2>/dev/tty
-    #echo "Executing: ${@}" >/dev/tty
-    eval "${@}"
-    #echo $? >/dev/tty
+    eval "${@}" 2>/dev/null
 }
 
 
@@ -334,7 +328,7 @@ function restquery() {
     local query=${3}
     local jwt=${4}
     
-    local api_ip=$(getOrgIp "${org}")
+    local api_ip=$(getOrgIp "${org}") 
     local api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     
     echo     curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" | printDbg
@@ -345,14 +339,14 @@ function restquery() {
 
 function getJWT() {
     local org=${1}
-    
+   
     restquery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
+
 }
 
 
 function APIAuthorize() {
     result=($(getJWT ${1}))
-    
     local jwt=${result[0]//\"/} #remove quotation marks
     local jwt_http_code=${result[1]}
     echo "Got JWT: ${jwt}" | printLog

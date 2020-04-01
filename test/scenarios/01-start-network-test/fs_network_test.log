@@ -1,13 +1,418 @@
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com cli.orderer orderer www
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.com cli.orderer orderer www
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 2 sberbank vtb 
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 cli sberbank vtb 
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test 'Docker containers for orderer are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 1_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test 'Docker containers for <sberbank> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 2_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_cli Test 'Docker containers for <vtb> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 3_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_cli Test 'Organization <sberbank> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common sberbank
+[1;34m
+Verifing if the <common> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:14:59.980 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 08:14:59.984 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
+[34m2020-04-01 08:14:59.987 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
+[34m2020-04-01 08:14:59.987 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T08:12:43Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileZAQaJ5 _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to sberbank[m[m[m
+Step 4_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_cli Test 'Organization <vtb> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common vtb
+[1;34m
+Verifing if the <common> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:15:02.256 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 08:15:02.260 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
+[34m2020-04-01 08:15:02.262 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
+[34m2020-04-01 08:15:02.262 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T08:12:43Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileEAOb6s _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to vtb[m[m[m
+Step 5_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 6_cli Test 'Organization <sberbank> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common sberbank
+[1;34m
+Verifing if the sberbank has joined the <common> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:15:04.352 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The sberbank has joined the <common> channel[m[m[m
+Step 6_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 7_cli Test 'Organization <vtb> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common vtb
+[1;34m
+Verifing if the vtb has joined the <common> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:15:06.299 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The vtb has joined the <common> channel[m[m[m
+Step 7_cli: exit code 0
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 api sberbank vtb 
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_api Test 'Docker containers for orderer are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 1_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_api Test 'Docker containers for <sberbank> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 2_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_api Test 'Docker containers for <vtb> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 3_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_api Test 'Organization <sberbank> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common sberbank
+[1;34m
+Verifing if the <common> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:16:53.768 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 08:16:53.770 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
+[34m2020-04-01 08:16:53.772 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
+[34m2020-04-01 08:16:53.772 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T08:12:43Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileH50275 _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to sberbank[m[m[m
+Step 4_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_api Test 'Organization <vtb> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common vtb
+[1;34m
+Verifing if the <common> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:16:55.832 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 08:16:55.834 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
+[34m2020-04-01 08:16:55.836 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
+[34m2020-04-01 08:16:55.836 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T08:12:43Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileKtHFTi _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to vtb[m[m[m
+Step 5_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 6_api Test 'Organization <sberbank> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common sberbank
+[1;34m
+Verifing if the sberbank has joined the <common> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:16:57.802 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The sberbank has joined the <common> channel[m[m[m
+Step 6_api: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 7_api Test 'Organization <vtb> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common vtb
+[1;34m
+Verifing if the vtb has joined the <common> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 08:16:59.772 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The vtb has joined the <common> channel[m[m[m
+Step 7_api: exit code 0
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 cli sberbank vtb 
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test 'Docker containers for orderer are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 1_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test 'Docker containers for <sberbank> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 2_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_cli Test 'Docker containers for <vtb> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 3_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_cli Test 'Organization <sberbank> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common sberbank
+[1;34m
+Verifing if the <common> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:12:20.750 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:12:20.754 UTC [cli.common] readBlock -> INFO 002[0m Received block: 6
+[34m2020-04-01 10:12:20.756 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-01 10:12:20.756 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T10:06:23Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/file7qGae8 _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to sberbank[m[m[m
+Step 4_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_cli Test 'Organization <vtb> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common vtb
+[1;34m
+Verifing if the <common> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:12:23.439 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:12:23.443 UTC [cli.common] readBlock -> INFO 002[0m Received block: 6
+[34m2020-04-01 10:12:23.450 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-01 10:12:23.450 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T10:06:23Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileZOJsZH _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to vtb[m[m[m
+Step 5_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 6_cli Test 'Organization <sberbank> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common sberbank
+[1;34m
+Verifing if the sberbank has joined the <common> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:12:25.948 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The sberbank has joined the <common> channel[m[m[m
+Step 6_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 7_cli Test 'Organization <vtb> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common vtb
+[1;34m
+Verifing if the vtb has joined the <common> channel...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:12:28.412 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The vtb has joined the <common> channel[m[m[m
+Step 7_cli: exit code 0
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 cli sberbank vtb 
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test 'Docker containers for orderer are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank example.net orderer www cli.orderer
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 1_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test 'Docker containers for <sberbank> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh sberbank sberbank.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 2_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_cli Test 'Docker containers for <vtb> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh vtb vtb.example.net api ca cli couchdb.peer0 peer0 www
+[1;34m
+Verifing that all the test network containers example.net are up and running[m[m[m
+queryContainerNetworkSettings returns: 7051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 3_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common sberbank
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_cli Test 'Organization <sberbank> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common sberbank
+[1;34m
+Verifing if the <common> channel exists in sberbank.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:25:47.846 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:25:47.850 UTC [cli.common] readBlock -> INFO 002[0m Received block: 6
+[34m2020-04-01 10:25:47.853 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-01 10:25:47.854 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T10:06:23Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileNKd3dX _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to sberbank[m[m[m
+Step 4_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common vtb
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_cli Test 'Organization <vtb> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common vtb
+[1;34m
+Verifing if the <common> channel exists in vtb.example.net...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 10:25:50.529 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 10:25:50.532 UTC [cli.common] readBlock -> INFO 002[0m Received block: 6
+[34m2020-04-01 10:25:50.534 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-01 10:25:50.535 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T10:06:23Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileuYzs7K _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to vtb[m[m[m
+Step 5_cli: exit code 0
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 2 org1 org2 
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 cli org1 org2 
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test 'Docker containers for orderer are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
 [1;34m
 Verifing that all the test network containers example.com are up and running[m[m[m
 queryContainerNetworkSettings returns: 7051
 [1;32mOK: All the test network containers are up and running[m[m[m
 Step 1_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <org1> are up and running'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test 'Docker containers for <org1> are up and running'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
 [1;34m
 Verifing that all the test network containers example.com are up and running[m[m[m
@@ -15,768 +420,169 @@ queryContainerNetworkSettings returns: 7051
 [1;32mOK: All the test network containers are up and running[m[m[m
 Step 2_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <org2> are up and running'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_cli Test 'Docker containers for <org2> are up and running'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
 [1;34m
 Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
+queryContainerNetworkSettings returns: 8051
 [1;32mOK: All the test network containers are up and running[m[m[m
 Step 3_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_cli Test 'Organization <org1> is in <common> channel'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_cli Test 'Organization <org1> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: test-channel-exists.sh common org1
 [1;34m
 Verifing if the <common> channel exists in org1.example.com...[m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-03-24 14:25:11.836 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-24 14:25:11.838 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-24 14:25:11.839 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-24 14:25:11.839 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
+[34m2020-04-01 11:07:57.654 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 11:07:57.656 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
+[34m2020-04-01 11:07:57.658 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
+[34m2020-04-01 11:07:57.658 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
 {
 "channel_id": "common",
 "epoch": "0",
 "extension": null,
-"timestamp": "2020-03-23T07:40:59Z",
+"timestamp": "2020-04-01T11:05:46Z",
 "tls_cert_hash": null,
 "tx_id": "",
 "type": 1,
 "version": 0
 }
+cat /tmp/file50rE2Z _common_
+Expect: common, got: common
 [1;32mOK: The channel <common> exists and visible to org1[m[m[m
 Step 4_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_cli Test 'Organization <org2> is in <common> channel'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_cli Test 'Organization <org2> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: test-channel-exists.sh common org2
 [1;34m
 Verifing if the <common> channel exists in org2.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-24 14:25:13.997 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-24 14:25:14.000 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-24 14:25:14.002 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-24 14:25:14.002 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
+queryContainerNetworkSettings returns: 8051
+[34m2020-04-01 11:07:58.606 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 11:07:58.609 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
+[34m2020-04-01 11:07:58.611 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
+[34m2020-04-01 11:07:58.611 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
 {
 "channel_id": "common",
 "epoch": "0",
 "extension": null,
-"timestamp": "2020-03-23T07:40:59Z",
+"timestamp": "2020-04-01T11:05:46Z",
 "tls_cert_hash": null,
 "tx_id": "",
 "type": 1,
 "version": 0
 }
+cat /tmp/fileHoDACX _common_
+Expect: common, got: common
 [1;32mOK: The channel <common> exists and visible to org2[m[m[m
 Step 5_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_cli Test 'Organization <org1> joined the <common> channel'
-VERIFY: test-join-channel.sh common org1
+Required: 3 Fabric_test_interface:interface_types First_organization:org1 Second_organization:org2  Passed: 3 cli org1 org2 
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test 'Docker containers for orderer are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
 [1;34m
-Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-24 14:25:16.284 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org1 has joined the <common> channel[m[m[m
-Step 6_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_cli Test 'Organization <org2> joined the <common> channel'
-VERIFY: test-join-channel.sh common org2
-[1;34m
-Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-24 14:25:18.575 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org2 has joined the <common> channel[m[m[m
-Step 7_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.network cli.orderer orderer www
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.network cli.orderer orderer www
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
+Verifing that all the test network containers example.com are up and running[m[m[m
 queryContainerNetworkSettings returns: 7051
 [1;32mOK: All the test network containers are up and running[m[m[m
 Step 1_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.network api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <org1> are up and running'
-VERIFY: ./test-containers-list.sh org1 org1.example.network api ca cli couchdb.peer0 peer0 www
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test 'Docker containers for <org1> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
 [1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
+Verifing that all the test network containers example.com are up and running[m[m[m
 queryContainerNetworkSettings returns: 7051
-[1m[31mContainer not running: api(B[m
-[1m[31mContainer not running: ca(B[m
-[1m[31mContainer not running: cli(B[m
-[1m[31mContainer not running: couchdb.peer0(B[m
-[1m[31mContainer not running: peer0(B[m
-[1m[31mContainer not running: www(B[m
-[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/01-start-network-test/fs_network_test.log for logs.[m[m[m
-Step 2_cli: exit code 1
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.network api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <org2> are up and running'
-VERIFY: ./test-containers-list.sh org2 org2.example.network api ca cli couchdb.peer0 peer0 www
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 2_cli: exit code 0
+/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_cli Test 'Docker containers for <org2> are up and running'(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
 [1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1m[31mContainer not running: api(B[m
-[1m[31mContainer not running: ca(B[m
-[1m[31mContainer not running: cli(B[m
-[1m[31mContainer not running: couchdb.peer0(B[m
-[1m[31mContainer not running: peer0(B[m
-[1m[31mContainer not running: www(B[m
-[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/01-start-network-test/fs_network_test.log for logs.[m[m[m
-Step 3_cli: exit code 1
+Verifing that all the test network containers example.com are up and running[m[m[m
+queryContainerNetworkSettings returns: 8051
+[1;32mOK: All the test network containers are up and running[m[m[m
+Step 3_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_cli Test 'Organization <org1> is in <common> channel'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_cli Test 'Organization <org1> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: test-channel-exists.sh common org1
 [1;34m
-Verifing if the <common> channel exists in org1.example.network...[m[m[m
-queryContainerNetworkSettings returns:
-jq: error (at <stdin>:1): null (null) has no keys
-Error: No such container: cli.org1.example.network
-[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/01-start-network-test/fs_network_test.log for logs.[m[m[m
-Step 4_cli: exit code 1
+Verifing if the <common> channel exists in org1.example.com...[m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 11:08:18.467 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 11:08:18.469 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
+[34m2020-04-01 11:08:18.470 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
+[34m2020-04-01 11:08:18.470 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T11:05:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/fileFCpnjP _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to org1[m[m[m
+Step 4_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_cli Test 'Organization <org2> is in <common> channel'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_cli Test 'Organization <org2> is in <common> channel'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: test-channel-exists.sh common org2
 [1;34m
-Verifing if the <common> channel exists in org2.example.network...[m[m[m
-queryContainerNetworkSettings returns:
-jq: error (at <stdin>:1): null (null) has no keys
-Error: No such container: cli.org2.example.network
-[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/01-start-network-test/fs_network_test.log for logs.[m[m[m
-Step 5_cli: exit code 1
+Verifing if the <common> channel exists in org2.example.com...[m[m[m
+queryContainerNetworkSettings returns: 8051
+[34m2020-04-01 11:08:19.485 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-01 11:08:19.488 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
+[34m2020-04-01 11:08:19.489 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
+[34m2020-04-01 11:08:19.489 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
+{
+"channel_id": "common",
+"epoch": "0",
+"extension": null,
+"timestamp": "2020-04-01T11:05:46Z",
+"tls_cert_hash": null,
+"tx_id": "",
+"type": 1,
+"version": 0
+}
+cat /tmp/filec5fHVT _common_
+Expect: common, got: common
+[1;32mOK: The channel <common> exists and visible to org2[m[m[m
+Step 5_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_cli Test 'Organization <org1> joined the <common> channel'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 6_cli Test 'Organization <org1> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: test-join-channel.sh common org1
 [1;34m
 Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns:
-jq: error (at <stdin>:1): null (null) has no keys
-Error: No such container: cli.org1.example.network
-[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/01-start-network-test/fs_network_test.log for logs.[m[m[m
-Step 6_cli: exit code 1
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-01 11:08:20.236 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[1;32mOK: The org1 has joined the <common> channel[m[m[m
+Step 6_cli: exit code 0
 /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_cli Test 'Organization <org2> joined the <common> channel'
+[1m[37m---------------------------(B[m
+[1m[37mStep: 7_cli Test 'Organization <org2> joined the <common> channel'(B[m
+[1m[37m---------------------------(B[m
 VERIFY: test-join-channel.sh common org2
 [1;34m
 Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns:
-jq: error (at <stdin>:1): null (null) has no keys
-Error: No such container: cli.org2.example.network
+queryContainerNetworkSettings returns: 8051
+[34m2020-04-01 11:08:20.925 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
 [1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/01-start-network-test/fs_network_test.log for logs.[m[m[m
 Step 7_cli: exit code 1
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank example.network cli.orderer orderer www
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh sberbank example.network cli.orderer orderer www
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank sberbank.example.network api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <sberbank> are up and running'
-VERIFY: ./test-containers-list.sh sberbank sberbank.example.network api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh alpha alpha.example.network api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <alpha> are up and running'
-VERIFY: ./test-containers-list.sh alpha alpha.example.network api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common sberbank
-Step: 4_cli Test 'Organization <sberbank> is in <common> channel'
-VERIFY: test-channel-exists.sh common sberbank
-[1;34m
-Verifing if the <common> channel exists in sberbank.example.network...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-24 14:26:08.623 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-24 14:26:08.626 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
-[34m2020-03-24 14:26:08.627 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
-[34m2020-03-24 14:26:08.627 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-22T20:31:45Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-[1;32mOK: The channel <common> exists and visible to sberbank[m[m[m
-Step 4_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common alpha
-Step: 5_cli Test 'Organization <alpha> is in <common> channel'
-VERIFY: test-channel-exists.sh common alpha
-[1;34m
-Verifing if the <common> channel exists in alpha.example.network...[m[m[m
-queryContainerNetworkSettings returns: 8051
-[34m2020-03-24 14:26:09.376 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-24 14:26:09.378 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
-[34m2020-03-24 14:26:09.380 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
-[34m2020-03-24 14:26:09.380 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-22T20:31:45Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-[1;32mOK: The channel <common> exists and visible to alpha[m[m[m
-Step 5_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common sberbank
-Step: 6_cli Test 'Organization <sberbank> joined the <common> channel'
-VERIFY: test-join-channel.sh common sberbank
-[1;34m
-Verifing if the sberbank has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-24 14:26:10.128 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The sberbank has joined the <common> channel[m[m[m
-Step 6_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common alpha
-Step: 7_cli Test 'Organization <alpha> joined the <common> channel'
-VERIFY: test-join-channel.sh common alpha
-[1;34m
-Verifing if the alpha has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 8051
-[34m2020-03-24 14:26:10.729 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The alpha has joined the <common> channel[m[m[m
-Step 7_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com cli.orderer orderer www
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.com cli.orderer orderer www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <org1> are up and running'
-VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <org2> are up and running'
-VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_cli Test 'Organization <org1> is in <common> channel'
-VERIFY: test-channel-exists.sh common org1
-[1;34m
-Verifing if the <common> channel exists in org1.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 08:30:53.674 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 08:30:53.677 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-25 08:30:53.679 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-25 08:30:53.679 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T08:10:28Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/fileRFbWMQ _common_
-[1;32mOK: The channel <common> exists and visible to org1[m[m[m
-Step 4_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_cli Test 'Organization <org2> is in <common> channel'
-VERIFY: test-channel-exists.sh common org2
-[1;34m
-Verifing if the <common> channel exists in org2.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 08:30:55.874 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 08:30:55.878 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-25 08:30:55.880 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-25 08:30:55.880 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T08:10:28Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/fileFGCTd9 _common_
-[1;32mOK: The channel <common> exists and visible to org2[m[m[m
-Step 5_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_cli Test 'Organization <org1> joined the <common> channel'
-VERIFY: test-join-channel.sh common org1
-[1;34m
-Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 08:30:58.022 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org1 has joined the <common> channel[m[m[m
-Step 6_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_cli Test 'Organization <org2> joined the <common> channel'
-VERIFY: test-join-channel.sh common org2
-[1;34m
-Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 08:31:00.179 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org2 has joined the <common> channel[m[m[m
-Step 7_cli: exit code 0
-[36mMaking a copy of  chaincode on reference.example.com for  (B[m
-[36mMaking a copy of  chaincode on reference.example.com for  (B[m
-[36mMaking a copy of  chaincode on reference.example.com for  (B[m
-[36mMaking a copy of  chaincode on reference.example.com for  (B[m
-[36mMaking a copy of  chaincode on reference.example.com for  (B[m
-[36mMaking a copy of  chaincode on reference.example.com for  (B[m
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <org1> are up and running'
-VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <org2> are up and running'
-VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_cli Test 'Organization <org1> is in <common> channel'
-VERIFY: test-channel-exists.sh common org1
-[1;34m
-Verifing if the <common> channel exists in org1.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:18:47.131 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 11:18:47.142 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-25 11:18:47.145 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-25 11:18:47.145 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T11:14:13Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/filecb7fcL _common_
-[1;32mOK: The channel <common> exists and visible to org1[m[m[m
-Step 4_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_cli Test 'Organization <org2> is in <common> channel'
-VERIFY: test-channel-exists.sh common org2
-[1;34m
-Verifing if the <common> channel exists in org2.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:18:49.471 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 11:18:49.475 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-25 11:18:49.477 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-25 11:18:49.477 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T11:14:13Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/file5GTgph _common_
-[1;32mOK: The channel <common> exists and visible to org2[m[m[m
-Step 5_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_cli Test 'Organization <org1> joined the <common> channel'
-VERIFY: test-join-channel.sh common org1
-[1;34m
-Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:18:51.675 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org1 has joined the <common> channel[m[m[m
-Step 6_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_cli Test 'Organization <org2> joined the <common> channel'
-VERIFY: test-join-channel.sh common org2
-[1;34m
-Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:18:53.994 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org2 has joined the <common> channel[m[m[m
-Step 7_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank example.network orderer www cli.orderer
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh sberbank example.network orderer www cli.orderer
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh sberbank sberbank.example.network api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <sberbank> are up and running'
-VERIFY: ./test-containers-list.sh sberbank sberbank.example.network api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh alpha alpha.example.network api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <alpha> are up and running'
-VERIFY: ./test-containers-list.sh alpha alpha.example.network api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.network are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common sberbank
-Step: 4_cli Test 'Organization <sberbank> is in <common> channel'
-VERIFY: test-channel-exists.sh common sberbank
-[1;34m
-Verifing if the <common> channel exists in sberbank.example.network...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:29:03.386 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 11:29:03.390 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
-[34m2020-03-25 11:29:03.394 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
-[34m2020-03-25 11:29:03.395 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T11:28:05Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/file5UQow3 _common_
-[1;32mOK: The channel <common> exists and visible to sberbank[m[m[m
-Step 4_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common alpha
-Step: 5_cli Test 'Organization <alpha> is in <common> channel'
-VERIFY: test-channel-exists.sh common alpha
-[1;34m
-Verifing if the <common> channel exists in alpha.example.network...[m[m[m
-queryContainerNetworkSettings returns: 8051
-[34m2020-03-25 11:29:04.757 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 11:29:04.761 UTC [cli.common] readBlock -> INFO 002[0m Received block: 4
-[34m2020-03-25 11:29:04.764 UTC [cli.common] readBlock -> INFO 003[0m Received block: 3
-[34m2020-03-25 11:29:04.764 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 3
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T11:28:05Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/file2woIIn _common_
-[1;32mOK: The channel <common> exists and visible to alpha[m[m[m
-Step 5_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common sberbank
-Step: 6_cli Test 'Organization <sberbank> joined the <common> channel'
-VERIFY: test-join-channel.sh common sberbank
-[1;34m
-Verifing if the sberbank has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:29:05.887 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The sberbank has joined the <common> channel[m[m[m
-Step 6_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common alpha
-Step: 7_cli Test 'Organization <alpha> joined the <common> channel'
-VERIFY: test-join-channel.sh common alpha
-[1;34m
-Verifing if the alpha has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 8051
-[34m2020-03-25 11:29:06.938 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The alpha has joined the <common> channel[m[m[m
-Step 7_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer
-Step: 1_api Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-Step: 2_api Test 'Docker containers for <org1> are up and running'
-VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-Step: 3_api Test 'Docker containers for <org2> are up and running'
-VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_api Test 'Organization <org1> is in <common> channel'
-VERIFY: test-channel-exists.sh common org1
-[1;34m
-Verifing if the <common> channel exists in org1.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:41:41.846 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 11:41:41.851 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-25 11:41:41.854 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-25 11:41:41.854 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T11:14:13Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/fileW2aSfm _common_
-[1;32mOK: The channel <common> exists and visible to org1[m[m[m
-Step 4_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_api Test 'Organization <org2> is in <common> channel'
-VERIFY: test-channel-exists.sh common org2
-[1;34m
-Verifing if the <common> channel exists in org2.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:41:44.523 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-25 11:41:44.526 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-25 11:41:44.530 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-25 11:41:44.530 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-25T11:14:13Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/fileLofTP9 _common_
-[1;32mOK: The channel <common> exists and visible to org2[m[m[m
-Step 5_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_api Test 'Organization <org1> joined the <common> channel'
-VERIFY: test-join-channel.sh common org1
-[1;34m
-Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:41:46.841 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org1 has joined the <common> channel[m[m[m
-Step 6_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_api Test 'Organization <org2> joined the <common> channel'
-VERIFY: test-join-channel.sh common org2
-[1;34m
-Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-25 11:41:49.000 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org2 has joined the <common> channel[m[m[m
-Step 7_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer
-Step: 1_api Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-Step: 2_api Test 'Docker containers for <org1> are up and running'
-VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-Step: 3_api Test 'Docker containers for <org2> are up and running'
-VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_api Test 'Organization <org1> is in <common> channel'
-VERIFY: test-channel-exists.sh common org1
-[1;34m
-Verifing if the <common> channel exists in org1.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 07:35:53.440 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-26 07:35:53.443 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-26 07:35:53.445 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-26 07:35:53.446 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-26T07:22:19Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/filevOu4SB _common_
-[1;32mOK: The channel <common> exists and visible to org1[m[m[m
-Step 4_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_api Test 'Organization <org2> is in <common> channel'
-VERIFY: test-channel-exists.sh common org2
-[1;34m
-Verifing if the <common> channel exists in org2.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 07:35:55.865 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-26 07:35:55.869 UTC [cli.common] readBlock -> INFO 002[0m Received block: 7
-[34m2020-03-26 07:35:55.871 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-26 07:35:55.871 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-26T07:22:19Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/filemVMZ94 _common_
-[1;32mOK: The channel <common> exists and visible to org2[m[m[m
-Step 5_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_api Test 'Organization <org1> joined the <common> channel'
-VERIFY: test-join-channel.sh common org1
-[1;34m
-Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 07:35:58.141 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org1 has joined the <common> channel[m[m[m
-Step 6_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_api Test 'Organization <org2> joined the <common> channel'
-VERIFY: test-join-channel.sh common org2
-[1;34m
-Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 07:36:00.316 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org2 has joined the <common> channel[m[m[m
-Step 7_api: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer
-Step: 1_cli Test 'Docker containers for orderer are up and running'
-VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 1_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-Step: 2_cli Test 'Docker containers for <org1> are up and running'
-VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 2_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-Step: 3_cli Test 'Docker containers for <org2> are up and running'
-VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
-[1;34m
-Verifing that all the test network containers example.com are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-Step 3_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1
-Step: 4_cli Test 'Organization <org1> is in <common> channel'
-VERIFY: test-channel-exists.sh common org1
-[1;34m
-Verifing if the <common> channel exists in org1.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 08:13:40.845 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-26 08:13:40.849 UTC [cli.common] readBlock -> INFO 002[0m Received block: 6
-[34m2020-03-26 08:13:40.851 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-26 08:13:40.851 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-26T08:07:21Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/fileg8ubbp _common_
-[1;32mOK: The channel <common> exists and visible to org1[m[m[m
-Step 4_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2
-Step: 5_cli Test 'Organization <org2> is in <common> channel'
-VERIFY: test-channel-exists.sh common org2
-[1;34m
-Verifing if the <common> channel exists in org2.example.com...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 08:13:43.030 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-03-26 08:13:43.033 UTC [cli.common] readBlock -> INFO 002[0m Received block: 6
-[34m2020-03-26 08:13:43.035 UTC [cli.common] readBlock -> INFO 003[0m Received block: 5
-[34m2020-03-26 08:13:43.035 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 5
-{
-"channel_id": "common",
-"epoch": "0",
-"extension": null,
-"timestamp": "2020-03-26T08:07:21Z",
-"tls_cert_hash": null,
-"tx_id": "",
-"type": 1,
-"version": 0
-}
-cat /tmp/filedy7w5D _common_
-[1;32mOK: The channel <common> exists and visible to org2[m[m[m
-Step 5_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1
-Step: 6_cli Test 'Organization <org1> joined the <common> channel'
-VERIFY: test-join-channel.sh common org1
-[1;34m
-Verifing if the org1 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 08:13:45.037 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org1 has joined the <common> channel[m[m[m
-Step 6_cli: exit code 0
-/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2
-Step: 7_cli Test 'Organization <org2> joined the <common> channel'
-VERIFY: test-join-channel.sh common org2
-[1;34m
-Verifing if the org2 has joined the <common> channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-[34m2020-03-26 08:13:47.049 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[1;32mOK: The org2 has joined the <common> channel[m[m[m
-Step 7_cli: exit code 0
