@@ -6,16 +6,8 @@ pushd ${BASEDIR}/../../ >/dev/null
 BASEDIR=.
 source libs/libs.sh 
 
-#echo "run_scenario.sh $$ : Starting in $BRIGHT $RED $(pwd), $WHITE Basedir is $BASEDIR $NORMAL"
 
-ARGS_PASSED=("$@")
-
-ARGS_REQUIRED=(
-    "Fabric_test_interface":interface_types
-    "First_organization":org1
-    "Second_organization":org2
-)
-
+ARGS_REQUIRED="[Fabric test interface:interface_types,First organization:org1,Second organization:org2]"
 
 SCENARIO() {
     
@@ -43,7 +35,6 @@ SCENARIO() {
 
 export -f SCENARIO
 
-
-source libs/lib-scenario.sh $@
+source libs/lib-scenario.sh "${ARGS_REQUIRED}" $@
 
 popd >/dev/null

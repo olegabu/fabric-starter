@@ -3,18 +3,27 @@
 
 #echo "lib_scenario.sh: Starting in $BRIGHT $BLUE $(pwd), $WHITE Basedir is $BASEDIR $NORMAL"
 
+IFS='[]' 
+
 main() {
     export -a RESULTS
     export step
     export rowSeparator='-|-|-|-'
     export VERIFY_SCRIPT_FOLDER='verify'
-    runTestScenario $@
+    runTestScenario $*
+
 }
 
 
 function runTestScenario() {
+#    echo "runTestScenario all params: $*"
+#    echo "first param\@: $@"
+    scenarioArgsParse $@ #required args is the first parameter passed
+unset IFS
+
     initResultsTable
-    scenarioArgsParse #using ARGS_REQUIRED ARGS_PASSED to set vars
+
+echo "IFS=              $IFS"
 
     INTERFACE_TYPES=($(sed -e 's/,/ /g' <<<${interface_types}))
     for SCRIPT_FOLDER in "${INTERFACE_TYPES[@]}"; do
@@ -95,6 +104,7 @@ function printTestResultTable() {
         printYellowRed "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests runtime: ${WHITE}${total_time}${YELLOW} seconds" "\nTotal errors: ${total_errors}"
     fi
     IFS=
+    sleep 10
 }
 
 function runStep() {
@@ -170,4 +180,5 @@ function runStep() {
     RESULTS+=("${step}_${script_folder}|${message}|${exit_code}|${time_elapsed}")
 }
 
+#IFS=']' 
 main $@
