@@ -12,6 +12,6 @@ printToLogAndToScreenCyan "\nQuery test chaincode on the <$TEST_CHANNEL_NAME> ch
 
 setCurrentActiveOrg ${org}
 
-runInFabricDir ./chaincode-query.sh ${TEST_CHANNEL_NAME} ${chaincode_name} \''["range","'${TEST_CHANNEL_NAME}'"]'\'
+runInFabricDir ./chaincode-query.sh ${TEST_CHANNEL_NAME} ${chaincode_name} \''["range","'${TEST_CHANNEL_NAME}'"]'\' 2>&1 1>/tmp/11111${TEST_CHANNEL_NAME}
 
-printResultAndSetExitCode "Chaincode ${chaincode_name} invoked sucsessfuly."
+printResultAndSetExitCode "Chaincode ${chaincode_name} query run sucsessfuly."

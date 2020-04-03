@@ -9,10 +9,10 @@ orgDomain=${2}
 shift; shift
 containersList=${@}
 
-printToLogAndToScreenBlue "\nVerifing that all the test network containers ${DOMAIN} are up and running"
+printToLogAndToScreenBlue "\nCheck containers running: ${GREEN}<${containersList}>${BLUE} on ${GREEN}${orgDomain}${BLUE}"
 
 checkContainersExist ${activeOrg} ${orgDomain} ${containersList}
 
-printResultAndSetExitCode "All the test network containers are up and running"
+printResultAndSetExitCode "OK: <${containersList}> containers running"
 
 

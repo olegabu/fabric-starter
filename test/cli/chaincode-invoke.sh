@@ -14,7 +14,7 @@ setCurrentActiveOrg ${org}
 
 #echo runInFabricDir ./chaincode-invoke.sh ${TEST_CHANNEL_NAME} ${chaincode_name} '["\"put\"","\"'${TEST_CHANNEL_NAME}'\"","\"'${TEST_CHANNEL_NAME}'\""]'
 
-runInFabricDir ./chaincode-invoke.sh ${TEST_CHANNEL_NAME} ${chaincode_name} \''["put","'${TEST_CHANNEL_NAME}'","'${TEST_CHANNEL_NAME}'"]'\'
+runInFabricDir ./chaincode-invoke.sh ${TEST_CHANNEL_NAME} ${chaincode_name} \''["put","'${TEST_CHANNEL_NAME}'","'${TEST_CHANNEL_NAME}_'"]'\'
 
 
 printResultAndSetExitCode "Chaincode ${chaincode_name} invoked sucsessfuly."

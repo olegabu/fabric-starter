@@ -6,7 +6,7 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
 org=${2}
 
-printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${org}.${DOMAIN}..."
+printToLogAndToScreenBlue "\nVerifing if the ${GREEN}<$TEST_CHANNEL_NAME>${BLUE} channel exists in ${GREEN}${org}.${DOMAIN}${BLUE}..."
 
 setCurrentActiveOrg ${org}
 

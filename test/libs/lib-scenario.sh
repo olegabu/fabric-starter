@@ -24,7 +24,7 @@ unset IFS
     initResultsTable
 
 echo "IFS=              $IFS"
-
+#IFS=','
     INTERFACE_TYPES=($(sed -e 's/,/ /g' <<<${interface_types}))
     for SCRIPT_FOLDER in "${INTERFACE_TYPES[@]}"; do
 

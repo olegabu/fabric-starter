@@ -11,16 +11,16 @@ ARGS_REQUIRED="[Fabric test interface:interface_types,First organization:org1,Se
 
 SCENARIO() {
     
-    runStep "Test 'Docker containers for orderer are up and running'" "${SCRIPT_FOLDER}" \
+    runStep "Test 'Orderer containers'" "${SCRIPT_FOLDER}" \
         VERIFY:   ./test-containers-list.sh ${org1} ${DOMAIN} orderer www cli.orderer 
 
-    runStep "Test 'Docker containers for <${org1}> are up and running'" "${SCRIPT_FOLDER}" \
+    runStep "Test '<${org1}> containers'" "${SCRIPT_FOLDER}" \
         VERIFY:   ./test-containers-list.sh  ${org1} ${org1}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
 
-    runStep "Test 'Docker containers for <${org2}> are up and running'" "${SCRIPT_FOLDER}" \
+    runStep "Test '<${org2}> containers'" "${SCRIPT_FOLDER}" \
         VERIFY:   ./test-containers-list.sh ${org2} ${org2}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
 
-    runStep "Test 'Organization <${org1}> is in <common> channel'" "${SCRIPT_FOLDER}" \
+    runStep "Test 'Organization in channel <common>'" "${SCRIPT_FOLDER}" \
         VERIFY:     test-channel-exists.sh 'common' ${org1} 
 
     runStep "Test 'Organization <${org2}> is in <common> channel'" "${SCRIPT_FOLDER}" \
