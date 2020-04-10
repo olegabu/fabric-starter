@@ -4,15 +4,15 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=$2
+org=${2}
 
-printToLogAndToScreenCyan "\nInstalling test chaincode in ${org2_}..."
-JWT=$(APIAuthorize ${org2_})
+printToLogAndToScreenCyan "\nInstalling test chaincode in [${org}]"
+JWT=$(APIAuthorize ${org})
 
 if [ $? -eq 0 ]; then  
-    instantiateTestChaincodeAPI ${TEST_CHANNEL_NAME} ${org2_} ${JWT}
+    instantiateTestChaincodeAPI ${TEST_CHANNEL_NAME} ${org} ${JWT} ${TIMEOUT_CHAINCODE_INSTANTIATE}
 
-    printResultAndSetExitCode "Test chaincode installed in ${org2_}"
+    printResultAndSetExitCode "Test chaincode installed in [${org}]"
 else 
     exit 1
 fi

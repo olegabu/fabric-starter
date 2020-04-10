@@ -1,0 +1,172 @@
+
+Arguments passed: cli org1 org2
+Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
+scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli org1 org2
+local_error=0 ; NO_RED_OUTPUT=false ./create-channel.sh ^^^^^testchannel13136 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ; local_error=$(($local_error | $?)) ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel13136 org1 ; local_error=$(($local_error | $?)); [[ $local_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: create-channel.sh ^^^^^testchannel13136 org1 VERIFY: test-exit-code.sh VERIFY: test-channel-exists.sh testchannel13136 org1
+[1;36m
+Creating the [^^^^^testchannel13136] channel for org1.example.com...[m[m[m
+queryContainerNetworkSettings returns: 7051
+eval ./channel-create.sh ^^^^^testchannel13136
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh ^^^^^testchannel13136[m[m[m
+example.com
+
+Create channel org1 ^^^^^testchannel13136
+--2020-04-09 17:38:00--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-09 17:38:00--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-09 17:38:00--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-09 17:38:00--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-04-09 17:38:00.369 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-04-09 17:38:00.416 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-09 17:38:00.466 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-09 17:38:00.467 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-04-09 17:38:00.467 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-09 17:38:00.467 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-09 17:38:00.467 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-09 17:38:00.467 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-04-09 17:38:00.468 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-04-09 17:38:00.539 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- initializing configtx manager failed: bad channel ID: channel ID '^^^^^testchannel13136' contains illegal characters
+Execute: channel fetch config crypto-config/configtx/^^^^^testchannel13136.pb -o orderer.example.com:7050 -c ^^^^^testchannel13136 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-04-09 17:38:00.606 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-09 17:38:00.607 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+configtxlator: error: open crypto-config/configtx/^^^^^testchannel13136.pb: no such file or directory, try --help
+jq: error: Could not open file crypto-config/configtx/^^^^^testchannel13136.json: No such file or directory
+>> Prepare config update from org1 for channel ^^^^^testchannel13136
+configtxlator: error: Error decoding: error decoding input: error unmarshaling intermediate JSON: EOF
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c ^^^^^testchannel13136 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-04-09 17:38:00.776 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- Failing initial channel config creation: mismatched channel IDs: 'testchannel29220' != '^^^^^testchannel13136'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;35m
+Checking exit code...[m[m[m
+[1;32mOK: Exit code is OK: (0)[m[m[m
+[1;35m
+Verifing if the [testchannel13136] channel exists in [org1.example.com][m[m[m
+queryContainerNetworkSettings returns: 7051
+[34m2020-04-09 17:38:01.799 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-09 17:38:01.800 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+null
+cat /tmp/filetQCOrT _null_
+Expect: testchannel13136, got: null
+[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/scenarios/04-testing-test-suite/fs_network_test.log for logs.[m[m[m
+Step 1_cli: exit code 1
+local_error=0 ; NO_RED_OUTPUT=false ./create-channel.sh ^^^^^^testchannel13136 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh $? 1 ; local_error=$(($local_error | $?)) ; ! /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/ test-channel-exists.sh ^^^^^^testchannel13136 org1 ; local_error=$(($local_error | $?)); [[ $local_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: create-channel.sh ^^^^^^testchannel13136 org1 VERIFY: test-exit-code.sh $? 1 VERIFY: ! test-channel-exists.sh ^^^^^^testchannel13136 org1
+[1;36m
+Creating the [^^^^^^testchannel13136] channel for org1.example.com...[m[m[m
+queryContainerNetworkSettings returns: 7051
+eval ./channel-create.sh ^^^^^^testchannel13136
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh ^^^^^^testchannel13136[m[m[m
+example.com
+
+Create channel org1 ^^^^^^testchannel13136
+--2020-04-09 17:38:04--  http://www.example.com/msp/admincerts/Admin@example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/admincerts/Admin@example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-09 17:38:04--  http://www.example.com/msp/cacerts/ca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/cacerts/ca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-09 17:38:04--  http://www.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-09 17:38:04--  http://www.example.com/msp/orderer.example.com/tls/server.crt
+Resolving www.example.com (www.example.com)... 172.19.0.3
+Connecting to www.example.com (www.example.com)|172.19.0.3|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/example.com/msp/orderer.example.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-04-09 17:38:04.065 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-04-09 17:38:04.118 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-09 17:38:04.165 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-09 17:38:04.165 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-09 17:38:04.165 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-04-09 17:38:04.165 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-09 17:38:04.165 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-04-09 17:38:04.165 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-09 17:38:04.166 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-09 17:38:04.166 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-09 17:38:04.166 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[33m2020-04-09 17:38:04.166 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-09 17:38:04.166 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-09 17:38:04.167 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-09 17:38:04.167 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org1 in configtx.yaml
+[34m2020-04-09 17:38:04.167 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-04-09 17:38:04.219 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- initializing configtx manager failed: bad channel ID: channel ID '^^^^^^testchannel13136' contains illegal characters
+Execute: channel fetch config crypto-config/configtx/^^^^^^testchannel13136.pb -o orderer.example.com:7050 -c ^^^^^^testchannel13136 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-04-09 17:38:04.286 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-09 17:38:04.288 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+Error: can't read the block: &{NOT_FOUND}
+configtxlator: error: open crypto-config/configtx/^^^^^^testchannel13136.pb: no such file or directory, try --help
+jq: error: Could not open file crypto-config/configtx/^^^^^^testchannel13136.json: No such file or directory
+>> Prepare config update from org1 for channel ^^^^^^testchannel13136
+configtxlator: error: Error decoding: error decoding input: error unmarshaling intermediate JSON: EOF
+>> org1 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c ^^^^^^testchannel13136 -o orderer.example.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+[34m2020-04-09 17:38:04.459 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- Failing initial channel config creation: mismatched channel IDs: 'testchannel29220' != '^^^^^^testchannel13136'
+[1;31mError occurred. See console output above.[m[1;33m[m
+[1;35m
+Checking exit code...[m[m[m
+[1;32mOK: Exit code is OK: (0)[m[m[m
+Step 2_cli: exit code 0

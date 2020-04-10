@@ -7,10 +7,10 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 org=${2}
 
 
-printToLogAndToScreenBlue "\nVerifing if the ${GREEN}${org}${BLUE} has joined the ${GREEN}<$TEST_CHANNEL_NAME>${BLUE} channel..."
+printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [$TEST_CHANNEL_NAME] channel..."
 
 setCurrentActiveOrg ${org}
 
 verifyOrgJoinedChannel "${TEST_CHANNEL_NAME}" "${org}" "${DOMAIN}"
 
-printResultAndSetExitCode "The ${org} has joined the <$TEST_CHANNEL_NAME> channel"
+printResultAndSetExitCode "The [${org}] has joined the [$TEST_CHANNEL_NAME] channel"

@@ -7,7 +7,7 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 org=${2}
 
 
-printToLogAndToScreenBlue "\nVerifing if the <$TEST_CHANNEL_NAME> channel exists in ${org}.${DOMAIN}..."
+printToLogAndToScreenBlue "\nVerifing if the [$TEST_CHANNEL_NAME] channel exists in [${org}.${DOMAIN}]"
 
 setCurrentActiveOrg ${org}
 
@@ -15,4 +15,4 @@ setCurrentActiveOrg ${org}
 
 #echo "Exit code: $?" >/dev/tty
 
-printResultAndSetExitCode "The channel <$TEST_CHANNEL_NAME> does not exist and in not visible to ${org}"
+printResultAndSetExitCode "The channel [$TEST_CHANNEL_NAME] does not exist and in not visible to [${org}]"

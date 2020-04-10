@@ -7,10 +7,10 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 org=${2}
 
 
-printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in ${org} org..."
+printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in [${org}]"
 
 setCurrentActiveOrg ${org}
 
 verifyChiancodeInstalled "${TEST_CHANNEL_NAME}" "${org}"
 
-printResultAndSetExitCode "The test chaincode installed in ${org}"
+printResultAndSetExitCode "The test chaincode installed in [${org}]"

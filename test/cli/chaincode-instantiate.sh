@@ -7,12 +7,12 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
 org=${2}
 
-printToLogAndToScreenCyan "\nInstantiate test chaincode in ${TEST_CHANNEL_NAME} in ${org}..."
+printToLogAndToScreenCyan "\nInstantiate test chaincode in [${TEST_CHANNEL_NAME}] by [${org}]"
 
 setCurrentActiveOrg ${org}
 
 instantiateTestChaincodeCLI ${TEST_CHANNEL_NAME} ${org}
 
-printResultAndSetExitCode "Test chaincode instantiated in ${TEST_CHANNEL_NAME} by ${org}"
+printResultAndSetExitCode "Test chaincode instantiated in [${TEST_CHANNEL_NAME}] by [${org}]"
 
 

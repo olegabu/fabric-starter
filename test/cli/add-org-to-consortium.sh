@@ -5,12 +5,12 @@
 source "${BASEDIR}"/../libs/libs.sh
 source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org2_=$2
+org=${2}
 
-printToLogAndToScreenCyan "\nAdd ${org2_} to the default consortium..."
+printToLogAndToScreenCyan "\nAdd [${org}] to the default consortium..."
 
-setCurrentActiveOrg ${ORG}
+setCurrentActiveOrg ${org}
 
-runInFabricDir ./consortium-add-org.sh ${org2_}
+runInFabricDir ./consortium-add-org.sh ${org}
 
-printResultAndSetExitCode "Organization ${org2_} added to the default consortium"
+printResultAndSetExitCode "Organization [${org}] added to the default consortium"

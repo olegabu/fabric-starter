@@ -11,9 +11,9 @@ scenarioArgsParse
 orgs=${@}
 DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
 
-echo "Deploing network for <${DEPLOYMENT_TARGET}> target. Domain: $DOMAIN, Orgs: ${orgs[@]}"
-echo "\${DOCKER_REGISTRY} is set to: <${DOCKER_REGISTRY}>"
-echo "\${MULTIHOST} is set to: <${MULTIHOST}>"
+echo "Deploing network for [${DEPLOYMENT_TARGET}] target. Domain: $DOMAIN, Orgs: ${orgs[@]}"
+echo "\${DOCKER_REGISTRY} is set to: [${DOCKER_REGISTRY}]"
+echo "\${MULTIHOST} is set to: [${MULTIHOST}]"
 sleep 2
 
 case "${DEPLOYMENT_TARGET}" in
@@ -32,6 +32,6 @@ case "${DEPLOYMENT_TARGET}" in
         popd >/dev/null
     ;;
     *)
-        echo "Wrong target <${DEPLOYMENT_TARGET}>"
+        echo "Wrong target [${DEPLOYMENT_TARGET}]"
     ;;
 esac

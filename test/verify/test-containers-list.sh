@@ -9,10 +9,10 @@ orgDomain=${2}
 shift; shift
 containersList=${@}
 
-printToLogAndToScreenBlue "\nCheck containers running: ${GREEN}<${containersList}>${BLUE} on ${GREEN}${orgDomain}${BLUE}"
+printToLogAndToScreenBlue "\nCheck containers running: [${containersList}] on [${orgDomain}]"
 
 checkContainersExist ${activeOrg} ${orgDomain} ${containersList}
 
-printResultAndSetExitCode "OK: <${containersList}> containers running"
+printResultAndSetExitCode "OK: [${containersList}] containers are running"
 
 

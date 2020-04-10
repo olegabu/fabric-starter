@@ -6,10 +6,10 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 org=$2
 orgAdd=$3
 
-printToLogAndToScreenBlue "\nVerifing if the <$orgAdd> added to ${TEST_CHANNEL_NAME} ..."
+printToLogAndToScreenBlue "\nVerifing if the [$orgAdd] added to [${TEST_CHANNEL_NAME}]"
 
 setCurrentActiveOrg ${orgAdd}
 
 verifyOrgIsInChannel "${TEST_CHANNEL_NAME}" "${orgAdd}" "${DOMAIN}"
 
-printResultAndSetExitCode "Organization <$orgAdd> is in the channel <$TEST_CHANNEL_NAME>."
+printResultAndSetExitCode "Organization [$orgAdd] is in the channel [$TEST_CHANNEL_NAME]"

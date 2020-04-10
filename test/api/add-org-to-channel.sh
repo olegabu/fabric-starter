@@ -7,13 +7,13 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 org=${2}
 orgAdd=${3}
 
-printToLogAndToScreenCyan  "Add ${orgAdd} to the ${TEST_CHANNEL_NAME} channel using API..." | printToLogAndToScreen
+printToLogAndToScreenCyan  "Add [${orgAdd}] to the [${TEST_CHANNEL_NAME}] channel using API" | printToLogAndToScreen
 JWT=$(APIAuthorize ${org})
 
 
 if [ $? -eq 0 ]; then  
     addOrgToTheChannel ${TEST_CHANNEL_NAME} ${org} ${JWT} ${orgAdd}
-    printResultAndSetExitCode "Organization ${orgAdd} added to ${TEST_CHANNEL_NAME} channel"
+    printResultAndSetExitCode "Organization [${orgAdd}] added to [${TEST_CHANNEL_NAME}] channel"
 else 
     exit 1
 fi
