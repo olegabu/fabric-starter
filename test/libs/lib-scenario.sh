@@ -133,22 +133,40 @@ function runStep() {
     shift
 
     local COMMAND=$@
-    COMMAND=$(echo ${COMMAND} | sed -E -e 's/VERIFY:(.+)VERIFY:/VERIFY:\1 ; local_error=\$((\$local_error | \$\?)) VERIFY:/g')
-    COMMAND=$(echo ${COMMAND} | sed -E -e 's/VERIFY:(.+)$/VERIFY:\1 ; local_error=\$((\$local_error | \$\?))/g')
 
-    echo "${YELLOW}${COMMAND}${NORMAL}"    
+    #######COMMAND=$(echo ${COMMAND} | sed -E -e 's/VERIFY:(.+)VERIFY:/VERIFY:\1 ; local_error=\$((\$local_error | \$\?)) VERIFY:/g')
+    #######COMMAND=$(echo ${COMMAND} | sed -E -e 's/VERIFY:(.+)$/VERIFY:\1 ; local_error=\$((\$local_error | \$\?))/g')
+
+    COMMAND="run_error=0; verify_error=0;"${COMMAND}
+    COMMAND=$(\
+    echo ${COMMAND} |\
+    sed -E -e 's/([A-Z_]*:)/\n\1/g' -e 's/^\n//g' |\
+    sed -E -e 's/(RUNTEST:)([^\n]*)/\1\2; run_error=\$?; echo \$run_error;/g' |\
+    sed -E -e 's/(RUN:)([^\n]*)/\1\2;/g' |\
+    sed -E -e 's/(VERIFY:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | \$?));/g' |\
+    sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?));/g' |\
+    sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; echo \$verify_error;/g' |\
+    tr '\n' ' ' )
+
+
+  #  echo "${YELLOW}${COMMAND}${NORMAL}"    
     #Parse test command    
-    COMMAND='local_error=0 '${COMMAND}
-    COMMAND=${COMMAND}'; [[ $local_error = "0" ]]'
-    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" ; NO_RED_OUTPUT=false ./"}
-    COMMAND=${COMMAND//RUNTESTNOERRPRINT:[[:space:]]/" ; NO_RED_OUTPUT=true ./"}
-    COMMAND=${COMMAND//VERIFY:[[:space:]]!/" ; ! ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
-    COMMAND=${COMMAND//VERIFY:[[:space:]]/" ; ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
+    ########COMMAND='local_error=0 '${COMMAND}
+    #COMMAND=${COMMAND}'; [[ $local_error = "0" ]]'
+    COMMAND=${COMMAND}';echo ${verify_error}; [[ $verify_error = "0" ]]'
+    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" NO_RED_OUTPUT=false ./"}
+    COMMAND=${COMMAND//RUNTESTNOERRPRINT:[[:space:]]/" NO_RED_OUTPUT=true ./"}
+    COMMAND=${COMMAND//VERIFY_NOT:[[:space:]]/" NO_RED_OUTPUT=true ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
+    COMMAND=${COMMAND//VERIFY:[[:space:]]/" ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
-    
+    COMMAND=${COMMAND//;[[:space:]]/;}
+
+    COMMAND=$(echo $COMMAND | sed -E -e 's/[;]+/;/g')
+
+
     printWhite "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
     printDbg $COMMAND
-    echo "${YELLOW}${COMMAND}${NORMAL}"    
+   # echo "${YELLOW}${COMMAND}${NORMAL}"    
     
     printLogStepHeader ${step} ${SCRIPT_FOLDER} ${message}
     
@@ -163,7 +181,6 @@ function runStep() {
     
     # Run command
     eval "${COMMAND}" 2>&1
-    
     local exit_code=$?
     local stop_time=$(date +"%s.%3N")
     

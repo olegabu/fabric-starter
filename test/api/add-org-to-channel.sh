@@ -12,7 +12,7 @@ JWT=$(APIAuthorize ${org})
 
 
 if [ $? -eq 0 ]; then  
-    addOrgToTheChannel ${TEST_CHANNEL_NAME} ${org} ${JWT} ${orgAdd}
+    addOrgToChannelAPI ${TEST_CHANNEL_NAME} ${org} ${JWT} ${orgAdd}
     printResultAndSetExitCode "Organization [${orgAdd}] added to [${TEST_CHANNEL_NAME}] channel"
 else 
     exit 1

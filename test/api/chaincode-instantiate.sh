@@ -6,7 +6,7 @@ source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
 org=${2}
 
-printToLogAndToScreenCyan "\nInstalling test chaincode in [${org}]"
+printToLogAndToScreenCyan "\nInstantiating test chaincode in [${org}]"
 JWT=$(APIAuthorize ${org})
 
 if [ $? -eq 0 ]; then  

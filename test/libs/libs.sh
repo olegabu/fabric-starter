@@ -46,7 +46,12 @@ function getRandomChannelName() {
 
 
 function setExitCode() {
+    local errorCode
+    
     eval "${@}" 2>/dev/null
+    errorCode=$?
+    printDbg "setExitCode: ${errorCode}"
+    return ${errorCode}
 }
 
 
@@ -211,7 +216,7 @@ function printYellowBox() {
     local indent
     local boundary
     local indentation
-
+    
     length=$(expr length "$@")
     indent=10
     boundary=$(printNSymbols '=' $((length + $indent * 2)) )
@@ -227,8 +232,8 @@ function printExitCode() {
 
 
 function printToLogAndToScreen() {
-local line
-
+    local line
+    
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE}
@@ -240,8 +245,8 @@ local line
 
 
 function printErrToLogAndToScreen() {
-local line
-
+    local line
+    
     if (( $# == 0 )) ; then
         while read -r line ; do
             echo "${line}" | tee -a ${FSTEST_LOG_FILE} >/dev/stderr
@@ -270,10 +275,11 @@ function printAndCompareResults() {
 
 
 function printResultAndSetExitCode() {
+    #echo " ---------------------- $? -----------------------"
     
     #echo "- $1 - ${2:-0} - ${3:-$?}" >/dev/tty
-    
-    local errorCode=${3:-$?}
+    #local errorCode
+    errorCode=${3:-$?}
     #local expextedErrorCode=${2:-0}
     #echo "$expextedErrorCode"
     if [ ${errorCode} -eq ${2:-0} ]
@@ -301,7 +307,7 @@ function queryContainerNetworkSettings() {
     local TMP_LOG_FILE
     local query
     local result
-
+    
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     query='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
     result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE});
@@ -318,40 +324,6 @@ function getContainerPort() {
     echo $(queryContainerNetworkSettings "HostPort" "${containerName}" "${org}" "${domain}")
 }
 
-
-function curlItGet() { #Call curl and get results (data & http code)
-    local url=$1
-    local cdata=$2
-    local wtoken=$3
-    local curlTimeout=${4:-15}
-    
-    local res
-    local exitCode
-    local body
-    local http_code
-
-    # url="http://127.0.0.1:4002"
-    #  echo curl -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}" | printDbg
-    set -x
-    res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
-    exitCode=$?
-    set +x
-    #    local res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "http://127.0.0.1:4002" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
-    
-    echo "${RED}curlItGet: (curl exit code: $exitCode) ${NORMAL}" | printDbg
-    echo "curlGetIt got _ ${res} _ result" | printDbg
-    http_code="${res:${#res}-3}" #only 3 last symbols
-    if [ ${#res} -eq 3 ]; then
-        #    body="<empty>"
-        echo "body is empty, code is $http_code" | printDbg
-    else
-        body="${res:0:${#res}-3}" #everything but the 3 last symbols
-        echo "body is $body, code is $http_code" | printDbg
-    fi
-    echo "$body $http_code"
-}
-
-
 function generateMultipartBoudary() {
     echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
 }
@@ -360,9 +332,9 @@ function generateMultipartBoudary() {
 function generateMultipartHeader() { # Compose header for curl to send archived chaincode
     local boundary=${1}
     local filename=${2}
-
+    
     local multipart_header
-
+    
     multipart_header='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
     multipart_header+=${filename}'"\r\nContent-Type: "application/zip"\r\n\r\n'
     echo -n -e  ${multipart_header}
@@ -373,7 +345,7 @@ function generateMultipartTail() { # Compose header for curl to send archived ch
     local boundary=${1}
     
     local multipart_tail
-
+    
     multipart_tail='\r\n\r\n----'
     multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
     multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
@@ -383,7 +355,35 @@ function generateMultipartTail() { # Compose header for curl to send archived ch
 }
 
 
-function restquery() {
+function curlRequest() { #Call curl and get results (data & http code)
+    local url=$1
+    local cdata=$2
+    local wtoken=$3
+    local curlTimeout=${4:-15}
+    
+    local res
+    local exitCode
+    local body
+    local httpStatusCode
+    
+    res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    exitCode=$?
+    
+    echo "${RED}curlRequest: (curl exit code: $exitCode) ${NORMAL}" | printDbg
+    echo "curlGetIt got _ ${res} _ result" | printDbg
+    httpStatusCode="${res:${#res}-3}" #only 3 last symbols
+    if [ ${#res} -eq 3 ]; then
+        body='{"empty":"true"}'
+        echo "body is empty (set to ${body}), code is $httpStatusCode" | printDbg
+    else
+        body="${res:0:${#res}-3}" #everything but the 3 last symbols
+        echo "body is $body, code is $httpStatusCode" | printDbg
+    fi
+    echo "$body $httpStatusCode"
+    return ${exitCode}
+}
+
+function restQuery() {
     local org=${1}
     local path=${2}
     local query=${3}
@@ -392,56 +392,38 @@ function restquery() {
     
     local api_ip
     local api_port
-
+    
     api_ip=$(getOrgIp "${org}")
     api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     
-    echo  restquery:  curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
-    
-    curlItGet "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
+    echo  restQuery:  curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
+    curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
 }
 
 
 function getJWT() {
     local org=${1}
-    
-    restquery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
+    restQuery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
 }
 
 
 function APIAuthorize() {
-
+    local org=${1}
+    
     local result
     local jwt
-    local jwt_http_code
-
-    result=($(getJWT ${1}))
-    jwt=${result[0]//\"/} #remove quotation marks
-    jwt_http_code=${result[1]}
+    local httpStatusCode
+    
+    result=($(getJWT ${org}))
+    jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
+    httpStatusCode=${result[$(( arrayStartIndex + 1 ))]}
     
     echo "Got JWT: ${jwt}" | printLog
     echo "${jwt}"
     
-    setExitCode [ "${jwt_http_code}" = "200" ]
+    setExitCode [ "${httpStatusCode}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
 }
-
-
-function createChannelAPI_() {
-    local channel=${1}
-    local org=${2}
-    local jwt=${3}
-    
-    local TMP_LOG_FILE
-    local result
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(restquery ${2} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
-    printDbg $result > ${SCREEN_OUTPUT_DEVICE}
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    echo ${result}
-}
-
 
 function createChannelAPI() {
     local channel=${1}
@@ -450,38 +432,51 @@ function createChannelAPI() {
     
     local TMP_LOG_FILE
     local result
-    local create_status
+    local exitCode
+    local apiStatusCode
     local state
-    local create_http_code
+    local httpStatusCode
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=($(createChannelAPI_ "${channel}" "${org}" "${jwt}"))
-    create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})
+    
+    result=($(restQuery ${org} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}"))  2>${TMP_LOG_FILE}
+    exitCode=$?
+    printDbg "createChannelAPI: exit code:: ${exitCode} result:: ${result[@]}" #> ${SCREEN_OUTPUT_DEVICE}
+    
+    #apiStatusCode=$(echo -n ${result[$(arrayStartIndex)]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})
     
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     
-    state=$(DeleteSpacesLineBreaks "${create_status}")
-    create_http_code=${result[1]}
-    
-    setExitCode [ "${create_http_code}" = "200" ]
+    state=$(DeleteSpacesLineBreaks "${apiStatusCode}")
+    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
+    httpStatusCode=${httpStatusCode:0:1}
+    #apiStatusCode=${apiStatusCode:0:1}
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
 }
 
 
-function joinChannelAPI_() {
-    
+function addOrgToChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
+    local org2=${4}
     
     local TMP_LOG_FILE
+    local orgIP
     local result
+    local httpStatusCode
+    local exitCode
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(restquery ${2} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
-    printDbg "join channel REST query returned: ${result[@]} ." > ${SCREEN_OUTPUT_DEVICE}
+    result=($(restQuery "${org}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"))  2>${TMP_LOG_FILE}
+    exitCode=$?
+    
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     
-    echo ${result}
+    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
+    httpStatusCode=${httpStatusCode:0:1}
+    
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
 }
 
 
@@ -490,21 +485,141 @@ function joinChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
-    local TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    local result=($(joinChannelAPI_ "${channel}" "${org}" "${jwt}"))
     
-    local create_http_code
-    # API returns empty response body! Why?
-    #local create_status=$(echo -n ${result[0]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})
+    local TMP_LOG_FILE
+    local result
+    local httpStatusCode
+    local exitCode
+    
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    result=$(restQuery ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
+    exitCode=$?
     
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     
-    #local state=$(DeleteSpacesLineBreaks "${create_status}")
+    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
+    httpStatusCode=${httpStatusCode:0:1}
+    
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+}
+
+function installZippedChaincodeAPI() {
+    local channel=${1}
+    local org=${2}
+    local jwt=${3}
+    
+    local zip_file_path
+    local boundary
+    local multipart_header
+    local multipart_tail
+    local tmp_out_file
+    local api_ip
+    local api_port
+    local res
+    local httpStatusCode
+    local body
+    local exitCode
+    
+    zip_file_path=$(createChaincodeArchiveAndReturnPath ${channel})
+    boundary=$(generateMultipartBoudary)
+    multipart_header='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
+    multipart_header+=${zip_file_path}'"\r\nContent-Type: "application/zip"\r\n\r\n'
+    
+    multipart_tail='\r\n\r\n----'
+    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
+    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
+    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
+    multipart_tail+=${boundary}'--\r\n'
+    
+    tmp_out_file=$(tempfile);
+    trap "rm -f ${tmp_out_file}" EXIT;
+    
+    api_ip=$(getOrgIp "${org}")
+    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
+    trap "rm -f ${zip_chaincode_path}" EXIT;
+    
+    # Composing single binary file to POST via API
+    echo -n -e "${multipart_header}" > "${tmp_out_file}"
+    cat   "${zip_file_path}" >> "${tmp_out_file}"
+    echo -n -e "${multipart_tail}" >> "${tmp_out_file}"
     
     
-    create_http_code=${result[1]}
-    echo "create_http_code = $create_http_code" | printDbg
-    setExitCode [ "${create_http_code}" = "000" ] || setExitCode [ "${create_http_code}" = "200" ]
+    res=$(curl http://${api_ip}:${api_port}/chaincodes \
+        -sw ":%{http_code}" \
+        -H "Authorization: Bearer ${jwt}" \
+        -H 'Content-Type: multipart/form-data; boundary=--'${boundary} \
+    --data-binary @"${tmp_out_file}" )
+    exitCode=$?
+    
+    httpStatusCode=$(echo "${res}" | cut -d':' -f 3)
+    body='"'$(echo "${res}" | cut -d':' -f 1,2)'"'
+    
+    echo ${httpStatusCode} | printDbg
+    printDbg ${body}
+    
+    httpStatusCode=${httpStatusCode:0:1}
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ ${exitCode} = "0" ]
+}
+
+
+function instantiateTestChaincodeAPI() {
+    local channel=${1}
+    local org=${2}
+    local jwt=${3}
+    local curlTimeout=${4:-5}
+    
+    local chaincode_name
+    local api_ip
+    local api_port
+    local result
+    local httpStatusCode
+    
+    chaincode_name=$(getTestChaincodeName ${channel})
+    api_ip=$(getOrgIp "${org}")
+    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
+    
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;    
+    result=($(restQuery ${2} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}))
+    exitCode=$?
+
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    
+    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
+    httpStatusCode=${httpStatusCode:0:1}
+    
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+ 
+}
+
+
+function invokeTestChaincodeAPI() {
+    local channel=${1}
+    local org=${2}
+    local chaincode_name=${3}
+    local jwt=${4}
+    
+    local api_ip
+    local api_port
+    local result
+    local httpStatusCode
+    
+    chaincode_name=$(getTestChaincodeName ${channel})
+    api_ip=$(getOrgIp "${org}")
+    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
+
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;  
+
+    result=($(restQuery ${2} "channels/${channel}/chaincodes/${chaincode_name}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"))
+    exitCode=$?
+
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    
+    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
+    httpStatusCode=${httpStatusCode:0:1}
+    
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+    
+
 }
 
 
@@ -547,34 +662,16 @@ function verifyOrgJoinedChannel() {
 }
 
 
-function addOrgToChannel_() {
-    local result
-    local orgIP
-    
-    orgIP=$(getOrgIp $org2)
-    result=$(restquery "${2}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
-    printDbg $result > ${SCREEN_OUTPUT_DEVICE}
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    echo ${result}
-}
+# function addOrgToChannel_() {
+#     local result
+#     local orgIP
 
-
-function addOrgToTheChannel() {
-    local channel=${1}
-    local org=${2}
-    local jwt=${3}
-    local org2=${4}
-    
-    local TMP_LOG_FILE
-    local result
-    local create_http_code
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=($(addOrgToChannel_ "${channel}" "${org}" "${jwt}" "${org2}"))
-    create_http_code=$(echo -n ${result[0]} 2>${TMP_LOG_FILE})
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    setExitCode [ "${create_http_code}" = "200" ]
-}
+#     orgIP=$(getOrgIp $org2)
+#     result=$(restQuery "${org}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
+#     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
+#     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+#     echo ${result}
+# }
 
 
 function queryPeer() {
@@ -811,108 +908,6 @@ function instantiateTestChaincodeCLI() {
     printDbg "${result}"
     popd > /dev/null
     setExitCode [ "${exitCode}" = "0" ]
-}
-
-
-function installZippedChaincodeAPI() {
-    local channel=${1}
-    local org=${2}
-    local jwt=${3}
-    
-    local zip_file_path
-    local boundary
-    local multipart_header
-    local multipart_tail
-    local tmp_out_file
-    local api_ip
-    local api_port
-    local res
-    local http_code
-    local body
-    
-    zip_file_path=$(createChaincodeArchiveAndReturnPath ${channel})
-    boundary=$(generateMultipartBoudary)
-    multipart_header='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
-    multipart_header+=${zip_file_path}'"\r\nContent-Type: "application/zip"\r\n\r\n'
-    
-    multipart_tail='\r\n\r\n----'
-    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
-    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
-    multipart_tail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
-    multipart_tail+=${boundary}'--\r\n'
-    
-    tmp_out_file=$(tempfile);
-    trap "rm -f ${tmp_out_file}" EXIT;
-    
-    api_ip=$(getOrgIp "${org}")
-    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    trap "rm -f ${zip_chaincode_path}" EXIT;
-    
-    # Composing single binary file to POST via API
-    echo -n -e "${multipart_header}" > "${tmp_out_file}"
-    cat   "${zip_file_path}" >> "${tmp_out_file}"
-    echo -n -e "${multipart_tail}" >> "${tmp_out_file}"
-    
-    
-    res=$(curl http://${api_ip}:${api_port}/chaincodes \
-        -sw ":%{http_code}" \
-        -H "Authorization: Bearer ${jwt}" \
-        -H 'Content-Type: multipart/form-data; boundary=--'${boundary} \
-    --data-binary @"${tmp_out_file}" )
-    
-    
-    http_code=$(echo "${res}" | cut -d':' -f 3)
-    body='"'$(echo "${res}" | cut -d':' -f 1,2)'"'
-    
-    echo ${http_code} | printDbg
-    printDbg ${body}
-    
-    setExitCode [ "${http_code}" = "200" ]
-}
-
-
-function instantiateTestChaincodeAPI() {
-    local channel=${1}
-    local org=${2}
-    local jwt=${3}
-    local curlTimeout=${4:-5}
-    
-    local chaincode_name
-    local api_ip
-    local api_port
-    local result
-    local http_code
-    
-    chaincode_name=$(getTestChaincodeName ${channel})
-    api_ip=$(getOrgIp "${org}")
-    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    
-    result=($(restquery ${2} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}))
-    
-    http_code=${result[1]}
-    
-    setExitCode [ "${http_code}" = "200" ]
-}
-
-
-function invokeTestChaincodeAPI() {
-    local channel=${1}
-    local org=${2}
-    local chaincode_name=${3}
-    local jwt=${4}
-    
-    local api_ip
-    local api_port
-    local result
-    local http_code
-    
-    chaincode_name=$(getTestChaincodeName ${channel})
-    api_ip=$(getOrgIp "${org}")
-    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    result=($(restquery ${2} "channels/${channel}/chaincodes/${chaincode_name}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"))
-    http_code=${result[1]}
-    
-    setExitCode [ "${http_code}" = "200" ]
 }
 
 

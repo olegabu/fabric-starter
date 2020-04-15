@@ -34,21 +34,51 @@ echo "Running scenario for ${TEST_CHANNEL_NAME} ${org1} ${org2}"
     TEST_SECOND_CHANNEL_NAME=${TEST_CHANNEL_NAME}"-02"
 
 
-     runStep "Test 'Create new channel in ORG1'"   \
-	RUNTEST:    create-channel.sh       "^^^^^"${TEST_CHANNEL_NAME} ${org1} \
-	VERIFY:     test-exit-code.sh \
-	VERIFY:     test-channel-exists.sh  ${TEST_CHANNEL_NAME} ${org1}
+    runStep "Test 'Create another channel in ORG2'" \
+        RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
+        VERIFY:     test-channel-exists.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
-    # runStep "Test 'The channel created in ORG1 is not visible in ORG2'" \
-    #     VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org2}
-    
-    runStep "Test 'Can not create a channel with the incorrect name in ORG1'" \
-	RUNTEST:    create-channel.sh      ${TEST_CHANNEL_WRONG_NAME} ${org1} \
-	VERIFY:     test-exit-code.sh \$? 1\
-	VERIFY:     ! test-channel-exists.sh  ${TEST_CHANNEL_WRONG_NAME} ${org1} 
-    # runStep "Test 'Can not create a channel in ORG1 again'" \
-    #     RUNTEST:    can-not-create-channel.sh  ${TEST_CHANNEL_NAME} ${org1} \
-    #     VERIFY:     test-channel-does-not-exist.sh      ${TEST_CHANNEL_NAME} ${org1}
+
+    runStep "Test 'Can not create the same channel in ORG2'" \
+        RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
+	VERIFY_NON_ZERO_EXIT_CODE: \
+        VERIFY:     test-channel-exists.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
+
+    runStep "Test 'Add ORG1 to the second channel created by ORG2'" \
+        RUNTEST: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1} \
+        VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1}
+
+
+    runStep "Test 'Add ORG1 to the second channel created by ORG2'" \
+        RUNTEST: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME}_ ${org1} ${org1} \
+	VERIFY_NON_ZERO_EXIT_CODE: \
+        VERIFY_NOT:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME}_ ${org1} ${org1}
+
+
+
+#	    VERIFY:     test-exit-code.sh \
+
+
+if false; then
+
+# Adding orgs to channels
+
+    runStep "Test 'Add ORG1 to the second channel created by ORG2'" \
+        RUNTEST: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1} \
+        VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1}
+
+
+    runStep "Test 'Add ORG1 to the second channel created by ORG2'" \
+        RUNTEST: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1} \
+        VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1}
+
+fi
+
+# Joining channels
+
+    runStep "Test 'Join ORG1 to the second chanel created by ORG2'" \
+        RUNTEST: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org1} \
+        VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org1}
 
 }
 

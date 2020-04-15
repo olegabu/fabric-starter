@@ -22,7 +22,7 @@ First, you shoud deploy the local or the virtual box Fabric test network in the 
 * Service channel (common) exists
 * Both orgs are in the 'common' channel
 
-## HOWTO
+## HOWTO (example?)
 
 *In the new console run run-local-test-network.sh or run-vbox-test-network.sh. This shoud deploy local or virtual box network 
 with ordrer and to organizations org1 and org2 and example.com domain

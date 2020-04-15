@@ -14,16 +14,18 @@ run tests
 ## Features and functions tested
 
 start-network:
+
 * Docker containers for orderer and organizations are up and running
 #* Network is up and running (connectivity: host name resolving, ports API (4000, 4001), PEER0 (7051, 8051), Orderer (7050), WWW 80)
 * Service channel (common) exists)
 * Both orgs are in the 'common' channel
 
 basic-functionality:
+
 * 'reference' chaincode and 'dns' chaincode (for virtual boxes) 
 * New channels can be created in every organization
-* Organization can invite the other org
-* Organizations invited can join certain channels
+* Organization creates channel and can invite the other org
+* Invited organizations can join certain channels
 * New chaincodes can be installed and instantiated in the channel
 * Chaincode invoke result is visible for both orgs -> <-
 

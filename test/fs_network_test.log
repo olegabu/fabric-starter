@@ -1,350 +1,249 @@
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 3 sber chase deutschebank 
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 4 example.net sber vtb deutschebank 
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 2 sberbank vtb 
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 2 sberbank vtb 
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 2 sberbank vtb 
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 2 sberbank vtb 
-[1;34m
-Verifing that all the test network containers example.net are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1;32mOK: All the test network containers are up and running[m[m[m
-[1;34m
-Verifing that all the test network containers example.net are up and running[m[m[m
-queryContainerNetworkSettings returns: 7051
-[1m[31mContainer not running: orderer1(B[m
-[1;31mERROR! See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 2 org1 org2 
-Required: 2 First_organization:org1 Second_organization:org2  Passed: 2 org1 org2 
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not test. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not test. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not test. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not test. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 0. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;32mOK: Exit code is OK: (0)[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDExMX0.JN9_RcRG6naIjLvt94a9cX91aNd0hUxYjxeHNTUslRM"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDExMX0.JN9_RcRG6naIjLvt94a9cX91aNd0hUxYjxeHNTUslRM", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDExMX0.JN9_RcRG6naIjLvt94a9cX91aNd0hUxYjxeHNTUslRM
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/testchannel6606-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDExMX0.JN9_RcRG6naIjLvt94a9cX91aNd0hUxYjxeHNTUslRM
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "Invalid results returned ::NOT_FOUND"500 _ result
-body is "Invalid results returned ::NOT_FOUND", code is 500
-join channel REST query returned: "Invalid results returned ::NOT_FOUND" 500 .
-create_http_code = results
-[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDEyMX0.5tYK9oHepsmL-oe_uE9Cdw5WwhCw_ybtYp62iwjHOBI"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDEyMX0.5tYK9oHepsmL-oe_uE9Cdw5WwhCw_ybtYp62iwjHOBI", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDEyMX0.5tYK9oHepsmL-oe_uE9Cdw5WwhCw_ybtYp62iwjHOBI
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/testchannel6606-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDEyMX0.5tYK9oHepsmL-oe_uE9Cdw5WwhCw_ybtYp62iwjHOBI
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "Invalid results returned ::NOT_FOUND"500 _ result
-body is "Invalid results returned ::NOT_FOUND", code is 500
-join channel REST query returned: "Invalid results returned ::NOT_FOUND" 500 .
-create_http_code = results
-[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI3N30.uQusvPXDUzOZNDi6Q6s1erNe73iEC4KeI5JuhqgZwEE"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI3N30.uQusvPXDUzOZNDi6Q6s1erNe73iEC4KeI5JuhqgZwEE", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI3N30.uQusvPXDUzOZNDi6Q6s1erNe73iEC4KeI5JuhqgZwEE
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/testchannel6606-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI3N30.uQusvPXDUzOZNDi6Q6s1erNe73iEC4KeI5JuhqgZwEE
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "Invalid results returned ::NOT_FOUND"500 _ result
-body is "Invalid results returned ::NOT_FOUND", code is 500
-join channel REST query returned: "Invalid results returned ::NOT_FOUND" 500 .
-create_http_code = results
-[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6606-02] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI4N30.-_3cC42VkoLFEkeCuKSRHWarMtvCfna1ac9vdwVxvNo"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI4N30.-_3cC42VkoLFEkeCuKSRHWarMtvCfna1ac9vdwVxvNo", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI4N30.-_3cC42VkoLFEkeCuKSRHWarMtvCfna1ac9vdwVxvNo
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/testchannel6606-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMDI4N30.-_3cC42VkoLFEkeCuKSRHWarMtvCfna1ac9vdwVxvNo
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "Invalid results returned ::NOT_FOUND"500 _ result
-body is "Invalid results returned ::NOT_FOUND", code is 500
-join channel REST query returned: "Invalid results returned ::NOT_FOUND" 500 .
-create_http_code = results
-[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mCreating [testchannel] channel in [org1.example.com] using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTcyN30.Mq4tpfGAu3BIEFdmcSBxNlmRWNE8Td3GWOPe6wUIbQI"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTcyN30.Mq4tpfGAu3BIEFdmcSBxNlmRWNE8Td3GWOPe6wUIbQI", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTcyN30.Mq4tpfGAu3BIEFdmcSBxNlmRWNE8Td3GWOPe6wUIbQI
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels {"channelId":"testchannel","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTcyN30.Mq4tpfGAu3BIEFdmcSBxNlmRWNE8Td3GWOPe6wUIbQI
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}}}]200 _ result
-body is [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}}}], code is 200
-[{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}}}] 200
-[1;32mOK: Channel [testchannel] creation run sucsessfuly.[m[m[m
-[1;36mAdd [] to the [testchannel] channel using API[m[m[m
-[1;36mAdd [] to the [testchannel] channel using API[m[m[m
+
+Arguments passed: api org1 org2
+Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
+scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
+local_error=0 ; NO_RED_OUTPUT=false ./create-channel.sh testchannel16113-02 org2 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ; local_error=$(($local_error | $?)) ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel16113-02 org2 ; local_error=$(($local_error | $?)); [[ $local_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_api Test(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: create-channel.sh testchannel16113-02 org2 VERIFY: test-exit-code.sh VERIFY: test-channel-exists.sh testchannel16113-02 org2
 queryContainerNetworkSettings returns: 4001
-restquery: curlItGet http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc1MX0.5dCf9IXwoblVm6hJ2UV-SIkfi9L-pHohCBeELVHqEiQ"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc1MX0.5dCf9IXwoblVm6hJ2UV-SIkfi9L-pHohCBeELVHqEiQ", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc1MX0.5dCf9IXwoblVm6hJ2UV-SIkfi9L-pHohCBeELVHqEiQ
+restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MH0.yHunOUjjFB8bBjBGR25fGs8270jW8z-7dd376sXAys4"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MH0.yHunOUjjFB8bBjBGR25fGs8270jW8z-7dd376sXAys4", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MH0.yHunOUjjFB8bBjBGR25fGs8270jW8z-7dd376sXAys4
+queryContainerNetworkSettings returns: 8051
+Step 1_api: exit code 0
+local_error=0 ; NO_RED_OUTPUT=false ./add-org-to-channel.sh testchannel16113-02 org2 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ; local_error=$(($local_error | $?)) ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel16113-02 org2 org1 ; local_error=$(($local_error | $?)); [[ $local_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_api Test(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: add-org-to-channel.sh testchannel16113-02 org2 org1 VERIFY: test-exit-code.sh VERIFY: test-channel-add-org.sh testchannel16113-02 org2 org1
+queryContainerNetworkSettings returns: 4001
+restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MX0.oaRY0vQ50UuSyl6eoDz2mlZHHbGFsyDk_Rg8ONy8Ibk"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MX0.oaRY0vQ50UuSyl6eoDz2mlZHHbGFsyDk_Rg8ONy8Ibk", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MX0.oaRY0vQ50UuSyl6eoDz2mlZHHbGFsyDk_Rg8ONy8Ibk
+queryContainerNetworkSettings returns: 7051
+Step 2_api: exit code 0
+local_error=0 ; NO_RED_OUTPUT=false ./join-channel.sh testchannel16113-02 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ; local_error=$(($local_error | $?)) ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel16113-02 org1 ; local_error=$(($local_error | $?)); [[ $local_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_api Test(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: join-channel.sh testchannel16113-02 org1 VERIFY: test-exit-code.sh VERIFY: test-join-channel.sh testchannel16113-02 org1
+queryContainerNetworkSettings returns: 4000
+restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MX0.4BispATAFdomiiOsA37m7yrU1ELjR3l3NAVz_TBGrHU"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MX0.4BispATAFdomiiOsA37m7yrU1ELjR3l3NAVz_TBGrHU", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc3MzU5MX0.4BispATAFdomiiOsA37m7yrU1ELjR3l3NAVz_TBGrHU
+queryContainerNetworkSettings returns: 7051
+Step 3_api: exit code 0
+[1;36mCreating [testchannel26032-02] channel in [org2.exmple.com] using API...[m[m[m
+queryContainerNetworkSettings returns: 4001
+restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjI0M30.S0auNQtuT3R98U2opnYaGR6LIyjJ3fUWc_HdThDjqBI"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjI0M30.S0auNQtuT3R98U2opnYaGR6LIyjJ3fUWc_HdThDjqBI", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjI0M30.S0auNQtuT3R98U2opnYaGR6LIyjJ3fUWc_HdThDjqBI
+setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restquery: curlItGet http://127.0.0.1:4001/channels/testchannel/orgs {"orgId":"","orgIp":"127.0.0.1","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc1MX0.5dCf9IXwoblVm6hJ2UV-SIkfi9L-pHohCBeELVHqEiQ
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "ENOENT: no such file or directory, open '/usr/src/app/crypto-config/testchannel_config.json'"500 _ result
-body is "ENOENT: no such file or directory, open '/usr/src/app/crypto-config/testchannel_config.json'", code is 500
-"ENOENT: no such file or directory, open '/usr/src/app/crypto-config/testchannel_config.json'" 500
-[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mAdd [] to the [testchannel] channel using API[m[m[m
-[1;36mAdd [] to the [testchannel] channel using API[m[m[m
+restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel26032-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjI0M30.S0auNQtuT3R98U2opnYaGR6LIyjJ3fUWc_HdThDjqBI
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}]200 _ result
+body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}], code is 200
+[{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}]
+setExitCode: 0
+[1;32mOK: Channel [testchannel26032-02] creation run sucsessfuly.[m[m[m
+[1;36mCreating [testchannel26032-02] channel in [org2.exmple.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4001
-restquery: curlItGet http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc3MX0.hoF2L-YxEZhtigbNur9gXDBLXA52Eln48QdkeBDuOJQ"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc3MX0.hoF2L-YxEZhtigbNur9gXDBLXA52Eln48QdkeBDuOJQ", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc3MX0.hoF2L-YxEZhtigbNur9gXDBLXA52Eln48QdkeBDuOJQ
+restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjQyOH0.jOX1VgLig8_Vy-lglNCLgLNFKxahspQeQk6oZFYNPnw"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjQyOH0.jOX1VgLig8_Vy-lglNCLgLNFKxahspQeQk6oZFYNPnw", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjQyOH0.jOX1VgLig8_Vy-lglNCLgLNFKxahspQeQk6oZFYNPnw
+setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restquery: curlItGet http://127.0.0.1:4001/channels/testchannel/orgs {"orgId":"","orgIp":"127.0.0.1","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTc3MX0.hoF2L-YxEZhtigbNur9gXDBLXA52Eln48QdkeBDuOJQ
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "ENOENT: no such file or directory, open '/usr/src/app/crypto-config/testchannel_config.json'"500 _ result
-body is "ENOENT: no such file or directory, open '/usr/src/app/crypto-config/testchannel_config.json'", code is 500
-"ENOENT: no such file or directory, open '/usr/src/app/crypto-config/testchannel_config.json'" 500
-[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [newtestchannel] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [newtestchannel] channel using API...[m[m[m
+restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel26032-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjQyOH0.jOX1VgLig8_Vy-lglNCLgLNFKxahspQeQk6oZFYNPnw
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}]200 _ result
+body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}], code is 200
+[{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}]
+setExitCode: 0
+[1;32mOK: Channel [testchannel26032-02] creation run sucsessfuly.[m[m[m
+[1;36mCreating [testchannel26032-02] channel in [org2.exmple.com] using API...[m[m[m
+queryContainerNetworkSettings returns: 4001
+restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjYwMn0.8cCOFtpZIzlt1VgPUpZhftdDEGeCar6D_egNoBSYsFQ"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjYwMn0.8cCOFtpZIzlt1VgPUpZhftdDEGeCar6D_egNoBSYsFQ", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjYwMn0.8cCOFtpZIzlt1VgPUpZhftdDEGeCar6D_egNoBSYsFQ
+setExitCode: 0
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 4001
+restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel26032-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njc4NjYwMn0.8cCOFtpZIzlt1VgPUpZhftdDEGeCar6D_egNoBSYsFQ
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}]200 _ result
+body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}], code is 200
+[{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.exmple.com:8051","name":"peer0.org2.exmple.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.exmple.com:8051","grpc.default_authority":"peer0.org2.exmple.com:8051"}},"isProposalResponse":true}]
+setExitCode: 0
+[1;32mOK: Channel [testchannel26032-02] creation run sucsessfuly.[m[m[m
+[1;36m
+Creating the [testchannel4984-02] channel for org2.exmple.com...[m[m[m
+queryContainerNetworkSettings returns: 8051
+eval ./channel-create.sh testchannel4984-02
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testchannel4984-02[m[m[m
+exmple.com
+
+Create channel org2 testchannel4984-02
+--2020-04-14 13:20:49--  http://www.exmple.com/msp/admincerts/Admin@exmple.com-cert.pem
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/admincerts/Admin@exmple.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-14 13:20:49--  http://www.exmple.com/msp/cacerts/ca.exmple.com-cert.pem
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/cacerts/ca.exmple.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-14 13:20:49--  http://www.exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-14 13:20:49--  http://www.exmple.com/msp/orderer.exmple.com/tls/server.crt
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/orderer.exmple.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-04-14 13:20:49.994 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-04-14 13:20:50.047 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-14 13:20:50.096 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-14 13:20:50.097 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-14 13:20:50.097 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org2 in configtx.yaml
+[33m2020-04-14 13:20:50.097 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-14 13:20:50.097 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-14 13:20:50.097 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-14 13:20:50.098 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org2 in configtx.yaml
+[34m2020-04-14 13:20:50.098 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-04-14 13:20:50.149 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'testchannel4984-02': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/testchannel4984-02.pb -o orderer.exmple.com:7050 -c testchannel4984-02 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem
+[34m2020-04-14 13:20:50.214 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-14 13:20:50.216 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-04-14 13:20:50.217 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-04-14 13:20:50.217 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+>> Prepare config update from org2 for channel testchannel4984-02
+>> org2 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c testchannel4984-02 -o orderer.exmple.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem
+[34m2020-04-14 13:20:50.490 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-14 13:20:50.499 UTC [channelCmd] update -> INFO 002[0m Successfully submitted channel update
+setExitCode: 0
+[1;36m
+Creating the [testchannel4984-02] channel for org2.exmple.com...[m[m[m
+queryContainerNetworkSettings returns: 8051
+eval ./channel-create.sh testchannel4984-02
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/channel-create.sh testchannel4984-02[m[m[m
+exmple.com
+
+Create channel org2 testchannel4984-02
+--2020-04-14 13:21:31--  http://www.exmple.com/msp/admincerts/Admin@exmple.com-cert.pem
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/admincerts/Admin@exmple.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-14 13:21:31--  http://www.exmple.com/msp/cacerts/ca.exmple.com-cert.pem
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/cacerts/ca.exmple.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-14 13:21:31--  http://www.exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem’ not modified on server. Omitting download.
+
+--2020-04-14 13:21:31--  http://www.exmple.com/msp/orderer.exmple.com/tls/server.crt
+Resolving www.exmple.com (www.exmple.com)... 172.19.0.4
+Connecting to www.exmple.com (www.exmple.com)|172.19.0.4|:80... connected.
+HTTP request sent, awaiting response... 304 Not Modified
+File ‘crypto-config/ordererOrganizations/exmple.com/msp/orderer.exmple.com/tls/server.crt’ not modified on server. Omitting download.
+
+[34m2020-04-14 13:21:31.172 UTC [common.tools.configtxgen] main -> INFO 001[0m Loading configuration
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 002[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 003[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 004[0m Orderer.BatchTimeout unset, setting to 2s
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 005[0m Orderer.BatchSize.MaxMessageCount unset, setting to 500
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 006[0m Orderer.BatchSize.AbsoluteMaxBytes unset, setting to 10485760
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 007[0m Orderer.BatchSize.PreferredMaxBytes unset, setting to 2097152
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 008[0m orderer type: solo
+[34m2020-04-14 13:21:31.221 UTC [common.tools.configtxgen.localconfig] Load -> INFO 009[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-14 13:21:31.269 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00a[0m Orderer.OrdererType unset, setting to solo
+[34m2020-04-14 13:21:31.269 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00b[0m Orderer.Addresses unset, setting to [127.0.0.1:7050]
+[34m2020-04-14 13:21:31.269 UTC [common.tools.configtxgen.localconfig] completeInitialization -> INFO 00c[0m orderer type: solo
+[34m2020-04-14 13:21:31.270 UTC [common.tools.configtxgen.localconfig] LoadTopLevel -> INFO 00d[0m Loaded configuration: /etc/hyperledger/crypto-config/configtx.yaml
+[34m2020-04-14 13:21:31.270 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 00e[0m Generating new channel configtx
+[33m2020-04-14 13:21:31.270 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 00f[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-14 13:21:31.270 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 010[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-14 13:21:31.270 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 011[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-14 13:21:31.270 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 012[0m Default policy emission is deprecated, please include policy specifications for the application org group org2 in configtx.yaml
+[33m2020-04-14 13:21:31.271 UTC [common.tools.configtxgen.encoder] NewChannelGroup -> WARN 013[0m Default policy emission is deprecated, please include policy specifications for the channel group in configtx.yaml
+[33m2020-04-14 13:21:31.271 UTC [common.tools.configtxgen.encoder] NewOrdererGroup -> WARN 014[0m Default policy emission is deprecated, please include policy specifications for the orderer group in configtx.yaml
+[33m2020-04-14 13:21:31.271 UTC [common.tools.configtxgen.encoder] NewOrdererOrgGroup -> WARN 015[0m Default policy emission is deprecated, please include policy specifications for the orderer org group Orderer in configtx.yaml
+[33m2020-04-14 13:21:31.271 UTC [common.tools.configtxgen.encoder] NewApplicationOrgGroup -> WARN 016[0m Default policy emission is deprecated, please include policy specifications for the application org group org2 in configtx.yaml
+[34m2020-04-14 13:21:31.271 UTC [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 017[0m Writing new channel tx
+[34m2020-04-14 13:21:31.323 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'testchannel4984-02': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application be at version 0, but it is currently at version 1
+Execute: channel fetch config crypto-config/configtx/testchannel4984-02.pb -o orderer.exmple.com:7050 -c testchannel4984-02 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem
+[34m2020-04-14 13:21:31.393 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-14 13:21:31.395 UTC [cli.common] readBlock -> INFO 002[0m Received block: 1
+[34m2020-04-14 13:21:31.396 UTC [cli.common] readBlock -> INFO 003[0m Received block: 1
+[34m2020-04-14 13:21:31.397 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 1
+>> Prepare config update from org2 for channel testchannel4984-02
+configtxlator: error: Error computing update: error computing config update: no differences detected between original and updated config
+>> org2 is sending channel update update_in_envelope.pb with  by 
+Execute: peer channel update -f update_in_envelope.pb -c testchannel4984-02 -o orderer.exmple.com:7050 --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/exmple.com/msp/tlscacerts/tlsca.exmple.com-cert.pem
+[34m2020-04-14 13:21:31.641 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Error: got unexpected status: BAD_REQUEST -- error applying config update to existing channel 'testchannel4984-02': error authorizing update: error validating ReadSet: proposed update requires that key [Group]  /Channel/Application/org2 be at version 0, but it is currently at version 1
+[1;31mError occurred. See console output above.[m[1;33m[m
+setExitCode: 1
+[1;36mJoining org1.exmple.com to the [testchannel10662-02] channel using API...[m[m[m
+[1;36mJoining org1.exmple.com to the [testchannel10662-02] channel using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTkxOH0.vEAuhgMVfH5wVBbBXTiHpActz7tKMx76oOK4tlhDLYM"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTkxOH0.vEAuhgMVfH5wVBbBXTiHpActz7tKMx76oOK4tlhDLYM", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTkxOH0.vEAuhgMVfH5wVBbBXTiHpActz7tKMx76oOK4tlhDLYM
+restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njg4ODQ5M30.GGUtt6fdzGyC1y4M3AA0qR0vCi4Qaxem1vEK7Tan_Gc"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njg4ODQ5M30.GGUtt6fdzGyC1y4M3AA0qR0vCi4Qaxem1vEK7Tan_Gc", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njg4ODQ5M30.GGUtt6fdzGyC1y4M3AA0qR0vCi4Qaxem1vEK7Tan_Gc
+setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/newtestchannel {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMTkxOH0.vEAuhgMVfH5wVBbBXTiHpActz7tKMx76oOK4tlhDLYM
-[31mcurlItGet: curl exit code: 0 (B[m
-curlGetIt got _ 000 _ result
-body is empty, code is 000
-join channel REST query returned:  000 .
-create_http_code =
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel10662-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4Njg4ODQ5M30.GGUtt6fdzGyC1y4M3AA0qR0vCi4Qaxem1vEK7Tan_Gc
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.exmple.com:7051","name":"peer0.org1.exmple.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.exmple.com:7051","grpc.default_authority":"peer0.org1.exmple.com:7051"}},"isProposalResponse":true}]200 _ result
+body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.exmple.com:7051","name":"peer0.org1.exmple.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.exmple.com:7051","grpc.default_authority":"peer0.org1.exmple.com:7051"}},"isProposalResponse":true}], code is 200
+setExitCode: 2
 [1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [newchannel2] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [newchannel2] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjExN30.1OfzBD78bglYoibUhJZbQLeQtq5Wpv8rYJs235k0qA4"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjExN30.1OfzBD78bglYoibUhJZbQLeQtq5Wpv8rYJs235k0qA4", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjExN30.1OfzBD78bglYoibUhJZbQLeQtq5Wpv8rYJs235k0qA4
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/newchannel2 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjExN30.1OfzBD78bglYoibUhJZbQLeQtq5Wpv8rYJs235k0qA4
-[31mcurlItGet: (curl exit code: 0) (B[m
-curlGetIt got _ 000 _ result
-body is empty, code is 000
-join channel REST query returned:  000 .
-create_http_code =
-[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [newchannel2] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [newchannel2] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjE3NX0.0hHPP_l_w5jPooYFeMmk9riuk5t1xvlohhPgnaeYKFs"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjE3NX0.0hHPP_l_w5jPooYFeMmk9riuk5t1xvlohhPgnaeYKFs", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjE3NX0.0hHPP_l_w5jPooYFeMmk9riuk5t1xvlohhPgnaeYKFs
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/newchannel2 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjE3NX0.0hHPP_l_w5jPooYFeMmk9riuk5t1xvlohhPgnaeYKFs
-[31mcurlItGet: (curl exit code: 0) (B[m
-curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}]200 _ result
-body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}], code is 200
-join channel REST query returned: [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}] 200 .
-create_http_code = 200
-[1;32mOK: [org1] joined to [newchannel2] channel [m[m[m
-[1;36mJoining org1.example.com to the [testchannel6] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel6] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjY5MX0.1w4BYyCKM0FKHMRBoWkemDGcOVTJbIl5ZJmQSrNzeiw"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjY5MX0.1w4BYyCKM0FKHMRBoWkemDGcOVTJbIl5ZJmQSrNzeiw", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjY5MX0.1w4BYyCKM0FKHMRBoWkemDGcOVTJbIl5ZJmQSrNzeiw
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/testchannel6 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjY5MX0.1w4BYyCKM0FKHMRBoWkemDGcOVTJbIl5ZJmQSrNzeiw
-[31mcurlItGet: (curl exit code: 28) (B[m
-curlGetIt got _ 000 _ result
-body is empty, code is 000
-join channel REST query returned:  000 .
-create_http_code =
-[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;36mJoining org1.example.com to the [testchannel7] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel7] channel using API...[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlItGet: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjg0Mn0.9nG5ZFTMUUZSPz4yLwKnef20eK52R9nataUgxLu2AaE"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjg0Mn0.9nG5ZFTMUUZSPz4yLwKnef20eK52R9nataUgxLu2AaE", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjg0Mn0.9nG5ZFTMUUZSPz4yLwKnef20eK52R9nataUgxLu2AaE
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restquery: curlItGet http://127.0.0.1:4000/channels/testchannel7 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4NjUxMjg0Mn0.9nG5ZFTMUUZSPz4yLwKnef20eK52R9nataUgxLu2AaE
-[31mcurlItGet: (curl exit code: 28) (B[m
-curlGetIt got _ 000 _ result
-body is empty, code is 000
-join channel REST query returned:  000 .
-create_http_code =
-[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Verifing if the [org1] has joined the [testchannel16366] channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-Error response from daemon: Container ec4ee064b68e492be9c8c755fe823f0da50ba68c8d59d4812a745d113887709b is not running
-[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Verifing if the [org1] has joined the [testchannel16366] channel...[m[m[m
-queryContainerNetworkSettings returns: 7051
-Error response from daemon: Container ec4ee064b68e492be9c8c755fe823f0da50ba68c8d59d4812a745d113887709b is not running
-[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-Arguments passed: 
-Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 2 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
-[1;35m
-Checking exit code...[m[m[m
-[1;31mERROR! Exit code in not 28 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
