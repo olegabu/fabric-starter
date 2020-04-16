@@ -1,55 +1,70 @@
-# Prerequisites
+# Acceptance test scenario
 
-While running the sample scenario we assume that the Network with orderer and two organizations has been deployed 
-locally or on two remote machines by mean of standard Fabric starter deployment scripts.
-Though any custom-tailored Network could be tested. You should have at hand some basic information on your deployment before running tests, 
-e.g. organization names, domain or docker-machine names.
+This test scenario implements simple acceptance test for the **fabric-starter** network with two organizations.
 
-
-## Start network tests
-
-First, you shoud deploy the local or the virtual box Fabric test network in the following way:
-
-* create network using script run-local-test-network.sh or run-vbox-test-network.sh
-* source the local-test-env.sh or vbox-test-env.sh scripts
-* run the start-network-test.sh
-
-
-## Features and functions tested
+## Tested checkpoints
 
 * Docker containers for orderer and organizations are up and running
-#* Network is up and running (connectivity: host name resolving, ports API (4000, 4001), PEER0 (7051, 8051), Orderer (7050), WWW 80)
 * Service channel (common) exists
-* Both orgs are in the 'common' channel
+* Both orgs are added and joined to the 'common' channel
 
-## HOWTO (example?)
+## Test environments
 
-*In the new console run run-local-test-network.sh or run-vbox-test-network.sh. This shoud deploy local or virtual box network 
-with ordrer and to organizations org1 and org2 and example.com domain
+Scenario may work with a network deployed locally or in Virtual Box multihost environment.
 
-* In the ./test directory:
+## Prerequisites
 
-```source ./local-test-env.sh example.com org1 org2```
+Running **fabric-starter** network with orderer and two organizations deployed locally or in the Virtual Box environment.
 
-or 
+The scenario provides script `create-test-network.sh` for qiuck test network deployment. Or you can use usual **fabric-starter** approaches.
 
-```source ./vbox-test-env.sh example.com org1 org2```
+#### Deploy test network
 
-* in the scenario directory run
+1. Go to the `./test` dir:
 
-```
-./start-network-test.sh cli org1 org2
-```
+    ```bash
+    cd ./fabric-starter
+    cd ./test
+    ```
 
+1. Select local or Virtual Box test environment
 
-Debug mode:
+    * For local environment run:
 
-```
-DEBUG=true ./start-network-test.sh cli org1 org2
-```
+        ```bash
+        source ./local-test-env.sh example.com
+        ```
 
+    * For Virtual Box environment run:
 
+        ```bash
+        source ./vbox-test-env.sh example.com
+        ```
 
+1. You can use existing or start new network:
 
+    * Go the scenario dir:
 
+        ```bash
+        cd ./scenarios/01-fabric-starter-acceptance-test
+        ```
 
+    * Create test network:
+
+        ```bash
+        ./create-test-network.sh org1 org2.
+        ```
+
+## Run test scenario
+
+1. Test network using CLI calls:
+
+    ```bash
+    ./run-scenario.sh cli org1 org2
+    ```
+
+1. Test network using REST API calls:
+
+    ```bash
+    ./run-scenario.sh api org1 org2
+    ```

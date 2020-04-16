@@ -25,16 +25,16 @@ SCENARIO() {
         VERIFY:   ./test-containers-list.sh ${org2} ${org2}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
 
     runStep "Test 'Organization in channel [common]'" \
-        VERIFY:     test-channel-exists.sh 'common' ${org1} 
+        VERIFY:     test-channel-exists.sh 'common' ${org1}
 
     runStep "Test 'Organization [${org2}] is in [common] channel'" \
-        VERIFY:     test-channel-exists.sh 'common' ${org2} 
+        VERIFY:     test-channel-exists.sh 'common' ${org2}
 
      runStep "Test 'Organization [${org1}] joined the [common] channel'" \
          VERIFY:  test-join-channel.sh 'common' ${org1}
 
      runStep "Test 'Organization [${org2}] joined the [common] channel'" \
-         VERIFY:  test-join-channel.sh 'common' ${org2} \
+         VERIFY:  test-join-channel.sh 'common' ${org2}
 }
 
 export -f SCENARIO

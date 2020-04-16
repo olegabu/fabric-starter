@@ -15,6 +15,31 @@ main() {
 }
 
 
+function scenarioArgsParse() {
+    shift
+    local args_req=${1}
+    shift 2
+    local args_passed=( "$@" )
+
+    printDbg "Arguments passed: ${args_passed[@]}"
+    set -f
+    IFS=',' read -r -a args_required <<< "${args_req}"
+    set +f
+
+    printDbg "Arguments required: ${args_required[@]}"
+
+    local num_args_required="${#args_required[@]}"
+    local num_args_passed="${#args_passed[@]}"
+    printDbg "scenarioArgsParse: args required: ${num_args_required} ${args_required[@]} args passed: ${num_args_passed} ${args_passed[@]}"
+    
+      if [ ${num_args_required} -gt ${num_args_passed} ];
+      then
+           printError "\nERROR: Number of args required (${num_args_required}) and args passed (${num_args_passed}) differs!"
+           printYellow "The following args shoud be supplied: ${WHITE}${args_req}"
+           exit 1
+      fi
+}
+
 
 function runTestScenario() {
     local interfaceTypes=${1}
@@ -125,7 +150,6 @@ function printTestResultTable() {
         printYellowRed "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests runtime: ${WHITE}${total_time}${YELLOW} seconds" "\nTotal errors: ${total_errors}"
     fi
     IFS=
-    sleep 10
 }
 
 function runStep() {

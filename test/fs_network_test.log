@@ -247,3 +247,18 @@ curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"ur
 body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.exmple.com:7051","name":"peer0.org1.exmple.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.exmple.com:7051","grpc.default_authority":"peer0.org1.exmple.com:7051"}},"isProposalResponse":true}], code is 200
 setExitCode: 2
 [1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+Arguments passed: 
+Arguments required: 
+scenarioArgsParse: args required: 0  args passed: 0 
+[1;35m
+Verifing if the [org2] has joined the [common] channel...[m[m[m
+queryContainerNetworkSettings returns: 8051
+[34m2020-04-16 08:41:38.577 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+setExitCode: 2
+[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+[1;35m
+Verifing if the [org2] has joined the [common] channel...[m[m[m
+queryContainerNetworkSettings returns: 8051
+[34m2020-04-16 08:41:47.207 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+setExitCode: 2
+[1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m

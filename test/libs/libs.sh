@@ -625,16 +625,20 @@ function invokeTestChaincodeAPI() {
 
 function ListPeerChannels() {
     
+
+    local org=${1}
+    local domain=${2}
     local result
     local TMP_LOG_FILE
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(docker exec cli.${ORG}.${DOMAIN} /bin/bash -c \
+    result=$(docker exec cli.${org}.${domain} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
     peer channel list -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS' 2>"${TMP_LOG_FILE}")
     cat "${TMP_LOG_FILE}" | printDbg
     set -f
     IFS=
+    printDbg "Channels ${org} has joined to: ${result}"
     echo ${result}
     set +f
 }
@@ -653,25 +657,15 @@ function getTestChaincodeName() {
 
 function verifyOrgJoinedChannel() {
     local channel=${1}
-    local org2_=${2}
+    local org=${2}
+    local domain=${3}
     local result
     
-    result=$(ListPeerChannels |  grep -E "^${channel}$")
+    result=$(ListPeerChannels ${org} ${domain}|  grep -E "^${channel}$")
+    printDbg "Result: ${result}"
     
     setExitCode [ "${result}" = "${channel}" ]
 }
-
-
-# function addOrgToChannel_() {
-#     local result
-#     local orgIP
-
-#     orgIP=$(getOrgIp $org2)
-#     result=$(restQuery "${org}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
-#     printDbg $result > ${SCREEN_OUTPUT_DEVICE}
-#     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-#     echo ${result}
-# }
 
 
 function queryPeer() {
