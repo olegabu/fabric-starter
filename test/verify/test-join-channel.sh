@@ -2,15 +2,16 @@
 
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source "${BASEDIR}"/../libs/libs.sh
-source "${BASEDIR}"/../libs/parse-common-params.sh $@
+#source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
+channelName=${1}
 org=${2}
 
 
-printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [$TEST_CHANNEL_NAME] channel..."
+printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [${channelName}] channel..."
 
 setCurrentActiveOrg ${org}
 
-verifyOrgJoinedChannel "${TEST_CHANNEL_NAME}" "${org}" "${DOMAIN}"
+verifyOrgJoinedChannel "${channelName}" "${org}" "${DOMAIN}"
 
-printResultAndSetExitCode "The [${org}] has joined the [$TEST_CHANNEL_NAME] channel"
+printResultAndSetExitCode "The [${org}] has joined the [${channelName}] channel"

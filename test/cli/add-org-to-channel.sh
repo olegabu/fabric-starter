@@ -3,15 +3,16 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 source "${BASEDIR}"/../libs/libs.sh
-source "${BASEDIR}"/../libs/parse-common-params.sh $@
+#source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
-org=$2
-orgAdd=$3
+channelName=${1}
+org=${2}
+orgAdd=${3}
 
-printToLogAndToScreenCyan "\nAdd [${orgAdd}] to the [${TEST_CHANNEL_NAME}] channel"
+printToLogAndToScreenCyan "\nAdd [${orgAdd}] to the [${channelName}] channel"
 
 setCurrentActiveOrg ${org}
 
-runInFabricDir ./channel-add-org.sh ${TEST_CHANNEL_NAME} ${orgAdd}
+runInFabricDir ./channel-add-org.sh ${channelName} ${orgAdd}
 
-printResultAndSetExitCode "Organization [${orgAdd}] added to [${TEST_CHANNEL_NAME}] channel"
+printResultAndSetExitCode "Organization [${orgAdd}] added to [${channelName}] channel"

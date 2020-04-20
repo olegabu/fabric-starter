@@ -3,14 +3,15 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 source "${BASEDIR}"/../libs/libs.sh
-source "${BASEDIR}"/../libs/parse-common-params.sh $@
+#source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
+channelName=${1}
 org=${2}
-chaincode_name=${3}
+chaincodeName=${3}
 
-printToLogAndToScreenCyan "\nQuery test chaincode on the [$TEST_CHANNEL_NAME] channel'"
+printToLogAndToScreenCyan "\nQuery test chaincode on the [${channelName}] channel'"
 
 setCurrentActiveOrg ${org}
 
-runInFabricDir ./chaincode-query.sh ${TEST_CHANNEL_NAME} ${chaincode_name} \'[\"range\",\"${TEST_CHANNEL_NAME}\"]\'
+runInFabricDir ./chaincode-query.sh ${channelName} ${chaincodeName} \'[\"range\",\"${channelName}\"]\'
 printResultAndSetExitCode "Chaincode [${chaincode_name}] invoked sucsessfuly"

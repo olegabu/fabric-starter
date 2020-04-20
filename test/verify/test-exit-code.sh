@@ -6,9 +6,9 @@
 source "${BASEDIR}"/../libs/libs.sh
 #source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
+errorCode=${1}
 expectedCode=${2}
 
-errorCode=${1}
 
 
 printToLogAndToScreenBlue "\nChecking exit code..."
