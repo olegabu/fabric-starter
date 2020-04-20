@@ -1,7 +1,7 @@
 
 Arguments passed: api org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
-scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
 local_error=0 ; NO_RED_OUTPUT=false ./create-channel.sh testchannel16113-02 org2 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ; local_error=$(($local_error | $?)) ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel16113-02 org2 ; local_error=$(($local_error | $?)); [[ $local_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_api Test(B[m
@@ -249,7 +249,7 @@ setExitCode: 2
 [1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
 Arguments passed: 
 Arguments required: 
-scenarioArgsParse: args required: 0  args passed: 0 
+checkArgsPassed: args required: 0  args passed: 0 
 [1;35m
 Verifing if the [org2] has joined the [common] channel...[m[m[m
 queryContainerNetworkSettings returns: 8051
@@ -262,3 +262,103 @@ queryContainerNetworkSettings returns: 8051
 [34m2020-04-16 08:41:47.207 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
 setExitCode: 2
 [1;31mERROR! Exit code in not 0 but 2. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+[1;35m
+Check containers running: [api ca cli couchdb.peer0 peer0 www] on [org1.example.com][m[m[m
+queryContainerNetworkSettings returns:
+jq: error (at <stdin>:1): null (null) has no keys
+[1m[31mContainer not running: api(B[m
+setExitCode: 1
+[1m[31mContainer not running: ca(B[m
+setExitCode: 1
+[1m[31mContainer not running: cli(B[m
+setExitCode: 1
+[1m[31mContainer not running: couchdb.peer0(B[m
+setExitCode: 1
+[1m[31mContainer not running: peer0(B[m
+setExitCode: 1
+[1m[31mContainer not running: www(B[m
+setExitCode: 1
+[1;31mERROR! Exit code in not 0 but 1. See /home/kilpio/CodeLab/merge_test/fabric-starter/test/fs_network_test.log for logs.[m[m[m
+Arguments passed: cli org1 org2
+Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli org1 org2
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 example.com orderer www cli.orderer;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 1_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org1 example.com orderer www cli.orderer
+Step 1_cli: exit code 1
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 2_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org1 org1.example.com api ca cli couchdb.peer0 peer0 www
+Step 2_cli: exit code 1
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 3_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: ./test-containers-list.sh org2 org2.example.com api ca cli couchdb.peer0 peer0 www
+Step 3_cli: exit code 1
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org1;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 4_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common org1
+queryContainerNetworkSettings returns:
+Expect: testchannel637, got: 
+setExitCode: 2
+Step 4_cli: exit code 1
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh common org2;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 5_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-channel-exists.sh common org2
+queryContainerNetworkSettings returns: 8051
+Expect: testchannel637, got: null
+setExitCode: 1
+Step 5_cli: exit code 1
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org1;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 6_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common org1
+queryContainerNetworkSettings returns:
+Error: No such container: cli.org1.example.com
+Channels org1 has joined to: 
+Result: 
+setExitCode: 2
+Step 6_cli: exit code 1
+run_error=0;verify_error=0; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh common org2;verify_error=$(($run_error | $verify_error | $?));echo ${verify_error};[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 7_cli Test(B[m
+[1m[37m---------------------------(B[m
+VERIFY: test-join-channel.sh common org2
+queryContainerNetworkSettings returns: 8051
+[34m2020-04-17 16:42:49.412 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+Channels org2 has joined to: Channels peers has joined: 
+common
+Result: 
+setExitCode: 2
+Step 7_cli: exit code 1
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 

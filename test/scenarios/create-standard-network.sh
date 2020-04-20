@@ -6,7 +6,7 @@ export ARGS_PASSED=("$@")
 source ../libs/libs.sh
 source ../libs/parse-common-params.sh $@
 
-scenarioArgsParse
+checkArgsPassed
 
 orgs=${@}
 DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}

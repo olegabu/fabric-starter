@@ -1,6 +1,6 @@
 Arguments passed: cli,api org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
-scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli,api org1 org2
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli,api org1 org2
 NO_RED_OUTPUT=false ./create-channel.sh reference_testchannel11156 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh reference_testchannel11156 org1
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_testchannel11156 Test(B[m
@@ -480,7 +480,7 @@ NO_RED_OUTPUT=true ./join-channel.sh reference_testchannel11156-02 org2 ; /home/
 RUNTESTNOERRPRINT: join-channel.sh reference_testchannel11156-02 org2 VERIFY: test-join-channel.sh reference_testchannel11156-02 org2
 Arguments passed: cli,api org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
-scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli,api org1 org2
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli,api org1 org2
 NO_RED_OUTPUT=false ./create-channel.sh reference_testchannel13045 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh reference_testchannel13045 org1
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_testchannel13045 Test(B[m
@@ -672,7 +672,7 @@ Verifing if the [org2] added to [reference_testchannel13045][m[m[m
 queryContainerNetworkSettings returns: 8051
 Arguments passed: cli org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
-scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli org1 org2
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 cli org1 org2
 NO_RED_OUTPUT=false ./create-channel.sh testchannel3190 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel3190 org1
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_cli Test(B[m
@@ -1359,7 +1359,7 @@ queryContainerNetworkSettings returns: 8051
 Step 8_cli: exit code 0
 Arguments passed: api org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
-scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
 NO_RED_OUTPUT=false ./create-channel.sh testchannel12071 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel12071 org1
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_api Test(B[m
@@ -1654,7 +1654,7 @@ queryContainerNetworkSettings returns: 8051
 Step 8_api: exit code 0
 Arguments passed: api org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
-scenarioArgsParse: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
+checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
 NO_RED_OUTPUT=false ./create-channel.sh testchannel27485 org1 ; /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-exists.sh testchannel27485 org1
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_api Test(B[m

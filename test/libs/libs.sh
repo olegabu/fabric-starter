@@ -7,6 +7,16 @@ main() {
     export TEST_ROOT_DIR=${FABRIC_DIR}/test
     export TEST_LAUNCH_DIR=${TEST_LAUNCH_DIR:-${TEST_ROOT_DIR}}
     export TIMEOUT_CHAINCODE_INSTANTIATE=${TIMEOUT_CHAINCODE_INSTANTIATE:-150}
+
+    export PEER_NAME=${PEER_NAME:-peer0}
+    export API_NAME=${API_NAME:-api}
+    export CLI_NAME=${CLI_NAME:-cli}
+
+    # export TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME:? Channel name is required.}}
+    # export PEER_NAME=${PEER_NAME:-peer0}
+    # export API_NAME=${API_NAME:-api}
+    # export CLI_NAME=${CLI_NAME:-cli}
+
     
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
@@ -24,6 +34,32 @@ main() {
     export output
     exportColors
     SCREEN_OUTPUT_DEVICE=${SCREEN_OUTPUT_DEVICE:-/dev/stderr}
+}
+
+
+function checkArgsPassed() {
+    shift
+    local args_req=${1}
+    shift 2
+    local args_passed=( "$@" )
+
+    printDbg "Arguments passed: ${args_passed[@]}"
+    set -f
+    IFS=',' read -r -a args_required <<< "${args_req}"
+    set +f
+
+    printDbg "Arguments required: ${args_required[@]}"
+
+    local num_args_required="${#args_required[@]}"
+    local num_args_passed="${#args_passed[@]}"
+    printDbg "checkArgsPassed: args required: ${num_args_required} ${args_required[@]} args passed: ${num_args_passed} ${args_passed[@]}"
+    
+      if [ ${num_args_required} -gt ${num_args_passed} ];
+      then
+           printError "\nERROR: Number of args required (${num_args_required}) and args passed (${num_args_passed}) differs!"
+           printYellow "The following args shoud be supplied: ${WHITE}${args_req}"
+           exit 1
+      fi
 }
 
 
@@ -468,7 +504,7 @@ function addOrgToChannelAPI() {
     local exitCode
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=($(restQuery "${org}" "channels/${TEST_CHANNEL_NAME}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"))  2>${TMP_LOG_FILE}
+    result=($(restQuery "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"))  2>${TMP_LOG_FILE}
     exitCode=$?
     
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -749,9 +785,9 @@ function copyTestChiancodeCLI() {
     pushd ${FABRIC_DIR} > /dev/null
     
     result=$(ORG=${org2_} runCLI \
-        "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME} ;\
+        "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${channel} ;\
     cp -R /opt/chaincode/node/reference/* \
-    /opt/chaincode/node/${chaincode_init_name}_${TEST_CHANNEL_NAME}")
+    /opt/chaincode/node/${chaincode_init_name}_${channel}")
     exitCode=$?
     printDbg "${result}"
     
@@ -792,7 +828,7 @@ function ListPeerChaincodes() {
     
     pushd ${FABRIC_DIR} > /dev/null
     
-    result=$(runCLI "/opt/chaincode/node; peer chaincode list --installed -C '${TEST_CHANNEL_NAME}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
+    result=$(runCLI "/opt/chaincode/node; peer chaincode list --installed -C '${channel}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
     exitCode=$?
     
     popd > /dev/null
@@ -819,7 +855,7 @@ function ListPeerChaincodesInstantiated() {
     
     pushd ${FABRIC_DIR} > /dev/null
     
-    result=$(ORG=${org2_} runCLI "peer chaincode list --instantiated -C '${TEST_CHANNEL_NAME}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
+    result=$(ORG=${org2_} runCLI "peer chaincode list --instantiated -C '${channel}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
     exitCode=$?
     
     popd > /dev/null
@@ -839,7 +875,7 @@ function verifyChiancodeInstalled() {
     local channel=${1}
     local org2_=${2}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${chaincode_init_name}_${TEST_CHANNEL_NAME}
+    local chaincode_name=${chaincode_init_name}_${channel}
     local result=$(ListPeerChaincodes ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
     printDbg "${result}"
     echo "${result}"
@@ -852,7 +888,7 @@ function verifyChiancodeInstantiated() {
     local channel=${1}
     local org2_=${2}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${chaincode_init_name}_${TEST_CHANNEL_NAME}
+    local chaincode_name=${chaincode_init_name}_${channel}
     local result=$(ListPeerChaincodesInstantiated ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
     
     printDbg "${result}"
@@ -944,7 +980,10 @@ function checkContainersExist() {
     
     setCurrentActiveOrg ${org}
     
+
+
     for container in ${containersList[@]}; do
+        printDbg "docker ps -q -f \"name=${container}.${orgDomain}\""
         presence=$(docker ps -q -f "name=${container}.${orgDomain}")
         if [ -z "${presence}" ]; then
             printDbg "${BRIGHT}${RED}Container not running: ${container}${NORMAL}"
