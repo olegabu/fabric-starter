@@ -20,7 +20,7 @@ basic-functionality:
 * New channels can be created in every organization
 * Organization creates channel and can invite the other org
 * Invited organizations can join certain channels
-* New chaincodes can be installed and instantiated in the channel
+* New chaincode can be installed and instantiated in the channel
 * Chaincode invoke result is visible for both orgs -> <-
 
 _Note_: this all should be usable for local and vbox networks

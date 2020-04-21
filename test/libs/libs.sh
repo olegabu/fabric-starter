@@ -333,6 +333,7 @@ function printResultAndSetExitCode() {
     
 }
 
+#__________________________________ API-related functions ___________________________________________
 
 function queryContainerNetworkSettings() {
     local parameter="${1}" # [HostPort|HostIp]
@@ -359,6 +360,7 @@ function getContainerPort() {
     local domain="${3:-${DOMAIN:?Domain is required}}"
     echo $(queryContainerNetworkSettings "HostPort" "${containerName}" "${org}" "${domain}")
 }
+
 
 function generateMultipartBoudary() {
     echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
@@ -401,10 +403,9 @@ function curlRequest() { #Call curl and get results (data & http code)
     local exitCode
     local body
     local httpStatusCode
-    
     res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     exitCode=$?
-    
+
     echo "${RED}curlRequest: (curl exit code: $exitCode) ${NORMAL}" | printDbg
     echo "curlGetIt got _ ${res} _ result" | printDbg
     httpStatusCode="${res:${#res}-3}" #only 3 last symbols
@@ -418,6 +419,7 @@ function curlRequest() { #Call curl and get results (data & http code)
     echo "$body $httpStatusCode"
     return ${exitCode}
 }
+
 
 function restQuery() {
     local org=${1}
@@ -437,6 +439,32 @@ function restQuery() {
 }
 
 
+restAPIWrapper() {
+    
+    local TMP_LOG_FILE
+    local result
+    local exitCode
+    local apiStatusCode
+    local state
+    local httpStatusCode
+    
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+    result=$(restQuery $@)  2>${TMP_LOG_FILE}
+    exitCode=$?
+
+    printDbg "restAPIWrapper: exit code:: ${exitCode} result:: ${result[@]}" 
+    
+    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    
+    httpStatusCode="${result:${#result}-3}"
+    httpStatusCode=${httpStatusCode:0:1}
+
+    printDbg "${RED}${BRIGHT}exitCode: $exitCode  httpStatusCode: $httpStatusCode ${NORMAL}"
+
+    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+}
+
+
 function getJWT() {
     local org=${1}
     restQuery ${org} "users" "{\"username\":\"${API_USERNAME:-user4}\",\"password\":\"${API_PASSWORD:-passw}\"}" ""
@@ -450,44 +478,28 @@ function APIAuthorize() {
     local jwt
     local httpStatusCode
     
-    result=($(getJWT ${org}))
-    jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
-    httpStatusCode=${result[$(( arrayStartIndex + 1 ))]}
+    result=$(getJWT ${org})
     
-    echo "Got JWT: ${jwt}" | printLog
+    
+    jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
+    jwt="${jwt:0:${#jwt}-3}"
+    #httpStatusCode=${result[$(( arrayStartIndex + 1 ))]}
+    httpStatusCode="${result:${#result}-3}"
+    
+    echo "Got JWT: ${jwt} with http status code ${httpStatusCode}" | printDbg
     echo "${jwt}"
     
     setExitCode [ "${httpStatusCode}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
 }
 
+
 function createChannelAPI() {
     local channel=${1}
     local org=${2}
-    local jwt=${3}
-    
-    local TMP_LOG_FILE
-    local result
-    local exitCode
-    local apiStatusCode
-    local state
-    local httpStatusCode
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    
-    result=($(restQuery ${org} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}"))  2>${TMP_LOG_FILE}
-    exitCode=$?
-    printDbg "createChannelAPI: exit code:: ${exitCode} result:: ${result[@]}" #> ${SCREEN_OUTPUT_DEVICE}
-    
-    #apiStatusCode=$(echo -n ${result[$(arrayStartIndex)]} | jq '.[0].status + .[0].response.status' 2>${TMP_LOG_FILE})
-    
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    
-    state=$(DeleteSpacesLineBreaks "${apiStatusCode}")
-    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
-    httpStatusCode=${httpStatusCode:0:1}
-    #apiStatusCode=${apiStatusCode:0:1}
-    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+    local jwt=${3} 
+
+    restAPIWrapper ${org} "channels" "{\"channelId\":\"${channel}\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
 
@@ -495,49 +507,19 @@ function addOrgToChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
-    local org2=${4}
-    
-    local TMP_LOG_FILE
-    local orgIP
-    local result
-    local httpStatusCode
-    local exitCode
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=($(restQuery "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${org2}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"))  2>${TMP_LOG_FILE}
-    exitCode=$?
-    
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    
-    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
-    httpStatusCode=${httpStatusCode:0:1}
-    
-    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+    local orgToAdd=${4}
+
+    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
-
 function joinChannelAPI() {
-    #    ${TEST_CHANNEL_NAME} ${ORG} ${JWT}
     local channel=${1}
     local org=${2}
     local jwt=${3}
     
-    local TMP_LOG_FILE
-    local result
-    local httpStatusCode
-    local exitCode
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(restQuery ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}")  2>${TMP_LOG_FILE}
-    exitCode=$?
-    
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    
-    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
-    httpStatusCode=${httpStatusCode:0:1}
-    
-    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
+    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}"
 }
+
 
 function installZippedChaincodeAPI() {
     local channel=${1}
@@ -599,63 +581,26 @@ function installZippedChaincodeAPI() {
 
 
 function instantiateTestChaincodeAPI() {
+    
     local channel=${1}
     local org=${2}
     local jwt=${3}
-    local curlTimeout=${4:-5}
-    
+    local curlTimeout=${4:-${TIMEOUT_CHAINCODE_INSTANTIATE}}
     local chaincode_name
-    local api_ip
-    local api_port
-    local result
-    local httpStatusCode
-    
-    chaincode_name=$(getTestChaincodeName ${channel})
-    api_ip=$(getOrgIp "${org}")
-    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;    
-    result=($(restQuery ${2} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}))
-    exitCode=$?
 
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    
-    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
-    httpStatusCode=${httpStatusCode:0:1}
-    
-    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
- 
+    chaincode_name=$(getTestChaincodeName ${channel})
+
+    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}
 }
 
 
-function invokeTestChaincodeAPI() {
+invokeTestChaincodeAPI() {
     local channel=${1}
     local org=${2}
     local chaincode_name=${3}
     local jwt=${4}
-    
-    local api_ip
-    local api_port
-    local result
-    local httpStatusCode
-    
-    chaincode_name=$(getTestChaincodeName ${channel})
-    api_ip=$(getOrgIp "${org}")
-    api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
 
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;  
-
-    result=($(restQuery ${2} "channels/${channel}/chaincodes/${chaincode_name}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"))
-    exitCode=$?
-
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    
-    httpStatusCode=${result[$(( arrayStartIndex + 1))]}
-    httpStatusCode=${httpStatusCode:0:1}
-    
-    setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
-    
-
+    restAPIWrapper ${org} "channels/${channel}/chaincodes/${chaincode_name}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
 
@@ -878,7 +823,7 @@ function verifyChiancodeInstalled() {
     local chaincode_name=${chaincode_init_name}_${channel}
     local result=$(ListPeerChaincodes ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
     printDbg "${result}"
-    echo "${result}"
+    #echo "${result}"
     
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }
@@ -892,7 +837,7 @@ function verifyChiancodeInstantiated() {
     local result=$(ListPeerChaincodesInstantiated ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
     
     printDbg "${result}"
-    echo "${result}"
+    #echo "${result}"
     
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }

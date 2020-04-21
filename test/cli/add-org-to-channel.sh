@@ -3,7 +3,6 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 source "${BASEDIR}"/../libs/libs.sh
-#source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
 channelName=${1}
 org=${2}

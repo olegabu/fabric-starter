@@ -1,48 +1,37 @@
 #!/usr/bin/env bash
-#[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-
-#echo "lib_scenario.sh: Starting in $BRIGHT $BLUE $(pwd), $WHITE Basedir is $BASEDIR $NORMAL"
 
 IFS='[]'
 
 main() {
-
-export        TEST_CHANNEL_NAME=$(getRandomChannelName)
-export        TEST_CHAINCODE_NAME=$(getTestChaincodeName ${TEST_CHANNEL_NAME})
-
+    
+    export        TEST_CHANNEL_NAME=$(getRandomChannelName)
+    export        TEST_CHAINCODE_NAME=$(getTestChaincodeName ${TEST_CHANNEL_NAME})
+    
     declare -a RESULTS
     stepNumber=
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
     runTestScenario $*
-    
 }
-
-
-
 
 
 function runTestScenario() {
     local interfaceTypes=${1}
     shift
-    checkArgsPassed $@ 
+    checkArgsPassed $@
     unset IFS
     
     initResultsTable
-
+    
     IFS=',' read -r -a INTERFACE_TYPES <<< "${interfaceTypes}"
     
-#export        TEST_CHANNEL_NAME=$(getRandomChannelName)
-#export        TEST_CHAINCODE_NAME=$(getTestChaincodeName ${TEST_CHANNEL_NAME})
-
-
     for SCRIPT_FOLDER in "${INTERFACE_TYPES[@]}"; do
         
         printYellowBox "Running ${SCRIPT_FOLDER} tests"
         addTableRowSeparator
-	pushd ${TEST_ROOT_DIR}/${SCRIPT_FOLDER}/ >/dev/null
+        pushd ${TEST_ROOT_DIR}/${SCRIPT_FOLDER}/ >/dev/null
         SCENARIO ${TEST_CHANNEL_NAME} ${TEST_CHAINCODE_NAME}
-	popd >/dev/null
+        popd >/dev/null
     done
     printTestResultTable
 }
@@ -54,14 +43,16 @@ function initResultsTable() {
     START_TIME=$(LC_TIME="en_US.UTF-8" date)
 }
 
+
 function addTableRowSeparator() {
     RESULTS+=("${rowSeparator}")
 }
 
+
 function getMaxTextLength() {
     local textLength=10
     local length
-
+    
     for line_n in "${RESULTS[@]}"; do
         local line="$(echo ${line_n} | cut -d '|' -f 2)"
         local length=$(expr length "${line}")
@@ -72,20 +63,21 @@ function getMaxTextLength() {
     echo ${textLength}
 }
 
+
 function printLogStepHeader() {
-     
+    
     printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
     printLog "${BRIGHT}${WHITE}Step: ${1}_${2} ${3}${NORMAL}"
     printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
-
+    
 }
 
 
 function printTestResultTable() {
     END_TIME=$(LC_TIME="en_US.UTF-8" date)
-  
+    
     echo -e "\n\n"
-
+    
     local textlength=$(getMaxTextLength)
     
     local l1=10
@@ -136,44 +128,37 @@ function printTestResultTable() {
 }
 
 function runStep() {
+    
     local message=${1}
     shift
-
+    
     local COMMAND=$@
-
-    #######COMMAND=$(echo ${COMMAND} | sed -E -e 's/VERIFY:(.+)VERIFY:/VERIFY:\1 ; local_error=\$((\$local_error | \$\?)) VERIFY:/g')
-    #######COMMAND=$(echo ${COMMAND} | sed -E -e 's/VERIFY:(.+)$/VERIFY:\1 ; local_error=\$((\$local_error | \$\?))/g')
-
+    
+    #Parse step command
     COMMAND="run_error=0; verify_error=0;"${COMMAND}
     COMMAND=$(\
-    echo ${COMMAND} |\
-    sed -E -e 's/([A-Z_]*:)/\n\1/g' -e 's/^\n//g' |\
-    sed -E -e 's/(RUNTEST:)([^\n]*)/\1\2; run_error=\$?; echo \$run_error;/g' |\
-    sed -E -e 's/(RUN:)([^\n]*)/\1\2;/g' |\
-    sed -E -e 's/(VERIFY:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | \$?));/g' |\
-    sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?));/g' |\
-    sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; echo \$verify_error;/g' |\
+        echo ${COMMAND} |\
+        sed -E -e 's/([A-Z_]*:)/\n\1/g' -e 's/^\n//g' |\
+        sed -E -e 's/(RUNTEST:)([^\n]*)/\1\2; run_error=\$?;/g' |\
+        sed -E -e 's/(RUN:)([^\n]*)/\1\2;/g' |\
+        sed -E -e 's/(VERIFY:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | \$?));/g' |\
+        sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?));/g' |\
+        sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; /g' |\
     tr '\n' ' ' )
-
-
-  #  echo "${YELLOW}${COMMAND}${NORMAL}"    
-    #Parse test command    
-    ########COMMAND='local_error=0 '${COMMAND}
-    #COMMAND=${COMMAND}'; [[ $local_error = "0" ]]'
-    COMMAND=${COMMAND}';echo ${verify_error}; [[ $verify_error = "0" ]]'
+    
+    COMMAND=${COMMAND}'; [[ $verify_error = "0" ]]'
     COMMAND=${COMMAND//RUNTEST:[[:space:]]/" NO_RED_OUTPUT=false ./"}
     COMMAND=${COMMAND//RUNTESTNOERRPRINT:[[:space:]]/" NO_RED_OUTPUT=true ./"}
     COMMAND=${COMMAND//VERIFY_NOT:[[:space:]]/" NO_RED_OUTPUT=true ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
     COMMAND=${COMMAND//;[[:space:]]/;}
-
+    
     COMMAND=$(echo $COMMAND | sed -E -e 's/[;]+/;/g')
-
-
+    
+    
     printWhite "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
     printDbg $COMMAND
-   # echo "${YELLOW}${COMMAND}${NORMAL}"    
     
     printLogStepHeader ${step} ${SCRIPT_FOLDER} ${message}
     

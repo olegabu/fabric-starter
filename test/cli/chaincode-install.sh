@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
-
 source "${BASEDIR}"/../libs/libs.sh
-#source "${BASEDIR}"/../libs/parse-common-params.sh $@
 
 channelName=${1}
 org=${2}
@@ -16,13 +14,9 @@ printToLogAndToScreenCyan "\nCopying test chaincode to [${org}]"
 
 copyTestChiancodeCLI ${channelName} ${org}
 
-#if [ $? -eq 0 ]; then  
 
-    printToLogAndToScreenCyan "\nInstalling [${channelName}] chaincode in [${org}]"
+printToLogAndToScreenCyan "\nInstalling [${channelName}] chaincode in [${org}]"
 
-    installTestChiancodeCLI ${channelName} ${org}
+installTestChiancodeCLI ${channelName} ${org}
 
-    printResultAndSetExitCode "Test chaincode installed in [${org}]"
-#else 
-#    exit 1
-#fi
+printResultAndSetExitCode "Test chaincode installed in [${org}]"
