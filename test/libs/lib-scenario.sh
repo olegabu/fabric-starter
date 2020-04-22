@@ -1,26 +1,34 @@
-#!/usr/bin/env bash
+ #!/usr/bin/env bash
 
 IFS='[]'
 
 main() {
     
-    export        TEST_CHANNEL_NAME=$(getRandomChannelName)
-    export        TEST_CHAINCODE_NAME=$(getTestChaincodeName ${TEST_CHANNEL_NAME})
-    
+ 
     declare -a RESULTS
     stepNumber=
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
+    
     runTestScenario $*
 }
 
 
+
 function runTestScenario() {
-    local interfaceTypes=${1}
-    shift
+    local interfaceTypes
+    local scenarioArgs
+
+#printDbg "runTestScenario: 1:$1 2:$2 3:$3 4:$4 5:$5 6:$6 7:$7"
+
     checkArgsPassed $@
+
+    interfaceTypes=${4}
+    shift 2
+    scenarioArgs=$@
+
     unset IFS
-    
+
     initResultsTable
     
     IFS=',' read -r -a INTERFACE_TYPES <<< "${interfaceTypes}"
@@ -30,7 +38,7 @@ function runTestScenario() {
         printYellowBox "Running ${SCRIPT_FOLDER} tests"
         addTableRowSeparator
         pushd ${TEST_ROOT_DIR}/${SCRIPT_FOLDER}/ >/dev/null
-        SCENARIO ${TEST_CHANNEL_NAME} ${TEST_CHAINCODE_NAME}
+        SCENARIO ${scenarioArgs} # ${TEST_CHANNEL_NAME} ${TEST_CHAINCODE_NAME}
         popd >/dev/null
     done
     printTestResultTable
@@ -152,10 +160,9 @@ function runStep() {
     COMMAND=${COMMAND//VERIFY_NOT:[[:space:]]/" NO_RED_OUTPUT=true ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
-    COMMAND=${COMMAND//;[[:space:]]/;}
+#    COMMAND=${COMMAND//;[[:space:]]/;}
     
-    COMMAND=$(echo $COMMAND | sed -E -e 's/[;]+/;/g')
-    
+    COMMAND=$(echo $COMMAND | sed -E -e 's/;([[:space:]]*)/;/g' -e 's/[;]+/;/g')
     
     printWhite "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
     printDbg $COMMAND

@@ -1,6 +1,6 @@
 # Acceptance test scenario
 
-This test scenario implements simple acceptance test for the **fabric-starter** network with two organizations.
+This test scenario implements simple acceptance test for a **fabric-starter** network with two organizations.
 
 ## Tested checkpoints
 

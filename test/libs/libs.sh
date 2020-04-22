@@ -12,12 +12,6 @@ main() {
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
-    # export TEST_CHANNEL_NAME=${1:-${TEST_CHANNEL_NAME:? Channel name is required.}}
-    # export PEER_NAME=${PEER_NAME:-peer0}
-    # export API_NAME=${API_NAME:-api}
-    # export CLI_NAME=${CLI_NAME:-cli}
-
-    
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
     source ./lib.sh
@@ -38,20 +32,24 @@ main() {
 
 
 function checkArgsPassed() {
-    shift
+
+    shift 
     local args_req=${1}
     shift 2
     local args_passed=( "$@" )
 
+    printDbg "${WHITE}${BRIGHT}checkArgsPassed: Args required: $args_req ${NORMAL}"
     printDbg "Arguments passed: ${args_passed[@]}"
-    set -f
+
+    local num_args_passed="${#args_passed[@]}"
+
     IFS=',' read -r -a args_required <<< "${args_req}"
-    set +f
 
     printDbg "Arguments required: ${args_required[@]}"
 
     local num_args_required="${#args_required[@]}"
-    local num_args_passed="${#args_passed[@]}"
+
+
     printDbg "checkArgsPassed: args required: ${num_args_required} ${args_required[@]} args passed: ${num_args_passed} ${args_passed[@]}"
     
       if [ ${num_args_required} -gt ${num_args_passed} ];
@@ -512,6 +510,7 @@ function addOrgToChannelAPI() {
     restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
+
 function joinChannelAPI() {
     local channel=${1}
     local org=${2}
@@ -925,8 +924,6 @@ function checkContainersExist() {
     
     setCurrentActiveOrg ${org}
     
-
-
     for container in ${containersList[@]}; do
         printDbg "docker ps -q -f \"name=${container}.${orgDomain}\""
         presence=$(docker ps -q -f "name=${container}.${orgDomain}")

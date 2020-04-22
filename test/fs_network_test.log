@@ -362,3 +362,29 @@ checkArgsPassed: args required: 0  args passed: 0
 Arguments passed: 
 Arguments required: 
 checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+checkArgsPassed: 1: 2: 3: 4: 5: 6: 7:
+[37m[1mcheckArgsPassed: Args required:  (B[m
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+checkArgsPassed: 1: 2: 3: 4: 5: 6: 7:
+[37m[1mcheckArgsPassed: Args required:  (B[m
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+checkArgsPassed: 1: 2: 3: 4: 5: 6: 7:
+[37m[1mcheckArgsPassed: Args required:  (B[m
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 
+checkArgsPassed: 1: 2: 3: 4: 5: 6: 7:
+[37m[1mcheckArgsPassed: Args required:  (B[m
+Arguments passed: 
+Arguments required: 
+checkArgsPassed: args required: 0  args passed: 0 

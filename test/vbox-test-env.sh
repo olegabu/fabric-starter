@@ -6,8 +6,8 @@ source ${BASEDIR}/libs/libs.sh
 main() {
     export MULTIHOST=true
     VBOX_HOST_IP=${VBOX_HOST_IP:-$(VBoxManage list hostonlyifs | grep 'IPAddress' | cut -d':' -f2 | sed -e 's/^[[:space:]]*//')}
-    export DOCKER_REGISTRY=${VBOX_HOST_IP}:5000
-    
+#    export DOCKER_REGISTRY=${VBOX_HOST_IP}:5000
+    setDocker_LocalRegistryEnv
     export DEPLOYMENT_TARGET='vbox'
     
     

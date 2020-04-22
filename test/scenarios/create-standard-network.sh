@@ -4,7 +4,6 @@
 
 export ARGS_PASSED=("$@")
 source ../libs/libs.sh
-source ../libs/parse-common-params.sh $@
 
 checkArgsPassed
 
@@ -26,8 +25,8 @@ case "${DEPLOYMENT_TARGET}" in
     ;;
     vbox)   #dmachine
         pushd ../../ >/dev/null
-#       ./network-docker-machine-create.sh  ${@}
-        ./network-create.sh  ${@}
+       ./network-docker-machine-create.sh  ${@}
+#        ./network-create.sh  ${@}
 
         popd >/dev/null
     ;;
