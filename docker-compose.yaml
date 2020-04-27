@@ -83,8 +83,8 @@ services:
       - peer0
     logging:
       options:
-        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
-        max-file: "5"
+        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+        max-file: "1"
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./crypto-config/hosts:/etc/hosts
@@ -109,8 +109,8 @@ services:
       - pre-install
     logging:
       options:
-        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
-        max-file: "5"
+        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+        max-file: "1"
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
@@ -150,8 +150,8 @@ services:
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
     logging:
       options:
-        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
-        max-file: "5"
+        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+        max-file: "1"
     volumes:
     - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer0:/var/hyperledger/production
@@ -285,8 +285,8 @@ services:
 #      - peer1
     logging:
       options:
-        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
-        max-file: "5"
+        max-size: "${LOG_FILES_MAX_SIZE:-20m}"
+        max-file: "1"
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
@@ -309,8 +309,8 @@ services:
       - pre-install
     logging:
       options:
-        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
-        max-file: "5"
+        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+        max-file: "1"
     volumes:
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
       - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro

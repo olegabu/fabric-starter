@@ -80,8 +80,8 @@ services:
       - pre-install
     logging:
       options:
-        max-size: "${LOG_FILES_MAX_SIZE:-100m}"
-        max-file: "5"
+        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+        max-file: "1"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/configtx:/etc/hyperledger/configtx
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer

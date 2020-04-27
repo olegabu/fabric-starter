@@ -60,6 +60,8 @@ shopt -u nocasematch
 
 sleep 3
 
+docker rmi -f ${DOCKER_REGISTRY}/hyperledger/fabric-orderer:${FABRIC_VERSION:latest} #workaround for low disk space
+
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
 source ${first_org}_env;
