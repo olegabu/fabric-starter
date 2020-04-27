@@ -54,8 +54,8 @@ function checkArgsPassed() {
     
       if [ ${num_args_required} -gt ${num_args_passed} ];
       then
-           printError "\nERROR: Number of args required (${num_args_required}) and args passed (${num_args_passed}) differs!"
-           printYellow "The following args shoud be supplied: ${WHITE}${args_req}"
+           #printError "\nERROR: Arguments "
+           printError "\nRequired arguments: ${WHITE}${BRIGHT}${args_req}"
            exit 1
       fi
 }
@@ -261,7 +261,8 @@ function printYellowBox() {
 
 
 function printExitCode() {
-    if [ "$1" = "0" ]; then printGreen "Exit code: $1"; else printError "Exit code: $1"; fi
+    local message=${2:-"Exit code:"}
+    if [ "$1" = "0" ]; then printGreen "${message} $1"; else printError "${message} $1"; fi
 }
 
 
@@ -322,9 +323,10 @@ function printResultAndSetExitCode() {
         exit 0
     else
         if [ "${NO_RED_OUTPUT}" = true ]; then
-            printWhite "Exit code in not ${2:-0} but ${errorCode}. See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen
+#            printWhite "Exit code is ${errorCode}, expecting ${2:-0}" | printErrToLogAndToScreen
+            printWhite "Exit code is ${errorCode}" | printErrToLogAndToScreen
         else
-            printError "ERROR! Exit code in not ${2:-0} but ${errorCode}. See ${FSTEST_LOG_FILE} for logs." | printErrToLogAndToScreen
+            printError "ERROR! Exit code is ${errorCode}" | printErrToLogAndToScreen
         fi
         exit 1
     fi
@@ -476,19 +478,41 @@ function APIAuthorize() {
     local jwt
     local httpStatusCode
     
-    result=$(getJWT ${org})
+
     
-    
+    #JWTvar="JWT${org}"
+
+
+    #if [[ -v ${JWTvar} ]];
+    #then
+    #    echo "variable named a is already set" > /dev/tty
+    #    echo ${!JWTvar}
+    #else
+    #    echo "variable a is not set" > /dev/tty
+        result=$(getJWT ${org})
+
     jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
     jwt="${jwt:0:${#jwt}-3}"
-    #httpStatusCode=${result[$(( arrayStartIndex + 1 ))]}
     httpStatusCode="${result:${#result}-3}"
     
     echo "Got JWT: ${jwt} with http status code ${httpStatusCode}" | printDbg
+ #   echo "${JWTvar}=${jwt}" > /dev/tty
+ #   eval "${JWTvar}=${jwt}"
     echo "${jwt}"
     
     setExitCode [ "${httpStatusCode}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
+
+
+    #fi
+
+
+
+    result=$(getJWT ${org})
+    
+
+    
+
 }
 
 
@@ -710,7 +734,6 @@ function runInFabricDir() {
     printDbg eval "$@"
     eval "$@" > "${TMP_LOG_FILE}";
     exitCode=$?
-    #    echo "${RED}Exit code: ${exitCode}${NORMAL}" >/dev/tty
     
     cat "${TMP_LOG_FILE}" | printDbg
     popd >/dev/null
@@ -721,14 +744,14 @@ function runInFabricDir() {
 
 function copyTestChiancodeCLI() {
     local channel=${1}
-    local org2_=${2}
+    local org=${2}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
     
     local result
     local exitCode
     pushd ${FABRIC_DIR} > /dev/null
     
-    result=$(ORG=${org2_} runCLI \
+    result=$(ORG=${org} runCLI \
         "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${channel} ;\
     cp -R /opt/chaincode/node/reference/* \
     /opt/chaincode/node/${chaincode_init_name}_${channel}")
@@ -742,7 +765,7 @@ function copyTestChiancodeCLI() {
 
 function installTestChiancodeCLI() {
     local channel=${1}
-    local org2_=${2}
+    local org=${2}
     local chaincode_name=$(getTestChaincodeName "${channel}")
     
     local exitCode
@@ -751,7 +774,7 @@ function installTestChiancodeCLI() {
     
     #echo   runCLI "hostname ; env | sort; ./container-scripts/network/chaincode-install.sh  $(getTestChaincodeName ${сhannel})" 2>&1 >/dev/tty
     
-    runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}'" 2>&1 | printDbg
+    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}'" 2>&1 | printDbg
     local exitCode=$?
     
     #printDbg "${result}"

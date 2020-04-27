@@ -7,10 +7,12 @@ channelName=${1}
 org=${2}
 
 printToLogAndToScreenCyan "Creating [${channelName}] channel in [${org}.${DOMAIN}] using API..." 
+
 JWT=$(APIAuthorize ${org})
-if [ $? -eq 0 ]; then  
+
+if [ $? -eq 0 ]; then
     createChannelAPI ${channelName} ${org} ${JWT}
-    printResultAndSetExitCode "Channel [${channelName}] creation run sucsessfuly."
-else 
+    printResultAndSetExitCode "Channel [${channelName}] creation request completed sucsessfuly"
+else
     exit 1
 fi

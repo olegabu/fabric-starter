@@ -12,8 +12,8 @@ ARGS_REQUIRED="[Fabric test interface (cli|api|...), First organization, Second 
 
 SCENARIO() {
 
-org1=${2}
-org2=${3}
+org1=${1}
+org2=${2}
 
     runStep "Test 'Orderer containers'" \
         VERIFY:   ./test-containers-list.sh ${org1} ${DOMAIN} orderer www cli.orderer 

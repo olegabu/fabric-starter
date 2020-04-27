@@ -9,7 +9,7 @@ main() {
     stepNumber=
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
-    
+    export SCENARIO_PID=$$
     runTestScenario $*
 }
 
@@ -19,12 +19,11 @@ function runTestScenario() {
     local interfaceTypes
     local scenarioArgs
 
-#printDbg "runTestScenario: 1:$1 2:$2 3:$3 4:$4 5:$5 6:$6 7:$7"
-
     checkArgsPassed $@
 
     interfaceTypes=${4}
-    shift 2
+    shift 4
+
     scenarioArgs=$@
 
     unset IFS
@@ -75,9 +74,9 @@ function getMaxTextLength() {
 function printLogStepHeader() {
     
     printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
-    printLog "${BRIGHT}${WHITE}Step: ${1}_${2} ${3}${NORMAL}"
+    printLog "${BRIGHT}${WHITE}Step: $@${NORMAL}"
     printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
-    
+    #${1}_${2} ${3}
 }
 
 
@@ -128,10 +127,13 @@ function printTestResultTable() {
     printYellow "Start time: ${WHITE}${START_TIME}${YELLOW}, End time: ${WHITE}${END_TIME}${YELLOW}"
     
     if [ "${total_errors}" = 0 ]; then
-        printYellow "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests runtime: ${WHITE}${total_time}${YELLOW} seconds \nTotal errors: ${WHITE}${total_errors}${YELLOW}"
+        printYellow "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds \nTotal errors: ${WHITE}${total_errors}${YELLOW}"
     else
-        printYellowRed "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests runtime: ${WHITE}${total_time}${YELLOW} seconds" "\nTotal errors: ${total_errors}"
+        printYellowRed "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds" "\nTotal errors: ${total_errors}"
     fi
+        
+    printYellow "See debug log ${WHITE}${BRIHT}${FSTEST_LOG_FILE}${NORMAL}"
+    echo
     IFS=
 }
 
@@ -141,8 +143,18 @@ function runStep() {
     shift
     
     local COMMAND=$@
-    
+    local testRedErrOutput
+
     #Parse step command
+    testRedErrOutput="false"
+    case "${COMMAND}" in 
+    *VERIFY_NON_ZERO_EXIT_CODE:*)
+        testRedErrOutput="true"
+        ;;
+    esac
+
+echo $contains
+
     COMMAND="run_error=0; verify_error=0;"${COMMAND}
     COMMAND=$(\
         echo ${COMMAND} |\
@@ -150,12 +162,12 @@ function runStep() {
         sed -E -e 's/(RUNTEST:)([^\n]*)/\1\2; run_error=\$?;/g' |\
         sed -E -e 's/(RUN:)([^\n]*)/\1\2;/g' |\
         sed -E -e 's/(VERIFY:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | \$?));/g' |\
-        sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?));/g' |\
-        sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; /g' |\
+        sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?)); echo \"\${WHITE}\${BRIGHT}Expecting non-zero exit code \${NORMAL}\"; /g' |\
+        sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; echo \"\${WHITE}\${BRIGHT}Expecting non-zero exit code \${NORMAL}\"; /g' |\
     tr '\n' ' ' )
     
     COMMAND=${COMMAND}'; [[ $verify_error = "0" ]]'
-    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" NO_RED_OUTPUT=false ./"}
+    COMMAND=${COMMAND//RUNTEST:[[:space:]]/" NO_RED_OUTPUT=${testRedErrOutput} ./"}
     COMMAND=${COMMAND//RUNTESTNOERRPRINT:[[:space:]]/" NO_RED_OUTPUT=true ./"}
     COMMAND=${COMMAND//VERIFY_NOT:[[:space:]]/" NO_RED_OUTPUT=true ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
@@ -167,7 +179,7 @@ function runStep() {
     printWhite "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
     printDbg $COMMAND
     
-    printLogStepHeader ${step} ${SCRIPT_FOLDER} ${message}
+    printLogStepHeader ${step}_${SCRIPT_FOLDER}: ${message}
     
     printLog "$@"
     
@@ -189,7 +201,7 @@ function runStep() {
     #RESET INDENTATION FOR /dev/stdout
     exec 1>&3 3>&-
     
-    printExitCode "${exit_code}"
+    printExitCode "${exit_code}" "Step ${step}_${SCRIPT_FOLDER} exit code:"
     RESULTS+=("${step}_${SCRIPT_FOLDER}|${message}|${exit_code}|${time_elapsed}")
 }
 

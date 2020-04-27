@@ -7,14 +7,8 @@ channelName=${1}
 org=${2}
 
 printToLogAndToScreenCyan "\nInstantiating test chaincode in [${org}]"
-JWT=$(APIAuthorize ${org})
 
-if [ $? -eq 0 ]; then  
+JWT=${JWT:-$(APIAuthorize ${org})}
+
     instantiateTestChaincodeAPI ${channelName} ${org} ${JWT} ${TIMEOUT_CHAINCODE_INSTANTIATE}
-
     printResultAndSetExitCode "Test chaincode installed in [${org}]"
-else 
-    exit 1
-fi
-
-

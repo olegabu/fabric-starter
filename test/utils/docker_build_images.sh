@@ -14,11 +14,11 @@ docker push localhost:5000/olegabu/fabric-tools-extended:latest
 popd
 
 
-pushd ../../../fabric-starter-rest 
+#pushd ../../../fabric-starter-rest 
 
-docker build -t olegabu/fabric-starter-rest --no-cache --build-arg FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest} .
-docker tag olegabu/fabric-starter-rest localhost:5000/olegabu/fabric-starter-rest
-docker push localhost:5000/olegabu/fabric-starter-rest:latest
+#docker build -t olegabu/fabric-starter-rest --no-cache --build-arg FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest} .
+#docker tag olegabu/fabric-starter-rest localhost:5000/olegabu/fabric-starter-rest
+#docker push localhost:5000/olegabu/fabric-starter-rest:latest
 
-popd
+#popd
 

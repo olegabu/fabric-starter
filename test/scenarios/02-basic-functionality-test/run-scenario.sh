@@ -13,20 +13,20 @@ ARGS_REQUIRED="[Fabric test interface (cli|api|...), First organization, Second 
 
 SCENARIO() {
 
-org1=${2}
-org2=${3}
+local org1=${1}
+local org2=${2}
 
 echo "Running scenario for ${org1}, ${org2} orgs in ${DOMAIN}"
 
 
 # Creating channels
     #
-    TEST_CHANNEL_NAME=$(getRandomChannelName)
+    local TEST_CHANNEL_NAME=$(getRandomChannelName)
 
-    TEST_SECOND_CHANNEL_NAME=${TEST_CHANNEL_NAME}"-02"
-    TEST_CHANNEL_WRONG_NAME="^^^^^^"${TEST_CHANNEL_NAME}
+    local TEST_SECOND_CHANNEL_NAME=${TEST_CHANNEL_NAME}"-02"
+    local TEST_CHANNEL_WRONG_NAME="^^^^^^"${TEST_CHANNEL_NAME}
 
-    TEST_CHAINCODE_NAME=$(getTestChaincodeName ${TEST_CHANNEL_NAME})
+    local TEST_CHAINCODE_NAME=$(getTestChaincodeName ${TEST_CHANNEL_NAME})
 
     runStep "Test 'Create new channel in ORG1'"   \
         RUNTEST:    create-channel.sh       ${TEST_CHANNEL_NAME} ${org1} \
@@ -40,7 +40,7 @@ echo "Running scenario for ${org1}, ${org2} orgs in ${DOMAIN}"
 	    VERIFY_NON_ZERO_EXIT_CODE: \
         VERIFY_NOT:     test-channel-accessible.sh  ${TEST_CHANNEL_WRONG_NAME} ${org1}
 
-    runStep "Test 'Can not create the same channel in ORG1 again'" \
+    runStep "Test 'Can not create channel with the same name in ORG1 again'" \
         RUNTEST:    create-channel.sh  ${TEST_CHANNEL_NAME} ${org1} \
         VERIFY_NON_ZERO_EXIT_CODE: 
     
@@ -49,11 +49,11 @@ echo "Running scenario for ${org1}, ${org2} orgs in ${DOMAIN}"
 	    VERIFY_NON_ZERO_EXIT_CODE:  \
         VERIFY_NOT:     test-channel-accessible.sh      ${TEST_CHANNEL_NAME} ${org2}
 
-    runStep "Test 'Create another channel in ORG2'" \
+    runStep "Test 'Create the second channel in ORG2'" \
 	    RUNTEST:    create-channel.sh       ${TEST_SECOND_CHANNEL_NAME} ${org2} \
 	    VERIFY:     test-channel-accessible.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
-    runStep "Test 'This channel is not visible in ORG1'" \
+    runStep "Test 'The channel created in ORG2 is not visible in ORG1'" \
         VERIFY_NOT:     test-channel-accessible.sh      ${TEST_SECOND_CHANNEL_NAME} ${org1}
 
     runStep "Test 'Can not create a channel in ORG1 with the name of the channel created in ORG2'" \
@@ -66,7 +66,7 @@ echo "Running scenario for ${org1}, ${org2} orgs in ${DOMAIN}"
     runStep "Test 'Add ORG1 to the first channel created by ORG1'" \
         RUNTEST: add-org-to-channel.sh ${TEST_CHANNEL_NAME} ${org1} ${org1} \
         VERIFY:  test-channel-add-org.sh ${TEST_CHANNEL_NAME} ${org1} ${org1}
-
+    
     runStep "Test 'Add ORG2 to the second channel created by ORG2'" \
 	    RUNTEST: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org2} \
 	    VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org2}
@@ -126,7 +126,8 @@ echo "Running scenario for ${org1}, ${org2} orgs in ${DOMAIN}"
     runStep "Test 'Test chaincode invocation in ORG1 and query in ORG2'" \
 	    RUN: sleep 15 \
 	    RUNTEST: chaincode-invoke.sh ${TEST_CHANNEL_NAME} ${org1} ${TEST_CHAINCODE_NAME} \
-	    RUNTEST: chaincode-query.sh ${TEST_CHANNEL_NAME} ${org2} ${TEST_CHAINCODE_NAME} \
+	    VERIFY:  test-exit-code.sh \
+        RUNTEST: chaincode-query.sh ${TEST_CHANNEL_NAME} ${org2} ${TEST_CHAINCODE_NAME} \
 	    VERIFY:  test-exit-code.sh
 
 }

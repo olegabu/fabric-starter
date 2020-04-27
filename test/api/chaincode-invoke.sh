@@ -11,13 +11,11 @@ printToLogAndToScreenCyan "\nInvoke test chaincode on the [${channelName}] chann
 
 JWT=$(APIAuthorize ${org})
 
-if [ $? -eq 0 ]; then  
-    invokeTestChaincodeAPI ${channelName} ${org} {$chaincodeName} ${JWT}
+if [ $? -eq 0 ]; then
 
+    invokeTestChaincodeAPI ${channelName} ${org} {$chaincodeName} ${JWT}
     printResultAndSetExitCode "Chaincode [${chaincode_name}] invoked sucsessfuly"
 
-else 
+else
     exit 1
 fi
-
-
