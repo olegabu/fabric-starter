@@ -304,10 +304,7 @@ function printAndCompareResults() {
 
 
 function printResultAndSetExitCode() {
-    local errorCode
-
-    errorCode=${3:-$?}
-
+    local errorCode=${3:-$?}
     if [ ${errorCode} -eq ${2:-0} ]
     then
         printGreen "OK: ${1}" | printToLogAndToScreen
