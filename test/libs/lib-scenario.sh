@@ -1,15 +1,13 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
 
 IFS='[]'
 
 main() {
-    
- 
     declare -a RESULTS
     stepNumber=
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
-    export SCENARIO_PID=$$
+
     runTestScenario $*
 }
 
@@ -76,7 +74,6 @@ function printLogStepHeader() {
     printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
     printLog "${BRIGHT}${WHITE}Step: $@${NORMAL}"
     printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
-    #${1}_${2} ${3}
 }
 
 
@@ -153,8 +150,6 @@ function runStep() {
         ;;
     esac
 
-echo $contains
-
     COMMAND="run_error=0; verify_error=0;"${COMMAND}
     COMMAND=$(\
         echo ${COMMAND} |\
@@ -164,7 +159,7 @@ echo $contains
         sed -E -e 's/(VERIFY:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | \$?));/g' |\
         sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?)); echo \"\${WHITE}\${BRIGHT}Expecting non-zero exit code \${NORMAL}\"; /g' |\
         sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; echo \"\${WHITE}\${BRIGHT}Expecting non-zero exit code \${NORMAL}\"; /g' |\
-    tr '\n' ' ' )
+        tr '\n' ' ' )
     
     COMMAND=${COMMAND}'; [[ $verify_error = "0" ]]'
     COMMAND=${COMMAND//RUNTEST:[[:space:]]/" NO_RED_OUTPUT=${testRedErrOutput} ./"}
@@ -172,15 +167,13 @@ echo $contains
     COMMAND=${COMMAND//VERIFY_NOT:[[:space:]]/" NO_RED_OUTPUT=true ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//VERIFY:[[:space:]]/" ${TEST_ROOT_DIR}/${VERIFY_SCRIPT_FOLDER}/"}
     COMMAND=${COMMAND//RUN:[[:space:]]/;}
-#    COMMAND=${COMMAND//;[[:space:]]/;}
     
     COMMAND=$(echo $COMMAND | sed -E -e 's/;([[:space:]]*)/;/g' -e 's/[;]+/;/g')
     
     printWhite "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
+
     printDbg $COMMAND
-    
     printLogStepHeader ${step}_${SCRIPT_FOLDER}: ${message}
-    
     printLog "$@"
     
     #SET INDENTATION FOR /dev/stdout (1 tabulation symbol)

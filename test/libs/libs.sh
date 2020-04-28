@@ -2,7 +2,6 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 main() {
-    
     export FABRIC_DIR=${FABRIC_DIR:-$(getFabricStarterPath $(pwd))}
     export TEST_ROOT_DIR=${FABRIC_DIR}/test
     export TEST_LAUNCH_DIR=${TEST_LAUNCH_DIR:-${TEST_ROOT_DIR}}
@@ -32,7 +31,6 @@ main() {
 
 
 function checkArgsPassed() {
-
     shift 
     local args_req=${1}
     shift 2
@@ -54,7 +52,6 @@ function checkArgsPassed() {
     
       if [ ${num_args_required} -gt ${num_args_passed} ];
       then
-           #printError "\nERROR: Arguments "
            printError "\nRequired arguments: ${WHITE}${BRIGHT}${args_req}"
            exit 1
       fi
@@ -190,7 +187,6 @@ function printToLogAndToScreenCyan() {
 
 
 function printToLogAndToScreenBlue() {
-    
     local line
     
     if (( $# == 0 )) ; then
@@ -245,7 +241,6 @@ function printPaddingSpaces() {
 
 
 function printYellowBox() {
-    
     local length
     local indent
     local boundary
@@ -293,7 +288,6 @@ function printErrToLogAndToScreen() {
 
 
 function printAndCompareResults() {
-    
     local messageOK=${1}
     local messageERR=${2}
     local var=${3:-"$?"}
@@ -310,27 +304,22 @@ function printAndCompareResults() {
 
 
 function printResultAndSetExitCode() {
-    #echo " ---------------------- $? -----------------------"
-    
-    #echo "- $1 - ${2:-0} - ${3:-$?}" >/dev/tty
-    #local errorCode
+    local errorCode
+
     errorCode=${3:-$?}
-    #local expextedErrorCode=${2:-0}
-    #echo "$expextedErrorCode"
+
     if [ ${errorCode} -eq ${2:-0} ]
     then
         printGreen "OK: ${1}" | printToLogAndToScreen
         exit 0
     else
         if [ "${NO_RED_OUTPUT}" = true ]; then
-#            printWhite "Exit code is ${errorCode}, expecting ${2:-0}" | printErrToLogAndToScreen
             printWhite "Exit code is ${errorCode}" | printErrToLogAndToScreen
         else
             printError "ERROR! Exit code is ${errorCode}" | printErrToLogAndToScreen
         fi
         exit 1
     fi
-    
 }
 
 #__________________________________ API-related functions ___________________________________________
@@ -393,7 +382,7 @@ function generateMultipartTail() { # Compose header for curl to send archived ch
 }
 
 
-function curlRequest() { #Call curl and get results (data & http code)
+function curlRequest() {
     local url=$1
     local cdata=$2
     local wtoken=$3
@@ -478,41 +467,17 @@ function APIAuthorize() {
     local jwt
     local httpStatusCode
     
-
-    
-    #JWTvar="JWT${org}"
-
-
-    #if [[ -v ${JWTvar} ]];
-    #then
-    #    echo "variable named a is already set" > /dev/tty
-    #    echo ${!JWTvar}
-    #else
-    #    echo "variable a is not set" > /dev/tty
-        result=$(getJWT ${org})
+    result=$(getJWT ${org})
 
     jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
     jwt="${jwt:0:${#jwt}-3}"
     httpStatusCode="${result:${#result}-3}"
     
     echo "Got JWT: ${jwt} with http status code ${httpStatusCode}" | printDbg
- #   echo "${JWTvar}=${jwt}" > /dev/tty
- #   eval "${JWTvar}=${jwt}"
     echo "${jwt}"
     
     setExitCode [ "${httpStatusCode}" = "200" ]
     printResultAndSetExitCode "JWT token obtained." > ${SCREEN_OUTPUT_DEVICE}
-
-
-    #fi
-
-
-
-    result=$(getJWT ${org})
-    
-
-    
-
 }
 
 
@@ -698,14 +663,12 @@ function queryPeer() {
 function verifyChannelExists() {
     local channel=${1}
     local org=${2}
-    #  local domain=${3}
+
     local result
     
     result=$(queryPeer ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
     printDbg "Expect: ${channel}, got: ${result}"
     
-    #echo $( [ "a" = "b" ]; echo $? >/dev/tty)
-    #echo $([ "${result}" = "${channel}_" ] ; echo $? >/dev/tty)
     setExitCode [ "${result}" = "${channel}" ]
 }
 
@@ -713,7 +676,7 @@ function verifyChannelExists() {
 function verifyOrgIsInChannel() {
     local channel=${1}
     local org2_=${2}
-    # local domain_=${3}
+
     local result
     
     result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
@@ -772,20 +735,15 @@ function installTestChiancodeCLI() {
     
     pushd ${FABRIC_DIR} > /dev/null
     
-    #echo   runCLI "hostname ; env | sort; ./container-scripts/network/chaincode-install.sh  $(getTestChaincodeName ${сhannel})" 2>&1 >/dev/tty
-    
     ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}'" 2>&1 | printDbg
     local exitCode=$?
     
-    #printDbg "${result}"
     popd > /dev/null
     setExitCode [ "${exitCode}" = "0" ]
 }
 
 
 function ListPeerChaincodes() {
-    
-    
     local channel=${1}
     local org2_=${2}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
@@ -812,7 +770,6 @@ function ListPeerChaincodes() {
 
 
 function ListPeerChaincodesInstantiated() {
-    
     local channel=${1}
     local org2_=${2}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
@@ -840,12 +797,17 @@ function ListPeerChaincodesInstantiated() {
 
 function verifyChiancodeInstalled() {
     local channel=${1}
-    local org2_=${2}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${chaincode_init_name}_${channel}
-    local result=$(ListPeerChaincodes ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
+    local org=${2}
+
+    local chaincode_init_name
+    local chaincode_name
+    local result
+
+    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    chaincode_name=${chaincode_init_name}_${channel}
+    result=$(ListPeerChaincodes ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
+
     printDbg "${result}"
-    #echo "${result}"
     
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }
@@ -853,13 +815,17 @@ function verifyChiancodeInstalled() {
 
 function verifyChiancodeInstantiated() {
     local channel=${1}
-    local org2_=${2}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${chaincode_init_name}_${channel}
-    local result=$(ListPeerChaincodesInstantiated ${channel} ${org2_} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
+    local org=${2}
+
+    local chaincode_init_name
+    local chaincode_name
+    local result
+
+    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    chaincode_name=${chaincode_init_name}_${channel}
+    result=$(ListPeerChaincodesInstantiated ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
     
     printDbg "${result}"
-    #echo "${result}"
     
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }
@@ -867,11 +833,11 @@ function verifyChiancodeInstantiated() {
 
 function createChaincodeArchiveAndReturnPath() {
     local channel=${1}
+
     local chaincode_name=$(getTestChaincodeName ${channel})
     local chaincode_init_name=$(getCurrentChaincodeName)
     local chaincode_file_name=${chaincode_name}.zip
     local zip_chaincode_path="/tmp/${chaincode_file_name}"
-    
     
     pushd ${FABRIC_DIR}/chaincode/node/ >/dev/null
     mkdir ${chaincode_name}
