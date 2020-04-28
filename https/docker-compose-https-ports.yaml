@@ -20,7 +20,7 @@ services:
     ports:
       - ${API_PORT:-4000}:4000
       - ${WWW_PORT:-80}:80
-    command: bash -c "while [ ! -f /templates/nginx.conf ];do echo 'Wait for /templates/nginx.conf'; sleep 1;done; envsubst '$$ORG $$DOMAIN' < /templates/nginx.conf > /etc/nginx/conf.d/default.conf && cp /certs/${ORG}.${DOMAIN}/* /etc/nginx/conf.d/ && nginx -g 'daemon off;'"
+    command: bash -c "while [ ! -f /templates/nginx.conf ];do echo 'Wait for /templates/nginx.conf'; sleep 3;done; envsubst '$$ORG $$DOMAIN' < /templates/nginx.conf > /etc/nginx/conf.d/default.conf && cp /certs/${ORG}.${DOMAIN}/* /etc/nginx/conf.d/ && nginx -g 'daemon off;'"
     volumes:
       - ${SSL_CERTS_PATH:-./https/certs}:/certs
       - ./crypto-config/templates:/templates:ro
