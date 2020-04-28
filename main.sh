@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# workaround for disk resize
+sudo lvextend /dev/rootvg/root /dev/vda3 #extend virtual group
+sudo resize2fs /dev/rootvg/root #resize file system
+
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
@@ -60,7 +64,6 @@ shopt -u nocasematch
 
 sleep 3
 
-docker rmi -f ${DOCKER_REGISTRY}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest} #workaround for low disk space
 
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
