@@ -3,344 +3,344 @@
 Arguments passed: api org1 org2
 Arguments required: Fabric test interface (cli|api|...)  First organization  Second organization
 checkArgsPassed: args required: 3 Fabric test interface (cli|api|...)  First organization  Second organization args passed: 3 api org1 org2
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./create-channel.sh testchannel31512 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel31512 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./create-channel.sh testchannel17094 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel17094 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 1_api: Test 'Create new channel in ORG1'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: create-channel.sh testchannel31512 org1 VERIFY: test-channel-accessible.sh testchannel31512 org1
-[1;36mCreating [testchannel31512] channel in [org1.example.com] using API...[m[m[m
+RUNTEST: create-channel.sh testchannel17094 org1 VERIFY: test-channel-accessible.sh testchannel17094 org1
+[1;36mCreating [testchannel17094] channel in [org1.example.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4Nn0.Kx0VqvQjMVP7ibu7p3VW1JlOqtCyrPjKIZhOkF5dBaw"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4Nn0.Kx0VqvQjMVP7ibu7p3VW1JlOqtCyrPjKIZhOkF5dBaw", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4Nn0.Kx0VqvQjMVP7ibu7p3VW1JlOqtCyrPjKIZhOkF5dBaw  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5N30.cuN0X43km7ptLMWAibp5vvKreLUeaNvkogBODnKtgfg"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5N30.cuN0X43km7ptLMWAibp5vvKreLUeaNvkogBODnKtgfg", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5N30.cuN0X43km7ptLMWAibp5vvKreLUeaNvkogBODnKtgfg  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"testchannel31512","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4Nn0.Kx0VqvQjMVP7ibu7p3VW1JlOqtCyrPjKIZhOkF5dBaw
+restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"testchannel17094","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5N30.cuN0X43km7ptLMWAibp5vvKreLUeaNvkogBODnKtgfg
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}}}]200 _ result
 body is [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}}}], code is 200
 restAPIWrapper: exit code:: 0 result:: [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}}}] 200
-[31m[4mexitCode: 0  httpStatusCode: 2xx (B[m
+[37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: Channel [testchannel31512] creation request completed sucsessfuly[m[m[m
+[1;32mOK: Channel [testchannel17094] creation request completed sucsessfuly[m[m[m
 [1;35m
-Verifing if the [testchannel31512] channel exists in [org1.example.com][m[m[m
+Verifing if the [testchannel17094] channel exists in [org1.example.com][m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-04-28 18:56:28.336 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:28.338 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
-[34m2020-04-28 18:56:28.339 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
-[34m2020-04-28 18:56:28.339 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+[34m2020-04-29 08:54:58.978 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:54:58.980 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-04-29 08:54:58.981 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-04-29 08:54:58.981 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
 {
-"channel_id": "testchannel31512",
+"channel_id": "testchannel17094",
 "epoch": "0",
 "extension": null,
-"timestamp": "2020-04-28T18:56:27Z",
+"timestamp": "2020-04-29T08:54:57Z",
 "tls_cert_hash": null,
 "tx_id": "",
 "type": 1,
 "version": 0
 }
-cat /tmp/fileuJ2nTB _testchannel31512_
-Expect: testchannel31512, got: testchannel31512
+cat /tmp/fileZGVIB2 _testchannel17094_
+Expect: testchannel17094, got: testchannel17094
 setExitCode: 0
-[1;32mOK: The channel [testchannel31512] exists and visible to [org1][m[m[m
+[1;32mOK: The channel [testchannel17094] exists and visible to [org1][m[m[m
 Step 1_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel31512 org2;verify_error=$(($run_error | $verify_error | ! $?));echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel17094 org2;verify_error=$(($run_error | $verify_error | ! $?));echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 2_api: Test 'The channel created in ORG1 is not visible in ORG2'(B[m
 [1m[37m---------------------------(B[m
-VERIFY_NOT: test-channel-accessible.sh testchannel31512 org2
+VERIFY_NOT: test-channel-accessible.sh testchannel17094 org2
 [1;35m
-Verifing if the [testchannel31512] channel exists in [org2.example.com][m[m[m
+Verifing if the [testchannel17094] channel exists in [org2.example.com][m[m[m
 queryContainerNetworkSettings returns: 8051
-[34m2020-04-28 18:56:28.964 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:28.966 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+[34m2020-04-29 08:54:59.592 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:54:59.594 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
 Error: can't read the block: &{FORBIDDEN}
 null
-cat /tmp/filenbRy9n _null_
-Expect: testchannel31512, got: null
+cat /tmp/fileJ5NEcF _null_
+Expect: testchannel17094, got: null
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 Step 2_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh ^^^^^^testchannel31512 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh ^^^^^^testchannel31512 org1;verify_error=$(($run_error | $verify_error | ! $?));echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh ^^^^^^testchannel17094 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh ^^^^^^testchannel17094 org1;verify_error=$(($run_error | $verify_error | ! $?));echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 3_api: Test 'Can not create a channel with the incorrect name in ORG1'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: create-channel.sh ^^^^^^testchannel31512 org1 VERIFY_NON_ZERO_EXIT_CODE: VERIFY_NOT: test-channel-accessible.sh ^^^^^^testchannel31512 org1
-[1;36mCreating [^^^^^^testchannel31512] channel in [org1.example.com] using API...[m[m[m
+RUNTEST: create-channel.sh ^^^^^^testchannel17094 org1 VERIFY_NON_ZERO_EXIT_CODE: VERIFY_NOT: test-channel-accessible.sh ^^^^^^testchannel17094 org1
+[1;36mCreating [^^^^^^testchannel17094] channel in [org1.example.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4OX0.nlUqd1aKNtIgxaOhLYvOAgUeXHAZiqKco-qM-3pnIkM"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4OX0.nlUqd1aKNtIgxaOhLYvOAgUeXHAZiqKco-qM-3pnIkM", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4OX0.nlUqd1aKNtIgxaOhLYvOAgUeXHAZiqKco-qM-3pnIkM  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5OX0.v0MpH7QdWz6jByWZ4g13ov3rua_ndZFZkMn1mWmJ5GQ"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5OX0.v0MpH7QdWz6jByWZ4g13ov3rua_ndZFZkMn1mWmJ5GQ", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5OX0.v0MpH7QdWz6jByWZ4g13ov3rua_ndZFZkMn1mWmJ5GQ  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"^^^^^^testchannel31512","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE4OX0.nlUqd1aKNtIgxaOhLYvOAgUeXHAZiqKco-qM-3pnIkM
+restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"^^^^^^testchannel17094","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDQ5OX0.v0MpH7QdWz6jByWZ4g13ov3rua_ndZFZkMn1mWmJ5GQ
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel31512\""500 _ result
-body is "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel31512\"", code is 500
-restAPIWrapper: exit code:: 0 result:: "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel31512\"" 500
-[31m[4mexitCode: 0  httpStatusCode: 5xx (B[m
+curlGetIt got _ "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel17094\""500 _ result
+body is "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel17094\"", code is 500
+restAPIWrapper: exit code:: 0 result:: "Failed to create Channel. channel name should match Regex /^[a-z][a-z0-9.-]*$/, but got \"^^^^^^testchannel17094\"" 500
+[37m[4mexitCode: 0  httpStatusCode: 5xx (B[m
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 [1;35m
-Verifing if the [^^^^^^testchannel31512] channel exists in [org1.example.com][m[m[m
+Verifing if the [^^^^^^testchannel17094] channel exists in [org1.example.com][m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-04-28 18:56:31.038 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:31.039 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
+[34m2020-04-29 08:55:01.655 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:01.657 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{NOT_FOUND}
 Error: can't read the block: &{NOT_FOUND}
 null
-cat /tmp/filexk1zIw _null_
-Expect: ^^^^^^testchannel31512, got: null
+cat /tmp/filebHMZ0M _null_
+Expect: ^^^^^^testchannel17094, got: null
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 Step 3_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh testchannel31512 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh testchannel17094 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 4_api: Test 'Can not create channel with the same name in ORG1 again'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: create-channel.sh testchannel31512 org1 VERIFY_NON_ZERO_EXIT_CODE:
-[1;36mCreating [testchannel31512] channel in [org1.example.com] using API...[m[m[m
+RUNTEST: create-channel.sh testchannel17094 org1 VERIFY_NON_ZERO_EXIT_CODE:
+[1;36mCreating [testchannel17094] channel in [org1.example.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5MX0.JaKyQPIcfnLw-K8cYOCW19NndQ4_hKCjC6g67dRpQxY"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5MX0.JaKyQPIcfnLw-K8cYOCW19NndQ4_hKCjC6g67dRpQxY", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5MX0.JaKyQPIcfnLw-K8cYOCW19NndQ4_hKCjC6g67dRpQxY  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwMn0.FQOqeIE9XmD32ltydozrB-csOkgkExyQsTjpTwYp2XQ"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwMn0.FQOqeIE9XmD32ltydozrB-csOkgkExyQsTjpTwYp2XQ", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwMn0.FQOqeIE9XmD32ltydozrB-csOkgkExyQsTjpTwYp2XQ  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"testchannel31512","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5MX0.JaKyQPIcfnLw-K8cYOCW19NndQ4_hKCjC6g67dRpQxY
+restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"testchannel17094","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwMn0.FQOqeIE9XmD32ltydozrB-csOkgkExyQsTjpTwYp2XQ
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}]200 _ result
 body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}], code is 200
 restAPIWrapper: exit code:: 0 result:: [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}] 200
-[31m[4mexitCode: 0  httpStatusCode: 2xx (B[m
+[37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: Channel [testchannel31512] creation request completed sucsessfuly[m[m[m
+[1;32mOK: Channel [testchannel17094] creation request completed sucsessfuly[m[m[m
 Step 4_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh testchannel31512 org2 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel31512 org2;verify_error=$(($run_error | $verify_error | ! $?));echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh testchannel17094 org2 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel17094 org2;verify_error=$(($run_error | $verify_error | ! $?));echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 5_api: Test 'Can not create a channel in ORG2 with the name of the channel created in ORG1'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: create-channel.sh testchannel31512 org2 VERIFY_NON_ZERO_EXIT_CODE: VERIFY_NOT: test-channel-accessible.sh testchannel31512 org2
-[1;36mCreating [testchannel31512] channel in [org2.example.com] using API...[m[m[m
+RUNTEST: create-channel.sh testchannel17094 org2 VERIFY_NON_ZERO_EXIT_CODE: VERIFY_NOT: test-channel-accessible.sh testchannel17094 org2
+[1;36mCreating [testchannel17094] channel in [org2.example.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5M30.cDS-BEd3byKM9A6UMBlA1Ue8IN6bjDvAsYbYog4-jng"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5M30.cDS-BEd3byKM9A6UMBlA1Ue8IN6bjDvAsYbYog4-jng", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5M30.cDS-BEd3byKM9A6UMBlA1Ue8IN6bjDvAsYbYog4-jng  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwM30.A2hdP_DNviwUtxa7iXo2KlKTmceZazKL5z8rMJtIIXs"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwM30.A2hdP_DNviwUtxa7iXo2KlKTmceZazKL5z8rMJtIIXs", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwM30.A2hdP_DNviwUtxa7iXo2KlKTmceZazKL5z8rMJtIIXs  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel31512","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5M30.cDS-BEd3byKM9A6UMBlA1Ue8IN6bjDvAsYbYog4-jng
+restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel17094","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwM30.A2hdP_DNviwUtxa7iXo2KlKTmceZazKL5z8rMJtIIXs
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ "Invalid results returned ::FORBIDDEN"500 _ result
 body is "Invalid results returned ::FORBIDDEN", code is 500
 restAPIWrapper: exit code:: 0 result:: "Invalid results returned ::FORBIDDEN" 500
-[31m[4mexitCode: 0  httpStatusCode: 5xx (B[m
+[37m[4mexitCode: 0  httpStatusCode: 5xx (B[m
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 [1;35m
-Verifing if the [testchannel31512] channel exists in [org2.example.com][m[m[m
+Verifing if the [testchannel17094] channel exists in [org2.example.com][m[m[m
 queryContainerNetworkSettings returns: 8051
-[34m2020-04-28 18:56:35.752 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:35.754 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+[34m2020-04-29 08:55:05.414 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:05.416 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
 Error: can't read the block: &{FORBIDDEN}
 null
-cat /tmp/file3tbyPl _null_
-Expect: testchannel31512, got: null
+cat /tmp/fileGAImuH _null_
+Expect: testchannel17094, got: null
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 Step 5_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./create-channel.sh testchannel31512-02 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel31512-02 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./create-channel.sh testchannel17094-02 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel17094-02 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 6_api: Test 'Create the second channel in ORG2'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: create-channel.sh testchannel31512-02 org2 VERIFY: test-channel-accessible.sh testchannel31512-02 org2
-[1;36mCreating [testchannel31512-02] channel in [org2.example.com] using API...[m[m[m
+RUNTEST: create-channel.sh testchannel17094-02 org2 VERIFY: test-channel-accessible.sh testchannel17094-02 org2
+[1;36mCreating [testchannel17094-02] channel in [org2.example.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5Nn0.ZI8zwYRxqhhUghNThOTZKqwfFvGiBnPcKuKakDuxAUE"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5Nn0.ZI8zwYRxqhhUghNThOTZKqwfFvGiBnPcKuKakDuxAUE", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5Nn0.ZI8zwYRxqhhUghNThOTZKqwfFvGiBnPcKuKakDuxAUE  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwNX0.MMdBQohrxNgBQShKWWGN5l0aWCtd8Z_Pj8O5s2VE3Lo"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwNX0.MMdBQohrxNgBQShKWWGN5l0aWCtd8Z_Pj8O5s2VE3Lo", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwNX0.MMdBQohrxNgBQShKWWGN5l0aWCtd8Z_Pj8O5s2VE3Lo  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel31512-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5Nn0.ZI8zwYRxqhhUghNThOTZKqwfFvGiBnPcKuKakDuxAUE
+restQuery: curlRequest http://127.0.0.1:4001/channels {"channelId":"testchannel17094-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwNX0.MMdBQohrxNgBQShKWWGN5l0aWCtd8Z_Pj8O5s2VE3Lo
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org2.example.com:8051","name":"peer0.org2.example.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.example.com:8051","grpc.default_authority":"peer0.org2.example.com:8051"}}}]200 _ result
 body is [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org2.example.com:8051","name":"peer0.org2.example.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.example.com:8051","grpc.default_authority":"peer0.org2.example.com:8051"}}}], code is 200
 restAPIWrapper: exit code:: 0 result:: [{"version":0,"timestamp":null,"response":{"status":200,"message":"","payload":{"type":"Buffer","data":[]}},"payload":{"type":"Buffer","data":[]},"endorsement":null,"peer":{"url":"grpcs://peer0.org2.example.com:8051","name":"peer0.org2.example.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.example.com:8051","grpc.default_authority":"peer0.org2.example.com:8051"}}}] 200
-[31m[4mexitCode: 0  httpStatusCode: 2xx (B[m
+[37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: Channel [testchannel31512-02] creation request completed sucsessfuly[m[m[m
+[1;32mOK: Channel [testchannel17094-02] creation request completed sucsessfuly[m[m[m
 [1;35m
-Verifing if the [testchannel31512-02] channel exists in [org2.example.com][m[m[m
+Verifing if the [testchannel17094-02] channel exists in [org2.example.com][m[m[m
 queryContainerNetworkSettings returns: 8051
-[34m2020-04-28 18:56:38.250 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:38.252 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
-[34m2020-04-28 18:56:38.253 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
-[34m2020-04-28 18:56:38.253 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
+[34m2020-04-29 08:55:07.686 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:07.688 UTC [cli.common] readBlock -> INFO 002[0m Received block: 0
+[34m2020-04-29 08:55:07.689 UTC [cli.common] readBlock -> INFO 003[0m Received block: 0
+[34m2020-04-29 08:55:07.689 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 0
 {
-"channel_id": "testchannel31512-02",
+"channel_id": "testchannel17094-02",
 "epoch": "0",
 "extension": null,
-"timestamp": "2020-04-28T18:56:36Z",
+"timestamp": "2020-04-29T08:55:06Z",
 "tls_cert_hash": null,
 "tx_id": "",
 "type": 1,
 "version": 0
 }
-cat /tmp/file0bOZOV _testchannel31512-02_
-Expect: testchannel31512-02, got: testchannel31512-02
+cat /tmp/fileSUnimc _testchannel17094-02_
+Expect: testchannel17094-02, got: testchannel17094-02
 setExitCode: 0
-[1;32mOK: The channel [testchannel31512-02] exists and visible to [org2][m[m[m
+[1;32mOK: The channel [testchannel17094-02] exists and visible to [org2][m[m[m
 Step 6_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel31512-02 org1;verify_error=$(($run_error | $verify_error | ! $?));echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel17094-02 org1;verify_error=$(($run_error | $verify_error | ! $?));echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 7_api: Test 'The channel created in ORG2 is not visible in ORG1'(B[m
 [1m[37m---------------------------(B[m
-VERIFY_NOT: test-channel-accessible.sh testchannel31512-02 org1
+VERIFY_NOT: test-channel-accessible.sh testchannel17094-02 org1
 [1;35m
-Verifing if the [testchannel31512-02] channel exists in [org1.example.com][m[m[m
+Verifing if the [testchannel17094-02] channel exists in [org1.example.com][m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-04-28 18:56:38.923 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:38.924 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+[34m2020-04-29 08:55:08.245 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:08.246 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
 Error: can't read the block: &{FORBIDDEN}
 null
-cat /tmp/file4srVgF _null_
-Expect: testchannel31512-02, got: null
+cat /tmp/filepsM0IT _null_
+Expect: testchannel17094-02, got: null
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 Step 7_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh testchannel31512-02 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel31512-02 org1;verify_error=$(($run_error | $verify_error | ! $?));echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./create-channel.sh testchannel17094-02 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";NO_RED_OUTPUT=true /home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-accessible.sh testchannel17094-02 org1;verify_error=$(($run_error | $verify_error | ! $?));echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 8_api: Test 'Can not create a channel in ORG1 with the name of the channel created in ORG2'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: create-channel.sh testchannel31512-02 org1 VERIFY_NON_ZERO_EXIT_CODE: VERIFY_NOT: test-channel-accessible.sh testchannel31512-02 org1
-[1;36mCreating [testchannel31512-02] channel in [org1.example.com] using API...[m[m[m
+RUNTEST: create-channel.sh testchannel17094-02 org1 VERIFY_NON_ZERO_EXIT_CODE: VERIFY_NOT: test-channel-accessible.sh testchannel17094-02 org1
+[1;36mCreating [testchannel17094-02] channel in [org1.example.com] using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5OX0.omRURzyVQ-FgSWUGsLDNMwf9yEEoJRX7YoX3Tia0NIA"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5OX0.omRURzyVQ-FgSWUGsLDNMwf9yEEoJRX7YoX3Tia0NIA", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5OX0.omRURzyVQ-FgSWUGsLDNMwf9yEEoJRX7YoX3Tia0NIA  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwOH0.8fgtUSscFyAu-67UJPNR7GcNFJPbH6wrlMX6GV1zmbI"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwOH0.8fgtUSscFyAu-67UJPNR7GcNFJPbH6wrlMX6GV1zmbI", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwOH0.8fgtUSscFyAu-67UJPNR7GcNFJPbH6wrlMX6GV1zmbI  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"testchannel31512-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDE5OX0.omRURzyVQ-FgSWUGsLDNMwf9yEEoJRX7YoX3Tia0NIA
+restQuery: curlRequest http://127.0.0.1:4000/channels {"channelId":"testchannel17094-02","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUwOH0.8fgtUSscFyAu-67UJPNR7GcNFJPbH6wrlMX6GV1zmbI
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ "Invalid results returned ::FORBIDDEN"500 _ result
 body is "Invalid results returned ::FORBIDDEN", code is 500
 restAPIWrapper: exit code:: 0 result:: "Invalid results returned ::FORBIDDEN" 500
-[31m[4mexitCode: 0  httpStatusCode: 5xx (B[m
+[37m[4mexitCode: 0  httpStatusCode: 5xx (B[m
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 [1;35m
-Verifing if the [testchannel31512-02] channel exists in [org1.example.com][m[m[m
+Verifing if the [testchannel17094-02] channel exists in [org1.example.com][m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-04-28 18:56:41.308 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:41.310 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
+[34m2020-04-29 08:55:10.343 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:10.345 UTC [cli.common] readBlock -> INFO 002[0m Got status: &{FORBIDDEN}
 Error: can't read the block: &{FORBIDDEN}
 null
-cat /tmp/fileX2zDUe _null_
-Expect: testchannel31512-02, got: null
+cat /tmp/fileOXF6W0 _null_
+Expect: testchannel17094-02, got: null
 setExitCode: 1
-[1;37mExit code is 1[m[m[m
+[1;32mExit code: 1[m[m[m
 Step 8_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./add-org-to-channel.sh testchannel31512 org1 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./add-org-to-channel.sh testchannel17094 org1 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 9_api: Test 'Fail to add ORG1 to the first channel created by ORG1'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: add-org-to-channel.sh testchannel31512 org1 org1 VERIFY_NON_ZERO_EXIT_CODE:
-[1;36mAdd [org1] to the [testchannel31512] channel using API[m[m[m
-[1;36mAdd [org1] to the [testchannel31512] channel using API[m[m[m
+RUNTEST: add-org-to-channel.sh testchannel17094 org1 org1 VERIFY_NON_ZERO_EXIT_CODE:
+[1;36mAdd [org1] to the [testchannel17094] channel using API[m[m[m
+[1;36mAdd [org1] to the [testchannel17094] channel using API[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwMX0.Nhbd9enkFhs2c9JI06CgjPWTpxxnt3hxDa1Y6GVVevs"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwMX0.Nhbd9enkFhs2c9JI06CgjPWTpxxnt3hxDa1Y6GVVevs", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwMX0.Nhbd9enkFhs2c9JI06CgjPWTpxxnt3hxDa1Y6GVVevs  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMH0.hBw0aoaFfj2mXPE-9ZzL-rMUXUezM7_6-Xx7NcTQvzQ"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMH0.hBw0aoaFfj2mXPE-9ZzL-rMUXUezM7_6-Xx7NcTQvzQ", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMH0.hBw0aoaFfj2mXPE-9ZzL-rMUXUezM7_6-Xx7NcTQvzQ  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel31512/orgs {"orgId":"org1","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwMX0.Nhbd9enkFhs2c9JI06CgjPWTpxxnt3hxDa1Y6GVVevs
-[31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ 200 _ result
-body is empty (set to {"empty":"true"}), code is 200
-restAPIWrapper: exit code:: 0 result:: {"empty":"true"} 200
-[31m[4mexitCode: 0  httpStatusCode: 2xx (B[m
-setExitCode: 0
-[1;32mOK: Organization [org1] added to [testchannel31512] channel[m[m[m
-Step 9_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./add-org-to-channel.sh testchannel31512-02 org2 org2 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
-[1m[37m---------------------------(B[m
-[1m[37mStep: 10_api: Test 'Fail to add ORG2 to the second channel created by ORG2'(B[m
-[1m[37m---------------------------(B[m
-RUNTEST: add-org-to-channel.sh testchannel31512-02 org2 org2 VERIFY_NON_ZERO_EXIT_CODE:
-[1;36mAdd [org2] to the [testchannel31512-02] channel using API[m[m[m
-[1;36mAdd [org2] to the [testchannel31512-02] channel using API[m[m[m
-queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
-[31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwNH0.KOpBvFGg0aZGGlRM_GZjkYJdG65Ee-SjM-0VPNS9mEc"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwNH0.KOpBvFGg0aZGGlRM_GZjkYJdG65Ee-SjM-0VPNS9mEc", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwNH0.KOpBvFGg0aZGGlRM_GZjkYJdG65Ee-SjM-0VPNS9mEc  with http status code 200
-setExitCode: 0
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel31512-02/orgs {"orgId":"org2","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwNH0.KOpBvFGg0aZGGlRM_GZjkYJdG65Ee-SjM-0VPNS9mEc
-[31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ 200 _ result
-body is empty (set to {"empty":"true"}), code is 200
-restAPIWrapper: exit code:: 0 result:: {"empty":"true"} 200
-[31m[4mexitCode: 0  httpStatusCode: 2xx (B[m
-setExitCode: 0
-[1;32mOK: Organization [org2] added to [testchannel31512-02] channel[m[m[m
-Step 10_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./add-org-to-channel.sh testchannel31512 org1 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel31512 org1 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
-[1m[37m---------------------------(B[m
-[1m[37mStep: 11_api: Test 'Add ORG2 to the first channel created by ORG1'(B[m
-[1m[37m---------------------------(B[m
-RUNTEST: add-org-to-channel.sh testchannel31512 org1 org2 VERIFY: test-channel-add-org.sh testchannel31512 org1 org2
-[1;36mAdd [org2] to the [testchannel31512] channel using API[m[m[m
-[1;36mAdd [org2] to the [testchannel31512] channel using API[m[m[m
-queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
-[31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwN30.igJT05sbcD-qTgpjmsEfL08Bjip1F93HmcRP6wHw5Uk"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwN30.igJT05sbcD-qTgpjmsEfL08Bjip1F93HmcRP6wHw5Uk", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwN30.igJT05sbcD-qTgpjmsEfL08Bjip1F93HmcRP6wHw5Uk  with http status code 200
-setExitCode: 0
-[1;32mOK: JWT token obtained.[m[m[m
-queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel31512/orgs {"orgId":"org2","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIwN30.igJT05sbcD-qTgpjmsEfL08Bjip1F93HmcRP6wHw5Uk
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel17094/orgs {"orgId":"org1","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMH0.hBw0aoaFfj2mXPE-9ZzL-rMUXUezM7_6-Xx7NcTQvzQ
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ 200 _ result
 body is empty (set to {"empty":"true"}), code is 200
 restAPIWrapper: exit code:: 0 result:: {"empty":"true"} 200
 [37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: Organization [org2] added to [testchannel31512] channel[m[m[m
+[1;32mOK: Organization [org1] added to [testchannel17094] channel[m[m[m
+Step 9_api: exit code 1
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./add-org-to-channel.sh testchannel17094-02 org2 org2 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 10_api: Test 'Fail to add ORG2 to the second channel created by ORG2'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: add-org-to-channel.sh testchannel17094-02 org2 org2 VERIFY_NON_ZERO_EXIT_CODE:
+[1;36mAdd [org2] to the [testchannel17094-02] channel using API[m[m[m
+[1;36mAdd [org2] to the [testchannel17094-02] channel using API[m[m[m
+queryContainerNetworkSettings returns: 4001
+restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMn0.CF8m0EZmvXWhBl7TQMYg3pWdu209vg_YoFHhnBEEOEw"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMn0.CF8m0EZmvXWhBl7TQMYg3pWdu209vg_YoFHhnBEEOEw", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMn0.CF8m0EZmvXWhBl7TQMYg3pWdu209vg_YoFHhnBEEOEw  with http status code 200
+setExitCode: 0
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 4001
+restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel17094-02/orgs {"orgId":"org2","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxMn0.CF8m0EZmvXWhBl7TQMYg3pWdu209vg_YoFHhnBEEOEw
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ 200 _ result
+body is empty (set to {"empty":"true"}), code is 200
+restAPIWrapper: exit code:: 0 result:: {"empty":"true"} 200
+[37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
+setExitCode: 0
+[1;32mOK: Organization [org2] added to [testchannel17094-02] channel[m[m[m
+Step 10_api: exit code 1
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./add-org-to-channel.sh testchannel17094 org1 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel17094 org1 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+[1m[37m---------------------------(B[m
+[1m[37mStep: 11_api: Test 'Add ORG2 to the first channel created by ORG1'(B[m
+[1m[37m---------------------------(B[m
+RUNTEST: add-org-to-channel.sh testchannel17094 org1 org2 VERIFY: test-channel-add-org.sh testchannel17094 org1 org2
+[1;36mAdd [org2] to the [testchannel17094] channel using API[m[m[m
+[1;36mAdd [org2] to the [testchannel17094] channel using API[m[m[m
+queryContainerNetworkSettings returns: 4000
+restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxNH0.9l3aKU4PPW-_ofQCL9rCm5HOejajohCZVcFBv2Hxb9Y"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxNH0.9l3aKU4PPW-_ofQCL9rCm5HOejajohCZVcFBv2Hxb9Y", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxNH0.9l3aKU4PPW-_ofQCL9rCm5HOejajohCZVcFBv2Hxb9Y  with http status code 200
+setExitCode: 0
+[1;32mOK: JWT token obtained.[m[m[m
+queryContainerNetworkSettings returns: 4000
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel17094/orgs {"orgId":"org2","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxNH0.9l3aKU4PPW-_ofQCL9rCm5HOejajohCZVcFBv2Hxb9Y
+[31mcurlRequest: (curl exit code: 0) (B[m
+curlGetIt got _ 200 _ result
+body is empty (set to {"empty":"true"}), code is 200
+restAPIWrapper: exit code:: 0 result:: {"empty":"true"} 200
+[37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
+setExitCode: 0
+[1;32mOK: Organization [org2] added to [testchannel17094] channel[m[m[m
 [1;35m
-Verifing if the [org2] added to [testchannel31512][m[m[m
+Verifing if the [org2] added to [testchannel17094][m[m[m
 queryContainerNetworkSettings returns: 8051
-[34m2020-04-28 18:56:49.965 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:49.967 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
-[34m2020-04-28 18:56:49.968 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
-[34m2020-04-28 18:56:49.968 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+[34m2020-04-29 08:55:16.808 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:16.810 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
+[34m2020-04-29 08:55:16.811 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-29 08:55:16.811 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
 {
 "config": {
 "admins": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHakNDQWNDZ0F3SUJBZ0lSQUx5OFNlQjlNT0VmM0RSWGRtbGI3SDB3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TkRJM01UUXpNakF3V2hjTk16QXdOREkxTVRRek1qQXcKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXd3V1FXUnRhVzVBYjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQk5pd3R0NkNrTTV4cTFZbzlOcGJ0UkRDM0xMSWwraFIKbXFrU2FsRGFGRDd5QlZJTzYva01xeXpUT09ORUJHT3JHQVlXdTlJQWMyalFPWWhmS1JtYmw4V2pUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUwxamNhRERFdGtsCmNXVlRXMkJGREJ1ZUVBYXQrS1lxbDBhYktxak4zREljTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDT01PRDUKNzhVd3VNeGFFNk5ybXY3amllTFlXMXp1U01JSysxRjNFTEVXTHdJZ2NubWhIY0JwbFlFVU03UVhpUGN1SnlObgpPcWI4ZUNJSlU2L0VmQWdpeUFrPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHakNDQWNDZ0F3SUJBZ0lSQUpCZ2FnT2NBeVVhUm5YdnBoaERpR3d3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TkRJNU1EY3dOakF3V2hjTk16QXdOREkzTURjd05qQXcKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXd3V1FXUnRhVzVBYjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkwwaDdVcmhsL0hjV1JqVUZteCsxb0xjempFZHhIa08KNTg4UlZMWGl5emMzRkVNTzA4Z3hlYjlKbTc5TEtDTUxLNVlvbkNwQWpLVlByMU8yNUlvRFlxMmpUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUU3VS9Hc2VWaUtaCll3bG1UUEtqZm93ZnFIcDVHN285UEhvZis5Q1hrNkhxTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDS1VuZ00KTGNFREIvb210d085ajN3L1RlUkZSRzhMSkVSRUtsT0FKRjg0aWdJZ0VObGdGSmN5Wk1hdjJRZFdWLzV3eFhQVgoyS0JndEx6cEcrd05QazJUbUkwPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 ],
 "crypto_config": {
 "identity_identifier_hash_function": "SHA256",
@@ -352,56 +352,56 @@ queryContainerNetworkSettings returns: 8051
 "organizational_unit_identifiers": [],
 "revocation_list": [],
 "root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVRENDQWZlZ0F3SUJBZ0lRTkhIVWZvdm9uUkgvRE9aeExQM0syVEFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NaTVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNREEwTWpjeE5ETXlNREJhRncwek1EQTBNalV4TkRNeU1EQmEKTUhNeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVJrd0Z3WURWUVFLRXhCdmNtY3lMbVY0WVcxd2JHVXVZMjl0TVJ3d0dnWURWUVFECkV4TmpZUzV2Y21jeUxtVjRZVzF3YkdVdVkyOXRNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUUKL2xRWno5bStLL0tvWVVpL0Q5Nm91ZFJuVnRjV0twRDVVYTMxL3Vwd2RkUVFxN3hXY2dObXlnTXNKZ3RBdWdhcgpFOUtaOU81UnpUdHpGOEtmVHRTWlI2TnRNR3N3RGdZRFZSMFBBUUgvQkFRREFnR21NQjBHQTFVZEpRUVdNQlFHCkNDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREFUQVBCZ05WSFJNQkFmOEVCVEFEQVFIL01Da0dBMVVkRGdRaUJDQzkKWTNHZ3d4TFpKWEZsVTF0Z1JRd2JuaEFHcmZpbUtwZEdteXFvemR3eUhEQUtCZ2dxaGtqT1BRUURBZ05IQURCRQpBaUF0MWNrWGR5NkNDaFhYMDlZbm56eCtLekRTZWNURFZSckdLRnIraEFmY3B3SWdEMDhNOFdmS2dYbkJHelA0CnVoRVZRTVRmRVZ3WUFlU2FFREVxSHhGL2IzWT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVakNDQWZpZ0F3SUJBZ0lSQUtBdDhNM1BWWWZrdUViRjNkRm4vTE13Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TkRJNU1EY3dOakF3V2hjTk16QXdOREkzTURjd05qQXcKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkxkRm9LUnE5eUNZNGt0b1JxeVVZWFFpd3lpRlhoaW1uV2htM3JkbThieWZEOVVlNTJiSEJVRVBjZ05NOWhrWgpWRUh4U2RyQmtLaGEvWm4yR2lsT2d3T2piVEJyTUE0R0ExVWREd0VCL3dRRUF3SUJwakFkQmdOVkhTVUVGakFVCkJnZ3JCZ0VGQlFjREFnWUlLd1lCQlFVSEF3RXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWcKVHRUOGF4NVdJcGxqQ1daTThxTitqQitvZW5rYnVqMDhlaC83MEplVG9lb3dDZ1lJS29aSXpqMEVBd0lEU0FBdwpSUUloQUpQUkpMcTc1enR4c1NlSzQ1eThPbkdvaWdvcFRwcGVtaE1MbnE2ZmI2elFBaUJRa3JnMUVWUWdSbWZTCmV5YjBRb2duMGFwWnd2dlFxME1YZHBpVTlQd0o2Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
 ],
 "signing_identity": null,
 "tls_intermediate_certs": [],
 "tls_root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNXRENDQWY2Z0F3SUJBZ0lSQU1SbkNGanBuNTN3WFZVc1pIR2k2M2N3Q2dZSUtvWkl6ajBFQXdJd2RqRUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIekFkQmdOVkJBTVRGblJzCmMyTmhMbTl5WnpJdVpYaGhiWEJzWlM1amIyMHdIaGNOTWpBd05ESTNNVFF6TWpBd1doY05NekF3TkRJMU1UUXoKTWpBd1dqQjJNUXN3Q1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRQpCeE1OVTJGdUlFWnlZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWZNQjBHCkExVUVBeE1XZEd4elkyRXViM0puTWk1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDkKQXdFSEEwSUFCS3dtTjZWaVBZelU0UVY4WGxuRGpoNEJzZVJRM21kWGU4eFRQeGxaNCtVV2FLUzBackhNWnlaNQoyLzZvWm9JNE9EejcrYStEYmJ6VWhLNStacW5vcndxamJUQnJNQTRHQTFVZER3RUIvd1FFQXdJQnBqQWRCZ05WCkhTVUVGakFVQmdnckJnRUZCUWNEQWdZSUt3WUJCUVVIQXdFd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBcEJnTlYKSFE0RUlnUWdjNmtuL3JvcGJoRWhIYXFzZ2d0bDRwZ3BGQm5ydkxZSmhyS0dJZXdxUFhzd0NnWUlLb1pJemowRQpBd0lEU0FBd1JRSWhBTzB3dXQyVUp4eEdzNi9nWDM3VGNFeUdZS20zNFg1SlJCZkVxbEhRYWxuQUFpQmRMNG1zCi9rMTNuYkIwbXgwTk1pbm9BZmdiNmNRbTU3T0JXMEpaRER1Y2ZRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNXRENDQWY2Z0F3SUJBZ0lSQVBQMHRkU1draEJPVlNMRmlUUlBXZTB3Q2dZSUtvWkl6ajBFQXdJd2RqRUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIekFkQmdOVkJBTVRGblJzCmMyTmhMbTl5WnpJdVpYaGhiWEJzWlM1amIyMHdIaGNOTWpBd05ESTVNRGN3TmpBd1doY05NekF3TkRJM01EY3cKTmpBd1dqQjJNUXN3Q1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRQpCeE1OVTJGdUlFWnlZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWZNQjBHCkExVUVBeE1XZEd4elkyRXViM0puTWk1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDkKQXdFSEEwSUFCRzlldGZvbldSdG5BakU5WW84TVVLcnVpKzZwL0lPZmJ2L1RIZmNpYk56ZEh5dGxwcXV5TTRyYworZm5DNXRDTnJxd1lYZGRFVzVlRGg3UDU1UXlKRDlxamJUQnJNQTRHQTFVZER3RUIvd1FFQXdJQnBqQWRCZ05WCkhTVUVGakFVQmdnckJnRUZCUWNEQWdZSUt3WUJCUVVIQXdFd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBcEJnTlYKSFE0RUlnUWduSTBqSjF5aTlHRFlrSklOaHliZU1XWm9xNWxCbmQvc3NFV1pZbU9QczFVd0NnWUlLb1pJemowRQpBd0lEU0FBd1JRSWhBTkN0YkVGSDNjN2x0WGpyb1VtTGVGL0w1YW9tUlBiT2kzMENXYkwweGsvQkFpQUpDaFQrCjU5NlV6emxLazQ0QWRQYU44VmgxdU1vdmF5b2FrM25vVFRQSEp3PT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
 ]
 },
 "type": 0
 }
-cat /tmp/fileDgOcEf _org2_
+cat /tmp/fileuAJ0UK _org2_
 org2
 setExitCode: 0
-[1;32mOK: Organization [org2] is in the channel [testchannel31512][m[m[m
+[1;32mOK: Organization [org2] is in the channel [testchannel17094][m[m[m
 Step 11_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./add-org-to-channel.sh testchannel31512-02 org2 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel31512-02 org2 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./add-org-to-channel.sh testchannel17094-02 org2 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-channel-add-org.sh testchannel17094-02 org2 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 12_api: Test 'Add ORG1 to the second channel created by ORG2'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: add-org-to-channel.sh testchannel31512-02 org2 org1 VERIFY: test-channel-add-org.sh testchannel31512-02 org2 org1
-[1;36mAdd [org1] to the [testchannel31512-02] channel using API[m[m[m
-[1;36mAdd [org1] to the [testchannel31512-02] channel using API[m[m[m
+RUNTEST: add-org-to-channel.sh testchannel17094-02 org2 org1 VERIFY: test-channel-add-org.sh testchannel17094-02 org2 org1
+[1;36mAdd [org1] to the [testchannel17094-02] channel using API[m[m[m
+[1;36mAdd [org1] to the [testchannel17094-02] channel using API[m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxMH0.To7sdjIU3PuUxR3pkhDbQTljRzTkraqosSVJb-W61hE"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxMH0.To7sdjIU3PuUxR3pkhDbQTljRzTkraqosSVJb-W61hE", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxMH0.To7sdjIU3PuUxR3pkhDbQTljRzTkraqosSVJb-W61hE  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxN30.u9ZO0e2veKpldaH8eZnn_K8fI__I4Mjked3RzB4jKm8"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxN30.u9ZO0e2veKpldaH8eZnn_K8fI__I4Mjked3RzB4jKm8", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxN30.u9ZO0e2veKpldaH8eZnn_K8fI__I4Mjked3RzB4jKm8  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel31512-02/orgs {"orgId":"org1","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxMH0.To7sdjIU3PuUxR3pkhDbQTljRzTkraqosSVJb-W61hE
+restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel17094-02/orgs {"orgId":"org1","orgIp":"","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxN30.u9ZO0e2veKpldaH8eZnn_K8fI__I4Mjked3RzB4jKm8
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ 200 _ result
 body is empty (set to {"empty":"true"}), code is 200
 restAPIWrapper: exit code:: 0 result:: {"empty":"true"} 200
 [37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: Organization [org1] added to [testchannel31512-02] channel[m[m[m
+[1;32mOK: Organization [org1] added to [testchannel17094-02] channel[m[m[m
 [1;35m
-Verifing if the [org1] added to [testchannel31512-02][m[m[m
+Verifing if the [org1] added to [testchannel17094-02][m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-04-28 18:56:53.238 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
-[34m2020-04-28 18:56:53.242 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
-[34m2020-04-28 18:56:53.243 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
-[34m2020-04-28 18:56:53.243 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
+[34m2020-04-29 08:55:19.288 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:19.291 UTC [cli.common] readBlock -> INFO 002[0m Received block: 2
+[34m2020-04-29 08:55:19.293 UTC [cli.common] readBlock -> INFO 003[0m Received block: 2
+[34m2020-04-29 08:55:19.293 UTC [channelCmd] fetch -> INFO 004[0m Retrieving last config block: 2
 {
 "config": {
 "admins": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHakNDQWNDZ0F3SUJBZ0lSQU0rbG93Y2dCS2dzWUQzbFdwM2ZneXN3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TkRJM01UUXpNakF3V2hjTk16QXdOREkxTVRRek1qQXcKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXd3V1FXUnRhVzVBYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkVOYnpWOENDcG9UVjVNMm5FdjlaZkNsS1ZUUGNyMmIKNFlvUEZWMEk0NVRwVVVNZTNKTnd1UWE0ZVd0WnpmeW5pSUlFMUZKcGs2YW5uOEQ1M0ZMb0JTNmpUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSU1tNHdwcWZORlEvCkt5aG5UTzk4Uk9KcHNyUEdKUS8zaHhWdEpOWFJOUHU4TUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDN3Q0b0gKazJmTEY1b3dQQ01MSVF0VHJYa2ZtS1lMQzVQM2RQUU9VWU1oV2dJZ0Y3K3E4N1RwRmk3YysyOFFwSFJwRmovWgpQQlNuaStsZmlScU9GRVJPVjJvPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHVENDQWNDZ0F3SUJBZ0lSQU1CNnl3S2M5TWc2N2h4L1d2TUU1b0F3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TkRJNU1EY3dOakF3V2hjTk16QXdOREkzTURjd05qQXcKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXd3V1FXUnRhVzVBYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQlBsRXhLMExTaVBYUldIQmgwdDJpcDBFTmRXTmJDT3IKaFJxNzBFY2QyY1ZzRmxyaTdHaVhYVXZYUCt4cGxEUDRndWVuemduSTk2THE4c0pXUjRjblZET2pUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUZVaVZCakxOQVFzCkh2Wi84ZXcrTHNRbDNtNXFoWGhCZE1QMlZzZ3gxR2hmTUFvR0NDcUdTTTQ5QkFNQ0EwY0FNRVFDSUI0T01pNzgKb0hKSktVaDFYbjFyYmpnYzM2aTBhSlJhVmorL0Z4cWZJS2h5QWlCck1IZmdRVm1pVlRNZ3NtNW5zWGZlWnhyRgpXNGY3QkVKSHVrblg1OG5MMUE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 ],
 "crypto_config": {
 "identity_identifier_hash_function": "SHA256",
@@ -413,554 +413,347 @@ queryContainerNetworkSettings returns: 7051
 "organizational_unit_identifiers": [],
 "revocation_list": [],
 "root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVakNDQWZpZ0F3SUJBZ0lSQUtNVjZLbG1aNGdYY2hiRUZQZVRMRXN3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TkRJM01UUXpNakF3V2hjTk16QXdOREkxTVRRek1qQXcKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkkyWENDSWRzcHRVZXovZjljN1BoNkVNUk9yR1ZoUWxocTh0SC9pME1MN1FQSnpBZzQrVjhvUjVaL25qV0pjVQpsR1VPNWxxN0NaTmhSK2ZNUmx5L3pmK2piVEJyTUE0R0ExVWREd0VCL3dRRUF3SUJwakFkQmdOVkhTVUVGakFVCkJnZ3JCZ0VGQlFjREFnWUlLd1lCQlFVSEF3RXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWcKeWJqQ21wODBWRDhyS0dkTTczeEU0bW15czhZbEQvZUhGVzBrMWRFMCs3d3dDZ1lJS29aSXpqMEVBd0lEU0FBdwpSUUloQUpBR0h6M3ovNUM5aGxadndteStDOG5rWk1EbU40VEVBOVpmNjNlNU93cStBaUFsZ2xuTExQSzJWQktjCjhpOFZLNWJDM3hub2ZrZ1lpM0RMa0pLejYwRjh4Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNVRENDQWZlZ0F3SUJBZ0lRSXdvYmhtMkRHYTRoeE9CNlZ3S205REFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NUzVsZUdGdGNHeGxMbU52YlRBZUZ3MHlNREEwTWprd056QTJNREJhRncwek1EQTBNamN3TnpBMk1EQmEKTUhNeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVJrd0Z3WURWUVFLRXhCdmNtY3hMbVY0WVcxd2JHVXVZMjl0TVJ3d0dnWURWUVFECkV4TmpZUzV2Y21jeExtVjRZVzF3YkdVdVkyOXRNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUUKdnMyYnFITzU2NHovbldWbENHT3hjR2k4b0hDTWxoZHQ2aXJqNERSR3BvSTRvakRwZUxVVzV5dHFIWkxTQ2JZVApKVkRYQXBTaVgycy9xVlhhVWFHYWhxTnRNR3N3RGdZRFZSMFBBUUgvQkFRREFnR21NQjBHQTFVZEpRUVdNQlFHCkNDc0dBUVVGQndNQ0JnZ3JCZ0VGQlFjREFUQVBCZ05WSFJNQkFmOEVCVEFEQVFIL01Da0dBMVVkRGdRaUJDQlYKSWxRWXl6UUVMQjcyZi9Ic1BpN0VKZDV1YW9WNFFYVEQ5bGJJTWRSb1h6QUtCZ2dxaGtqT1BRUURBZ05IQURCRQpBaUE0L1pMbWJjTHBER3ZidkM1OFkwQ1VNblVzNC9hbDlSamd1clpMeTE0ZWNnSWdLYkY4alNUVUxaOHVEeG5NCjNUd2RwMnU3MWRQTmd2T1gxc1NNVDR5RDhsUT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
 ],
 "signing_identity": null,
 "tls_intermediate_certs": [],
 "tls_root_certs": [
-"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNWakNDQWYyZ0F3SUJBZ0lRVWxack04ck1saHJNYWkyY3hnaXhjakFLQmdncWhrak9QUVFEQWpCMk1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWZNQjBHQTFVRUF4TVdkR3h6ClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQWVGdzB5TURBME1qY3hORE15TURCYUZ3MHpNREEwTWpVeE5ETXkKTURCYU1IWXhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saE1SWXdGQVlEVlFRSApFdzFUWVc0Z1JuSmhibU5wYzJOdk1Sa3dGd1lEVlFRS0V4QnZjbWN4TG1WNFlXMXdiR1V1WTI5dE1SOHdIUVlEClZRUURFeFowYkhOallTNXZjbWN4TG1WNFlXMXdiR1V1WTI5dE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMEQKQVFjRFFnQUVOVkY2SzNZZmxrNXRIcU1GbU1RYm5Ia2V0QmY1RjJmQUpOOGQ5UDgyb0w0dGc3TngxenNyOVBJVApJUlFSZ0lUaDZLU0ZPbFEwQXB5b1VEdzQwWVgwN3FOdE1Hc3dEZ1lEVlIwUEFRSC9CQVFEQWdHbU1CMEdBMVVkCkpRUVdNQlFHQ0NzR0FRVUZCd01DQmdnckJnRUZCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUNrR0ExVWQKRGdRaUJDQldIQzlGUk5TWVpwQ3ZUQ2l5cERRRm1WVUdDU011QkM5RngvalNteGN4RlRBS0JnZ3Foa2pPUFFRRApBZ05IQURCRUFpQnlrT1d1L2dLc25IVHZiK081WDdwbjczaXN2anFXalRyU0tkSjlaZEthV1FJZ0pFT3dMbnNXCk1EUU5sMkpTVitvUTZ0NSttS2VpQTJSZnlCdjIySElzdXM0PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNWekNDQWYyZ0F3SUJBZ0lRY05oVHdQZXFXNnF2M0piUWRPdXIxREFLQmdncWhrak9QUVFEQWpCMk1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWZNQjBHQTFVRUF4TVdkR3h6ClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQWVGdzB5TURBME1qa3dOekEyTURCYUZ3MHpNREEwTWpjd056QTIKTURCYU1IWXhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saE1SWXdGQVlEVlFRSApFdzFUWVc0Z1JuSmhibU5wYzJOdk1Sa3dGd1lEVlFRS0V4QnZjbWN4TG1WNFlXMXdiR1V1WTI5dE1SOHdIUVlEClZRUURFeFowYkhOallTNXZjbWN4TG1WNFlXMXdiR1V1WTI5dE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMEQKQVFjRFFnQUUra3NuVDhEZ09pdjdUcnRIMmJLQ1k5OTdiQytLaGFCNk5yQW1rVXlEaXFBV2hmQithN1h0d28wMgo2bWJaYjZuNkRBMW5DL29meXd4akNZMCtsMnd2T0tOdE1Hc3dEZ1lEVlIwUEFRSC9CQVFEQWdHbU1CMEdBMVVkCkpRUVdNQlFHQ0NzR0FRVUZCd01DQmdnckJnRUZCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUNrR0ExVWQKRGdRaUJDQWtlNzh1cVM0eUdYOXRrTnlsVnVDNVRGVDZRaUREMW5mai9VUE5wOFBoV2pBS0JnZ3Foa2pPUFFRRApBZ05JQURCRkFpRUF0cHg2TklUSGZNS1VmOEJvU04yS2d6QlJCQk11MFc1Y0V2MzR0T2VBdjBZQ0lDYjF6NEdjCjhXQzU2SkMzNDkrQjg1VW1BSVV5TkF1L1RyN0JrenBOc1ZSeQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 ]
 },
 "type": 0
 }
-cat /tmp/filebz7t7q _org1_
+cat /tmp/filewCMi0k _org1_
 org1
 setExitCode: 0
-[1;32mOK: Organization [org1] is in the channel [testchannel31512-02][m[m[m
+[1;32mOK: Organization [org1] is in the channel [testchannel17094-02][m[m[m
 Step 12_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./join-channel.sh testchannel31512 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./join-channel.sh testchannel17094 org1 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 13_api: Test 'Can not join ORG1 to the first chanel created by ORG1'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: join-channel.sh testchannel31512 org1 VERIFY_NON_ZERO_EXIT_CODE:
-[1;36mJoining org1.example.com to the [testchannel31512] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel31512] channel using API...[m[m[m
+RUNTEST: join-channel.sh testchannel17094 org1 VERIFY_NON_ZERO_EXIT_CODE:
+[1;36mJoining org1.example.com to the [testchannel17094] channel using API...[m[m[m
+[1;36mJoining org1.example.com to the [testchannel17094] channel using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxM30.5e--ukr2zm6El6egsB-7HWplkU0et8QcIWWyqCatgC8"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxM30.5e--ukr2zm6El6egsB-7HWplkU0et8QcIWWyqCatgC8", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxM30.5e--ukr2zm6El6egsB-7HWplkU0et8QcIWWyqCatgC8  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxOX0.iyPElNtEkWJrRt2y8VijSiRpiIpYTOjrXreGt2CQKn4"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxOX0.iyPElNtEkWJrRt2y8VijSiRpiIpYTOjrXreGt2CQKn4", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxOX0.iyPElNtEkWJrRt2y8VijSiRpiIpYTOjrXreGt2CQKn4  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel31512 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxM30.5e--ukr2zm6El6egsB-7HWplkU0et8QcIWWyqCatgC8
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel17094 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUxOX0.iyPElNtEkWJrRt2y8VijSiRpiIpYTOjrXreGt2CQKn4
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}]200 _ result
 body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}], code is 200
 restAPIWrapper: exit code:: 0 result:: [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org1.example.com:7051","name":"peer0.org1.example.com:7051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org1.example.com:7051","grpc.default_authority":"peer0.org1.example.com:7051"}},"isProposalResponse":true}] 200
 [37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: [org1] joined to [testchannel31512] channel[m[m[m
+[1;32mOK: [org1] joined to [testchannel17094] channel[m[m[m
 Step 13_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./join-channel.sh testchannel31512 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel31512 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./join-channel.sh testchannel17094 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel17094 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 14_api: Test 'Join ORG2 to the first chanel created by ORG1'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: join-channel.sh testchannel31512 org2 VERIFY: test-join-channel.sh testchannel31512 org2
-[1;36mJoining org2.example.com to the [testchannel31512] channel using API...[m[m[m
-[1;36mJoining org2.example.com to the [testchannel31512] channel using API...[m[m[m
+RUNTEST: join-channel.sh testchannel17094 org2 VERIFY: test-join-channel.sh testchannel17094 org2
+[1;36mJoining org2.example.com to the [testchannel17094] channel using API...[m[m[m
+[1;36mJoining org2.example.com to the [testchannel17094] channel using API...[m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxNH0.ZWhx-Et3-2DR2h2yC_QmiuBtJyljUkCxglHdOonUtbc"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxNH0.ZWhx-Et3-2DR2h2yC_QmiuBtJyljUkCxglHdOonUtbc", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxNH0.ZWhx-Et3-2DR2h2yC_QmiuBtJyljUkCxglHdOonUtbc  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUyMH0.OPYrLt8RrsubMLhW8xu78RjUJWCwAQ-BD4rjcSXKPSQ"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUyMH0.OPYrLt8RrsubMLhW8xu78RjUJWCwAQ-BD4rjcSXKPSQ", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUyMH0.OPYrLt8RrsubMLhW8xu78RjUJWCwAQ-BD4rjcSXKPSQ  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel31512 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIxNH0.ZWhx-Et3-2DR2h2yC_QmiuBtJyljUkCxglHdOonUtbc
+restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel17094 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUyMH0.OPYrLt8RrsubMLhW8xu78RjUJWCwAQ-BD4rjcSXKPSQ
 [31mcurlRequest: (curl exit code: 28) (B[m
 curlGetIt got _ 000 _ result
 body is empty (set to {"empty":"true"}), code is 000
 restAPIWrapper: exit code:: 28 result:: {"empty":"true"} 000
 [37m[4mexitCode: 28  httpStatusCode: 0xx (B[m
 setExitCode: 1
-[1;31mERROR! Exit code is 1[m[m[m
+[1;31mERROR! Exit code: 1[m[m[m
 [1;35m
-Verifing if the [org2] has joined the [testchannel31512] channel...[m[m[m
+Verifing if the [org2] has joined the [testchannel17094] channel...[m[m[m
 queryContainerNetworkSettings returns: 8051
-[34m2020-04-28 18:57:10.593 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:36.467 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
 Channels org2 has joined to: Channels peers has joined: 
-testchannel1931
-testchannel28035
-testchannel18981-02
-testchannel27886-02
-testchannel31247
-testchannel1616
-testchannel13330
-testchannel11977-02
-testchannel11977
-testchannel24071-02
-testchannel31113-02
-testchannel26342
-testchannel1215-02
-testchannel27886
-testchannel6225-02
-testchannel11536-02
-testchannel6333-02
-testchannel1931-02
-testchannel15764-02
-testchannel24071
-testchannel11536
-testchannel25735
+testchannel23574
+testchannel23574-02
+testchannel3933-02
+testchannel17094-02
+testchannel17094
 common
-testchannel15617-02
-testchannel26510-02
-testchannel2978
-testchannel31113
-testchannel25735-02
-testchannel20618-02
-testchannel20618
-testchannel15617
-testchannel3134-02
-testchannel1616-02
-testchannel13330-02
-testchannel22207
-testchannel4781-02
-testchannel26342-02
-testchannel31512-02
-testchannel10674
-testchannel26136
-testchannel4781
-testchannel2268
-testchannel1215
-testchannel14554
-testchannel14554-02
-testchannel31247-02
-testchannel28035-02
-testchannel15764
-testchannel15810-02
-testchannel22207-02
-testchannel6333
-testchannel29482-02
-testchannel29482
-testchannel31570-02
-testchannel2268-02
-testchannel16404-02
-testchannel26136-02
-testchannel2978-02
-testchannel31512
-testchannel10674-02
-Result: testchannel31512
+testchannel26666
+testchannel26666-02
+testchannel3933
+Result: testchannel17094
 setExitCode: 0
-[1;32mOK: The [org2] has joined the [testchannel31512] channel[m[m[m
+[1;32mOK: The [org2] has joined the [testchannel17094] channel[m[m[m
 Step 14_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./join-channel.sh testchannel31512-02 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel31512-02 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./join-channel.sh testchannel17094-02 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-join-channel.sh testchannel17094-02 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 15_api: Test 'Join ORG1 to the second chanel created by ORG2'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: join-channel.sh testchannel31512-02 org1 VERIFY: test-join-channel.sh testchannel31512-02 org1
-[1;36mJoining org1.example.com to the [testchannel31512-02] channel using API...[m[m[m
-[1;36mJoining org1.example.com to the [testchannel31512-02] channel using API...[m[m[m
+RUNTEST: join-channel.sh testchannel17094-02 org1 VERIFY: test-join-channel.sh testchannel17094-02 org1
+[1;36mJoining org1.example.com to the [testchannel17094-02] channel using API...[m[m[m
+[1;36mJoining org1.example.com to the [testchannel17094-02] channel using API...[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIzMH0.OBaKc2q1Lm9Opk4_m0LPxh7yxky18rKKxQTuiUBy_TE"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIzMH0.OBaKc2q1Lm9Opk4_m0LPxh7yxky18rKKxQTuiUBy_TE", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIzMH0.OBaKc2q1Lm9Opk4_m0LPxh7yxky18rKKxQTuiUBy_TE  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUzNn0.4KC7gWLALv3dwpL8bPLq2s72Gs-rBGB9lSEK9HmS1AA"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUzNn0.4KC7gWLALv3dwpL8bPLq2s72Gs-rBGB9lSEK9HmS1AA", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUzNn0.4KC7gWLALv3dwpL8bPLq2s72Gs-rBGB9lSEK9HmS1AA  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel31512-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDIzMH0.OBaKc2q1Lm9Opk4_m0LPxh7yxky18rKKxQTuiUBy_TE
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel17094-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDUzNn0.4KC7gWLALv3dwpL8bPLq2s72Gs-rBGB9lSEK9HmS1AA
 [31mcurlRequest: (curl exit code: 28) (B[m
 curlGetIt got _ 000 _ result
 body is empty (set to {"empty":"true"}), code is 000
 restAPIWrapper: exit code:: 28 result:: {"empty":"true"} 000
 [37m[4mexitCode: 28  httpStatusCode: 0xx (B[m
 setExitCode: 1
-[1;31mERROR! Exit code is 1[m[m[m
+[1;31mERROR! Exit code: 1[m[m[m
 [1;35m
-Verifing if the [org1] has joined the [testchannel31512-02] channel...[m[m[m
+Verifing if the [org1] has joined the [testchannel17094-02] channel...[m[m[m
 queryContainerNetworkSettings returns: 7051
-[34m2020-04-28 18:57:26.703 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
+[34m2020-04-29 08:55:52.971 UTC [channelCmd] InitCmdFactory -> INFO 001[0m Endorser and orderer connections initialized
 Channels org1 has joined to: Channels peers has joined: 
-testchannel15617-02
-testchannel24071-02
-testchannel26136-02
-testchannel31512-02
+testchannel26666
+testchannel3933
+testchannel3933-02
+testchannel23574
+testchannel23574-02
+testchannel17094
+testchannel17094-02
 common
-testchannel1931
-testchannel1215
-testchannel27886-02
-testchannel29415
-testchannel3134
-testchannel11536-02
-testchannel25735
-testchannel12455
-testchannel26033
-testchannel13330
-testchannel25735-02
-testchannel22207-02
-testf01
-testchannel14554
-testchannel29482
-testchannel16404
-testchannel6333-02
-testchannel24071
-testchannel24212
-testchannel17372
-testchannel26510
-testchannel29482-02
-testchannel15887
-testchannel4781-02
-testchannel14554-02
-testchannel1931-02
-testchannel31247
-testchannel17624
-testchannel2978
-testchannel20618
-testchannel27886
-testchannel31512
-testchannel1616-02
-testchannel26136
-testchannel4781
-testf02
-testchannel13330-02
-testchannel20618-02
-testchannel1616
-testchannel11536
-testchannel2978-02
-testchannel31113
-testchannel26342-02
-testchannel22207
-testchannel28035-02
-testchannel15764-02
-testchannel2268
-testchannel26342
-testchannel11977-02
-testchannel31570
-testchannel15764
-testchannel10674
-testchannel10674-02
-testchannel31113-02
-testchannel6333
-testchannel11977
-testchannel15617
-testchannel6225
-testchannel2268-02
-testchannel15810
-testchannel18981
-testchannel1215-02
-testchannel31247-02
-testchannel28035
-Result: testchannel31512-02
+testchannel26666-02
+Result: testchannel17094-02
 setExitCode: 0
-[1;32mOK: The [org1] has joined the [testchannel31512-02] channel[m[m[m
+[1;32mOK: The [org1] has joined the [testchannel17094-02] channel[m[m[m
 Step 15_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=true ./join-channel.sh testchannel31512-02 org2 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "${WHITE}${BRIGHT}Expecting non-zero exit code ${NORMAL}";[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=true ./join-channel.sh testchannel17094-02 org2 ;run_error=$?;verify_error=$((! $run_error | $verify_error));run_error=0;echo "$(setColorOnError ${verify_error})${BRIGHT}Non-zero exit code expected ${NORMAL}";[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 16_api: Test 'Can not join ORG2 to the second chanel created by ORG2'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: join-channel.sh testchannel31512-02 org2 VERIFY_NON_ZERO_EXIT_CODE:
-[1;36mJoining org2.example.com to the [testchannel31512-02] channel using API...[m[m[m
-[1;36mJoining org2.example.com to the [testchannel31512-02] channel using API...[m[m[m
+RUNTEST: join-channel.sh testchannel17094-02 org2 VERIFY_NON_ZERO_EXIT_CODE:
+[1;36mJoining org2.example.com to the [testchannel17094-02] channel using API...[m[m[m
+[1;36mJoining org2.example.com to the [testchannel17094-02] channel using API...[m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0N30.PI2p_8A0H2QVCe8n7kI8iuXNSkZoRfcE9PKs5pb3t2U"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0N30.PI2p_8A0H2QVCe8n7kI8iuXNSkZoRfcE9PKs5pb3t2U", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0N30.PI2p_8A0H2QVCe8n7kI8iuXNSkZoRfcE9PKs5pb3t2U  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1M30.uIhBGNgvlBjjdCqzxCxaamT1YHu9pOubqKQoN4lG9F8"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1M30.uIhBGNgvlBjjdCqzxCxaamT1YHu9pOubqKQoN4lG9F8", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1M30.uIhBGNgvlBjjdCqzxCxaamT1YHu9pOubqKQoN4lG9F8  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4001
-restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel31512-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0N30.PI2p_8A0H2QVCe8n7kI8iuXNSkZoRfcE9PKs5pb3t2U
+restQuery: curlRequest http://127.0.0.1:4001/channels/testchannel17094-02 {"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1M30.uIhBGNgvlBjjdCqzxCxaamT1YHu9pOubqKQoN4lG9F8
 [31mcurlRequest: (curl exit code: 0) (B[m
 curlGetIt got _ [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.example.com:8051","name":"peer0.org2.example.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.example.com:8051","grpc.default_authority":"peer0.org2.example.com:8051"}},"isProposalResponse":true}]200 _ result
 body is [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.example.com:8051","name":"peer0.org2.example.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.example.com:8051","grpc.default_authority":"peer0.org2.example.com:8051"}},"isProposalResponse":true}], code is 200
 restAPIWrapper: exit code:: 0 result:: [{"status":500,"payload":{"type":"Buffer","data":[]},"peer":{"url":"grpcs://peer0.org2.example.com:8051","name":"peer0.org2.example.com:8051","options":{"grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1,"grpc.keepalive_time_ms":120000,"grpc.http2.min_time_between_pings_ms":120000,"grpc.keepalive_timeout_ms":20000,"grpc.http2.max_pings_without_data":0,"grpc.keepalive_permit_without_calls":1,"grpc.ssl_target_name_override":"peer0.org2.example.com:8051","grpc.default_authority":"peer0.org2.example.com:8051"}},"isProposalResponse":true}] 200
 [37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
-[1;32mOK: [org2] joined to [testchannel31512-02] channel[m[m[m
+[1;32mOK: [org2] joined to [testchannel17094-02] channel[m[m[m
 Step 16_api: exit code 1
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-install.sh testchannel31512 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel31512 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-install.sh testchannel17094 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel17094 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 17_api: Test 'Install test chaincode by ORG1 to the first channel'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: chaincode-install.sh testchannel31512 org1 VERIFY: test-chaincode-installed.sh testchannel31512 org1
+RUNTEST: chaincode-install.sh testchannel17094 org1 VERIFY: test-chaincode-installed.sh testchannel17094 org1
 [1;36m
 Installing test chaincode in [org1][m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0OH0.MGjyWy51l-PO7LJrTH1KHUnwkCtwhfRYfetmT6rJB6c"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0OH0.MGjyWy51l-PO7LJrTH1KHUnwkCtwhfRYfetmT6rJB6c", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI0OH0.MGjyWy51l-PO7LJrTH1KHUnwkCtwhfRYfetmT6rJB6c  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1NX0.Rg43oS72GI5nH7iB6FIvLltwhrJNH9LfrFo_ovCqEew"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1NX0.Rg43oS72GI5nH7iB6FIvLltwhrJNH9LfrFo_ovCqEew", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1NX0.Rg43oS72GI5nH7iB6FIvLltwhrJNH9LfrFo_ovCqEew  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
-adding: reference_testchannel31512/chaincode-reference.js (deflated 27%)
-adding: reference_testchannel31512/index.js (deflated 27%)
-adding: reference_testchannel31512/package.json (deflated 41%)
-adding: reference_testchannel31512/package-lock.json (deflated 73%)
-Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12292 апр 28 21:57 /tmp/reference_testchannel31512.zip
-/tmp/reference_testchannel31512.zip
+adding: reference_testchannel17094/chaincode-reference.js (deflated 27%)
+adding: reference_testchannel17094/index.js (deflated 27%)
+adding: reference_testchannel17094/package.json (deflated 41%)
+adding: reference_testchannel17094/package-lock.json (deflated 73%)
+Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12292 апр 29 11:55 /tmp/reference_testchannel17094.zip
+/tmp/reference_testchannel17094.zip
 queryContainerNetworkSettings returns: 4000
 200
-""Chaincode reference_testchannel31512:1.0 successfully installed""
+""Chaincode reference_testchannel17094:1.0 successfully installed""
 setExitCode: 0
 [1;32mOK: Test chaincode installed in [org1][m[m[m
 [1;35m
 Verifing if the test chaincode installed in [org1][m[m[m
 queryContainerNetworkSettings returns: 7051
-[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel31512' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel17094' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
 bash: /opt/chaincode/node: Is a directory
 Get installed chaincodes on peer:
 Name: dns, Version: 1.0, Path: /opt/chaincode/node/dns, Id: bf157c353c46c4b41324ef6e2d98e324d91a47e90669d9ca25c945c64f32e6c4
 Name: reference, Version: 1.0, Path: /opt/chaincode/node/reference, Id: 1e85b5ab6f0f64e5c88c40da9f6c901e061171774823cf2c2aa8095cec39ce18
-Name: reference_testchannel11536, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel11536, Id: 157c77ac46b19187ebf9be6d7ae8d41721351c1bb3bd7f2be68894c41215eb25
-Name: reference_testchannel11977, Version: 1.0, Path: /tmp/reference_testchannel11977, Id: 19ce30029ab2b0fc05369862b18a96490965f40162e748be65a185a1d70513c6
-Name: reference_testchannel1215, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1215, Id: 1ea4d1ac5fb902b431696babc8ae9134e283335b4bde07047ce794cf10f074fd
-Name: reference_testchannel13330, Version: 1.0, Path: /tmp/reference_testchannel13330, Id: b0a642a8f36c66356bc80124ff3517e0de94623b0121b315fbeff60367a1c0b7
-Name: reference_testchannel14554, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel14554, Id: 4c0d2f9a7ac9537a8a5aa4989e0dd22c62f83351dff37a9d120a33c23a4d8532
-Name: reference_testchannel15617, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel15617, Id: d9bf0e14ca9c05ee33cc52a0983f0d6ce4d65cac7c1be319c61a74f5619d63f3
-Name: reference_testchannel15764, Version: 1.0, Path: /tmp/reference_testchannel15764, Id: a8b555a9928df8a682d4b06a58c428d61e4d99e000f129bee4df426329424c78
-Name: reference_testchannel1616, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1616, Id: fab89f3f591bebeac4a436df8a36629ffb30dba74d0f849ccede2fb10f696841
-Name: reference_testchannel1931, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1931, Id: c7d78b5eeb7ef0c106a6499ac6d812dfd3261fc735ce925fa086b75c54a38213
-Name: reference_testchannel20618, Version: 1.0, Path: /tmp/reference_testchannel20618, Id: 1f5e0f7d1ff2031b9bf1b0884dd5ba286c1fbfd87236064b647bfe980a284487
-Name: reference_testchannel22207, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel22207, Id: 7a6135f213a2a1e6880e05d9ea391413bd56e6ecae20e5f93d84c5cfe3f641b1
-Name: reference_testchannel2268, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2268, Id: 981400d635a7bc6301f4ba06d2ae2f1af5b3c1e217483a56f6c8a221fbc62aea
-Name: reference_testchannel24071, Version: 1.0, Path: /tmp/reference_testchannel24071, Id: 45de939f0c94e162ad0b53542419bea864451c140e68bb10a958b5789ce0a181
-Name: reference_testchannel25735, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel25735, Id: 543e866390765e395676ab126c510f478556393c2e5ab4471ac23490e755391f
-Name: reference_testchannel26136, Version: 1.0, Path: /tmp/reference_testchannel26136, Id: 32b3587ae98c6afbd7c5586b874804887fb87c0480f4803feb1d9dfccde04a4a
-Name: reference_testchannel26342, Version: 1.0, Path: /tmp/reference_testchannel26342, Id: 1f700a212d6694773ba52412286141b085230ef7c9aec057ae437291bf40b79a
-Name: reference_testchannel28035, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel28035, Id: 329ff65d51647e646943f88196f7c422ecf5cd80905e784bbc718b043e085b96
-Name: reference_testchannel29482, Version: 1.0, Path: /tmp/reference_testchannel29482, Id: 71c9e467c916860d628c506f22efe8b5b7c12c18fd2940f1e78ad63f10e4e03a
-Name: reference_testchannel2978, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2978, Id: 8e57c0facc41e842eb69778cd1d37bde53dd5abf802ede2d9096c2cae80d1e73
-Name: reference_testchannel31113, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31113, Id: 7723af68165bb39bcaf9dd4bbeea6cc4f0b40673fcb178f0d0f227c57ef95c0f
-Name: reference_testchannel31247, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31247, Id: 0f790264522a307a1054f177165d38f1d7382634336998a8e1efd634846c87ec
-Name: reference_testchannel31512, Version: 1.0, Path: /tmp/reference_testchannel31512, Id: 919a3979f673ba7265e937d9650f335d3541ad9412c15847752731fa4808d8a5
-Name: reference_testchannel4781, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel4781, Id: 7bf5cf60c39949e33b85d4678f066457377569575ac04bf8dce03b840c9c8eec
-Name: reference_testchannel6333, Version: 1.0, Path: /tmp/reference_testchannel6333, Id: 1cb4584ca5e3aaf9c92aebaba1538d8cfbe6480d7951ca36ee141f54b53dbbb1
+Name: reference_testchannel17094, Version: 1.0, Path: /tmp/reference_testchannel17094, Id: 032a9beeb73a40fc67c4ec878b1641cb604e3a8424a82bc52df1d6761b4cec3c
+Name: reference_testchannel23574, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel23574, Id: f87056191b3755daa750142d93e5f017853281df1ba85327bb664bb8623c94a2
+Name: reference_testchannel26666, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel26666, Id: e31af3443d57e5a0f22cae6a711a28c370659e570f3f31eee608f1cc4667e1fb
+Name: reference_testchannel3933, Version: 1.0, Path: /tmp/reference_testchannel3933, Id: e5ac13b5c171f3b52b787a8153a5dcf7063ffd02565b1d0835b1b54ea79eacbc
 setExitCode: 0
-reference_testchannel31512
+reference_testchannel17094
 setExitCode: 0
 [1;32mOK: The test chaincode installed in [org1][m[m[m
 Step 17_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-install.sh testchannel31512 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel31512 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-install.sh testchannel17094 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel17094 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 18_api: Test 'Install test chaincode by ORG2 to the first channel'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: chaincode-install.sh testchannel31512 org2 VERIFY: test-chaincode-installed.sh testchannel31512 org2
+RUNTEST: chaincode-install.sh testchannel17094 org2 VERIFY: test-chaincode-installed.sh testchannel17094 org2
 [1;36m
 Installing test chaincode in [org2][m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1MX0.6JEjo6aj2CO9OiaPEsOPCFlHpfiIRjJ-ZMJbF-FoqYE"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1MX0.6JEjo6aj2CO9OiaPEsOPCFlHpfiIRjJ-ZMJbF-FoqYE", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1MX0.6JEjo6aj2CO9OiaPEsOPCFlHpfiIRjJ-ZMJbF-FoqYE  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1OH0.7hDPp7K_sFAtd3KIp6SsXDtW-giK5qaNOmkvm_SW8_4"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1OH0.7hDPp7K_sFAtd3KIp6SsXDtW-giK5qaNOmkvm_SW8_4", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU1OH0.7hDPp7K_sFAtd3KIp6SsXDtW-giK5qaNOmkvm_SW8_4  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
-updating: reference_testchannel31512/chaincode-reference.js (deflated 27%)
-updating: reference_testchannel31512/index.js (deflated 27%)
-updating: reference_testchannel31512/package.json (deflated 41%)
-updating: reference_testchannel31512/package-lock.json (deflated 73%)
-Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12292 апр 28 21:57 /tmp/reference_testchannel31512.zip
-/tmp/reference_testchannel31512.zip
+updating: reference_testchannel17094/chaincode-reference.js (deflated 27%)
+updating: reference_testchannel17094/index.js (deflated 27%)
+updating: reference_testchannel17094/package.json (deflated 41%)
+updating: reference_testchannel17094/package-lock.json (deflated 73%)
+Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12292 апр 29 11:55 /tmp/reference_testchannel17094.zip
+/tmp/reference_testchannel17094.zip
 queryContainerNetworkSettings returns: 4001
 200
-""Chaincode reference_testchannel31512:1.0 successfully installed""
+""Chaincode reference_testchannel17094:1.0 successfully installed""
 setExitCode: 0
 [1;32mOK: Test chaincode installed in [org2][m[m[m
 [1;35m
 Verifing if the test chaincode installed in [org2][m[m[m
 queryContainerNetworkSettings returns: 8051
-[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel31512' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel17094' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
 bash: /opt/chaincode/node: Is a directory
 Get installed chaincodes on peer:
 Name: dns, Version: 1.0, Path: /opt/chaincode/node/dns, Id: bf157c353c46c4b41324ef6e2d98e324d91a47e90669d9ca25c945c64f32e6c4
 Name: reference, Version: 1.0, Path: /opt/chaincode/node/reference, Id: 1e85b5ab6f0f64e5c88c40da9f6c901e061171774823cf2c2aa8095cec39ce18
-Name: reference_testchannel11536-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel11536-02, Id: 94bcdbb60037188557e708903b10151094cbbe020fd59655766a5d3dc6ca1619
-Name: reference_testchannel11536, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel11536, Id: 157c77ac46b19187ebf9be6d7ae8d41721351c1bb3bd7f2be68894c41215eb25
-Name: reference_testchannel11977-02, Version: 1.0, Path: /tmp/reference_testchannel11977-02, Id: 99a3bef14a3cdf25bf2c6b704772edb38725fa50e6420eeffa6f55921392e416
-Name: reference_testchannel11977, Version: 1.0, Path: /tmp/reference_testchannel11977, Id: 19ce30029ab2b0fc05369862b18a96490965f40162e748be65a185a1d70513c6
-Name: reference_testchannel13330-02, Version: 1.0, Path: /tmp/reference_testchannel13330-02, Id: 94b07f368472a4f01923d87160d463b43bf74f2bbd6bc8f0fa7d725027433c98
-Name: reference_testchannel13330, Version: 1.0, Path: /tmp/reference_testchannel13330, Id: b0a642a8f36c66356bc80124ff3517e0de94623b0121b315fbeff60367a1c0b7
-Name: reference_testchannel14554-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel14554-02, Id: fd9bac3ffe1c067038301a9d72e6de18dbd8ae81684d8ec97d8e665b4a1b867c
-Name: reference_testchannel14554, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel14554, Id: 4c0d2f9a7ac9537a8a5aa4989e0dd22c62f83351dff37a9d120a33c23a4d8532
-Name: reference_testchannel15617-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel15617-02, Id: 39fd8655fa83f47b421e561e11e0e51a09dccdb37f13d5d501bfa058f2397adb
-Name: reference_testchannel15617, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel15617, Id: d9bf0e14ca9c05ee33cc52a0983f0d6ce4d65cac7c1be319c61a74f5619d63f3
-Name: reference_testchannel15764-02, Version: 1.0, Path: /tmp/reference_testchannel15764-02, Id: 7faa3d897b7f64acdebf0fc2dcb1729993c0b6c806aa00500421af087fb52038
-Name: reference_testchannel15764, Version: 1.0, Path: /tmp/reference_testchannel15764, Id: a8b555a9928df8a682d4b06a58c428d61e4d99e000f129bee4df426329424c78
-Name: reference_testchannel1616-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1616-02, Id: abcd747e6600a08c00203b9d4084812b244a66891d48c72c47e2f0b0f313886e
-Name: reference_testchannel1616, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1616, Id: fab89f3f591bebeac4a436df8a36629ffb30dba74d0f849ccede2fb10f696841
-Name: reference_testchannel1931-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1931-02, Id: 13341b7bc90f5b3ef8d0f44f883f5420b8c4c1f9f91aa853955843d7771fe577
-Name: reference_testchannel1931, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1931, Id: c7d78b5eeb7ef0c106a6499ac6d812dfd3261fc735ce925fa086b75c54a38213
-Name: reference_testchannel20618-02, Version: 1.0, Path: /tmp/reference_testchannel20618-02, Id: ba8a5483231b605fd6d0e8c985c1684140618f82187a8550f1b08c4f2054b4f0
-Name: reference_testchannel20618, Version: 1.0, Path: /tmp/reference_testchannel20618, Id: 1f5e0f7d1ff2031b9bf1b0884dd5ba286c1fbfd87236064b647bfe980a284487
-Name: reference_testchannel22207-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel22207-02, Id: e44a0e99a7f63ec284266cf6c4a084bed2e9b41eba8c3330d06f1e3e26419d86
-Name: reference_testchannel22207, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel22207, Id: 7a6135f213a2a1e6880e05d9ea391413bd56e6ecae20e5f93d84c5cfe3f641b1
-Name: reference_testchannel2268-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2268-02, Id: f0523e1a03733f6caa7933554f3614f87179746d6e2818c4fe46fdd0551eaa90
-Name: reference_testchannel2268, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2268, Id: 981400d635a7bc6301f4ba06d2ae2f1af5b3c1e217483a56f6c8a221fbc62aea
-Name: reference_testchannel24071-02, Version: 1.0, Path: /tmp/reference_testchannel24071-02, Id: e165002f317a5edc67065b48f91f33ae672a2b1ae9ac1e576c637bab3851ac22
-Name: reference_testchannel24071, Version: 1.0, Path: /tmp/reference_testchannel24071, Id: 45de939f0c94e162ad0b53542419bea864451c140e68bb10a958b5789ce0a181
-Name: reference_testchannel25735-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel25735-02, Id: 555b5903c9c417ffe928d9fee78942cf0a035fac8ab69e73b0bc51c30854d423
-Name: reference_testchannel25735, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel25735, Id: 543e866390765e395676ab126c510f478556393c2e5ab4471ac23490e755391f
-Name: reference_testchannel26136-02, Version: 1.0, Path: /tmp/reference_testchannel26136-02, Id: 9db174c3a2752996ef94a90ce85c7cba68aa73f0ceaa37bf2b8779cbea8d7645
-Name: reference_testchannel26136, Version: 1.0, Path: /tmp/reference_testchannel26136, Id: 32b3587ae98c6afbd7c5586b874804887fb87c0480f4803feb1d9dfccde04a4a
-Name: reference_testchannel26342-02, Version: 1.0, Path: /tmp/reference_testchannel26342-02, Id: 04556f464670b4d68bfca1d921a4680c319eb15de020d2cbb881ebe4402d0a39
-Name: reference_testchannel26342, Version: 1.0, Path: /tmp/reference_testchannel26342, Id: 1f700a212d6694773ba52412286141b085230ef7c9aec057ae437291bf40b79a
-Name: reference_testchannel28035-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel28035-02, Id: ff1c3632e5d3785f999a45dd0419b1ebbc8b2b5fe0b1f7756057fedaf5c51d74
-Name: reference_testchannel28035, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel28035, Id: 329ff65d51647e646943f88196f7c422ecf5cd80905e784bbc718b043e085b96
-Name: reference_testchannel29482-02, Version: 1.0, Path: /tmp/reference_testchannel29482-02, Id: a7d41f7d51befc76f72ac7112ea20a9f0ef1b750407f2f6c23c77fdfe4881846
-Name: reference_testchannel29482, Version: 1.0, Path: /tmp/reference_testchannel29482, Id: 71c9e467c916860d628c506f22efe8b5b7c12c18fd2940f1e78ad63f10e4e03a
-Name: reference_testchannel2978-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2978-02, Id: 999d141073c7a075d25fe9484eec99a3b0019b34e211c096eef661705ed965a0
-Name: reference_testchannel2978, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2978, Id: 8e57c0facc41e842eb69778cd1d37bde53dd5abf802ede2d9096c2cae80d1e73
-Name: reference_testchannel31113-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31113-02, Id: 6cf65e3be9e66fdd10fee157c8ab8aac8997539c9c658b965ff59cf7c21e75de
-Name: reference_testchannel31113, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31113, Id: 7723af68165bb39bcaf9dd4bbeea6cc4f0b40673fcb178f0d0f227c57ef95c0f
-Name: reference_testchannel31247-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31247-02, Id: de4159913fb92c3e63b2bcfaf99182980774da8a0ab3b55d91a93eaf46986e7e
-Name: reference_testchannel31247, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31247, Id: 0f790264522a307a1054f177165d38f1d7382634336998a8e1efd634846c87ec
-Name: reference_testchannel31512, Version: 1.0, Path: /tmp/reference_testchannel31512, Id: 919a3979f673ba7265e937d9650f335d3541ad9412c15847752731fa4808d8a5
-Name: reference_testchannel4781-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel4781-02, Id: 320112d6cdd145808312a64b9b035842c4a62c6e861b56f74daceb91e02e23f9
-Name: reference_testchannel4781, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel4781, Id: 7bf5cf60c39949e33b85d4678f066457377569575ac04bf8dce03b840c9c8eec
-Name: reference_testchannel6333-02, Version: 1.0, Path: /tmp/reference_testchannel6333-02, Id: 4b6bf44711e8ddf5ac54289ff6c28e10c877d3d66d0f0f3e6f83999dc2949dff
-Name: reference_testchannel6333, Version: 1.0, Path: /tmp/reference_testchannel6333, Id: 1cb4584ca5e3aaf9c92aebaba1538d8cfbe6480d7951ca36ee141f54b53dbbb1
+Name: reference_testchannel17094, Version: 1.0, Path: /tmp/reference_testchannel17094, Id: 032a9beeb73a40fc67c4ec878b1641cb604e3a8424a82bc52df1d6761b4cec3c
+Name: reference_testchannel23574-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel23574-02, Id: a732f455a40f5796ecb1345135a4f8ebf5e53b5a96c2da21965ef1690447a0e3
+Name: reference_testchannel23574, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel23574, Id: f87056191b3755daa750142d93e5f017853281df1ba85327bb664bb8623c94a2
+Name: reference_testchannel26666-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel26666-02, Id: 1b2cebebab05eefe8cadfbe559646e07e22b5e6f680cfd6dd63cd2e82836c24a
+Name: reference_testchannel26666, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel26666, Id: e31af3443d57e5a0f22cae6a711a28c370659e570f3f31eee608f1cc4667e1fb
+Name: reference_testchannel3933-02, Version: 1.0, Path: /tmp/reference_testchannel3933-02, Id: 51a96eea210c930fbe94797a3b901e59e43ea2fc8737b20e1fdaba7944109512
+Name: reference_testchannel3933, Version: 1.0, Path: /tmp/reference_testchannel3933, Id: e5ac13b5c171f3b52b787a8153a5dcf7063ffd02565b1d0835b1b54ea79eacbc
 setExitCode: 0
-reference_testchannel31512
+reference_testchannel17094
 setExitCode: 0
 [1;32mOK: The test chaincode installed in [org2][m[m[m
 Step 18_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-install.sh testchannel31512-02 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel31512-02 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-install.sh testchannel17094-02 org2 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-installed.sh testchannel17094-02 org2;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 19_api: Test 'Install test chaincode by ORG2 to the second channel'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: chaincode-install.sh testchannel31512-02 org2 VERIFY: test-chaincode-installed.sh testchannel31512-02 org2
+RUNTEST: chaincode-install.sh testchannel17094-02 org2 VERIFY: test-chaincode-installed.sh testchannel17094-02 org2
 [1;36m
 Installing test chaincode in [org2][m[m[m
 queryContainerNetworkSettings returns: 4001
 restQuery: curlRequest http://127.0.0.1:4001/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1NX0.TdxctftNa6XFm0RK4LR8j66_wO0NN51Iqxq2bHMJqlk"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1NX0.TdxctftNa6XFm0RK4LR8j66_wO0NN51Iqxq2bHMJqlk", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1NX0.TdxctftNa6XFm0RK4LR8j66_wO0NN51Iqxq2bHMJqlk  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2Mn0.tz_U6ryMHVCI-BEZpB9rC-Fkc6hPkAn4Rnoi8AscbYs"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2Mn0.tz_U6ryMHVCI-BEZpB9rC-Fkc6hPkAn4Rnoi8AscbYs", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2Mn0.tz_U6ryMHVCI-BEZpB9rC-Fkc6hPkAn4Rnoi8AscbYs  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
-adding: reference_testchannel31512-02/chaincode-reference.js (deflated 27%)
-adding: reference_testchannel31512-02/index.js (deflated 27%)
-adding: reference_testchannel31512-02/package.json (deflated 41%)
-adding: reference_testchannel31512-02/package-lock.json (deflated 73%)
-Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12316 апр 28 21:57 /tmp/reference_testchannel31512-02.zip
-/tmp/reference_testchannel31512-02.zip
+adding: reference_testchannel17094-02/chaincode-reference.js (deflated 27%)
+adding: reference_testchannel17094-02/index.js (deflated 27%)
+adding: reference_testchannel17094-02/package.json (deflated 41%)
+adding: reference_testchannel17094-02/package-lock.json (deflated 73%)
+Chaincode archive created:  -rw-rw-r-- 1 kilpio kilpio 12316 апр 29 11:56 /tmp/reference_testchannel17094-02.zip
+/tmp/reference_testchannel17094-02.zip
 queryContainerNetworkSettings returns: 4001
 200
-""Chaincode reference_testchannel31512-02:1.0 successfully installed""
+""Chaincode reference_testchannel17094-02:1.0 successfully installed""
 setExitCode: 0
 [1;32mOK: Test chaincode installed in [org2][m[m[m
 [1;35m
 Verifing if the test chaincode installed in [org2][m[m[m
 queryContainerNetworkSettings returns: 8051
-[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel31512-02' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c /opt/chaincode/node; peer chaincode list --installed -C 'testchannel17094-02' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
 bash: /opt/chaincode/node: Is a directory
 Get installed chaincodes on peer:
 Name: dns, Version: 1.0, Path: /opt/chaincode/node/dns, Id: bf157c353c46c4b41324ef6e2d98e324d91a47e90669d9ca25c945c64f32e6c4
 Name: reference, Version: 1.0, Path: /opt/chaincode/node/reference, Id: 1e85b5ab6f0f64e5c88c40da9f6c901e061171774823cf2c2aa8095cec39ce18
-Name: reference_testchannel11536-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel11536-02, Id: 94bcdbb60037188557e708903b10151094cbbe020fd59655766a5d3dc6ca1619
-Name: reference_testchannel11536, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel11536, Id: 157c77ac46b19187ebf9be6d7ae8d41721351c1bb3bd7f2be68894c41215eb25
-Name: reference_testchannel11977-02, Version: 1.0, Path: /tmp/reference_testchannel11977-02, Id: 99a3bef14a3cdf25bf2c6b704772edb38725fa50e6420eeffa6f55921392e416
-Name: reference_testchannel11977, Version: 1.0, Path: /tmp/reference_testchannel11977, Id: 19ce30029ab2b0fc05369862b18a96490965f40162e748be65a185a1d70513c6
-Name: reference_testchannel13330-02, Version: 1.0, Path: /tmp/reference_testchannel13330-02, Id: 94b07f368472a4f01923d87160d463b43bf74f2bbd6bc8f0fa7d725027433c98
-Name: reference_testchannel13330, Version: 1.0, Path: /tmp/reference_testchannel13330, Id: b0a642a8f36c66356bc80124ff3517e0de94623b0121b315fbeff60367a1c0b7
-Name: reference_testchannel14554-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel14554-02, Id: fd9bac3ffe1c067038301a9d72e6de18dbd8ae81684d8ec97d8e665b4a1b867c
-Name: reference_testchannel14554, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel14554, Id: 4c0d2f9a7ac9537a8a5aa4989e0dd22c62f83351dff37a9d120a33c23a4d8532
-Name: reference_testchannel15617-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel15617-02, Id: 39fd8655fa83f47b421e561e11e0e51a09dccdb37f13d5d501bfa058f2397adb
-Name: reference_testchannel15617, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel15617, Id: d9bf0e14ca9c05ee33cc52a0983f0d6ce4d65cac7c1be319c61a74f5619d63f3
-Name: reference_testchannel15764-02, Version: 1.0, Path: /tmp/reference_testchannel15764-02, Id: 7faa3d897b7f64acdebf0fc2dcb1729993c0b6c806aa00500421af087fb52038
-Name: reference_testchannel15764, Version: 1.0, Path: /tmp/reference_testchannel15764, Id: a8b555a9928df8a682d4b06a58c428d61e4d99e000f129bee4df426329424c78
-Name: reference_testchannel1616-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1616-02, Id: abcd747e6600a08c00203b9d4084812b244a66891d48c72c47e2f0b0f313886e
-Name: reference_testchannel1616, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1616, Id: fab89f3f591bebeac4a436df8a36629ffb30dba74d0f849ccede2fb10f696841
-Name: reference_testchannel1931-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1931-02, Id: 13341b7bc90f5b3ef8d0f44f883f5420b8c4c1f9f91aa853955843d7771fe577
-Name: reference_testchannel1931, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel1931, Id: c7d78b5eeb7ef0c106a6499ac6d812dfd3261fc735ce925fa086b75c54a38213
-Name: reference_testchannel20618-02, Version: 1.0, Path: /tmp/reference_testchannel20618-02, Id: ba8a5483231b605fd6d0e8c985c1684140618f82187a8550f1b08c4f2054b4f0
-Name: reference_testchannel20618, Version: 1.0, Path: /tmp/reference_testchannel20618, Id: 1f5e0f7d1ff2031b9bf1b0884dd5ba286c1fbfd87236064b647bfe980a284487
-Name: reference_testchannel22207-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel22207-02, Id: e44a0e99a7f63ec284266cf6c4a084bed2e9b41eba8c3330d06f1e3e26419d86
-Name: reference_testchannel22207, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel22207, Id: 7a6135f213a2a1e6880e05d9ea391413bd56e6ecae20e5f93d84c5cfe3f641b1
-Name: reference_testchannel2268-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2268-02, Id: f0523e1a03733f6caa7933554f3614f87179746d6e2818c4fe46fdd0551eaa90
-Name: reference_testchannel2268, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2268, Id: 981400d635a7bc6301f4ba06d2ae2f1af5b3c1e217483a56f6c8a221fbc62aea
-Name: reference_testchannel24071-02, Version: 1.0, Path: /tmp/reference_testchannel24071-02, Id: e165002f317a5edc67065b48f91f33ae672a2b1ae9ac1e576c637bab3851ac22
-Name: reference_testchannel24071, Version: 1.0, Path: /tmp/reference_testchannel24071, Id: 45de939f0c94e162ad0b53542419bea864451c140e68bb10a958b5789ce0a181
-Name: reference_testchannel25735-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel25735-02, Id: 555b5903c9c417ffe928d9fee78942cf0a035fac8ab69e73b0bc51c30854d423
-Name: reference_testchannel25735, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel25735, Id: 543e866390765e395676ab126c510f478556393c2e5ab4471ac23490e755391f
-Name: reference_testchannel26136-02, Version: 1.0, Path: /tmp/reference_testchannel26136-02, Id: 9db174c3a2752996ef94a90ce85c7cba68aa73f0ceaa37bf2b8779cbea8d7645
-Name: reference_testchannel26136, Version: 1.0, Path: /tmp/reference_testchannel26136, Id: 32b3587ae98c6afbd7c5586b874804887fb87c0480f4803feb1d9dfccde04a4a
-Name: reference_testchannel26342-02, Version: 1.0, Path: /tmp/reference_testchannel26342-02, Id: 04556f464670b4d68bfca1d921a4680c319eb15de020d2cbb881ebe4402d0a39
-Name: reference_testchannel26342, Version: 1.0, Path: /tmp/reference_testchannel26342, Id: 1f700a212d6694773ba52412286141b085230ef7c9aec057ae437291bf40b79a
-Name: reference_testchannel28035-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel28035-02, Id: ff1c3632e5d3785f999a45dd0419b1ebbc8b2b5fe0b1f7756057fedaf5c51d74
-Name: reference_testchannel28035, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel28035, Id: 329ff65d51647e646943f88196f7c422ecf5cd80905e784bbc718b043e085b96
-Name: reference_testchannel29482-02, Version: 1.0, Path: /tmp/reference_testchannel29482-02, Id: a7d41f7d51befc76f72ac7112ea20a9f0ef1b750407f2f6c23c77fdfe4881846
-Name: reference_testchannel29482, Version: 1.0, Path: /tmp/reference_testchannel29482, Id: 71c9e467c916860d628c506f22efe8b5b7c12c18fd2940f1e78ad63f10e4e03a
-Name: reference_testchannel2978-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2978-02, Id: 999d141073c7a075d25fe9484eec99a3b0019b34e211c096eef661705ed965a0
-Name: reference_testchannel2978, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel2978, Id: 8e57c0facc41e842eb69778cd1d37bde53dd5abf802ede2d9096c2cae80d1e73
-Name: reference_testchannel31113-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31113-02, Id: 6cf65e3be9e66fdd10fee157c8ab8aac8997539c9c658b965ff59cf7c21e75de
-Name: reference_testchannel31113, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31113, Id: 7723af68165bb39bcaf9dd4bbeea6cc4f0b40673fcb178f0d0f227c57ef95c0f
-Name: reference_testchannel31247-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31247-02, Id: de4159913fb92c3e63b2bcfaf99182980774da8a0ab3b55d91a93eaf46986e7e
-Name: reference_testchannel31247, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel31247, Id: 0f790264522a307a1054f177165d38f1d7382634336998a8e1efd634846c87ec
-Name: reference_testchannel31512-02, Version: 1.0, Path: /tmp/reference_testchannel31512-02, Id: 98161ce71119251283774bc14984b3582bf5a386fc30d41437019594bfc85d93
-Name: reference_testchannel31512, Version: 1.0, Path: /tmp/reference_testchannel31512, Id: 919a3979f673ba7265e937d9650f335d3541ad9412c15847752731fa4808d8a5
-Name: reference_testchannel4781-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel4781-02, Id: 320112d6cdd145808312a64b9b035842c4a62c6e861b56f74daceb91e02e23f9
-Name: reference_testchannel4781, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel4781, Id: 7bf5cf60c39949e33b85d4678f066457377569575ac04bf8dce03b840c9c8eec
-Name: reference_testchannel6333-02, Version: 1.0, Path: /tmp/reference_testchannel6333-02, Id: 4b6bf44711e8ddf5ac54289ff6c28e10c877d3d66d0f0f3e6f83999dc2949dff
-Name: reference_testchannel6333, Version: 1.0, Path: /tmp/reference_testchannel6333, Id: 1cb4584ca5e3aaf9c92aebaba1538d8cfbe6480d7951ca36ee141f54b53dbbb1
+Name: reference_testchannel17094-02, Version: 1.0, Path: /tmp/reference_testchannel17094-02, Id: 4c870247e16a44048b0e0d55c48a69c4033afa3ed165b4e641e6b903a5c85c70
+Name: reference_testchannel17094, Version: 1.0, Path: /tmp/reference_testchannel17094, Id: 032a9beeb73a40fc67c4ec878b1641cb604e3a8424a82bc52df1d6761b4cec3c
+Name: reference_testchannel23574-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel23574-02, Id: a732f455a40f5796ecb1345135a4f8ebf5e53b5a96c2da21965ef1690447a0e3
+Name: reference_testchannel23574, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel23574, Id: f87056191b3755daa750142d93e5f017853281df1ba85327bb664bb8623c94a2
+Name: reference_testchannel26666-02, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel26666-02, Id: 1b2cebebab05eefe8cadfbe559646e07e22b5e6f680cfd6dd63cd2e82836c24a
+Name: reference_testchannel26666, Version: 1.0, Path: /opt/chaincode/node/reference_testchannel26666, Id: e31af3443d57e5a0f22cae6a711a28c370659e570f3f31eee608f1cc4667e1fb
+Name: reference_testchannel3933-02, Version: 1.0, Path: /tmp/reference_testchannel3933-02, Id: 51a96eea210c930fbe94797a3b901e59e43ea2fc8737b20e1fdaba7944109512
+Name: reference_testchannel3933, Version: 1.0, Path: /tmp/reference_testchannel3933, Id: e5ac13b5c171f3b52b787a8153a5dcf7063ffd02565b1d0835b1b54ea79eacbc
 setExitCode: 0
-reference_testchannel31512-02
+reference_testchannel17094-02
 setExitCode: 0
 [1;32mOK: The test chaincode installed in [org2][m[m[m
 Step 19_api: exit code 0
-run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-instantiate.sh testchannel31512 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-instantiated.sh testchannel31512 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;NO_RED_OUTPUT=false ./chaincode-instantiate.sh testchannel17094 org1 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-chaincode-instantiated.sh testchannel17094 org1;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 20_api: Test 'Instantiate test chaincode by ORG1 in the first channel'(B[m
 [1m[37m---------------------------(B[m
-RUNTEST: chaincode-instantiate.sh testchannel31512 org1 VERIFY: test-chaincode-instantiated.sh testchannel31512 org1
+RUNTEST: chaincode-instantiate.sh testchannel17094 org1 VERIFY: test-chaincode-instantiated.sh testchannel17094 org1
 [1;36m
 Instantiating test chaincode in [org1][m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1OX0.s-gWvdxImGdKmooTQ4lovwZiYeCPP04Ole32kthOJ-M"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1OX0.s-gWvdxImGdKmooTQ4lovwZiYeCPP04Ole32kthOJ-M", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1OX0.s-gWvdxImGdKmooTQ4lovwZiYeCPP04Ole32kthOJ-M  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2NX0.iVUsn_fGAq-4XcUnKi4ui3tK6asCnRYyfu0peQCSnx4"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2NX0.iVUsn_fGAq-4XcUnKi4ui3tK6asCnRYyfu0peQCSnx4", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2NX0.iVUsn_fGAq-4XcUnKi4ui3tK6asCnRYyfu0peQCSnx4  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel31512/chaincodes {"channelId":"testchannel31512","chaincodeId":"reference_testchannel31512","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDI1OX0.s-gWvdxImGdKmooTQ4lovwZiYeCPP04Ole32kthOJ-M 150
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel17094/chaincodes {"channelId":"testchannel17094","chaincodeId":"reference_testchannel17094","waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDU2NX0.iVUsn_fGAq-4XcUnKi4ui3tK6asCnRYyfu0peQCSnx4 150
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ {"txid":"98938e24d81876aad6f4dc117cddcffd1d81257372772f1e3b3550aba29e11e8","status":"VALID","blockNumber":"3"}200 _ result
-body is {"txid":"98938e24d81876aad6f4dc117cddcffd1d81257372772f1e3b3550aba29e11e8","status":"VALID","blockNumber":"3"}, code is 200
-restAPIWrapper: exit code:: 0 result:: {"txid":"98938e24d81876aad6f4dc117cddcffd1d81257372772f1e3b3550aba29e11e8","status":"VALID","blockNumber":"3"} 200
+curlGetIt got _ {"txid":"9ebeaf2697810e8298c3e8784933618d5c088d22ff9434d5e0669d7e815735cb","status":"VALID","blockNumber":"3"}200 _ result
+body is {"txid":"9ebeaf2697810e8298c3e8784933618d5c088d22ff9434d5e0669d7e815735cb","status":"VALID","blockNumber":"3"}, code is 200
+restAPIWrapper: exit code:: 0 result:: {"txid":"9ebeaf2697810e8298c3e8784933618d5c088d22ff9434d5e0669d7e815735cb","status":"VALID","blockNumber":"3"} 200
 [37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
 [1;32mOK: Test chaincode installed in [org1][m[m[m
 [1;35m
-Verifing if the test chaincode instantiated in channel [testchannel31512] channel by [org1][m[m[m
+Verifing if the test chaincode instantiated in channel [testchannel17094] channel by [org1][m[m[m
 queryContainerNetworkSettings returns: 7051
-[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c peer chaincode list --instantiated -C 'testchannel31512' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
-Get instantiated chaincodes on channel testchannel31512:
-Name: reference_testchannel31512, Version: 1.0, Path: /tmp/reference_testchannel31512, Input: <nil>, Escc: escc, Vscc: vscc
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c peer chaincode list --instantiated -C 'testchannel17094' -o   --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem[m[m[m
+Get instantiated chaincodes on channel testchannel17094:
+Name: reference_testchannel17094, Version: 1.0, Path: /tmp/reference_testchannel17094, Input: <nil>, Escc: escc, Vscc: vscc
 setExitCode: 0
-reference_testchannel31512
+reference_testchannel17094
 setExitCode: 0
-[1;32mOK: The test chaincode installed in [testchannel31512] channel by [org1] org[m[m[m
+[1;32mOK: The test chaincode installed in [testchannel17094] channel by [org1] org[m[m[m
 Step 20_api: exit code 0
-run_error=0;verify_error=0;sleep 15 ;NO_RED_OUTPUT=false ./chaincode-invoke.sh testchannel31512 org1 reference_testchannel31512 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ;verify_error=$(($run_error | $verify_error | $?));NO_RED_OUTPUT=false ./chaincode-query.sh testchannel31512 org2 reference_testchannel31512 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
+run_error=0;verify_error=0;sleep 15 ;NO_RED_OUTPUT=false ./chaincode-invoke.sh testchannel17094 org1 reference_testchannel17094 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh ;verify_error=$(($run_error | $verify_error | $?));NO_RED_OUTPUT=false ./chaincode-query.sh testchannel17094 org2 reference_testchannel17094 ;run_error=$?;/home/kilpio/CodeLab/merge_test/fabric-starter/test/verify/test-exit-code.sh;verify_error=$(($run_error | $verify_error | $?));[[ $verify_error = "0" ]]
 [1m[37m---------------------------(B[m
 [1m[37mStep: 21_api: Test 'Test chaincode invocation in ORG1 and query in ORG2'(B[m
 [1m[37m---------------------------(B[m
-RUN: sleep 15 RUNTEST: chaincode-invoke.sh testchannel31512 org1 reference_testchannel31512 VERIFY: test-exit-code.sh RUNTEST: chaincode-query.sh testchannel31512 org2 reference_testchannel31512 VERIFY: test-exit-code.sh
+RUN: sleep 15 RUNTEST: chaincode-invoke.sh testchannel17094 org1 reference_testchannel17094 VERIFY: test-exit-code.sh RUNTEST: chaincode-query.sh testchannel17094 org2 reference_testchannel17094 VERIFY: test-exit-code.sh
 [1;36m
-Invoke test chaincode on the [testchannel31512] channel'[m[m[m
+Invoke test chaincode on the [testchannel17094] channel'[m[m[m
 queryContainerNetworkSettings returns: 4000
 restQuery: curlRequest http://127.0.0.1:4000/users {"username":"user4","password":"passw"}
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDMxMX0.2ubyv97dWmOAnSPjUDX-aWhReHEntU8Pr8bR6HJ6Pck"200 _ result
-body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDMxMX0.2ubyv97dWmOAnSPjUDX-aWhReHEntU8Pr8bR6HJ6Pck", code is 200
-Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDMxMX0.2ubyv97dWmOAnSPjUDX-aWhReHEntU8Pr8bR6HJ6Pck  with http status code 200
+curlGetIt got _ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDYxMn0.40ocQCnb6BDRNkz6FwgaeCaRRhjn6jzU58eKbMv4r1A"200 _ result
+body is "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDYxMn0.40ocQCnb6BDRNkz6FwgaeCaRRhjn6jzU58eKbMv4r1A", code is 200
+Got JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDYxMn0.40ocQCnb6BDRNkz6FwgaeCaRRhjn6jzU58eKbMv4r1A  with http status code 200
 setExitCode: 0
 [1;32mOK: JWT token obtained.[m[m[m
 queryContainerNetworkSettings returns: 4000
-restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel31512/chaincodes/{reference_testchannel31512} {"fcn":"put","args":["testchannel31512","testchannel31512"],"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODEwMDMxMX0.2ubyv97dWmOAnSPjUDX-aWhReHEntU8Pr8bR6HJ6Pck
+restQuery: curlRequest http://127.0.0.1:4000/channels/testchannel17094/chaincodes/{reference_testchannel17094} {"fcn":"put","args":["testchannel17094","testchannel17094"],"waitForTransactionEvent":true} eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNCIsImlhdCI6MTU4ODE1MDYxMn0.40ocQCnb6BDRNkz6FwgaeCaRRhjn6jzU58eKbMv4r1A
 [31mcurlRequest: (curl exit code: 0) (B[m
-curlGetIt got _ {"txid":"e51c4c9a76cdf6bf68fbadff49dd138f6f67940481798ea861595216ea8834b1","status":"VALID","blockNumber":"4"}200 _ result
-body is {"txid":"e51c4c9a76cdf6bf68fbadff49dd138f6f67940481798ea861595216ea8834b1","status":"VALID","blockNumber":"4"}, code is 200
-restAPIWrapper: exit code:: 0 result:: {"txid":"e51c4c9a76cdf6bf68fbadff49dd138f6f67940481798ea861595216ea8834b1","status":"VALID","blockNumber":"4"} 200
+curlGetIt got _ {"txid":"8c75613599de1afa8d1e911efd0b6184b9e1b914de849a0bcd9acb44cc95804f","status":"VALID","blockNumber":"4"}200 _ result
+body is {"txid":"8c75613599de1afa8d1e911efd0b6184b9e1b914de849a0bcd9acb44cc95804f","status":"VALID","blockNumber":"4"}, code is 200
+restAPIWrapper: exit code:: 0 result:: {"txid":"8c75613599de1afa8d1e911efd0b6184b9e1b914de849a0bcd9acb44cc95804f","status":"VALID","blockNumber":"4"} 200
 [37m[4mexitCode: 0  httpStatusCode: 2xx (B[m
 setExitCode: 0
 [1;32mOK: Chaincode [] invoked sucsessfuly[m[m[m
@@ -968,12 +761,12 @@ setExitCode: 0
 Checking exit code...[m[m[m
 [1;32mOK: Exit code is OK: (0)[m[m[m
 [1;36m
-Query test chaincode on the [testchannel31512] channel'[m[m[m
+Query test chaincode on the [testchannel17094] channel'[m[m[m
 queryContainerNetworkSettings returns: 8051
-eval ./chaincode-query.sh testchannel31512 reference_testchannel31512 '["range","testchannel31512"]'
-[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/chaincode-query.sh testchannel31512 reference_testchannel31512 '["range","testchannel31512"]'[m[m[m
-CORE_PEER_ADDRESS=peer0.org2.example.com:8051 peer chaincode query -n reference_testchannel31512 -C testchannel31512 -c '{"Args":["range","testchannel31512"]}'
-[{"key":"testchannel31512","value":"testchannel31512"}]
+eval ./chaincode-query.sh testchannel17094 reference_testchannel17094 '["range","testchannel17094"]'
+[1;32mExecute: docker-compose -f ./docker-compose.yaml    run --no-deps --rm cli.peer bash -c container-scripts/network/chaincode-query.sh testchannel17094 reference_testchannel17094 '["range","testchannel17094"]'[m[m[m
+CORE_PEER_ADDRESS=peer0.org2.example.com:8051 peer chaincode query -n reference_testchannel17094 -C testchannel17094 -c '{"Args":["range","testchannel17094"]}'
+[{"key":"testchannel17094","value":"testchannel17094"}]
 setExitCode: 0
 [1;32mOK: Chaincode [] queried sucsessfuly[m[m[m
 [1;35m

@@ -157,8 +157,8 @@ function runStep() {
         sed -E -e 's/(RUNTEST:)([^\n]*)/\1\2; run_error=\$?;/g' |\
         sed -E -e 's/(RUN:)([^\n]*)/\1\2;/g' |\
         sed -E -e 's/(VERIFY:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | \$?));/g' |\
-        sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?)); echo \"\${WHITE}\${BRIGHT}Expecting non-zero exit code \${NORMAL}\"; /g' |\
-        sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; echo \"\${WHITE}\${BRIGHT}Expecting non-zero exit code \${NORMAL}\"; /g' |\
+        sed -E -e 's/(VERIFY_NOT:)([^\n]*)/\1\2; verify_error=\$((\$run_error | \$verify_error | ! \$?)); echo \"\$(setColorOnError \${verify_error})\${BRIGHT}Non-zero exit code expected \${NORMAL}\"; /g' |\
+        sed -E -e 's/(VERIFY_NON_ZERO_EXIT_CODE:)([^\n]*)/; verify_error=\$((! \$run_error | $verify_error)); run_error=0; echo \"\$(setColorOnError \${verify_error})\${BRIGHT}Non-zero exit code expected \${NORMAL}\"; /g' |\
         tr '\n' ' ' )
     
     COMMAND=${COMMAND}'; [[ $verify_error = "0" ]]'

@@ -118,6 +118,17 @@ function printNoColors() {   #filter out set color terminal commands
     fi
 }
 
+function setColorOnError() {
+    local error=${1}
+    case "$error" in
+        0)
+            echo "${GREEN}${BRIGHT}"
+        ;;
+        *)
+            echo "${RED}${BRIGHT}"
+        ;;
+    esac
+}
 
 function getFabricStarterPath() {
     local dirname=${1}
@@ -312,9 +323,9 @@ function printResultAndSetExitCode() {
         exit 0
     else
         if [ "${NO_RED_OUTPUT}" = true ]; then
-            printWhite "Exit code is ${errorCode}" | printErrToLogAndToScreen
+            printGreen "Exit code: ${errorCode}" | printErrToLogAndToScreen
         else
-            printError "ERROR! Exit code is ${errorCode}" | printErrToLogAndToScreen
+            printError "ERROR! Exit code: ${errorCode}" | printErrToLogAndToScreen
         fi
         exit 1
     fi
