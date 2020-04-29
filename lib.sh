@@ -1,77 +1,66 @@
 #!/usr/bin/env bash
 
+source lib/util/util.sh
+
+
 : ${DOMAIN:="example.com"}
+: ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORG:="org1"}
 : ${WGET_OPTS:="--verbose -N"}
-: ${WWW_PORT:=8081}
 : ${FABRIC_STARTER_HOME:=.}
+: ${DOCKER_COMPOSE_OPTION_RM:="--rm"}
+
+: ${ORDERER_TLSCA_CERT_OPTS=" --tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
+
 
 export DOMAIN ORG
-
-function printInColor() {
-    color1=$1
-    message1=$2
-    color2=$3
-    message2=$4
-    echo -e "\033[${color1}m${message1}\033[m\033[${color2}m$message2\033[m"
-}
-
-function printRedYellow() {
-    printInColor "1;31" "$1" "1;33" "$2"
-}
-
-function printUsage() {
-    usageMsg=$1
-    exampleMsg=$2
-    printRedYellow "\nUsage:" "$usageMsg"
-    printRedYellow "\nExample:" "$exampleMsg"
-}
-
-function runCLIWithComposerOverrides() {
-    local composeCommand=${1:?Compose command must be specified}
-    local service=${2}
-    local command=${3}
-
-    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
-
-    if [ "${MULTIHOST}" ]; then
-        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-forderer-multihost.yaml" || multihostComposeFile="-fmultihost.yaml"
-    fi
-
-#    if [ "${PORTS}" ]; then
-#        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fports.yaml"
-#    fi
-
-    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fcouchdb.yaml"
-    [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
-
-    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} ${command:+bash -c} $command"
-    [ -n "$command" ] \
- && docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service} bash -c "${command}" \
- || docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommand} ${service}
-
-    [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
-}
-
 
 function runCLI() {
     local command="$1"
 
     if [ -n "$EXECUTE_BY_ORDERER" ]; then
         service="cli.orderer"
-        checkContainer="cli.$DOMAIN"
+        checkContainer="cli.${ORDERER_NAME}.${ORDERER_DOMAIN}"
     else
         service="cli.peer"
         checkContainer="cli.$ORG.$DOMAIN"
     fi
 
-    cliContainerId=`docker ps --filter name=$checkContainer -q`
-
     # TODO No such command: run __rm when composeCommand="run --rm"
-    [ -n "$cliContainerId" ] && composeCommand="exec" || composeCommand="run --rm"
+    composeCommand="run --no-deps ${DOCKER_COMPOSE_OPTION_RM}"
 
     runCLIWithComposerOverrides "${composeCommand}" "$service" "$command"
 }
+
+function runCLIWithComposerOverrides() {
+    local composeCommand=${1:?Compose command must be specified}
+    local service=${2}
+    local command=${3}
+    IFS=' ' composeCommandSplitted=($composeCommand)
+
+    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose-orderer.yaml" || composeTemplateFile="$FABRIC_STARTER_HOME/docker-compose.yaml"
+
+    if [ "${MULTIHOST}" ]; then
+        [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-fdocker-compose-orderer-multihost.yaml" || multihostComposeFile="-fdocker-compose-multihost.yaml"
+    fi
+
+    #    if [ "${PORTS}" ]; then
+    #        [ -n "$EXECUTE_BY_ORDERER" ] && portsComposeFile="-forderer-ports.yaml" || portsComposeFile="-fdocker-compose-ports.yaml"
+    #    fi
+
+    [ -n "${COUCHDB}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && couchDBComposeFile="-fdocker-compose-couchdb.yaml"
+    [ -n "${LDAP_ENABLED}" ] && [ -z "$EXECUTE_BY_ORDERER" ] && ldapComposeFile="-fdocker-compose-ldap.yaml"
+
+    printInColor "1;32" "Execute: docker-compose -f ${composeTemplateFile} ${multihostComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service} ${command:+bash -c} $command"
+    if [ -n "$command" ]; then
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]}  ${composeCommandSplitted[2]} ${service} bash -c "${command}"
+    else
+        docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service}
+    fi
+
+    [ $? -ne 0 ] && printRedYellow "Error occurred. See console output above." && exit 1
+}
+
 
 function envSubst() {
     inputFile=${1:?Input file required}
@@ -109,7 +98,7 @@ function fetchChannelConfigBlock() {
     channel=${1:?"Channel name must be specified"}
     blockNum=${2:-config}
     runCLI "mkdir -p crypto-config/configtx && peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o orderer.$DOMAIN:7050 -c ${channel}  \
-     --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt && chown -R $UID crypto-config/"
+     ${ORDERER_TLSCA_CERT_OPTS} && chown -R $UID crypto-config/"
 }
 
 function txTranslateChannelConfigBlock() {
@@ -144,7 +133,7 @@ function createConfigUpdateEnvelope() {
     runCLI "echo '{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":'\`cat crypto-config/configtx/update.json\`'}}}' | jq . > crypto-config/configtx/update_in_envelope.json"
     runCLI "configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb"
     echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
-    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "peer channel update -f update_in_envelope.pb -c $channel -o orderer.$DOMAIN:7050 ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function updateChannelConfig() {
@@ -237,7 +226,7 @@ function instantiateChaincode() {
 
     arguments="{\"Args\":$initArguments}"
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt $privateCollectionParam $endorsementPolicyParam"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode instantiate -n $chaincodeName -v ${chaincodeVersion} -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam"
 }
 
 
@@ -253,7 +242,7 @@ function upgradeChaincode() {
 
     arguments="{\"Args\":$initArguments}"
 
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName "$policy" --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode upgrade -n $chaincodeName -v $chaincodeVersion -c '$arguments' -o orderer.$DOMAIN:7050 -C $channelName '$policy' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function callChaincode() {
@@ -263,13 +252,31 @@ function callChaincode() {
     arguments="{\"Args\":$arguments}"
     action=${4:-query}
 	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
-    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' --tls --cafile /etc/hyperledger/crypto/orderer/tls/ca.crt"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function queryChaincode() {
-    callChaincode $@ query
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+    action=${4:-query}
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode query -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
 
 function invokeChaincode() {
-    callChaincode $@ invoke
+    channelName=${1:?Channel name must be specified}
+    chaincodeName=${2:?Chaincode name must be specified}
+    arguments=${3:-[]}
+    arguments="{\"Args\":$arguments}"
+	echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments'"
+    runCLI "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:7051 peer chaincode invoke -n $chaincodeName -C $channelName -c '$arguments' ${ORDERER_TLSCA_CERT_OPTS}"
 }
+
+function info() {
+    echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
+#    read -n1 -r -p "Press any key to continue" key
+#    echo
+}
+

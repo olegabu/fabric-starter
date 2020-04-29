@@ -1,0 +1,31 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+x-generate: &generate-defaults
+  #  build:
+  #    args:
+  #      FABRIC_VERSION: ${FABRIC_VERSION:-latest}
+  #    dockerfile: ./fabric-tools-extended/Dockerfile
+  #    context: ./
+  environment:
+    - DOMAIN=${DOMAIN:-example.com}
+    - LDAP_ENABLED
+    - LDAP_BASE_DN
+    - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+  working_dir: /etc/hyperledger
+  volumes:
+    - /var/run/:/host/var/run/
+    - ./crypto-config:/etc/hyperledger/crypto-config
+#      - ./templates:/etc/hyperledger/templates # for local debug
+#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+
+
+
+services:
+
+  post-install:
+    << : *generate-defaults
+    command: sh -c '[ -n "$${ORDERER}" ] && container-scripts/consortium-reconfigure.sh || { container-scripts/install-default-chaincodes.sh; container-scripts/init-in-open-net.sh; }'

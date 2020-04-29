@@ -1,0 +1,62 @@
+{
+  "Consortiums": {
+    "groups": {
+      "SampleConsortium": {
+        "mod_policy": "AnyOrganization",
+        "policies": {
+          "AnyOrganization": {
+            "mod_policy": "/Channel/Orderer/Admins",
+            "policy": {
+              "type": 1,
+              "value": {
+                "identities": [],
+                "rule": {
+                  "n_out_of": {
+                    "n": 0,
+                    "rules": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "Orderer": {
+    "groups": {
+      "Orderer": {
+        "policies": {
+          "Readers": {
+            "policy": {
+              "type": 1,
+              "value": {
+                "identities": [],
+                "rule": {
+                  "n_out_of": {
+                    "n": 0,
+                    "rules": []
+                  }
+                }
+              }
+            }
+          },
+          "Writers": {
+            "policy": {
+              "type": 1,
+              "value": {
+                "identities": [],
+                "rule": {
+                  "n_out_of": {
+                    "n": 0,
+                    "rules": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

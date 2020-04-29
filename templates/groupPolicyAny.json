@@ -1,0 +1,9 @@
+{
+  "policy": {
+    "type": 3,
+    "value": {
+      "rule": "ANY",
+      "sub_policy": "Admins"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+services:
+
+  # block event listeners
+
+  dns.listener:
+#    build: listener
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-listener:${FABRIC_STARTER_VERSION:-latest}
+    restart: always
+    container_name: dns.listener.${ORG:-org1}.${DOMAIN:-example.com}
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
+      - ENROLL_ID
+      - ENROLL_SECRET
+      - P=${PWD}
+      - HFC_LOGGING={"debug":"console","info":"console"}
+      - CHANNEL=common
+      - WORKER=./dns.js
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
+      - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
+    command: sh -c "sleep 60 && npm start"
+
+# example of a custom listener that prints out blocks in debug log entries
+#
+#  debug.listener:
+#    build: listener
+#    image: olegabu/fabric-starter-listener:${FABRIC_STARTER_VERSION:-latest}
+#    #    restart: always
+#    container_name: debug.listener.${ORG:-org1}.${DOMAIN:-example.com}
+#    environment:
+#      - ORG=${ORG:-org1}
+#      - DOMAIN=${DOMAIN:-example.com}
+#      - CRYPTO_CONFIG_DIR=/usr/src/app/crypto-config
+#      - ENROLL_ID
+#      - ENROLL_SECRET
+#      - P=${PWD}
+#      - HFC_LOGGING={"debug":"console","info":"console"}
+#      - CHANNEL=common
+#      - WORKER=./debug.js
+#    volumes:
+#      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
+#      - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
+#    command: sh -c "sleep 1 && npm start"

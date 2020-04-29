@@ -1,13 +1,12 @@
-
 package main
 
 import (
 	"strconv"
 
+	"crypto/x509"
+	"encoding/pem"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
-	"encoding/pem"
-	"crypto/x509"
 	"strings"
 )
 
@@ -26,19 +25,19 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	var err error
 
 	if len(args) != 4 {
-		return pb.Response{Status:403, Message:"Incorrect number of arguments. Expecting 4"}
+		return pb.Response{Status: 400, Message: "Incorrect number of arguments. Expecting 4"}
 	}
 
 	// Initialize the chaincode
 	a = args[0]
 	aVal, err = strconv.Atoi(args[1])
 	if err != nil {
-		return pb.Response{Status:403, Message:"Expecting integer value for asset holding"}
+		return pb.Response{Status: 400, Message: "Expecting integer value for asset holding"}
 	}
 	b = args[2]
 	bVal, err = strconv.Atoi(args[3])
 	if err != nil {
-		return pb.Response{Status:403, Message:"Expecting integer value for asset holding"}
+		return pb.Response{Status: 400, Message: "Expecting integer value for asset holding"}
 	}
 	logger.Debugf("aVal, bVal = %d", aVal, bVal)
 
@@ -80,7 +79,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.query(stub, args)
 	}
 
-	return pb.Response{Status:403, Message:"Invalid invoke function name."}
+	return pb.Response{Status: 400, Message: "Invalid invoke function name."}
 }
 
 // Transaction makes payment of x units from a to b
@@ -103,7 +102,7 @@ func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) 
 		return shim.Error(err.Error())
 	}
 	if aBytes == nil {
-		return pb.Response{Status:404, Message:"Entity not found"}
+		return pb.Response{Status: 404, Message: "Entity not found"}
 	}
 	aVal, _ = strconv.Atoi(string(aBytes))
 
@@ -112,14 +111,14 @@ func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) 
 		return shim.Error("Failed to get state")
 	}
 	if bBytes == nil {
-		return pb.Response{Status:404, Message:"Entity not found"}
+		return pb.Response{Status: 404, Message: "Entity not found"}
 	}
 	bVal, _ = strconv.Atoi(string(bBytes))
 
 	// Perform the execution
 	x, err = strconv.Atoi(args[2])
 	if err != nil {
-		return pb.Response{Status:403, Message:"Invalid transaction amount, expecting an integer value"}
+		return pb.Response{Status: 400, Message: "Invalid transaction amount, expecting an integer value"}
 	}
 	aVal = aVal - x
 	bVal = bVal + x
@@ -142,7 +141,7 @@ func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) 
 // deletes an entity from state
 func (t *SimpleChaincode) delete(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 1 {
-		return pb.Response{Status:403, Message:"Incorrect number of arguments"}
+		return pb.Response{Status: 400, Message: "Incorrect number of arguments"}
 	}
 
 	a := args[0]
@@ -162,7 +161,7 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 	var err error
 
 	//if len(args) != 1 {
-	//	return pb.Response{Status:403, Message:"Incorrect number of arguments"}
+	//	return pb.Response{Status:400, Message:"Incorrect number of arguments"}
 	//}
 
 	a = args[0]
@@ -174,14 +173,14 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 	}
 
 	if valBytes == nil {
-		return pb.Response{Status:404, Message:"Entity not found"}
+		return pb.Response{Status: 404, Message: "Entity not found"}
 	}
 
 	return shim.Success(valBytes)
 }
 
-var getCreator = func (certificate []byte) (string, string) {
-	data := certificate[strings.Index(string(certificate), "-----"): strings.LastIndex(string(certificate), "-----")+5]
+var getCreator = func(certificate []byte) (string, string) {
+	data := certificate[strings.Index(string(certificate), "-----") : strings.LastIndex(string(certificate), "-----")+5]
 	block, _ := pem.Decode([]byte(data))
 	cert, _ := x509.ParseCertificate(block.Bytes)
 	organization := cert.Issuer.Organization[0]

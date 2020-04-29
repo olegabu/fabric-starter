@@ -1,0 +1,28 @@
+<template>
+  <require from="bootstrap/css/bootstrap.min.css"></require>
+  <require from="./styles/app.css"></require>
+
+  <div style="position: relative; height: 100%; display: flex; justify-content: center;">
+    <div class="container" style="margin: auto;">
+      <!--h-100-->
+      <div class="row justify-content-center align-items-center">
+        <form class="form-signin" submit.delegate="login()">
+          <h1 class="text-center text-uppercase">${org}</h1>
+          <p>You're connected to your organization's API server. Login or register.</p>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Username" required autofocus value.bind="username">
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" placeholder="Password" required value.bind="password">
+          </div>
+          <div if.bind="errorMessage" class="alert alert-danger" role="alert">
+            <span t="errorMessages.errorMessage">errorMessages.errorMessage</span>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>

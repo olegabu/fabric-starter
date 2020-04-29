@@ -24,18 +24,21 @@ See also
 
 The following sections describe Fabric Starter possibilites in more details:
 
-- [Installation.](#install)
-- [Network with 1 organization (and orderer) for development.](#example1org)
+- [Prerequisites](#install)
+- [Network with 1 organization (and orderer) for development](#example1org)
 - [Several organizations on one (local) host in multiple docker containers.](#example3org)
 - [REST API to query and invoke chaincodes.](#restapi)
 - [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
+- [Join to an External Network](#joinexternal)
+- [Network Governance. Invite-based and Majority-based Governance](#network-governance)
+- [Consensus Types. RAFT consensus algorithm](#consensus-types)
 - [Development\Release cycle](#releasecycle)
 
 
 
 <a name="install"></a>
 ## Install
-See [Installation](docs/install.md)
+See [Prerequisites](docs/install.md)
 
 
 
@@ -63,9 +66,50 @@ See [Three local Orgs Network](docs/network-three-org.md)
 ## Use REST API to query and invoke chaincodes
 See [Use REST Api](docs/rest-api.md)
 
- <a name="multihost"></a>
+<a name="multihost"></a>
 ## Multi host deployment
 See [Multi host deployment](docs/multihost.md)
+
+
+<a name="joinexternal"></a>
+## Join to an External Network
+For `invite-based` blockchain-networks (see next chapter) new organization can be added to the consortium by a member of this network.
+The new organization need to obtain the BOOTSRAP_IP (currently it's the IP of the _orderer_ node) and deploy its own node with this IP.  
+```bash
+export BOOTSTRAP_IP=192.168.0.1
+#ORG=... DOMAIN=... docker-compose up
+```
+Then the new organization passes the ip address of the newly deployed node to the network's member and this member adds the organization to Consortium by it's administration dashboard.
+After that the new organization can create own channels, add other organizations to the own channels and even invite more organizations to the network itself.     
+
+<a name="network-governance"></a>
+## Network Governance. Invite-based and Majority-based Governance
+
+So now our network can be governed by itself (or to say it right by the network's members). 
+The first type of network-governance is `Invite-based`. With this type of deployment 
+any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
+
+To deploy such type of network export environment variable
+```bash
+export CONSORTIUM_CONFIG=InviteConsortiumPolicy
+```
+Start orderer:
+```bash
+WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
+```
+
+Then start an organization
+```bash
+MY_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d 
+```
+
+`Majority` type of governance is coming.       
+
+
+<a name="consensus-types"></a>
+Consensus Types. RAFT consensus algorithm.
+By default Fabric Starter uses Solo type of consensus.
+To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
 
 
 <a name="releasecycle"></a>
@@ -89,6 +133,14 @@ The _`master`_ branch as well as potentially _`feature branches`_ are used for d
 #### Currently issued branches are:
 
 - master(development)
+- snapshot-0.5-1.4
+    - new org auto connect for invite type consortium
+    - new orgs dns register functionality
+    - use _fabric-starter-rest:snapshot-0.4-1.4_
+- snapshot-0.4-1.4
+    - auto-generate crypto configuration
+    - Invite type consortium
+    - BOOTSTRAP_IP for new node joining
 - snapshot-0.3-1.4
     - use _fabric-starter-rest:snapshot-0.3-1.4_
 - snapshot-0.2-1.4
