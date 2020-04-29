@@ -10,10 +10,9 @@ printToLogAndToScreenCyan "\nInstalling test chaincode in [${org}]"
 
 JWT=$(APIAuthorize ${org})
 
-
 if [ $? -eq 0 ]; then
     installZippedChaincodeAPI ${channelName} ${org} ${JWT}
     printResultAndSetExitCode "Test chaincode installed in [${org}]"
 else
     exit 1
-fi    
+fi

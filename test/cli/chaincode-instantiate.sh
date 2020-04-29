@@ -9,9 +9,6 @@ org=${2}
 printToLogAndToScreenCyan "\nInstantiate test chaincode in [${channelName}] by [${org}]"
 
 setCurrentActiveOrg ${org}
-
 instantiateTestChaincodeCLI ${channelName} ${org}
 
 printResultAndSetExitCode "Test chaincode instantiated in [${channelName}] by [${org}]"
-
-

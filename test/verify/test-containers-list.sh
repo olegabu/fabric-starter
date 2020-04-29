@@ -13,5 +13,3 @@ printToLogAndToScreenBlue "\nCheck containers running: [${containersList}] on [$
 checkContainersExist ${activeOrg} ${orgDomain} ${containersList}
 
 printResultAndSetExitCode "OK: [${containersList}] containers are running"
-
-

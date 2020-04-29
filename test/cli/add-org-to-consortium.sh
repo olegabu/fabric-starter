@@ -9,7 +9,6 @@ org=${2}
 printToLogAndToScreenCyan "\nAdd [${org}] to the default consortium..."
 
 setCurrentActiveOrg ${org}
-
 runInFabricDir ./consortium-add-org.sh ${org}
 
 printResultAndSetExitCode "Organization [${org}] added to the default consortium"

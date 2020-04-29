@@ -15,7 +15,6 @@ if [ $? -eq 0 ]; then
 
     invokeTestChaincodeAPI ${channelName} ${org} {$chaincodeName} ${JWT}
     printResultAndSetExitCode "Chaincode [${chaincode_name}] invoked sucsessfuly"
-
 else
     exit 1
 fi

@@ -11,9 +11,6 @@ org=${2}
 printToLogAndToScreenBlue "\nVerifing if the [$channelName] channel exists in [${org}.${DOMAIN}]"
 
 setCurrentActiveOrg ${org}
-
 ! verifyChannelExists "${channelName}" "${org}" "$DOMAIN"
-
-#echo "Exit code: $?" >/dev/tty
 
 printResultAndSetExitCode "The channel [$channelName] does not exist and in not visible to [${org}]"

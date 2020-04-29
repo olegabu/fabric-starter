@@ -10,7 +10,6 @@ orgAdd=$3
 printToLogAndToScreenBlue "\nVerifing if the [${orgAdd}] added to [${channelName}]"
 
 setCurrentActiveOrg ${orgAdd}
-
 verifyOrgIsInChannel "${channelName}" "${orgAdd}" "${DOMAIN}"
 
 printResultAndSetExitCode "Organization [${orgAdd}] is in the channel [$channelName]"

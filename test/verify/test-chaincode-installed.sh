@@ -10,7 +10,6 @@ org=${2}
 printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in [${org}]"
 
 setCurrentActiveOrg ${org}
-
 verifyChiancodeInstalled "${channelName}" "${org}"
 
 printResultAndSetExitCode "The test chaincode installed in [${org}]"

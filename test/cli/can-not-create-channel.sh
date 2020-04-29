@@ -9,7 +9,6 @@ org=${2}
 printToLogAndToScreenCyan "\nCreating the [${channelName}] channel for [${org}.${DOMAIN}]"
 
 setCurrentActiveOrg ${org}
-
 ! runInFabricDir ./channel-create.sh ${channelName}
 
 printResultAndSetExitCode "Channel [${channelName}] can not be created."

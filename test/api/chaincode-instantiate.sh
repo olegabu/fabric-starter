@@ -10,5 +10,5 @@ printToLogAndToScreenCyan "\nInstantiating test chaincode in [${org}]"
 
 JWT=${JWT:-$(APIAuthorize ${org})}
 
-    instantiateTestChaincodeAPI ${channelName} ${org} ${JWT} ${TIMEOUT_CHAINCODE_INSTANTIATE}
-    printResultAndSetExitCode "Test chaincode installed in [${org}]"
+instantiateTestChaincodeAPI ${channelName} ${org} ${JWT} ${TIMEOUT_CHAINCODE_INSTANTIATE}
+printResultAndSetExitCode "Test chaincode installed in [${org}]"

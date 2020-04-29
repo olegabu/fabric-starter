@@ -11,7 +11,6 @@ org=${2}
 printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [${channelName}] channel..."
 
 setCurrentActiveOrg ${org}
-
 verifyOrgJoinedChannel "${channelName}" "${org}" "${DOMAIN}"
 
 printResultAndSetExitCode "The [${org}] has joined the [${channelName}] channel"

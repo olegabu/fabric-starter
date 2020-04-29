@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 main() {
@@ -445,7 +446,7 @@ restAPIWrapper() {
     httpStatusCode="${result:${#result}-3}"
     httpStatusCode=${httpStatusCode:0:1}
 
-    printDbg "${RED}${BRIGHT}exitCode: $exitCode  httpStatusCode: $httpStatusCode ${NORMAL}"
+    printDbg "${WHITE}${UNDERLINE}exitCode: $exitCode  httpStatusCode: ${httpStatusCode}xx ${NORMAL}"
 
     setExitCode [ "${httpStatusCode}" = "2" ] && [ "${exitCode}" = "0" ]
 }

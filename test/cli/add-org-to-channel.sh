@@ -11,7 +11,6 @@ orgAdd=${3}
 printToLogAndToScreenCyan "\nAdd [${orgAdd}] to the [${channelName}] channel"
 
 setCurrentActiveOrg ${org}
-
-runInFabricDir ./channel-add-org.sh ${channelName} ${orgAdd}
+runInFabricDir ./channel-add-org.sh ${channelName} ${orgAdd} $(getOrgContainerPort ${orgAdd} peer0)
 
 printResultAndSetExitCode "Organization [${orgAdd}] added to [${channelName}] channel"
