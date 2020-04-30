@@ -21,4 +21,4 @@ function portProbe() {
 }
 export -f portProbe
 
-timeout ${waitTime} sh -c "portProbe ${host} ${port}"
+timeout ${waitTime} bash -c "portProbe ${host} ${port}"
