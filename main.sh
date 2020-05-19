@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# workaround for disk resize
-sudo lvextend /dev/rootvg/root /dev/vda3 #extend virtual group
-sudo resize2fs /dev/rootvg/root #resize file system
-
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
