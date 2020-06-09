@@ -29,7 +29,11 @@ fi
 set -x
 if [ ! -f "crypto-config/configtx/$DOMAIN/genesis.pb" ]; then
     echo "Generation genesis configtx."
-    envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
+    if [ ${IDEMIX} == "TRUE" ]; then
+        envsubst < "templates/configtx-template-idemix.yaml" > "crypto-config/configtx.yaml"
+    else
+        envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
+    fi
     mkdir -p crypto-config/configtx/$DOMAIN
     configtxgen -configPath crypto-config/ -outputBlock crypto-config/configtx/$DOMAIN/genesis.pb -profile ${ORDERER_GENESIS_PROFILE} -channelID ${SYSTEM_CHANNEL_ID}
 else

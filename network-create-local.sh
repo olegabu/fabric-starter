@@ -4,13 +4,14 @@ function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
 
+export IDEMIX=TRUE
 export DOMAIN=${DOMAIN:-example.com}
 
 orgs=${@:-org1}
 first_org=${1:-org1}
 
 channel=${CHANNEL:-common}
-chaincode_install_args=${CHAINCODE_INSTALL_ARGS-reference}
+chaincode_install_args=${CHAINCODE_INSTALL_ARGS:-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
 docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml}
 
@@ -19,11 +20,6 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-com
 info "Cleaning up"
 ./clean.sh
 unset ORG COMPOSE_PROJECT_NAME
-
-# Create orderer organization
-
-info "Creating orderer organization for $DOMAIN"
-docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Create member organizations
 
@@ -39,7 +35,6 @@ ldap_https=${LDAP_PORT_HTTPS:-6443}
 
 custom_port=${CUSTOM_PORT}
 
-
 for org in ${orgs}
 do
     export ORG=${org} API_PORT=${api_port} WWW_PORT=${www_port} PEER0_PORT=${peer0_port} CA_PORT=${ca_port} LDAP_PORT_HTTP=${ldap_http} LDAP_PORT_HTTPS=${ldap_https} CUSTOM_PORT=${custom_port}
@@ -48,6 +43,16 @@ do
     echo "docker-compose ${docker_compose_args} up -d"
 
     docker-compose ${docker_compose_args} up -d
+
+    if [ ${IDEMIX} == "TRUE" ]; then
+        sleep 4
+        export IDEMIX_KEYS=${PWD}/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/idemix/msp
+        mkdir -p ${IDEMIX_KEYS}
+        docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerPublicKey ${IDEMIX_KEYS}
+        docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerRevocationPublicKey ${IDEMIX_KEYS}
+        mv ${IDEMIX_KEYS}/IssuerRevocationPublicKey ${IDEMIX_KEYS}/RevocationPublicKey 
+    fi
+
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))
@@ -57,6 +62,11 @@ do
     custom_port=$((custom_port + 1))
     unset ORG COMPOSE_PROJECT_NAME API_PORT WWW_PORT PEER0_PORT CA_PORT LDAP_PORT_HTTP LDAP_PORT_HTTPS CUSTOM_PORT
 done
+
+# Create orderer organization
+
+info "Creating orderer organization for $DOMAIN"
+docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Add member organizations to the consortium
 
@@ -109,3 +119,6 @@ do
     fi
     unset ORG COMPOSE_PROJECT_NAME
 done
+
+
+

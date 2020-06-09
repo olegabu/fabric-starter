@@ -28,13 +28,14 @@ services:
       - RAFT2_PORT=${RAFT2_PORT:-7250}
       - RAFT_NODES_COUNT=${RAFT_NODES_COUNT:-1}
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
+      - IDEMIX=${IDEMIX:-FALSE}
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ./templates:/etc/hyperledger/templates # for local debug
+      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   post-install:
