@@ -18,6 +18,13 @@ first_org=${orgs%% *}
 # Set WORK_DIR as home dir on remote machine
 setMachineWorkDir $first_org
 
+for org in ${orgs}
+do
+    connectMachine ${org}
+    ./chaincode-install.sh dns 1.0 /opt/chaincode/node/dns node
+
+done
+
 # Add member organizations to the consortium
 connectMachine $ordererMachineName
 
