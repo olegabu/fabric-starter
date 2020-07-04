@@ -7,20 +7,29 @@ function info() {
 orgs=$@
 first_org=${1:-org1}
 
+export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
 export DOMAIN=${DOMAIN:-example.com}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
-export LDAP_ENABLED=true
+#export LDAP_ENABLED=true
 export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
 # -f environments/dev/docker-compose-debug.yaml -f https/docker-compose-generate-tls-certs-debug.yaml
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 
+#virtalbox:
+# export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-ports.yaml"
+# export DOCKER_REGISTRY=192.168.99.1:5000
+# to orgX_env
+# export BOOTSTRAP_IP=192.168.99.116
+# export MY_IP=`docker-machine ip ${ORG}.${DOMAIN}`
+# export FABRIC_STARTER_HOME=`docker-machine ssh ${ORG}.${DOMAIN} pwd`
+
 
 unset ORG COMPOSE_PROJECT_NAME
 
-export DOCKER_REGISTRY=docker.io
+export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 
@@ -52,7 +61,9 @@ info "Creating orderer organization for $DOMAIN"
 
 shopt -s nocasematch
 if [ "${ORDERER_TYPE}" == "SOLO" ]; then
-    WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+    if [[ "$BOOTSTRAP_IP" == "$MY_IP" ]]; then
+        WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+    fi
 else
     WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
 fi
