@@ -4,6 +4,7 @@ source lib.sh
 
 setDocker_LocalRegistryEnv
 
+: ${DOCKER_MACHINE_FLAGS:=" --virtualbox-no-share "}
 if [ -n "$DOCKER_REGISTRY" ]; then
     DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY  "
 fi

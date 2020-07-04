@@ -49,7 +49,7 @@ services:
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -63,8 +63,11 @@ services:
       - ORDERER_DOMAIN
       - DNS_CHANNEL
       - BOOTSTRAP_IP
+      - BOOTSTRAP_SERVICE_URL=${BOOTSTRAP_SERVICE_URL:-https} #${BOOTSTRAP_IP}:${API_PORT}}
+      - BOOTSTRAP_API_PORT=${API_PORT:-4000}
       - MY_IP
       - PEER0_PORT=${PEER0_PORT:-7051}
+      - WWW_PORT=${WWW_PORT:-80}
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
@@ -86,8 +89,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -112,8 +115,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ./crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
     << : *peer-defaults
@@ -153,9 +156,9 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-    - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer0:/var/hyperledger/production
-    - ./crypto-config/hosts:/etc/hosts
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/:/host/var/run/
 
 #  peer1:
@@ -230,8 +233,8 @@ services:
     - /var/run/:/host/var/run/
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
-    - ./crypto-config:/etc/hyperledger/crypto-config
-    - ./crypto-config/hosts:/etc/hosts
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -288,13 +291,13 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-20m}"
         max-file: "1"
     volumes:
-      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
       - ${WEBAPP_HOME:-./webapp}:/usr/src/app/webapp
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
 #      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
-      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -312,8 +315,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
-      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
 
 networks:
   default:

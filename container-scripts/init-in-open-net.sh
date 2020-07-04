@@ -30,26 +30,29 @@ function main() {
     fi
     createServiceChannel ${DNS_CHANNEL}
     createResult=$?
+    requestInviteToServiceChannel ${createResult} ${DNS_CHANNEL}
+    sleep 3
     joinServiceChannel ${DNS_CHANNEL}
     joinResult=$?
 
     sleep 3
     if [[ $createResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
         instantiateChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
-        registerOrgInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
+        registerOrdererInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
     fi
 
     if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
-        registerOrgInserviceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
+        registerOrgInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
     fi
 }
 
 function addMeToConsortiumIfOrdererExists() {
+    echo "Check orderer cert ${ORDERER_GENERAL_TLS_ROOTCERT_FILE} in order to apply to consortium"
     if [ -f "${ORDERER_GENERAL_TLS_ROOTCERT_FILE}" ]; then
         echo "File  ${ORDERER_GENERAL_TLS_ROOTCERT_FILE} exists. Auto apply to consortium: ${CONSORTIUM_AUTO_APPLY}"
 
         status=1
-        while [[ ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} ]]; do
+        while [[ ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} && ( -z "$BOOTSTRAP_IP" || ( "$BOOTSTRAP_IP" == "$MY_IP" )) ]]; do
             printYellow "\n\nTrying to add  ${ORG} to consortium\n\n"
             runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
             sleep $(( RANDOM % 20 )) #TODO: make external locking for config updates
@@ -67,8 +70,20 @@ function createServiceChannel() {
     createChannel ${serviceChannel}
     createResult=$?
     sleep 3
-    [[ $createResult -eq 0 ]] && printGreen "\nChannel 'common' has been created\n" || printYellow "\nChannel 'common' already exists\n"
+    [[ $createResult -eq 0 ]] && printGreen "\nChannel 'common' has been created\n" || printYellow "\nChannel '${serviceChannel}' cannot be created or already exists\n"
     return ${createResult}
+}
+
+function requestInviteToServiceChannel() {
+    local creationResult=${1:?Channel Creation result is required}
+    local serviceChannel=${2:?Service channel name is required}
+
+    if [[ $creationResult -ne 0 &&  -n "${BOOTSTRAP_IP}" ]]; then
+       printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
+       set -x
+       curl ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       set +x
+    fi
 }
 
 function joinServiceChannel() {
@@ -90,7 +105,7 @@ function joinServiceChannel() {
     return ${joinResult}
 }
 
-function registerOrgInServiceChaincode() {
+function registerOrdererInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
@@ -101,11 +116,12 @@ function registerOrgInServiceChaincode() {
     fi
 }
 
-function registerOrgInserviceChaincode() {
+function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
-    if [[ -n "$ORG_IP" || -n "$MY_IP" ]]; then # ORG_IP is deprecated
+    sleep 5
+    if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
         printYellow "\nRegister MY_IP: $MY_IP\n"
         invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
     fi

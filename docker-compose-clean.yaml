@@ -15,7 +15,7 @@ services:
     working_dir: /etc/hyperledger
     volumes:
     - /var/run/:/host/var/run/
-    - ./crypto-config:/etc/hyperledger/crypto-config
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
     - ./data:/etc/hyperledger/data
     - ./https/certs:/certs
 

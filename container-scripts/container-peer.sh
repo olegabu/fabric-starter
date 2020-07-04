@@ -73,10 +73,10 @@ function copyWellKnownTLSCerts() {
 
 function generateHostsFileIfNotExists() {
     if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
-        if [ -n "$BOOTSTRAP_IP" ]; then
+        if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" ]]; then
             echo "Generating crypto-config/hosts"
             echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
-            echo -e "\n\nDownload orderer MSP envs from $BOOTSTRAP_IP\n\n"
+#             echo -e "\n\nDownload orderer MSP certs from $BOOTSTRAP_IP\n\n"
         else
             echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts
         fi
@@ -84,7 +84,7 @@ function generateHostsFileIfNotExists() {
         echo "crypto-config/hosts file exists. Generation skipped."
     fi
 
-    if [[ -n "$BOOTSTRAP_IP" && ! -f crypto-config/hosts ]]; then
+    if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" && ! -f crypto-config/hosts ]]; then
         echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
     fi
 
