@@ -75,7 +75,7 @@ sleep 3
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
 source ${first_org}_env;
-COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d &
+COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
 
 #echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
 #docker wait post-install.${first_org}.${DOMAIN} > /dev/null
