@@ -20,10 +20,10 @@ services:
     ports:
       - ${API_PORT:-4000}:4000
       - ${WWW_PORT:-80}:80
-    command: bash -c "while [ ! -f /templates/nginx.conf ];do echo 'Wait for /templates/nginx.conf'; sleep 1;done; sleep 5; envsubst '$$ORG $$DOMAIN' < /templates/nginx.conf > /etc/nginx/conf.d/default.conf && cp /certs/${ORG}.${DOMAIN}/* /etc/nginx/conf.d/ && nginx -g 'daemon off;'"
+    command: bash -c "while [[ ! -f /templates/nginx.conf || ( ! -f /certs/${ORG}.${DOMAIN}/public.crt ) ]];do echo 'Wait for nginx.conf, public.crt'; sleep 1;done; sleep 5; envsubst '$$ORG $$DOMAIN' < /templates/nginx.conf > /etc/nginx/conf.d/default.conf && cp /certs/${ORG}.${DOMAIN}/* /etc/nginx/conf.d/ && nginx -g 'daemon off;'"
     volumes:
       - ${SSL_CERTS_PATH:-./https/certs}:/certs
-      - ./crypto-config/templates:/templates:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/templates:/templates:ro
     depends_on:
       - certs.generate
       - api
