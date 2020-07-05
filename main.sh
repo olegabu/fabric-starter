@@ -77,23 +77,25 @@ echo "docker-compose ${docker_compose_args} up -d"
 source ${first_org}_env;
 COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
 
-#echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
-#docker wait post-install.${first_org}.${DOMAIN} > /dev/null
-#
-#for org in ${@:2}; do
-#    source ${org}_env
-#    info "      Creating member organization $ORG with api $API_PORT"
-#    echo "docker-compose ${docker_compose_args} up -d"
-#    COMPOSE_PROJECT_NAME=${org} docker-compose ${docker_compose_args} up -d
-#done
+if [[ -n "$2" ]]; then
+    echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
+    docker wait post-install.${first_org}.${DOMAIN} > /dev/null
+fi
 
-#sleep 4
-#for org in "${@:2}"; do
-#    source ${org}_env
-#    orgPeer0Port=${PEER0_PORT}
+for org in ${@:2}; do
+    source ${org}_env
+    info "      Creating member organization $ORG with api $API_PORT"
+    echo "docker-compose ${docker_compose_args} up -d"
+    COMPOSE_PROJECT_NAME=${org} docker-compose ${docker_compose_args} up -d
+done
 #
-#    info "Adding $org to channel ${SERVICE_CHANNEL}"
-#    source ${first_org}_env;
-#    COMPOSE_PROJECT_NAME=$first_org ORG=$first_org ./channel-add-org.sh ${SERVICE_CHANNEL} ${org} ${orgPeer0Port}
-#done
+sleep 4
+for org in "${@:2}"; do
+    source ${org}_env
+    orgPeer0Port=${PEER0_PORT}
+
+    info "Adding $org to channel ${SERVICE_CHANNEL}"
+    source ${first_org}_env;
+    COMPOSE_PROJECT_NAME=$first_org ORG=$first_org ./channel-add-org.sh ${SERVICE_CHANNEL} ${org} ${orgPeer0Port}
+done
 
