@@ -11,7 +11,7 @@ export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
 export DOMAIN=${DOMAIN:-example.com}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
-#export LDAP_ENABLED=true
+#export LDAP_ENABLED=${LDAP_ENABLED:-true}
 export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
@@ -72,28 +72,28 @@ shopt -u nocasematch
 sleep 3
 
 
-info "Create first organization ${first_org}"
-echo "docker-compose ${docker_compose_args} up -d"
-source ${first_org}_env;
-COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
-
-echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
-docker wait post-install.${first_org}.${DOMAIN} > /dev/null
-
-for org in ${@:2}; do
-    source ${org}_env
-    info "      Creating member organization $ORG with api $API_PORT"
-    echo "docker-compose ${docker_compose_args} up -d"
-    COMPOSE_PROJECT_NAME=${org} docker-compose ${docker_compose_args} up -d
-done
-
-sleep 4
-for org in "${@:2}"; do
-    source ${org}_env
-    orgPeer0Port=${PEER0_PORT}
-
-    info "Adding $org to channel ${SERVICE_CHANNEL}"
-    source ${first_org}_env;
-    COMPOSE_PROJECT_NAME=$first_org ORG=$first_org ./channel-add-org.sh ${SERVICE_CHANNEL} ${org} ${orgPeer0Port}
-done
+#info "Create first organization ${first_org}"
+#echo "docker-compose ${docker_compose_args} up -d"
+#source ${first_org}_env;
+#COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
+#
+#echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
+#docker wait post-install.${first_org}.${DOMAIN} > /dev/null
+#
+#for org in ${@:2}; do
+#    source ${org}_env
+#    info "      Creating member organization $ORG with api $API_PORT"
+#    echo "docker-compose ${docker_compose_args} up -d"
+#    COMPOSE_PROJECT_NAME=${org} docker-compose ${docker_compose_args} up -d
+#done
+#
+#sleep 4
+#for org in "${@:2}"; do
+#    source ${org}_env
+#    orgPeer0Port=${PEER0_PORT}
+#
+#    info "Adding $org to channel ${SERVICE_CHANNEL}"
+#    source ${first_org}_env;
+#    COMPOSE_PROJECT_NAME=$first_org ORG=$first_org ./channel-add-org.sh ${SERVICE_CHANNEL} ${org} ${orgPeer0Port}
+#done
 
