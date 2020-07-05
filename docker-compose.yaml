@@ -80,7 +80,7 @@ services:
       - RAFT2_PORT=${RAFT2_PORT:-7250}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
-    command: container-scripts/install-default-chaincodes.sh
+    command: sh -c "sleep 10 && container-scripts/install-default-chaincodes.sh"
     depends_on:
       - api
       - peer0
