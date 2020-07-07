@@ -2,6 +2,7 @@
 BASEDIR=$(dirname "$0")
 
 touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # macOS workaround
+touch "crypto-config/fabric-ca-server-config-$ORG.yaml"
 
 if [ ! -f "crypto-config/hosts" ]; then #TODO
     export HOSTS_FILE_GENERATION_REQUIRED=true
@@ -21,7 +22,7 @@ function main() {
     tree crypto-config
     env|sort
     prepareLDAPBaseDN
-    envsubst < "templates/fabric-ca-server-template.yaml" > "crypto-config/fabric-ca-server-config-$ORG.yaml" #TODO:remove
+    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/fabric-ca-server-config-$ORG.yaml" #TODO:remove
     generateCryptoMaterialIfNotExists
     renameSecretKey #TODO: ?
     copyOrdererCertificatesForServingByPeerWWW
