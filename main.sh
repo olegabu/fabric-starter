@@ -48,7 +48,7 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
 fi
 
 info "Cleaning up"
-./clean.sh all
+#--./clean.sh all
 
 # Create orderer organization
 
@@ -60,27 +60,27 @@ source ${first_org}_env;
 
 info "Creating orderer organization for $DOMAIN"
 
-shopt -s nocasematch
-if [ "${ORDERER_TYPE}" == "SOLO" ]; then
-    if [[ "$BOOTSTRAP_IP" == "$MY_IP" ]]; then
-        WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
-    fi
-else
-    WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
-fi
-shopt -u nocasematch
-
-sleep 3
-
-
-info "Create first organization ${first_org}"
-echo "docker-compose ${docker_compose_args} up -d"
-
-COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
-
-echo "Start test wait." > "start-wait.txt"
-echo "Start test wait."
-nohup ./test.sh
+#shopt -s nocasematch
+#if [ "${ORDERER_TYPE}" == "SOLO" ]; then
+#    if [[ "$BOOTSTRAP_IP" == "$MY_IP" ]]; then
+#        WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+#    fi
+#else
+#    WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
+#fi
+#shopt -u nocasematch
+#
+#sleep 3
+#
+#
+#info "Create first organization ${first_org}"
+#echo "docker-compose ${docker_compose_args} up -d"
+#
+#COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
+#
+#echo "Start test wait." > "start-wait.txt"
+#echo "Start test wait."
+#nohup ./test.sh
 
 exit
 
