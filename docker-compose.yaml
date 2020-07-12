@@ -304,7 +304,7 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - /var/run/docker.sock:/var/run/docker.sock
       - ./:/testdir
-    command: sh -c "pushd /testdir; ./test.sh; popd; npm start"
+    command: sh -c "cd /testdir; ./test.sh; cd /usr/src/app; npm start"
 
   # simple http server to disseminate certificates
   www.peer:
