@@ -78,9 +78,9 @@ info "Creating orderer organization for $DOMAIN"
 #
 #COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
 #
-#echo "Start test wait." > "start-wait.txt"
-#echo "Start test wait."
-#nohup ./test.sh
+echo "Start test wait." > "start-wait.txt"
+echo "Start test wait."
+nohup ./test.sh
 
 exit
 
