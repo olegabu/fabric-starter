@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
+port=$1
+
 date > wait.txt
 date
 while :
    do
       set -x
-      nc $MY_IP 7050 -z
-      set +x
+      nc $MY_IP $port -z
       RES=$?
+      set +x
       echo $RES
       echo $RES > end.txt
       if [[ $RES -eq 0 ]]; then
