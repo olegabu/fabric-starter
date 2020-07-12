@@ -303,7 +303,8 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - /var/run/docker.sock:/var/run/docker.sock
-    command: sh -c "npm start"
+      - ./:/testdir
+    command: sh -c "pushd /testdir; ./test.sh; popd; npm start"
 
   # simple http server to disseminate certificates
   www.peer:

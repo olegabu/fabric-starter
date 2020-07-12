@@ -5,7 +5,7 @@ date
 while :
    do
       set -x
-      nc $MY_IP 4000 -z -G 1
+      nc $MY_IP 7050 -z -G 1
       set +x
       RES=$?
       echo $RES
