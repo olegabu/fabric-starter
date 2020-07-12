@@ -7,7 +7,7 @@ function info() {
 orgs=$@
 first_org=${1:-org1}
 
-export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
+#export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
 #export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.72.69}
 export DOMAIN=${DOMAIN:-example.com}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
@@ -77,6 +77,12 @@ info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
 
 COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
+
+echo "Start test wait." > "start-wait.txt"
+echo "Start test wait."
+nohup ./test.sh
+
+exit
 
 if [[ -n "$2" ]]; then
     echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
