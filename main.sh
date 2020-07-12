@@ -7,7 +7,7 @@ function info() {
 orgs=$@
 first_org=${1:-org1}
 
-#export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
+export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
 #export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.72.69}
 export DOMAIN=${DOMAIN:-example.com}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
@@ -58,6 +58,11 @@ info "Cleaning up"
 
 source ${first_org}_env;
 
+
+docker-compose -f docker-compose-deploy.yaml up -d
+nohup ./test.sh ${MY_SUBSRIPTION_HOST:-6080} &
+
+exit
 info "Creating orderer organization for $DOMAIN"
 
 shopt -s nocasematch
