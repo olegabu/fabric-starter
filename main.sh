@@ -60,7 +60,11 @@ source ${first_org}_env;
 
 
 docker-compose -f docker-compose-deploy.yaml up -d
-nohup ./test.sh ${MY_SUBSRIPTION_HOST:-6080} &
+
+tmux new-session -d -s main "./test.sh ${MY_SUBSRIPTION_HOST:-6080}"
+tmux pipe-pane -o -t main 'cat > test.log'
+
+
 
 exit
 info "Creating orderer organization for $DOMAIN"
