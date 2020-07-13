@@ -65,6 +65,8 @@ services:
       - BOOTSTRAP_IP
       - MY_IP
       - REST_API_SERVER
+      - ENROLL_ID
+      - ENROLL_SECRET
       - SUBSCRIPTION_PORT=${SUBSCRIPTION_PORT:-6080}
       - MY_SUBSCRIPTION_PORT=${MY_SUBSCRIPTION_PORT:-6080}
     working_dir: /deployer
