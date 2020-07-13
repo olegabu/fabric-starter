@@ -7,13 +7,14 @@ function info() {
 orgs=$@
 first_org=${1:-org1}
 
-#export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
-#export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.72.69}
+set -x
 export DOMAIN="${DOMAIN:-example.com}"
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
 #export LDAP_ENABLED=${LDAP_ENABLED:-true}
 export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
+
+set+x
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
 # -f environments/dev/docker-compose-debug.yaml -f https/docker-compose-generate-tls-certs-debug.yaml
@@ -47,37 +48,39 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set +x
 fi
 
-
-tmux new-session -d -s main "./deploy.sh $@"
-tmux pipe-pane -o -t main 'cat > deploy.log'
-
-
-exit
 info "Cleaning up"
 ./clean.sh all
 
 # Create orderer organization
 
-#docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-#docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
 
 
 source ${first_org}_env;
 
+IFS="(" read -r -a domainBootstrapIp <<< ${DOMAIN}
+export DOMAIN=${domainBootstrapIp[0]}
+
+if [ -n "${domainBootstrapIp[1]}" ];then
+    IFS=")" read -r -a BOOTSTRAP_IP <<< ${domainBootstrapIp[1]}
+    export BOOTSTRAP_IP
+fi
+
+export REST_API_SERVER="http://api.${ORG:-org1}.${DOMAIN:-example.com}:3000"
+echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${REST_API_SERVER}"
 
 docker-compose -f docker-compose-deploy.yaml up -d
 
-tmux new-session -d -s main "./test.sh ${MY_SUBSRIPTION_HOST:-6080}"
-tmux pipe-pane -o -t main 'cat > test.log'
+./wait-port.sh ${MY_IP} ${MY_SUBSRIPTION_HOST:-6080} # wait for external availability in clouds
 
 
-
-exit
 info "Creating orderer organization for $DOMAIN"
 
 shopt -s nocasematch
 if [ "${ORDERER_TYPE}" == "SOLO" ]; then
-    if [[ "$BOOTSTRAP_IP" == "$MY_IP" ]]; then
+    if [[ -z "$BOOTSTRAP_IP" ]]; then
         WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
     fi
 else
@@ -104,7 +107,7 @@ for org in ${@:2}; do
     echo "docker-compose ${docker_compose_args} up -d"
     COMPOSE_PROJECT_NAME=${org} docker-compose ${docker_compose_args} up -d
 done
-#
+
 sleep 4
 for org in "${@:2}"; do
     source ${org}_env

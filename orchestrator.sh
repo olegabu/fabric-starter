@@ -39,6 +39,6 @@ export LDAP_PORT_HTTP=6081
 END
 
 
-./main.sh org1 org2
+main_old.sh org1 org2
 
 
