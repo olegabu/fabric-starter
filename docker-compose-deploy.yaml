@@ -24,7 +24,7 @@ x-peer:
 services:
 
   pre-install:
-    container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: pre-deploy.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
