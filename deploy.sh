@@ -71,7 +71,7 @@ fi
 export REST_API_SERVER="http://api.${ORG:-org1}.${DOMAIN:-example.com}:3000"
 echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${REST_API_SERVER}"
 
-docker-compose -f docker-compose-deploy.yaml up -d
+BOOTSTRAP_IP=${BOOTSTRAP_IP} docker-compose -f docker-compose-deploy.yaml up -d
 
 ./wait-port.sh ${MY_IP} ${MY_SUBSRIPTION_HOST:-6080} # wait for external availability in clouds
 
@@ -94,7 +94,7 @@ sleep 3
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
 
-COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
+BOOTSTRAP_IP=${BOOTSTRAP_IP} COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
 
 if [[ -n "$2" ]]; then
     echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
