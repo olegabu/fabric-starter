@@ -44,7 +44,7 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     export CRYPTO_ALGORITHM=GOST
     export SIGNATURE_HASH_FAMILY=SM3
     export DNS_USERNAME=admin
-    export DNS_PASSWORD=${ENROLL_SECRET:-adminpw}
+    export DNS_PASSWORD="${ENROLL_SECRET:-adminpw}"
     set +x
 fi
 
