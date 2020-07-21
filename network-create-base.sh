@@ -7,6 +7,7 @@ setDocker_LocalRegistryEnv
 
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
+export WAIT_BEFORE_INSTALL_CHAINCODES=${WAIT_BEFORE_INSTALL_CHAINCODES:-60}
 
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml }
 : ${CHAINCODE_HOME:=chaincode}
