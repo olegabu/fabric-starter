@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-#source ./lib/util/util.sh
 source lib/util/util.sh
 
 : ${DOMAIN:="example.com"}

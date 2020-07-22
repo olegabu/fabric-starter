@@ -237,7 +237,6 @@ function createHostsFileInOrg() {
     done
 
     createDirInMachine $org crypto-config
-#    copyFileToMachine ${org} org_hosts crypto-config/hosts_${node}
     copyFileToMachine ${org} org_hosts crypto-config/hosts
     rm org_hosts.bak org_hosts
 
