@@ -25,7 +25,7 @@ function downloadOrdererMSP() {
     local wwwPort=${3:-80}
 
     local mspSubPath="$remoteOrdererDOMAIN"
-    #    local serverDNSName=${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
+#    local serverDNSName=${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
     wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
@@ -55,15 +55,15 @@ function certificationsToEnv() {
         org=""
     fi
     export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
-        && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
-        && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 -w 0`
+    && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
+    && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 -w 0`
 }
 
 function ordererCertificationsToEnv() {
     local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
     export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-        && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-        && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0`
+    && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
+    && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0`
 }
 
 function fetchChannelConfigBlock() {
@@ -115,9 +115,9 @@ function createConfigUpdateEnvelope() {
     fi
     echo " >> Prepare config update from $org for channel $channel"
     configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
-        && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
-        && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
-        && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=crypto-config/configtx/update.json && chown $UID crypto-config/configtx/update.json
+    && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
+    && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
+    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=crypto-config/configtx/update.json && chown $UID crypto-config/configtx/update.json
 
     echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat crypto-config/configtx/update.json`}}}" | jq . > crypto-config/configtx/update_in_envelope.json
     configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb
