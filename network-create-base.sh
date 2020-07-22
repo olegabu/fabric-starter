@@ -39,9 +39,9 @@ done
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
 
-# Create orderer organization
+# Copy files to orderer
 
-info "Creating orderer organization"
+info "Copy files to orderer"
 
 copyDirToMachine $ordererMachineName templates ${WORK_DIR}/templates
 copyDirToMachine $ordererMachineName container-scripts ${WORK_DIR}/container-scripts
@@ -53,13 +53,6 @@ connectMachine $ordererMachineName
 echo -e "${hosts}" > hosts
 
 createHostsFileInOrg $ordererMachineName orderer
-
-if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
-    ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
-    echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
-fi
-
-WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
 
 # Create member organizations
 
@@ -86,5 +79,25 @@ do
     createHostsFileInOrg $org
 
     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
+
+    if [ ${IDEMIX} == "TRUE" ]; then
+        sleep 4
+        export IDEMIX_KEYS=${WORK_DIR}/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/idemix/msp
+        docker-machine ssh ${orgMachineName} sudo mkdir -p ${IDEMIX_KEYS}
+        docker-machine ssh ${orgMachineName} sudo docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerPublicKey ${IDEMIX_KEYS}
+        docker-machine ssh ${orgMachineName} sudo docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerRevocationPublicKey ${IDEMIX_KEYS}
+        docker-machine ssh ${orgMachineName} sudo mv ${IDEMIX_KEYS}/IssuerRevocationPublicKey ${IDEMIX_KEYS}/RevocationPublicKey 
+    fi
 done
+
+# Create orderer organization
+
+info "Create orderer organization"
+
+if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
+    ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
+    echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
+fi
+
+WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
 
