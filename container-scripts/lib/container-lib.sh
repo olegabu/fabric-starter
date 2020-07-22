@@ -55,15 +55,15 @@ function certificationsToEnv() {
         org=""
     fi
     export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
-    && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
-    && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 -w 0`
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 -w 0`
 }
 
 function ordererCertificationsToEnv() {
     local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
     export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-    && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-    && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0`
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0`
 }
 
 function fetchChannelConfigBlock() {
