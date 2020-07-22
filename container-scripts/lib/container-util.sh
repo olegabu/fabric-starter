@@ -242,9 +242,9 @@ function addOrgsToChannel() {
     # First organization adds other organizations to the channel
     for org in ${orgsToAdd}
     do
-        #        local orgIp=`getMachineIp $org`
-        #        ORG=$first_org ./chaincode-invoke.sh common dns "[\"registerOrg\",\"${org}.${DOMAIN}\",\"$orgIp\"]"
-        #        sleep 5
+#        local orgIp=`getMachineIp $org`
+#        ORG=$first_org ./chaincode-invoke.sh common dns "[\"registerOrg\",\"${org}.${DOMAIN}\",\"$orgIp\"]"
+#        sleep 5
         info "Adding $org to channel $channel"
         ORG=$first_org ./channel-add-org.sh ${channel} ${org}
     done
