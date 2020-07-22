@@ -26,13 +26,11 @@ dockerImages=(\
     "hyperledger/fabric-peer:${FABRIC_VERSION}" \
     "hyperledger/fabric-ca:${FABRIC_VERSION}" \
     "hyperledger/fabric-couchdb" \
-    "nginx" 
-#\
-#    "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}" \
-#    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}"
+    "nginx" \
+    "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}" \
+    "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}"
 #    "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
     )
-
 
 function checkError() {
     local errCode=$?
