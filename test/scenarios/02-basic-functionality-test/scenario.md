@@ -50,7 +50,7 @@ The scenario provides script `create-test-network.sh` for qiuck test network dep
     * Create test network:
 
         ```bash
-        ./create-test-network.sh org1 org2.
+        ./create-test-network.sh org1 org2
         ```
 
 ## Run test scenario
