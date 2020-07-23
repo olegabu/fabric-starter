@@ -11,4 +11,4 @@ printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in chan
 setCurrentActiveOrg ${org}
 verifyChiancodeInstantiated "${channelName}" "${org}"
 
-printResultAndSetExitCode "The test chaincode installed in [${channelName}] channel by [${org}] org"
+printResultAndSetExitCode "The test chaincode instantiated in [${channelName}] channel by [${org}] org"

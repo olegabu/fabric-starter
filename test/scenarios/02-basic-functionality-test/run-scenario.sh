@@ -72,13 +72,11 @@ SCENARIO() {
         runStep "Test 'Fail to add ORG1 to the first channel created by ORG1'" \
             RUNTEST: add-org-to-channel.sh ${TEST_CHANNEL_NAME} ${org1} ${org1} \
 	        VERIFY_NON_ZERO_EXIT_CODE:
-#            VERIFY:  test-channel-add-org.sh ${TEST_CHANNEL_NAME} ${org1} ${org1}
         
 #10
         runStep "Test 'Fail to add ORG2 to the second channel created by ORG2'" \
             RUNTEST: add-org-to-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org2} \
 	    VERIFY_NON_ZERO_EXIT_CODE:
-#            VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org2}
 
 #11
         runStep "Test 'Add ORG2 to the first channel created by ORG1'" \
@@ -92,11 +90,10 @@ SCENARIO() {
             VERIFY:  test-channel-add-org.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} ${org1}
 
 # Joining channels
-#13 F
+#13 
         runStep "Test 'Can not join ORG1 to the first chanel created by ORG1'" \
             RUNTEST: join-channel.sh ${TEST_CHANNEL_NAME} ${org1} \
             VERIFY_NON_ZERO_EXIT_CODE:
-            #VERIFY:  test-join-channel.sh ${TEST_CHANNEL_NAME} ${org1}
 
 #14
         runStep "Test 'Join ORG2 to the first chanel created by ORG1'" \
@@ -126,7 +123,7 @@ SCENARIO() {
             VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org2}
 
 #19
-        runStep "Test 'Install test chaincode by ORG2 to the second channel'" \
+        runStep "Test 'Install 2nd test chaincode by ORG2 to the second channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2} \
             VERIFY: test-chaincode-installed.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
