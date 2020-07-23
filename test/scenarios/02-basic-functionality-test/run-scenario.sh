@@ -109,7 +109,6 @@ SCENARIO() {
         runStep "Test 'Can not join ORG2 to the second chanel created by ORG2'" \
             RUNTEST: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} \
             VERIFY_NON_ZERO_EXIT_CODE:
-            #VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
 # Chaincode install
 #17
