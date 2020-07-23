@@ -12,4 +12,4 @@ printToLogAndToScreenCyan "\nInvoke test chaincode on the [$channelName] channel
 setCurrentActiveOrg ${org}
 runInFabricDir ./chaincode-invoke.sh ${channelName} ${chaincodeName} \''["put","'${channelName}'","'${channelName}_'"]'\'
 
-printResultAndSetExitCode "Chaincode [${chaincode_name}] invoked sucsessfuly."
+printResultAndSetExitCode "Chaincode [${chaincodeName}] invoked sucsessfuly."
