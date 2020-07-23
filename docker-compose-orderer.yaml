@@ -33,8 +33,6 @@ services:
     command: container-scripts/container-orderer.sh
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
-#    devices:
-#      - /dev/stdout:/dev/stdout
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
