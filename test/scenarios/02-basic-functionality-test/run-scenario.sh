@@ -108,7 +108,7 @@ SCENARIO() {
             RUNTEST: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org1} \
             VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org1}
 
-#16 F
+#16
         runStep "Test 'Can not join ORG2 to the second chanel created by ORG2'" \
             RUNTEST: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} \
             VERIFY_NON_ZERO_EXIT_CODE:
