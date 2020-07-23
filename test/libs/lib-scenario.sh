@@ -4,7 +4,6 @@ IFS='[]'
 
 main() {
     declare -a RESULTS
-    stepNumber=
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
 
@@ -35,7 +34,7 @@ function runTestScenario() {
         printYellowBox "Running ${SCRIPT_FOLDER} tests"
         addTableRowSeparator
         pushd ${TEST_ROOT_DIR}/${SCRIPT_FOLDER}/ >/dev/null
-        SCENARIO ${scenarioArgs} # ${TEST_CHANNEL_NAME} ${TEST_CHAINCODE_NAME}
+        SCENARIO ${scenarioArgs} 
         popd >/dev/null
     done
     printTestResultTable
