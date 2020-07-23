@@ -12,4 +12,4 @@ printToLogAndToScreenCyan "\nQuery test chaincode on the [${channelName}] channe
 setCurrentActiveOrg ${org}
 runInFabricDir ./chaincode-query.sh ${channelName} ${chaincodeName} \'[\"range\",\"${channelName}\"]\'
 
-printResultAndSetExitCode "Chaincode [${chaincode_name}] queried sucsessfuly"
+printResultAndSetExitCode "Chaincode [${chaincodeName}] queried sucsessfuly"
