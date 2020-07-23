@@ -14,7 +14,7 @@ JWT=$(APIAuthorize ${org})
 if [ $? -eq 0 ]; then
 
     invokeTestChaincodeAPI ${channelName} ${org} {$chaincodeName} ${JWT}
-    printResultAndSetExitCode "Chaincode [${chaincode_name}] invoked sucsessfuly"
+    printResultAndSetExitCode "Chaincode [${chaincodeName}] invoked sucsessfuly"
 else
     exit 1
 fi
