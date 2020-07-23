@@ -35,5 +35,6 @@ build
 /client-node/hfc-*
 
 hosts
+data
 /test/.vscode/
 *.log
