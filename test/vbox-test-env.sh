@@ -11,7 +11,7 @@ main() {
     export DEPLOYMENT_TARGET='vbox'
     
     if [ $# -lt 1 ]; then
-        printYellow "source ./vbox-test-env <DOMAIN>" " source ./vbox-test-env.sh ${gDomain} ${gOrgs}"
+        printYellow "source ./vbox-test-env <DOMAIN>"
         return 1
     fi
     
