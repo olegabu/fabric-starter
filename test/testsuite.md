@@ -43,8 +43,14 @@ While running the sample scenario we assume that the Network with orderer and tw
 The detailed description of running test scenario scripts could be found in appropriate 'scenario.md' file in each scenario directory.
 
 The typical way to run the testing scenario is to launch the scenario script in the following way:
-```bash DEBUG=false ./run_scenario.sh [cli|api|cli,api] first_org second_org```
-Here you should provide the Fabric Starter interface types used to run basic operations in the network (cli for command-line and api for REST API interface, one or both, comma-separated), and names of two organizations participating in the testing procedure.
+
+```bash
+
+DEBUG=false ./run_scenario.sh [cli|api|cli,api] first_org second_org
+
+```
+
+Here you should provide one of the Fabric Starter interface types used to run basic operations in the network (cli for command-line and api for REST API interface, one or both, comma-separated), and names of two organizations participating in the testing procedure.
 
 The DEBUG environment variable being set to 'true' makes the scenario print all the debug information of the Fabric and the Test Suite both on your terminal and to the log file (fs_network_test.log). While the DEBUG var being set to 'false' (by default), only the brief details are printed on your terminal but all the debug data are still stored in the log file.
 
