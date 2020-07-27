@@ -92,7 +92,9 @@ The typical way to run the testing scenario is the following, providing interfac
 
 By defalt all the detailed debug information is written only into the log file. You may set the DEBUG environment variable to 'true' to print debug info on the terminal and into the fs_network_test.log log file:
 
-```
+```bash
+
+DEBUG=true ./scenarios/02-basic-functionality-test/run-scenario.sh api org1 org2
 
 ```
 
