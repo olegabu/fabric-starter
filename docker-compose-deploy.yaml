@@ -69,6 +69,8 @@ services:
       - ENROLL_SECRET
       - SUBSCRIPTION_PORT=${SUBSCRIPTION_PORT:-6080}
       - MY_SUBSCRIPTION_PORT=${MY_SUBSCRIPTION_PORT:-6080}
+      - REST_API_SERVER=http://api.${ORG}.${DOMAIN}:4000
+      - DEFAULT_AUTO_EXECUTION=false
     working_dir: /deployer
     volumes:
       - /var/run/:/host/var/run/

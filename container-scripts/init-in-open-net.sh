@@ -31,18 +31,18 @@ function main() {
     fi
     createServiceChannel ${DNS_CHANNEL}
     createResult=$?
-    requestInviteToServiceChannel ${createResult} ${DNS_CHANNEL}
+    requestInviteToServiceChannel ${createResult} ${DNS_CHANNEL} #todo
     sleep 3
     joinServiceChannel ${DNS_CHANNEL}
     joinResult=$?
 
     sleep 3
-    if [[ $createResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
+    if [[ $createResult -eq 0 ]]; then
         instantiateChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
         registerOrdererInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
     fi
 
-    if [[ $joinResult -eq 0 && -n "$BOOTSTRAP_IP" ]]; then
+    if [[ $joinResult -eq 0 ]]; then
         registerOrgInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
     fi
 }
@@ -81,9 +81,8 @@ function requestInviteToServiceChannel() {
 
     if [[ $creationResult -ne 0 &&  -n "${BOOTSTRAP_IP}" ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
-       set -x
+       echo "curl --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d {\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
        curl --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
-       set +x
     fi
 }
 
@@ -114,9 +113,9 @@ function registerOrdererInServiceChaincode() {
     local serviceChaincode=${2:?Service chaincode is required}
 
     sleep 5
-    if [ -n "$BOOTSTRAP_IP" ]; then
-        printYellow "\nRegister BOOTSTRAP_IP: $BOOTSTRAP_IP\n"
-        invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$BOOTSTRAP_IP\"]"
+    if [[ -z "$BOOTSTRAP_IP" && -n "$MY_IP" ]]; then # TODO:
+        printYellow "\nRegister ORDERER: "$MY_IP"\n"
+        invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$MY_IP\"]"
     fi
 }
 
