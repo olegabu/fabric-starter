@@ -74,7 +74,7 @@ source ./vbox-test-env.sh example.com
 
 for virtual box-based network.
 
-* Deploy the network using Fabric Starter scripts or run the Test Suite script to deploy the network with two organizations:
+* Deploy the network using Fabric Starter scripts or run the Test Suite script to deploy the network with two organizations (if you have not done it yet):
 
 ```bash
 ./scenarios/01-fabric-starter-acceptance-test/create-test-network.sh org1 org2
