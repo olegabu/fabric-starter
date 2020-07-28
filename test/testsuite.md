@@ -2,23 +2,27 @@
 
 The Hyperledger Fabric Starter Testing Suite is a basic set of scripts and libraries designed to verify the correctness of Hyperledger Fabric network installation using Fabric Starter, as well as the essential functionality of a deployed network.
 
-The Testing Suite verifies the operation of Fabric Network deployed locally or in docker-machine multihost environment. You need a Network with two organizations to run test scenarios.
+The Testing Suite verifies the operation of Fabric Network deployed locally or in docker-machine multihost environment. You need a Network at least with two organizations to run test scenarios.
 
 ## Scenarios
 
-The scenario is a shell script, which calls in sequence a set of code snippets, which perform some basic operations and verify their results.
+The scenario is a shell script, which calls in sequence a set of code snippets that execute some elementary network operations and verify their results.
 
 ## Functionality tested
 
-The Testing Suite includes two scenarios out of the box.
+The Testing Suite includes two out-of-the-box scenarios. They can be found in the ./test/scenarios directory. Description of each scenario is stored in 'scenario.md' file in each scenario's directory. Use run-scenario.sh script to run the scenario.
 
-The first one implements a simple acceptance test for a network with two organizations.
+### Acceptance test scenario
+
+The first scenario implements a simple acceptance test for a network with two organizations.
 
 The checkpoints tested:
 
 * Hyperledger Fabric containers for orderer and organizations are up
 * Service channels were created
 * Both organizations were joined to the service channels
+
+### Basic functionality test scenario
 
 The second scenario tests the basic functionality of a network with two organizations.
 
@@ -33,7 +37,7 @@ The checkpoints tested:
 
 ## Testing Suite components
 
-The components of the Testing Suite components are located in the ```./test``` folder of the Fabric Starter. The Suite can interact with the Fabric Starter in two ways: via the CLI or via the REST Fabric Starter interfaces. You can choose one or both of them when running tests.
+The components of the Testing Suite are located in the ```./test``` folder of the Fabric Starter. The Suite can interact with the Fabric Starter in two ways: via the CLI or via the REST Fabric Starter interfaces. You can choose one or both of them when running tests.
 
 ```bash
 test
@@ -50,7 +54,11 @@ test
 
 ## Prerequisites
 
-To run tests in the Network we need orderer and two organizations, which have been deployed locally or on two remote machines. The network can be deployed by means of standard Fabric Starter deployment scripts or using our 'create-test-network.sh' script in the first scenario folder. Actually, any custom Network could be tested. You should have at hand some basic information on your deployment before running tests, e.g. organization names, domain or docker-machine names.
+The most steps of the included scenarios require the orderer and two organizations, which have been deployed locally or on two remote machines.However for some test in the Suite the configuration of the Network may differ.
+
+The Network can be deployed by means of standard Fabric Starter deployment scripts or using the provided 'create-test-network.sh' script in the first scenario folder. The script creates the Network with one orderer and two organizations. Actually, any custom Network can be tested.
+
+You should have at hand some basic information on your deployment before running tests, e.g. organization names, domain or docker-machine names.
 
 ## Quick start. Run scenarios
 
@@ -80,7 +88,7 @@ for virtual box-based network.
 ./scenarios/01-fabric-starter-acceptance-test/create-test-network.sh org1 org2
 ```
 
-* Now proceed with test scenarios. Description of each scenario is stored in 'scenario.md' file in each scenario's directory.
+* Now proceed with test scenarios.
 
 The typical way to run the test scenario is the following (you should provide interface type and org's names):
 
@@ -98,7 +106,7 @@ DEBUG=true ./scenarios/02-basic-functionality-test/run-scenario.sh api org1 org2
 
 ```
 
-At the end of a scenario execution you will get the output with the description of all the tests performed (and also their exit codes) in a summary table:
+At the end of a scenario execution you will get the summary table with the description of all the tests performed (and also their exit codes):
 
 ```bash
 STEP       TEST NAME                                                   RESULT     TIME ELAPSED (s)
