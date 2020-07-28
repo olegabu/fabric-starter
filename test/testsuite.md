@@ -80,9 +80,9 @@ for virtual box-based network.
 ./scenarios/01-fabric-starter-acceptance-test/create-test-network.sh org1 org2
 ```
 
-* Now proceed with the test scenarios. Description of each scenario is stored in 'scenario.md' file in scenario's directory.
+* Now proceed with test scenarios. Description of each scenario is stored in 'scenario.md' file in each scenario's directory.
 
-The typical way to run the testing scenario is the following, providing interface type and org's names:
+The typical way to run the testing scenario is the following (you should provide interface type and org's names):
 
 ```bash
 
