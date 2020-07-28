@@ -6,9 +6,8 @@ The Testing Suite verifies the operation of Fabric Network deployed locally or i
 
 ## Scenarios
 
-Scenario is a set of (dependent) scripts running some basic operations in the Network and verifying the results and the performance of the Hyperledger Fabric Network.
+Scenario is a shel script, which squentially calls a set of code snippets, wich perform some basic operations in the and verify the results.
 
-Testing scenario calls a chain of scritps each performing a simple operation or analyzing it's successful completion.
 
 ## Features and functions to be tested
 
