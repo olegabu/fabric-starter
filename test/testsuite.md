@@ -31,9 +31,9 @@ The checkpoints tested:
 * New chaincode can be installed and instantiated in a channel
 * Data stored in a chaincode are visible for both orgs
 
-## Test Suite components
+## Testing Suite components
 
-The Fabric starter Test suite components are located in the ```./test``` folder of the Fabric Starter. The Suite can interact with the Fabric Starter in two ways: via the CLI or via the REST Fabric Starter interfaces. You can choose one or both of them for testing procedure.
+The Fabric Starter Testing Suite components are located in the ```./test``` folder of the Fabric Starter. The Suite can interact with the Fabric Starter in two ways: via the CLI or via the REST Fabric Starter interfaces. You can choose one or both of them when running tests.
 
 ```bash
 test
