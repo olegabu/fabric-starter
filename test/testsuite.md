@@ -10,13 +10,13 @@ Scenario is a shell script, which squentially calls a set of code snippets, whic
 
 ## Functionality tested
 
-The Suite includes two scenarios.
+The Testing Suite includes two scenarios out of the box.
 
 The first one implements a simple acceptance test for a network with two organizations.
 
 The checkpoints tested:
 
-* Hyperledger containers for orderer and organizations are up
+* Hyperledger Fabric containers for orderer and organizations are up
 * Service channels were created
 * Both organizations were joined to the service channels
 
