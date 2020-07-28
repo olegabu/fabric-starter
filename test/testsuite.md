@@ -6,7 +6,7 @@ The Testing Suite verifies the operation of Fabric Network deployed locally or i
 
 ## Scenarios
 
-Scenario is a shel script, which squentially calls a set of code snippets, wich perform some basic operations in the and verify the results.
+Scenario is a shell script, which squentially calls a set of code snippets, which perform some basic operations in the and verify the results.
 
 
 ## Features and functions to be tested
