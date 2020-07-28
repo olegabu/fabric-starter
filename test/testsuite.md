@@ -2,7 +2,7 @@
 
 The Hyperledger Fabric Starter Testing Suite is a basic set of scripts and libraries designed to verify the correctness of Hyperledger Fabric network installation using Fabric Starter, as well as the essential functionality of a deployed network.
 
-The Test Suite checks the operation of Fabric Network deployed locally or in docker-machine multihost environment. As a rule two organizations of the Network are involved in the testing process.
+The Testing Suite verifies the operation of Fabric Network deployed locally or in docker-machine multihost environment. As a rule two organizations of the Network are involved in the testing process.
 
 ## Scenarios
 
