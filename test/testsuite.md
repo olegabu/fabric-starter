@@ -50,7 +50,7 @@ test
 
 ## Prerequisites
 
-To run tests in the Network we need orderer and two organizations, which has been deployed locally or on two remote machines. The network can be deployed by means of standard Fabric Starter deployment scripts or using our 'create-test-network.sh' script in the first scenario folder. Actually, any custom Network could be tested. You should have at hand some basic information on your deployment before running tests, e.g. organization names, domain or docker-machine names.
+To run tests in the Network we need orderer and two organizations, which have been deployed locally or on two remote machines. The network can be deployed by means of standard Fabric Starter deployment scripts or using our 'create-test-network.sh' script in the first scenario folder. Actually, any custom Network could be tested. You should have at hand some basic information on your deployment before running tests, e.g. organization names, domain or docker-machine names.
 
 ## Quick start. Run scenarios
 
