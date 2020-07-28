@@ -8,7 +8,7 @@ The Testing Suite verifies the operation of Fabric Network deployed locally or i
 
 Scenario is a shell script, which squentially calls a set of code snippets, which perform some basic operations in the and verify the results.
 
-## Features and functions to be tested
+## Functionality tested
 
 The Suite includes two scenarios.
 
