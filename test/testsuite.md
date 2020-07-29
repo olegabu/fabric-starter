@@ -98,6 +98,8 @@ The typical way to run the test scenario is the following:
 ./scenarios/01-fabric-starter-acceptance-test/run-scenario.sh cli org1 org2
 ```
 
+* Debug information
+
 All the detailed debug information is written only into the log file by default. You may set the DEBUG environment variable to 'true' to print debug info on the terminal and into the fs_network_test.log log file:
 
 ```bash
