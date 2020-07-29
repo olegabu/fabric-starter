@@ -10,7 +10,7 @@ The scenario is a shell script, which calls in sequence a set of code snippets t
 
 ## Functionality tested
 
-The Testing Suite includes two out-of-the-box scenarios. They can be found in the ./test/scenarios directory. Description of each scenario is stored in 'scenario.md' file in each scenario's directory. Use run-scenario.sh script to run the scenario.
+The Testing Suite includes two out-of-the-box scenarios. They can be found in the './test/scenarios' directory. Description of each scenario is stored in 'scenario.md' file in each scenario's directory. Use run-scenario.sh script to run the scenario.
 
 ### Acceptance test scenario
 
@@ -68,19 +68,19 @@ You should have at hand some basic information on your deployment before running
 cd ./test
 ```
 
-* Select Fabric interface type (CLI or REST) and your deployment type (local or virtual box machines), the domain name and run in Fabric Starter directory:
+* Choose local or multihost network type to test. In the Fabric Starter Testing Suite directory run
 
 ```bash
 source ./local-test-env.sh example.com
 ```
 
-for local network or
+command for local network or
 
 ```bash
 source ./vbox-test-env.sh example.com
 ```
 
-for virtual box-based network.
+for virtual box-based (multihost) network. Provide the domain name as an argument (here 'example.com').
 
 * Deploy the network using Fabric Starter scripts or run the Test Suite script to deploy the network with two organizations (if you have not done it yet):
 
@@ -90,20 +90,18 @@ for virtual box-based network.
 
 * Now proceed with test scenarios.
 
-The typical way to run the test scenario is the following (you should provide interface type and org's names):
+The first argument of the scenario script is the Fabric Starter interface type to be used: 'cli' for the command line, and 'api' - for the REST. You can provide one of them or both, comma separated. Next arguments are the name of the organizations, which you choose for testing.
+
+The typical way to run the test scenario is the following:
 
 ```bash
-
 ./scenarios/01-fabric-starter-acceptance-test/run-scenario.sh cli org1 org2
-
 ```
 
 All the detailed debug information is written only into the log file by default. You may set the DEBUG environment variable to 'true' to print debug info on the terminal and into the fs_network_test.log log file:
 
 ```bash
-
 DEBUG=true ./scenarios/02-basic-functionality-test/run-scenario.sh api org1 org2
-
 ```
 
 At the end of a scenario execution you will get the summary table with the description of all the tests performed (and also their exit codes):
@@ -125,4 +123,3 @@ Total tests duration: 5.419 seconds
 Total errors: 0
 See debug log /home/fabric/sample/fabric-starter/test/fs_network_test.log
 ```
-
