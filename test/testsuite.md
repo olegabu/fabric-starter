@@ -90,7 +90,7 @@ for virtual box-based (multihost) network. Provide the domain name as an argumen
 
 * Now proceed with test scenarios.
 
-The first argument of the scenario script is the Fabric Starter interface type to be used: 'cli' for the command line, and 'api' - for the REST. You can provide one of them or both, comma separated. Next arguments are the name of the organizations, which you choose for testing.
+The first argument of the scenario script is the Fabric Starter interface type to be used: 'cli' for the command line, and 'api' for the REST. You can provide one of them or both, comma separated. Next arguments are the name of the organizations, which you choose for testing.
 
 The typical way to run the test scenario is the following:
 
