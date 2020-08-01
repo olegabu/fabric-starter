@@ -9,7 +9,7 @@ first_org=${1:-org1}
 
 #export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.119.176}
 #export BOOTSTRAP_IP=${BOOTSTRAP_IP:-37.18.72.69}
-export DOMAIN="${DOMAIN:-example.com}"
+#export DOMAIN="${DOMAIN:-example.com}"
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
 #export LDAP_ENABLED=${LDAP_ENABLED:-true}

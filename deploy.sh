@@ -8,7 +8,7 @@ orgs=$@
 first_org=${1:-org1}
 
 set -x
-export DOMAIN="${DOMAIN:-example.com}"
+#export DOMAIN="${DOMAIN:-example.com}"
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
 #export LDAP_ENABLED=${LDAP_ENABLED:-true}
@@ -16,8 +16,8 @@ export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
 
 set +x
 
-# docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
+#docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "}
 
 # -f environments/dev/docker-compose-debug.yaml -f https/docker-compose-generate-tls-certs-debug.yaml
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
@@ -57,7 +57,7 @@ info "Cleaning up"
 
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
-docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
+#docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
 
 
 source ${first_org}_env;
@@ -73,9 +73,10 @@ fi
 export REST_API_SERVER="http://api.${ORG:-org1}.${DOMAIN:-example.com}:3000"
 echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${REST_API_SERVER}"
 
-BOOTSTRAP_IP=${BOOTSTRAP_IP} docker-compose -f docker-compose-deploy.yaml up -d
+#BOOTSTRAP_IP=${BOOTSTRAP_IP} docker-compose -f docker-compose-deploy.yaml up -d
+#nc -l ${MY_SUBSRIPTION_PORT:-6080} &
 
-./wait-port.sh ${MY_IP} ${MY_SUBSRIPTION_HOST:-6080} # wait for external availability in clouds
+#./wait-port.sh ${MY_IP} ${WWW_PORT} # wait for external availability in clouds
 
 
 info "Creating orderer organization for $DOMAIN"
