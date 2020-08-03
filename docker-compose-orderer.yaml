@@ -10,7 +10,7 @@ volumes:
 
 services:
 
-  pre-install:
+  pre-install.orderer:
     container_name: pre-install.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
@@ -38,7 +38,7 @@ services:
       - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
-  post-install:
+  post-install.orderer:
     container_name:  post-install.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
@@ -77,7 +77,7 @@ services:
     working_dir: /etc/hyperledger
     command: orderer
     depends_on:
-      - pre-install
+      - pre-install.orderer
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
@@ -116,8 +116,8 @@ services:
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
     working_dir: /etc/hyperledger
     depends_on:
-      - pre-install
-      - post-install
+      - pre-install.orderer
+      - post-install.orderer
     volumes:
       - ./crypto-config/hosts_orderer:/etc/hosts
       - ./crypto-config:/etc/hyperledger/crypto-config
@@ -191,7 +191,7 @@ services:
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
-    - post-install
+    - post-install.orderer
 
 networks:
   default:

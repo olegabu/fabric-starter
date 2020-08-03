@@ -26,6 +26,6 @@ x-generate: &generate-defaults
 
 services:
 
-  post-install:
+  post-install.orderer:
     << : *generate-defaults
     command: sh -c '[ -n "$${ORDERER}" ] && container-scripts/consortium-reconfigure.sh || { container-scripts/install-default-chaincodes.sh; container-scripts/init-in-open-net.sh; }'

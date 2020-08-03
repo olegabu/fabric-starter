@@ -6,13 +6,13 @@ version: '3.7'
 
 services:
 
-  pre-install:
+  pre-install.orderer:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
       - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
       - ${WORK_DIR:-/home/docker}/templates:/etc/hyperledger/templates # for local debug
 
-  post-install:
+  post-install.orderer:
     volumes:
       - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
