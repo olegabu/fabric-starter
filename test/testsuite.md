@@ -31,9 +31,9 @@ The checkpoints tested:
 * Network is up and running
 * New channels can be created and are visible in appropriate organizations
 * Organization can create a channel and can invite another org to the channel
-* Invited organizations can join certain channels
+* Invited organizations can join respective channels
 * New chaincode can be installed and instantiated in a channel
-* Data stored in a chaincode are visible for both organizations
+* Data stored in a chaincode are visible to both organizations
 
 ## Testing Suite components
 
@@ -54,15 +54,15 @@ test
 
 ## Prerequisites
 
-The most steps of the included scenarios require the orderer and two organizations, which have been deployed locally or on two remote machines.However for some test in the Suite the configuration of the Network may differ.
+Most of the steps in included scenarios require the orderer and two organizations, which have been deployed locally or on two remote machines. However, for some tests in the Suite the configuration of the Network may be different.
 
-The Network can be deployed by means of standard Fabric Starter deployment scripts or using the provided 'create-test-network.sh' script in the first scenario folder. The script creates the Network with one orderer and two organizations. Actually, any custom Network can be tested.
+The Network can be deployed using standard Fabric Starter deployment scripts or using the provided 'create-test-network.sh' script located in the first scenario folder. The script creates the Network with one orderer and two organizations. Actually, any custom Network can be tested.
 
 You should have at hand some basic information on your deployment before running tests, e.g. organization names, domain or docker-machine names.
 
 ## Quick start. Run scenarios
 
-* Change working directory to the Fabric starter test directory:
+* Change working directory to the Fabric starter 'test' directory:
 
 ```bash
 cd ./test
@@ -88,9 +88,9 @@ for virtual box-based (multihost) network. Provide the domain name as an argumen
 ./scenarios/01-fabric-starter-acceptance-test/create-test-network.sh org1 org2
 ```
 
-* Now proceed with test scenarios.
+* Now proceed with test scenarios
 
-The first argument of the scenario script is the Fabric Starter interface type to be used: 'cli' for the command line, and 'api' for the REST. You can provide one of them or both, comma separated. Next arguments are the name of the organizations, which you choose for testing.
+The first argument of the scenario script is the Fabric Starter interface type to be used: 'cli' for the command line, and 'api' for the REST. You can provide one of them or both, comma separated. Next arguments are names of the organizations, which you choose for testing.
 
 The typical way to run the test scenario is the following:
 
@@ -100,7 +100,7 @@ The typical way to run the test scenario is the following:
 
 * Debug information
 
-All the detailed debug information is written only into the log file by default. You may set the DEBUG environment variable to 'true' to print debug info on the terminal and into the 'fs_network_test.log' log file:
+All the detailed debug information is written only into the log file by default (the path to that file is provided un the end of the summary table). You may set the DEBUG environment variable to 'true' to print debug info on the terminal and into the 'fs_network_test.log' log file:
 
 ```bash
 DEBUG=true ./scenarios/02-basic-functionality-test/run-scenario.sh api org1 org2
