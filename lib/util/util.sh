@@ -251,7 +251,7 @@ function addOrgsToChannel() {
         info "Adding $org to channel $channel"
         [ "$org" != "$first_org" ] && ORG=$first_org ./channel-add-org.sh ${channel} ${org}
     done
-
+    sleep 4
     # All organizations join the channel
     for org in ${orgsToAdd}
     do

@@ -1,7 +1,7 @@
 package org.hyperledger.fabric.tokenTransfer.contract
 
-import com.github.apolubelov.fabric.contract.ContractContext
-import com.github.apolubelov.fabric.contract.annotation.ContractInit
+import org.enterprisedlt.fabric.contract.ContractContext
+import org.enterprisedlt.fabric.contract.annotation.ContractInit
 import org.hyperledger.fabric.tokenTransfer.Main
 
 

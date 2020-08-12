@@ -18,6 +18,13 @@ first_org=${orgs%% *}
 # Set WORK_DIR as home dir on remote machine
 setMachineWorkDir $first_org
 
+for org in ${orgs}
+do
+    connectMachine ${org}
+    ./chaincode-install.sh dns 1.0 /opt/chaincode/node/dns node
+
+done
+
 # Add member organizations to the consortium
 connectMachine $ordererMachineName
 
@@ -48,19 +55,20 @@ sleep 5
 # First organization creates entries in dns chaincode
 
 ip=$(getMachineIp $ordererMachineName)
-./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${DOMAIN} $ordererMachineName.${DOMAIN}\"]"
+#./chaincode-invoke.sh common dns "[\"put\",\"$ip\",\"www.${DOMAIN} $ordererMachineName.${DOMAIN}\"]"
 
 for org in ${orgs}
 do
     ip=$(getMachineIp ${org})
-#    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" // TODO: update registerOrg
-    value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
-    hostOrg=`getHostOrgForOrg $org`
-    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} $ordererMachineName.${DOMAIN}"
-    value="$value\""
+    connectMachine ${org}
+    ./chaincode-invoke.sh common dns "[\"registerOrg\", \"${org}.${DOMAIN}\", \"$ip\"]" # TODO: update registerOrg
+#    value="\"peer0.${org}.${DOMAIN} www.${org}.${DOMAIN}"
+#    hostOrg=`getHostOrgForOrg $org`
+#    [ -n "$hostOrg" ] && value="$value www.${DOMAIN} $ordererMachineName.${DOMAIN}"
+#    value="$value\""
 
-    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
-    sleep 10
+#    ./chaincode-invoke.sh common dns "[\"put\",\"$ip\",$value]"
+#    sleep 10
 done
 
 sleep 20

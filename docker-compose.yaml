@@ -75,7 +75,7 @@ services:
       - RAFT1_PORT=${RAFT1_PORT:-7150}
       - RAFT2_PORT=${RAFT2_PORT:-7250}
     working_dir: /etc/hyperledger
-    command: container-scripts/install-default-chaincodes.sh
+    command: sh -c "sleep ${WAIT_BEFORE_INSTALL_CHAINCODES:-10} && container-scripts/install-default-chaincodes.sh"
     depends_on:
       - api
       - peer0
