@@ -23,7 +23,8 @@ unset ORG COMPOSE_PROJECT_NAME
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+export ORDERER_WWW_PORT=79
+WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Create member organizations
 

@@ -28,11 +28,11 @@ services:
       - RAFT2_PORT=${RAFT2_PORT:-7250}
       - RAFT_NODES_COUNT=${RAFT_NODES_COUNT:-1}
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     command: container-scripts/container-orderer.sh
     volumes:
-      - /var/run/:/host/var/run/
-      - ./crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -43,8 +43,9 @@ services:
     environment:
       - ORDERER=true
       - CONSORTIUM_CONFIG
-      - CORE_PEER_LOCALMSPID=orderer.${DOMAIN:-example.com}
+      - CORE_PEER_LOCALMSPID=${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}/msp
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     #    command: container-scripts/consortium-reconfigure.sh
     depends_on:
@@ -66,7 +67,7 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
-      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9090
+      - ORDERER_OPERATIONS_LISTENADDRESS=${ORDERER_OPERATIONS_LISTENADDRESS:-0.0.0.0:9090}
       - ORDERER_OPERATIONS_TLS_ENABLED=false
       - ORDERER_METRICS_PROVIDER=prometheus
 
@@ -81,11 +82,11 @@ services:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-100m}"
         max-file: "5"
-
     volumes:
-      - ./crypto-config/configtx:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/configtx:/etc/hyperledger/configtx
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
       - orderer:/var/hyperledger/production/orderer
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 
 
   cli.orderer:
@@ -98,7 +99,7 @@ services:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.pb
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}/genesis.pb
       - ORDERER_GENERAL_LOCALMSPID=orderer.${DOMAIN:-example.com}
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/crypto/orderer/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
@@ -113,19 +114,19 @@ services:
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_DOMAIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
+      - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     depends_on:
       - pre-install
       - post-install
     volumes:
-      - ./crypto-config/hosts_orderer:/etc/hosts
-      - ./crypto-config:/etc/hyperledger/crypto-config
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${DOMAIN:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
-#      - ./crypto-config/hosts:/etc/hosts
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/${DOMAIN:-orderer}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/users/Admin@${DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server
@@ -184,13 +185,14 @@ services:
   www.orderer:
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     container_name: www.${DOMAIN:-example.com}
+    restart: always
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
-    - post-install
+    - pre-install
 
 networks:
   default:
