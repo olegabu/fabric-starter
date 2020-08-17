@@ -14,7 +14,7 @@ downloadOrdererMSP ${NEWORDERER_MSP_NAME} ${NEWORDERER_DOMAIN} ${NEWORDERER_WWW_
 
 certificationsToEnv orderer ${NEWORDERER_DOMAIN}
 
-insertObjectIntoChannelConfig ${SYSTEM_CHANNEL_ID} orderer.${NEWORDERER_DOMAIN} 'templates/raft/Orderer.json'
+insertObjectIntoChannelConfig ${SYSTEM_CHANNEL_ID} ${NEWORDERER_MSP_NAME}.${NEWORDERER_DOMAIN} 'templates/raft/Orderer.json'
 
 difference=`diff crypto-config/configtx/config.json crypto-config/configtx/updated_config.json`
 

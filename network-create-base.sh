@@ -7,6 +7,7 @@ setDocker_LocalRegistryEnv
 
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
+export WAIT_BEFORE_INSTALL_CHAINCODES=${WAIT_BEFORE_INSTALL_CHAINCODES:-60}
 
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml }
 : ${CHAINCODE_HOME:=chaincode}
@@ -35,7 +36,6 @@ for org in ${orgs}; do
     hosts="${hosts}\n${ip} www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}"
 done
 
-
 info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
 cat hosts
 
@@ -48,6 +48,9 @@ copyDirToMachine $ordererMachineName container-scripts ${WORK_DIR}/container-scr
 
 connectMachine $ordererMachineName
 
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
+docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
+
 ./clean.sh
 # Copy generated hosts file to the host machines
 echo -e "${hosts}" > hosts
@@ -56,48 +59,98 @@ createHostsFileInOrg $ordererMachineName orderer
 
 # Create member organizations
 
-for org in ${orgs}
-do
+function startOrg() {
+    local org=${1?: org is required}
+    local ordererMachineName=${2?: ordererMachineName is required}
 
     info "Copying custom chaincodes and middleware to remote machine ${machine}"
-    copyDirToMachine ${org} templates ${WORK_DIR}/templates
-    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
-    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
-    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
+    copyDirToMachine ${org} templates ${WORK_DIR}
+    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}
+    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}
+    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}
+#
+#    info "Copying dns chaincode and middleware to remote machine ${machine}"
+#    orgMachineName=`getDockerMachineName $org`
+#    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
+#    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
+#    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
 
-    info "Copying dns chaincode and middleware to remote machine ${machine}"
-    orgMachineName=`getDockerMachineName $org`
-    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
-    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
-    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
 
     info "Creating member organization $org"
-    connectMachine ${org}
     export MY_IP=$(getMachineIp ${org})
-    [[ -z `getHostOrgForOrg $org` && ("${org}" != "$ordererMachineName") ]] && ./clean.sh && sleep 2
+    if [[ -z `getHostOrgForOrg $org` && ("${org}" != "$ordererMachineName") ]]; then
+        bash -c "source lib.sh; \
+         connectMachine ${org}; \
+         docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
+         docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
+        ./clean.sh; \
+        sleep 1; \
+        "
+    fi
+
     echo -e "${hosts}" > hosts
     createHostsFileInOrg $org
 
-    docker-compose ${DOCKER_COMPOSE_ARGS} up -d
+    bash -c "source lib.sh; connectMachine ${org}; MY_IP=$(getMachineIp ${org}) ORDERER_WWW_PORT=${ORDERER_WWW_PORT} docker-compose ${DOCKER_COMPOSE_ARGS} up -d; "
 
-    if [ ${IDEMIX} == "TRUE" ]; then
-        sleep 4
-        export IDEMIX_KEYS=${WORK_DIR}/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/idemix/msp
-        docker-machine ssh ${orgMachineName} sudo mkdir -p ${IDEMIX_KEYS}
-        docker-machine ssh ${orgMachineName} sudo docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerPublicKey ${IDEMIX_KEYS}
-        docker-machine ssh ${orgMachineName} sudo docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerRevocationPublicKey ${IDEMIX_KEYS}
-        docker-machine ssh ${orgMachineName} sudo mv ${IDEMIX_KEYS}/IssuerRevocationPublicKey ${IDEMIX_KEYS}/RevocationPublicKey 
-    fi
+}
+
+
+for org in ${orgs}
+do
+
+#    info "Copying custom chaincodes and middleware to remote machine ${machine}"
+#    copyDirToMachine ${org} templates ${WORK_DIR}/templates
+#    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
+#    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
+#    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
+#
+#    info "Copying dns chaincode and middleware to remote machine ${machine}"
+#    orgMachineName=`getDockerMachineName $org`
+#    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
+#    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
+#    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
+#
+#    info "Creating member organization $org"
+#    connectMachine ${org}
+#    export MY_IP=$(getMachineIp ${org})
+#    [[ -z `getHostOrgForOrg $org` && ("${org}" != "$ordererMachineName") ]] && ./clean.sh && sleep 2
+#    echo -e "${hosts}" > hosts
+#    createHostsFileInOrg $org
+#
+#    connectMachine ${org}
+#    ORDERER_WWW_PORT=${ORDERER_WWW_PORT} docker-compose ${DOCKER_COMPOSE_ARGS} up -d
+    startOrg ${org} ${ordererMachineName}
+    procId=$!
+    sleep 1
 done
 
-# Create orderer organization
+wait ${procId}
 
-info "Create orderer organization"
+echo -e "\n\nCreate BASE completed\n"
 
-if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
-    ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
-    echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
-fi
 
-WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
+
+#     docker-compose ${DOCKER_COMPOSE_ARGS} up -d
+
+#     if [ ${IDEMIX} == "TRUE" ]; then
+#         sleep 4
+#         export IDEMIX_KEYS=${WORK_DIR}/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/idemix/msp
+#         docker-machine ssh ${orgMachineName} sudo mkdir -p ${IDEMIX_KEYS}
+#         docker-machine ssh ${orgMachineName} sudo docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerPublicKey ${IDEMIX_KEYS}
+#         docker-machine ssh ${orgMachineName} sudo docker cp ca.${ORG}.${DOMAIN}:/etc/hyperledger/fabric-ca-server/IssuerRevocationPublicKey ${IDEMIX_KEYS}
+#         docker-machine ssh ${orgMachineName} sudo mv ${IDEMIX_KEYS}/IssuerRevocationPublicKey ${IDEMIX_KEYS}/RevocationPublicKey 
+#     fi
+# done
+
+# # Create orderer organization
+
+# info "Create orderer organization"
+
+# if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
+#     ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
+#     echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
+# fi
+
+# WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
 

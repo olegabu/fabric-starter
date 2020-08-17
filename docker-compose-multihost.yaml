@@ -15,8 +15,7 @@ services:
   post-install:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
-      - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
-      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
 
   ca:
     volumes:
@@ -25,16 +24,16 @@ services:
 
   peer0:
     volumes:
-      - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     ports:
       - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 
   cli.peer:
     volumes:
-      - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
-      - ${WORK_DIR-/home/docker}/chaincode:/opt/chaincode
-      - ${WORK_DIR-/home/docker}/chaincode/go:/opt/gopath/src
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
+      - ${WORK_DIR-/home/docker}/${CHAINCODE_HOME-chaincode}:/opt/chaincode
+      - ${WORK_DIR-/home/docker}/${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
       - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
 #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
 #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
@@ -49,11 +48,13 @@ services:
       - MULTIHOST=true
     #      - P=${WORK_DIR-/home/docker}
     volumes:
-      - ${WORK_DIR-/home/docker}/crypto-config/hosts_${ORG:-org1}:/etc/hosts
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts_orderer
       - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
-      - ${WORK_DIR-/home/docker}/webapp:/usr/src/app/webapp
-      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
+      - ${WORK_DIR-/home/docker}/${WEBAPP_HOME:-webapp}:/usr/src/app/webapp
+      - ${WORK_DIR:-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp:ro
+#      - ${WEBAPP_HOME-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
+#      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
 #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - ${WORK_DIR-/home/docker}/middleware:/usr/src/app/routes # for local debug
       - ${WORK_DIR-/home/docker}/templates:/usr/src/app/templates # for local debug

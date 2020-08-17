@@ -13,7 +13,7 @@ exampleMsg="ORG=org1 ORDERER_NAME=raft0 $0"
 : ${ORDERER_NAME:=orderer}
 : ${RAFT_NODES_COUNT:=1}
 : ${RAFT_NODES_NUMBERING_START:=0}
-: ${DOCKER_COMPOSE_ORDERER_ARGS:=-f docker-compose-orderer.yaml}
+: ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml"}
 #: ${WWW_PORT:=81}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN WWW_PORT RAFT_NODES_COUNT RAFT_NODES_NUMBERING_START

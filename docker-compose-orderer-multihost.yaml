@@ -14,14 +14,14 @@ services:
 
   post-install.orderer:
     volumes:
-      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
       - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   orderer:
     volumes:
-      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config/configtx:/etc/hyperledger/configtx
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers/:/etc/hyperledger/crypto/orderer
     ports:
@@ -29,7 +29,7 @@ services:
 
   cli.orderer:
     volumes:
-      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR:-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/orderer
       - ${WORK_DIR:-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}:/etc/hyperledger/crypto/ordereradmin

@@ -108,6 +108,11 @@ function createConfigUpdateEnvelope() {
     local configJson=${2:-'crypto-config/configtx/config.json'}
     local updatedConfigJson=${3:-'crypto-config/configtx/updated_config.json'}
 
+    difference=`diff ${configJson} ${updatedConfigJson}`
+    if [ -z "$difference" ]; then
+        echo -e "\n No difference in configs. Skipping update config block.\n"
+        exit 0
+    fi
     echo " >> Prepare config update from $org for channel $channel"
     configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
     && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
