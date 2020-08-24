@@ -21,12 +21,6 @@ info "Cleaning up"
 ./clean.sh
 unset ORG COMPOSE_PROJECT_NAME
 
-# Create orderer organization
-
-info "Creating orderer organization for $DOMAIN"
-export ORDERER_WWW_PORT=79
-WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
-
 # Create member organizations
 
 api_port=${API_PORT:-4000}
@@ -72,7 +66,8 @@ done
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+export ORDERER_WWW_PORT=79
+WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Add member organizations to the consortium
 

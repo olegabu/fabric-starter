@@ -50,8 +50,8 @@ services:
     command: container-scripts/container-peer.sh
     volumes:
       - ./crypto-config:/etc/hyperledger/crypto-config
-#      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   post-install:
