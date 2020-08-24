@@ -29,6 +29,7 @@ build
 /artifacts/newOrgMSP.json
 /dockercompose/*.yaml
 /artifacts/
+/target
 
 /crypto-config
 

@@ -90,8 +90,8 @@ services:
       - ./crypto-config:/etc/hyperledger/crypto-config
       - ./crypto-config/hosts:/etc/hosts
 #      - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode # for local debug
-     - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-     - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   ca:
@@ -232,8 +232,8 @@ services:
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ./crypto-config:/etc/hyperledger/crypto-config
     - ./crypto-config/hosts:/etc/hosts
-   - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-   - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server

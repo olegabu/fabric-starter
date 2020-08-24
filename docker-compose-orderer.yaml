@@ -34,8 +34,8 @@ services:
     command: container-scripts/container-orderer.sh
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
-     - ./templates:/etc/hyperledger/templates # for local debug
-     - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ./templates:/etc/hyperledger/templates # for local debug
+      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   post-install.orderer:
@@ -193,7 +193,7 @@ services:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
     depends_on:
-    - pre-install
+      - pre-install.orderer
 
 networks:
   default:
