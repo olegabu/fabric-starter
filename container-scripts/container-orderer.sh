@@ -79,7 +79,7 @@ function generateCryptoMaterialIfNotExists() {
     fi
 }
 
-writeCryptogenOrgConfig() {
+function writeCryptogenOrgConfig() {
     local ordererName=${1:?Orderer name is required}
     local renewFiles=${2}
     local cryptogenFile=crypto-config/cryptogen-orderer-spec.yaml

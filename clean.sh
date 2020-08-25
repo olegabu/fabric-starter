@@ -25,8 +25,8 @@ if [ -z "$DOCKER_HOST" ] ; then
         docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf data/* /certs/*"
      fi
 else
-    docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf crypto-config
-    [ "$all" == "all" ] && docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf data/
+    docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf crypto-config/*
+    [ "$all" == "all" ] && docker-machine ssh ${DOCKER_MACHINE_NAME} sudo rm -rf data/*
 fi
 
 #docker rmi -f $(docker images -q -f "reference=olegabu/fabric-starter-client")

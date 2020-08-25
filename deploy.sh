@@ -7,14 +7,11 @@ function info() {
 orgs=$@
 first_org=${1:-org1}
 
-set -x
-#export DOMAIN="${DOMAIN:-example.com}"
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
 #export LDAP_ENABLED=${LDAP_ENABLED:-true}
 export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
 
-set +x
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
 #docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "}
@@ -37,16 +34,20 @@ export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 
+source ${first_org}_env;
+
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
-    export DOCKER_REGISTRY=registry.labdlt.ru
-    export FABRIC_VERSION=latest
-    export FABRIC_STARTER_VERSION=baas-test
+    export DOCKER_REGISTRY=45.12.73.98
+    export FABRIC_VERSION=gost
+    export FABRIC_STARTER_VERSION=gost
     export AUTH_MODE=ADMIN
     export CRYPTO_ALGORITHM=GOST
     export SIGNATURE_HASH_FAMILY=SM3
-    export DNS_USERNAME=admin
-    export DNS_PASSWORD="${ENROLL_SECRET:-adminpw}"
+
+    sudo mkdir -p /etc/docker/certs.d/${DOCKER_REGISTRY}
+    openssl s_client -showcerts -connect ${DOCKER_REGISTRY}:443 </dev/null 2>/dev/null|openssl x509 -outform PEM \
+        | sudo tee /etc/docker/certs.d/${DOCKER_REGISTRY}/ca.crt
     set +x
 fi
 
@@ -59,8 +60,6 @@ docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
 #docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
 
-
-source ${first_org}_env;
 
 IFS="(" read -r -a domainBootstrapIp <<< ${DOMAIN}
 export DOMAIN=${domainBootstrapIp[0]}
@@ -97,7 +96,7 @@ sleep 3
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
 
-BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_ID=${ENROLL_ID} ENROLL_SECRET=${ENROLL_SECRET} COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
+BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET}" COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
 
 if [[ -n "$2" ]]; then
     echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"

@@ -3,7 +3,7 @@
 source lib.sh
 export DNS_CHANNEL="" # avoid auto-create
 
-export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-ports.yaml"
+export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-ports.yaml"
 export DOCKER_REGISTRY
 export FABRIC_STARTER_VERSION
 export SIGNATURE_HASH_FAMILY

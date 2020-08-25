@@ -51,6 +51,7 @@ function downloadMSP() {
 function certificationsToEnv() {
     local org=${1:?Org is required}
     local domain=${2:-${DOMAIN}}
+    echo "Put certs to env for $org.$domain"
     local mspDir="crypto-config/peerOrganizations/${org}.${domain}/msp"
     if [ "${org}" == "orderer" ]; then
         mspDir="crypto-config/ordererOrganizations/${domain}/msp";
@@ -90,6 +91,7 @@ function updateChannelGroupConfigForOrg() {
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
     export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
+    echo "Prepare updated config crypto-config/configtx/new_config_${org}.json"
     envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
 }
@@ -135,6 +137,7 @@ function insertObjectIntoChannelConfig() {
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
+    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port"
     txTranslateChannelConfigBlock "$channel"
     updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port
 }

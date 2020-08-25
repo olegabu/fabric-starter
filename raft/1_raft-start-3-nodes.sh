@@ -3,6 +3,7 @@
 BASEDIR=$(dirname "$0")
 source $BASEDIR/../lib.sh
 source ../lib.sh 2>/dev/null # for IDE code completion
+source $BASEDIR/env.sh
 
 usageMsg="ORG=org ORDERER_NAME_PREFIX=<orderer name prefix> $0 <new-consenter-name> <new-consenter-org> <new-consenter-domain> <new-consenter-port>"
 exampleMsg="ORG=org1 ORDERER_NAME_PREFIX=raft0 $0"
@@ -13,7 +14,6 @@ exampleMsg="ORG=org1 ORDERER_NAME_PREFIX=raft0 $0"
 : ${ORDERER_NAME_3:=raft2}
 : ${RAFT_NODES_COUNT:=3}
 : ${ORDERER_PROFILE:=Raft}
-: ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml"}
 
 export DOMAIN ORDERER_DOMAIN WWW_PORT RAFT_NODES_COUNT
 

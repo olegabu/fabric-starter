@@ -17,12 +17,15 @@ services:
       - ORDERER=true
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
+      - ORDERER_NAMES
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
       - ORDERER_PROFILE=${ORDERER_PROFILE:-Solo}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
+      - MY_IP
+      - WWW_PORT=${WWW_PORT:-80}
       - RAFT0_PORT=${RAFT0_PORT:-7050}
       - RAFT1_PORT=${RAFT1_PORT:-7150}
       - RAFT2_PORT=${RAFT2_PORT:-7250}
@@ -30,7 +33,7 @@ services:
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
-    command: container-scripts/container-orderer.sh
+    command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; "
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug
@@ -92,6 +95,7 @@ services:
   cli.orderer:
     container_name: cli.${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    restart: always
     tty: true
     environment:
       - ORG=${ORG:-org1}
@@ -113,6 +117,7 @@ services:
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_DOMAIN
+      - DNS_CHANNEL
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
@@ -185,6 +190,7 @@ services:
   www.orderer:
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     container_name: www.${DOMAIN:-example.com}
+    restart: always
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:

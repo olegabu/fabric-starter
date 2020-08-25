@@ -200,6 +200,7 @@ services:
   cli.peer:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    restart: always
     tty: true
     env_file:
       - ${ENV_FILE:-.env}
@@ -263,8 +264,8 @@ services:
       - PEER0_PORT=${PEER0_PORT:-7051}
       - DISCOVER_AS_LOCALHOST=false
       - DNS_CHANNEL=${DNS_CHANNEL:-common}
-      - DNS_USERNAME=${DNS_USERNAME:-dns}
-      - DNS_PASSWORD=${DNS_PASSWORD:-dns}
+      - DNS_USERNAME=${ENROLL_ID:-admin}
+      - DNS_PASSWORD=${ENROLL_SECRET:-adminpw}
       - ENROLL_ID
       - ENROLL_SECRET
       - BOOTSTRAP_IP
@@ -303,13 +304,14 @@ services:
 #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-      - /var/run/docker.sock:/var/run/docker.sock
+#      - /var/run/docker.sock:/var/run/docker.sock
     command: npm start
 
   # simple http server to disseminate certificates
   www.peer:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
+    restart: always
     depends_on:
       - pre-install
     logging:
