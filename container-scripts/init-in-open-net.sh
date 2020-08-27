@@ -11,6 +11,7 @@ set -x
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
+: ${ORDERER_NAMES:=${ORDERER_NAME}}
 set +x
 
 : ${SERVICE_CC_NAME:=dns}
@@ -18,11 +19,10 @@ set +x
 : ${CHANNEL_AUTO_JOIN:=${CHANNEL_AUTO_JOIN-${DNS_CHANNEL}}} # no auto-join if specifically set to empty or ""
 DNS_CHANNEL=${DNS_CHANNEL-common}
 
-export ORDERER_DOMAIN ORDERER_NAME ORDERER_WWW_PORT
+export ORDERER_DOMAIN ORDERER_NAME ORDERER_NAMES ORDERER_WWW_PORT
 
 function main() {
     env|sort
-
     downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
     addMeToConsortiumIfOrdererExists
     if [[ ! ${DNS_CHANNEL} ]]; then
@@ -81,8 +81,8 @@ function requestInviteToServiceChannel() {
 
     if [[ $creationResult -ne 0 &&  -n "${BOOTSTRAP_IP}" ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
-       echo "curl --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d {\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
-       curl --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       echo "curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d {\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
     fi
 }
 
@@ -114,8 +114,17 @@ function registerOrdererInServiceChaincode() {
 
     sleep 5
     if [[ -z "$BOOTSTRAP_IP" && -n "$MY_IP" ]]; then # TODO:
-        printYellow "\nRegister ORDERER: "$MY_IP"\n"
-        invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrderer\",\"${ORDERER_NAME}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$MY_IP\"]"
+
+        local ordererNames
+        IFS="," read -r -a ordererNames <<< ${ORDERER_NAMES}
+        for ordererName_Port in ${ordererNames[@]}; do
+          local ordererConf
+          IFS=':' read -r -a ordererConf <<< ${ordererName_Port}
+          local ordererName=${ordererConf[0]}
+          printYellow "\nRegister ORDERER: ${ordererName}.${ORDERER_DOMAIN}:"$MY_IP"\n"
+          invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrderer\",\"${ordererName}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$MY_IP\"]"
+          sleep 5
+        done
     fi
 }
 
@@ -126,6 +135,7 @@ function registerOrgInServiceChaincode() {
     sleep 5
     if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
         printYellow "\nRegister MY_IP: $MY_IP\n"
+        cat /etc/hosts
         invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
     fi
 }

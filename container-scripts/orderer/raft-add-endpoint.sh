@@ -7,13 +7,14 @@ BASEDIR=$(dirname "$0")
 NEWCONSENTER_NAME=${1:?New Orderer name is requried}
 NEWCONSENTER_DOMAIN=${2:?New Conseneter domain is requried}
 NEWCONSENTER_PORT=${3:-7050}
+CHANNEL=${4:-${SYSTEM_CHANNEL_ID}}
 
 
 RAFT_NEWCONSENTER_ADDR=${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}:${NEWCONSENTER_PORT} envsubst < './templates/raft/addresses.json' > crypto-config/configtx/addresses_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json
 
 #txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
 
-$BASEDIR/../ops/merge-list-into-channel-config.sh  ${SYSTEM_CHANNEL_ID} 'crypto-config/configtx/config.json' 'channel_group.values.OrdererAddresses.value.addresses' \
+$BASEDIR/../ops/merge-list-into-channel-config.sh  ${CHANNEL} 'crypto-config/configtx/config.json' 'channel_group.values.OrdererAddresses.value.addresses' \
                                                     crypto-config/configtx/addresses_${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}.json 'addresses'
 
 sleep 5

@@ -281,14 +281,14 @@ function upgradeChaincode() {
 }
 
 function callChaincode() {
-    channelName=${1:?Channel name must be specified}
-    chaincodeName=${2:?Chaincode name must be specified}
-    arguments=${3:-[]}
-    arguments="{\"Args\":$arguments}"
-    action=${4:-query}
+    local channelName=${1:?Channel name must be specified}
+    local chaincodeName=${2:?Chaincode name must be specified}
+    local arguments=${3:-[]}
+    local arguments="{\"Args\":$arguments}"
+    local action=${4:-query}
     local peerPort=${5:-7051}
-    echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" ${ORDERER_TLSCA_CERT_OPTS}
+    echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

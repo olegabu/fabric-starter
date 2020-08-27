@@ -25,9 +25,10 @@ export DOMAIN ORDERER_NAME ORDERER_DOMAIN ORDERER_GENERAL_LISTENPORT WWW_PORT
 export COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN}
 ORDERER_PROFILE=Raft docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d www.orderer pre-install
 
+env|sort
 
 docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
-  bash -c "set -x; container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT}; curl ${BOOTSTRAP_SERVICE_URL}://${BOOTSTRAP_IP}:${API_PORT}/integration/service/raft -H 'Content-Type: application/json'\
+  bash -c "set -x; container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT}; curl -i -k ${BOOTSTRAP_SERVICE_URL}://${BOOTSTRAP_IP}:${API_PORT}/integration/service/raft -H 'Content-Type: application/json'\
     -d '{\"ordererName\":\"${ORDERER_NAME}\",\"ordererDomain\":\"${ORDERER_DOMAIN}\",\"ordererPort\":\"${ORDERER_GENERAL_LISTENPORT}\",\
          \"wwwPort\":\"${WWW_PORT}\",\"ip\":\"${MY_IP}\"}' "
 

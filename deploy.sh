@@ -81,16 +81,20 @@ echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${R
 info "Creating orderer organization for $DOMAIN"
 
 shopt -s nocasematch
-if [ "${ORDERER_TYPE}" == "SOLO" ]; then
-    if [[ -z "$BOOTSTRAP_IP" ]]; then
+if [[ -z "$BOOTSTRAP_IP" ]]; then
+    if [ "${ORDERER_TYPE}" == "SOLO" ]; then
         WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+    else
+      WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
+      export ORDERER_NAMES="orderer,raft1,raft2"
     fi
 else
-    WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
+  export ORDERER_DOMAIN="osn-${first_org}.${DOMAIN}"
+  WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh example.com
 fi
 shopt -u nocasematch
 
-sleep 3
+sleep 10
 
 
 info "Create first organization ${first_org}"

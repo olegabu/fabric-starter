@@ -29,9 +29,8 @@ docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_S
 #sleep ${randomWait}
 
 ORG=${peerOrg} ORDERER_DOMAIN=${ORDERER_DOMAIN} ORDERER_NAME=${ORDERER_NAME} \
-ENROLL_SECRET=${ENROLL_SECRET:-adminpw} DNS_USERNAME=${DNS_USERNAME:-${ENROLL_ID:-admin}} DNS_PASSWORD=${ENROLL_SECRET:-${ENROLL_SECRET:-adminpw}} \
-BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} \
-docker-compose ${DOCKER_COMPOSE_ARGS} up -d --force-recreate
+ENROLL_SECRET=${ENROLL_SECRET:-adminpw} BOOTSTRAP_IP=${BOOTSTRAP_IP} MY_IP=${ORG_IP} \
+docker-compose ${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-ports.yaml} up -d --force-recreate
 
 
 
