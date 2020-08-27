@@ -90,7 +90,7 @@ if [[ -z "$BOOTSTRAP_IP" ]]; then
     fi
 else
   export ORDERER_DOMAIN="osn-${first_org}.${DOMAIN}"
-  WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh example.com
+  BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh example.com
 fi
 shopt -u nocasematch
 
