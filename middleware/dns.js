@@ -11,8 +11,10 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
 
     const FabricStarterClient = require('../fabric-starter-client');
     const fabricStarterClient = new FabricStarterClient();
+    const fabricCLI = require('../fabric-cli');
     const util = require('../util');
     const cfg = require('../config.js');
+    const certsManager = require('../certs-manager');
 
     const NODE_HOSTS_FILE = '/etc/hosts';
     const ORDERER_HOSTS_FILE = '/etc/hosts_orderer';
@@ -24,13 +26,13 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
     // const skip = !process.env.MULTIHOST;
     const period = process.env.DNS_PERIOD || 60000;
     const orgDomain = `${process.env.ORG}.${process.env.DOMAIN}`;
-    const myIp = process.env.MY_IP;
+    const MY_IP = process.env.MY_IP;
     const ordererDomain = process.env.ORDERER_DOMAIN || process.env.DOMAIN;
     const queryTarget = process.env.DNS_QUERY_TARGET || `peer0.${orgDomain}:${process.env.PEER0_PORT || 7051}`;
 
 
     let blockListenerStarted = false;
-
+    let inProcess = false;
     logger.info('started');
 
     let taskSettings = {};
@@ -79,28 +81,44 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
             }
         }
 
-        let dnsRecords = await getChaincodeData("dns");
-        if (dnsRecords) {
-            dnsRecords = filterOutByIp(dnsRecords, myIp);
-            util.writeFile(NODE_HOSTS_FILE, dnsRecords);
-            util.writeFile(ORDERER_HOSTS_FILE, dnsRecords);
+        if (inProcess) {
+            return;
         }
+        inProcess = true;
+        try {
+            let dnsRecords = await getChaincodeData("dns");
+            if (dnsRecords) {
+                dnsRecords = filterOutByIp(dnsRecords, MY_IP);
+                util.writeFile(NODE_HOSTS_FILE, dnsRecords);
+                util.writeFile(ORDERER_HOSTS_FILE, dnsRecords);
+            }
 
-        const osns = await getChaincodeData("osn");
-        if (osns) {
-            eventBus && eventBus.emit('osn-configuration-changed', osns);
+            const osns = await getChaincodeData("osn");
+            if (osns) {
+                _.forEach(osns, async (osn, osnKey) => {
+                    let ordererWwwPort = osn.wwwPort || cfg.ORDERER_WWW_PORT;
+                    try {
+                        await util.checkRemotePort(`www.${osn.ordererDomain}`, ordererWwwPort);
+                        await fabricCLI.downloadOrdererMSP(ordererWwwPort, osn.ordererDomain);
+                    } catch (e) {
+                        logger.error(`Remote port is inaccessible www.${osn.ordererDomain}:${ordererWwwPort}`, e);
+                    }
+                });
+                eventBus && eventBus.emit('osn-configuration-changed', osns);
+            }
+
+            const chainOrgs = await getChaincodeData("orgs");
+            if (chainOrgs) {
+                orgs = _.merge(orgs, chainOrgs);
+                // eventBus.emit('orgs-configuration-changed', orgs);
+                // eventBus.emit('osn-configuration-changed', osns);
+            }
+
+
+            // taskSettigns=await getChaincodeData("tasksSettings") ||{};
+        } finally {
+            inProcess = false;
         }
-
-        const chainOrgs = await getChaincodeData("orgs");
-        if (chainOrgs) {
-            orgs = _.merge(orgs, chainOrgs);
-            // eventBus.emit('orgs-configuration-changed', orgs);
-            // eventBus.emit('osn-configuration-changed', osns);
-        }
-
-
-        // taskSettigns=await getChaincodeData("tasksSettings") ||{};
-
     }
 
     async function login() {
@@ -137,8 +155,8 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
         return result;
     }
 
-    function filterOutByIp(list, ip) {
-        delete list[ip];
+    function filterOutByIp(list, excludeIp) {
+        delete list[excludeIp];
         return list;
     }
 };

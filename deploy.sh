@@ -86,7 +86,7 @@ if [[ -z "$BOOTSTRAP_IP" ]]; then
         WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
     else
       WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
-      export ORDERER_NAMES="orderer,raft1,raft2"
+      export ORDERER_NAMES="orderer,raft1:7150,raft2:7250"
     fi
 else
   export ORDERER_DOMAIN="osn-${first_org}.${DOMAIN}"

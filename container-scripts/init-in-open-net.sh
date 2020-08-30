@@ -121,8 +121,9 @@ function registerOrdererInServiceChaincode() {
           local ordererConf
           IFS=':' read -r -a ordererConf <<< ${ordererName_Port}
           local ordererName=${ordererConf[0]}
+          local ordererPort=${ordererConf[1]:-${ORDERER_GENERAL_LISTENPORT}}
           printYellow "\nRegister ORDERER: ${ordererName}.${ORDERER_DOMAIN}:"$MY_IP"\n"
-          invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrderer\",\"${ordererName}\", \"${ORDERER_DOMAIN}\", \"${ORDERER_GENERAL_LISTENPORT}\", \"$MY_IP\"]"
+          invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrdererByParams\",\"${ordererName}\", \"${ORDERER_DOMAIN}\", \"${ordererPort}\", \"${MY_IP}\", \"${ORDERER_WWW_PORT}\"]"
           sleep 5
         done
     fi
@@ -136,7 +137,7 @@ function registerOrgInServiceChaincode() {
     if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
         printYellow "\nRegister MY_IP: $MY_IP\n"
         cat /etc/hosts
-        invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrg\",\"${ORG}.${DOMAIN}\",\"$ORG_IP$MY_IP\"]"
+        invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
     fi
 }
 
