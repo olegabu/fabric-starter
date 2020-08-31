@@ -29,6 +29,9 @@ WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f do
 # Create member organizations
 
 api_port=${API_PORT:-4000}
+export BOOTSTRAP_API_PORT=${BOOTSTRAP_API_PORT:-${API_PORT:-4000}}
+export BOOTSTRAP_SERVICE_URL=http
+
 #dev:
 www_port=${WWW_PORT:-81}
 ca_port=${CA_PORT:-7054}
@@ -47,8 +50,11 @@ do
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     echo "docker-compose ${docker_compose_args} up -d"
-
     docker-compose ${docker_compose_args} up -d
+    info "Wait for post-install.${ORG}.${DOMAIN} completed"
+    docker wait post-install.${ORG}.${DOMAIN}
+
+    [ -n "${MY_IP}" ] && export BOOTSTRAP_IP="${MY_IP}"
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))
@@ -75,7 +81,7 @@ export COMPOSE_PROJECT_NAME=${ORG}
 # Wait for container scripts completed
 info "Wait for post-install.${ORG}.${DOMAIN} completed"
 docker wait post-install.${ORG}.${DOMAIN}
-
+exit
 # First organization adds other organizations to the channel
 
 peer0_port=$((${PEER0_PORT:-7051}+1000))

@@ -7,12 +7,12 @@ source $(dirname "$0")/lib/container-lib.sh
 source $(dirname "$0")/lib/container-util.sh
 
 echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
-set -x
+
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
 : ${ORDERER_NAMES:=${ORDERER_NAME}}
-set +x
+: ${BOOTSTRAP_API_PORT:=${BOOTSTRAP_API_PORT:-${API_PORT}}}
 
 : ${SERVICE_CC_NAME:=dns}
 : ${CONSORTIUM_AUTO_APPLY:=${CONSORTIUM_AUTO_APPLY-SampleConsortium}}
@@ -20,6 +20,8 @@ set +x
 DNS_CHANNEL=${DNS_CHANNEL-common}
 
 export ORDERER_DOMAIN ORDERER_NAME ORDERER_NAMES ORDERER_WWW_PORT
+
+env|sort
 
 function main() {
     env|sort
@@ -81,8 +83,8 @@ function requestInviteToServiceChannel() {
 
     if [[ $creationResult -ne 0 &&  -n "${BOOTSTRAP_IP}" ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
-       echo "curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d {\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
-       curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       echo "curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d {\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
     fi
 }
 

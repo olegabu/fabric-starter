@@ -98,10 +98,10 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
                 _.forEach(osns, async (osn, osnKey) => {
                     let ordererWwwPort = osn.wwwPort || cfg.ORDERER_WWW_PORT;
                     try {
-                        await util.checkRemotePort(`www.${osn.ordererDomain}`, ordererWwwPort);
-                        await fabricCLI.downloadOrdererMSP(ordererWwwPort, osn.ordererDomain);
+                        await util.checkRemotePort(`www.${osn.domain}`, ordererWwwPort);
+                        await fabricCLI.downloadOrdererMSP(ordererWwwPort, osn.domain);
                     } catch (e) {
-                        logger.error(`Remote port is inaccessible www.${osn.ordererDomain}:${ordererWwwPort}`, e);
+                        logger.error(`Remote port is inaccessible www.${osn.domain}:${ordererWwwPort}`, e);
                     }
                 });
                 eventBus && eventBus.emit('osn-configuration-changed', osns);

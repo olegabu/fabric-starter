@@ -29,8 +29,8 @@ env|sort
 
 docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
   bash -c "set -x; container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT}; curl -i -k ${BOOTSTRAP_SERVICE_URL}://${BOOTSTRAP_IP}:${API_PORT}/integration/service/raft -H 'Content-Type: application/json'\
-    -d '{\"ordererName\":\"${ORDERER_NAME}\",\"ordererDomain\":\"${ORDERER_DOMAIN}\",\"ordererPort\":\"${ORDERER_GENERAL_LISTENPORT}\",\
-         \"wwwPort\":\"${WWW_PORT}\",\"ip\":\"${MY_IP}\"}' "
+    -d '{\"ordererName\":\"${ORDERER_NAME}\",\"domain\":\"${ORDERER_DOMAIN}\",\"ordererPort\":\"${ORDERER_GENERAL_LISTENPORT}\",\
+         \"wwwPort\":\"${WWW_PORT}\",\"ordererIp\":\"${MY_IP}\"}' "
 
 echo curl completed
 sleep 2

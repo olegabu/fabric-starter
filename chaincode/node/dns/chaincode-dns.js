@@ -98,7 +98,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
 
     dnsUpdater(ip, newDnsNames) {
         return (oldDnsInfo) => {
-            oldDnsInfo[ip] = ((oldDnsInfo[ip] || '') || ' ') + newDnsNames;
+            oldDnsInfo[ip] = (oldDnsInfo[ip] || '') + (oldDnsInfo[ip] ? ' '  : '') + newDnsNames;
             return oldDnsInfo;
         };
     }
