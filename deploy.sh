@@ -35,6 +35,9 @@ export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 
 source ${first_org}_env;
+set -x
+export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
+set +x
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
