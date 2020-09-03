@@ -83,6 +83,8 @@ echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${R
 
 info "Creating orderer organization for $DOMAIN"
 
+export ORDERER_TYPE=RAFT
+
 shopt -s nocasematch
 if [[ -z "$BOOTSTRAP_IP" ]]; then
     if [ "${ORDERER_TYPE}" == "SOLO" ]; then
