@@ -99,7 +99,7 @@ export class Home extends CRUD {
       this.orgList = [];
       orgs.forEach(k => {
         let orgName = k.id;
-        if (!orgName.startsWith('Orderer') && !orgName.startsWith('orderer') && orgName !== this.identityService.org) {
+        if (!orgName.startsWith('raft') && !orgName.startsWith('orderer') && orgName !== this.identityService.org) {
           this.orgList.push({key: orgName, value: orgName});
         }
 

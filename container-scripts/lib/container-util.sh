@@ -21,6 +21,11 @@ function printYellow() {
     printInColor "1;33" "$1"
 }
 
+function printCyan() {
+    printInColor "1;36" "$1"
+}
+
+
 function printRedYellow() {
     printInColor "1;31" "$1" "1;33" "$2"
 }
@@ -256,9 +261,10 @@ function addOrgsToChannel() {
 function setOrdererIdentity() {
     local ORDERER_NAME=${1:?ORDERER_NAME is required}
     local ORDERER_DOMAIN=${2:?ORDERER_DOMAIN is required}
+    local cryptoConfigPath=${3:?cryptoConfigParentPath is required}
 
     export CORE_PEER_LOCALMSPID=${ORDERER_NAME}.${ORDERER_DOMAIN:-example.com}
-    export CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp
+    export CORE_PEER_MSPCONFIGPATH=${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp
     export CORE_PEER_TLS_ROOTCERT_FILE=${ORDERER_GENERAL_TLS_ROOTCERT_FILE} #${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/orderers/${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}/tls/ca.crt
 }
 

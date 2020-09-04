@@ -2,7 +2,6 @@
 
 source lib/util/util.sh
 
-
 : ${DOMAIN:="example.com"}
 : ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORG:="org1"}
@@ -38,7 +37,7 @@ function runCLIWithComposerOverrides() {
     local command=${3}
     IFS=' ' composeCommandSplitted=($composeCommand)
 
-    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="docker-compose-orderer.yaml" || composeTemplateFile="docker-compose.yaml"
+    [ -n "$EXECUTE_BY_ORDERER" ] && composeTemplateFile="${FABRIC_STARTER_HOME}/docker-compose-orderer.yaml" || composeTemplateFile="${FABRIC_STARTER_HOME}/docker-compose.yaml"
 
     if [ "${MULTIHOST}" ]; then
         [ -n "$EXECUTE_BY_ORDERER" ] && multihostComposeFile="-fdocker-compose-orderer-multihost.yaml" || multihostComposeFile="-fdocker-compose-multihost.yaml"
@@ -59,8 +58,10 @@ function runCLIWithComposerOverrides() {
     fi
 
     if [ $? -ne 0 ]; then
-       printRedYellow "Error occurred. See console output above."
-       exit 1
+        printRedYellow "Error occurred. See console output above."
+        exit 1
+    else
+        exit 0
     fi
 }
 

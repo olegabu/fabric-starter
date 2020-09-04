@@ -7,6 +7,7 @@ setDocker_LocalRegistryEnv
 
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
+export WAIT_BEFORE_INSTALL_CHAINCODES=${WAIT_BEFORE_INSTALL_CHAINCODES:-60}
 
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml }
 : ${CHAINCODE_HOME:=chaincode}
@@ -69,11 +70,11 @@ function startOrg() {
     local org=${1?: org is required}
     local ordererMachineName=${2?: ordererMachineName is required}
 
-#    info "Copying custom chaincodes and middleware to remote machine ${machine}"
-#    copyDirToMachine ${org} templates ${WORK_DIR}/templates
-#    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
-#    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
-#    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
+    info "Copying custom chaincodes and middleware to remote machine ${machine}"
+    copyDirToMachine ${org} templates ${WORK_DIR}
+    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}
+    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}
+    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}
 #
 #    info "Copying dns chaincode and middleware to remote machine ${machine}"
 #    orgMachineName=`getDockerMachineName $org`

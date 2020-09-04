@@ -16,6 +16,13 @@ COPY templates /etc/hyperledger/templates
 COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
 
+COPY templates /usr/src/app/templates
+COPY container-scripts /usr/src/app/container-scripts
+COPY docker-compose*.yaml /usr/src/app/
+
+
+COPY middleware/ /etc/hyperledger/routes
+
 COPY middleware/ /usr/src/app/routes
 COPY chaincode/ /opt/chaincode
 COPY chaincode/go /opt/gopath/src
