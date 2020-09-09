@@ -10,9 +10,12 @@ export DOMAIN=${DOMAIN-example.com}
 export WAIT_BEFORE_INSTALL_CHAINCODES=${WAIT_BEFORE_INSTALL_CHAINCODES:-60}
 
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml }
+: ${BOOTSTRAP_SERVICE_URL:=http}
 : ${CHAINCODE_HOME:=chaincode}
 : ${WEBAPP_HOME:=webapp}
 : ${MIDDLEWARE_HOME:=middleware}
+
+export  BOOTSTRAP_SERVICE_URL
 
 ordererMachineName=${1:-orderer}
 shift
@@ -26,21 +29,7 @@ echo "Orderer machine: $ordererMachineName, First org:$first_org, Orgs: $orgs"
 # Set WORK_DIR as home dir on remote machine
 setMachineWorkDir $ordererMachineName
 
-BOOTSTRAP_IP=$(getMachineIp $ordererMachineName)
-export BOOTSTRAP_IP
-
-hosts="# created by network-create.sh\n${BOOTSTRAP_IP} www.${DOMAIN} orderer.${DOMAIN}"
-# Collect IPs of remote hosts into a hosts file to copy to all hosts to be used as /etc/hosts to resolve all names
-for org in ${orgs}; do
-    ip=$(getMachineIp ${org})
-    hosts="${hosts}\n${ip} www.${org}.${DOMAIN} peer0.${org}.${DOMAIN}"
-done
-
-info "Building network for $DOMAIN using WORK_DIR=$WORK_DIR on remote machines, CHAINCODE_HOME=$CHAINCODE_HOME, WEBAPP_HOME=$WEBAPP_HOME on local host. Hosts file:"
-cat hosts
-
 # Create orderer organization
-
 info "Creating orderer organization"
 
 copyDirToMachine $ordererMachineName templates ${WORK_DIR}/templates
@@ -52,37 +41,34 @@ docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
 
 ./clean.sh
-# Copy generated hosts file to the host machines
-echo -e "${hosts}" > hosts
-
-createHostsFileInOrg $ordererMachineName orderer
 
 if [[ -n "`getHostOrgForOrg ${first_org}`" || ("${first_org}" == "$ordererMachineName") ]]; then
     ORDERER_WWW_PORT=$((${WWW_PORT:-80}+1))
     echo "Orderer WWW_PORT: $ORDERER_WWW_PORT"
 fi
 
-WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-open-net.yaml -f docker-compose-orderer-multihost.yaml up -d
+WWW_PORT=${ORDERER_WWW_PORT:-$WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+    while true; do
+        if [[ "" != `docker ps -aq -f "name= pre-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-${DOMAIN}}"` ]]; then
+            break
+        fi;
+        sleep 1
+    done
+docker wait pre-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-${DOMAIN}}
+
 
 # Create member organizations
-
 function startOrg() {
-    local org=${1?: org is required}
-    local ordererMachineName=${2?: ordererMachineName is required}
+    local org=${1:? org is required}
+    local ordererMachineName=${2:? ordererMachineName is required}
+    local first_org=${3:? first_org is required}
 
-    info "Copying custom chaincodes and middleware to remote machine ${machine}"
+    info "Copying custom chaincodes and middleware to remote machine ${org}.${DOMAIN}"
     copyDirToMachine ${org} templates ${WORK_DIR}
     copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}
     copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}
     copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}
 #
-#    info "Copying dns chaincode and middleware to remote machine ${machine}"
-#    orgMachineName=`getDockerMachineName $org`
-#    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
-#    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
-#    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
-
-
     info "Creating member organization $org"
     export MY_IP=$(getMachineIp ${org})
     if [[ -z `getHostOrgForOrg $org` && ("${org}" != "$ordererMachineName") ]]; then
@@ -95,41 +81,29 @@ function startOrg() {
         "
     fi
 
-    echo -e "${hosts}" > hosts
-    createHostsFileInOrg $org
-
-    bash -c "source lib.sh; connectMachine ${org}; MY_IP=$(getMachineIp ${org}) ORDERER_WWW_PORT=${ORDERER_WWW_PORT} docker-compose ${DOCKER_COMPOSE_ARGS} up -d; "
-
+    bash -c "source lib.sh; connectMachine ${org}; ORG=${org} MY_IP=$(getMachineIp ${org}) ORDERER_WWW_PORT=${ORDERER_WWW_PORT} docker-compose ${DOCKER_COMPOSE_ARGS} up -d; \
+    docker logs post-install.${org}.${DOMAIN}; \
+    set -x; docker attach --no-stdin post-install.${org}.${DOMAIN}; set +x; "
 }
 
 
 for org in ${orgs}
 do
-
-#    info "Copying custom chaincodes and middleware to remote machine ${machine}"
-#    copyDirToMachine ${org} templates ${WORK_DIR}/templates
-#    copyDirToMachine ${org} ${CHAINCODE_HOME} ${WORK_DIR}/chaincode
-#    copyDirToMachine ${org} ${WEBAPP_HOME} ${WORK_DIR}/webapp
-#    copyDirToMachine ${org} ${MIDDLEWARE_HOME} ${WORK_DIR}/middleware
-#
-#    info "Copying dns chaincode and middleware to remote machine ${machine}"
-#    orgMachineName=`getDockerMachineName $org`
-#    docker-machine scp -r chaincode ${orgMachineName}:${WORK_DIR}
-#    docker-machine scp middleware/dns.js ${orgMachineName}:${WORK_DIR}/middleware/dns.js
-#    copyDirToMachine ${org} container-scripts ${WORK_DIR}/container-scripts
-#
-#    info "Creating member organization $org"
-#    connectMachine ${org}
-#    export MY_IP=$(getMachineIp ${org})
-#    [[ -z `getHostOrgForOrg $org` && ("${org}" != "$ordererMachineName") ]] && ./clean.sh && sleep 2
-#    echo -e "${hosts}" > hosts
-#    createHostsFileInOrg $org
-#
-#    connectMachine ${org}
-#    ORDERER_WWW_PORT=${ORDERER_WWW_PORT} docker-compose ${DOCKER_COMPOSE_ARGS} up -d
-    startOrg ${org} ${ordererMachineName}
+    startOrg ${org} ${ordererMachineName} $first_org &
     procId=$!
-    sleep 1
+    sleep 5
+    BOOTSTRAP_IP=$(getMachineIp $ordererMachineName)
+    export BOOTSTRAP_IP
+    connectMachine $first_org
+    set -x
+    while true; do
+        if [[ "" != `docker ps -aq -f "name=post-install.${first_org}.${DOMAIN}"` ]]; then
+            break
+        fi;
+        sleep 1
+    done
+    docker wait post-install.${first_org}.${DOMAIN}
+    set +x
 done
 
 wait ${procId}

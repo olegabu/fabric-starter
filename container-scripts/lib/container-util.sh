@@ -261,7 +261,7 @@ function addOrgsToChannel() {
 function setOrdererIdentity() {
     local ORDERER_NAME=${1:?ORDERER_NAME is required}
     local ORDERER_DOMAIN=${2:?ORDERER_DOMAIN is required}
-    local cryptoConfigPath=${3:?cryptoConfigParentPath is required}
+    local cryptoConfigPath=${3:-/etc/hyperledger/crypto-config}
 
     export CORE_PEER_LOCALMSPID=${ORDERER_NAME}.${ORDERER_DOMAIN:-example.com}
     export CORE_PEER_MSPCONFIGPATH=${cryptoConfigPath}/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/users/Admin@${ORDERER_DOMAIN:-example.com}/msp

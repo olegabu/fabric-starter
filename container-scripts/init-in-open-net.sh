@@ -81,10 +81,12 @@ function requestInviteToServiceChannel() {
     local creationResult=${1:?Channel Creation result is required}
     local serviceChannel=${2:?Service channel name is required}
 
-    if [[ $creationResult -ne 0 &&  -n "${BOOTSTRAP_IP}" ]]; then
+    if [[ $creationResult -ne 0 ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
-       echo "curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d {\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
-       curl -i --connect-timeout 30 --max-time 60 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP}:${BOOTSTRAP_API_PORT}/integration/service/orgs -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       set -x
+       curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/service/orgs \
+            -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       set +x
     fi
 }
 
