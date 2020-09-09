@@ -12,7 +12,10 @@ domain2=${4:-${DOMAIN:-example.com}}
 : ${RAFT0_PORT:=7050}
 : ${RAFT1_PORT:=7150}
 : ${RAFT2_PORT:=7250}
-: ${RAFT_NODES_COUNT:=6}
+: ${RAFT_NODES_COUNT:=3}
+
+#For debug
+#export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f environments/dev/docker-compose-orderer-debug.yaml"
 
 export RAFT0_PORT RAFT1_PORT RAFT2_PORT RAFT_NODES_COUNT
 
@@ -26,6 +29,7 @@ printYellow "1_raft-start-3-nodes: Starting 3 raft nodes on Org1:"
 DOMAIN=${domain1} raft/1_raft-start-3-nodes.sh
 sleep 1
 
+exit #TODO: Adjust script for new raft-startup approach (in container-orderer.sh)
 
 if [ "$domain1" == "$domain2" ]; then
     printYellow "Delete WWW container to allow new consenter from same domain start flowlessly"

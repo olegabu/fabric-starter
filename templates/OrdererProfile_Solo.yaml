@@ -1,0 +1,18 @@
+
+    Solo:
+      Capabilities:
+        <<: *ChannelCapabilities
+      Orderer:
+        <<: *OrdererDefaults
+        OrdererType: solo
+        Addresses:
+          %ORDERER_ADDRESSES%
+        Organizations:
+          %ORDERER_ORGS%
+        Capabilities:
+          <<: *OrdererCapabilities
+
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+    #                    - *OrdererOrg

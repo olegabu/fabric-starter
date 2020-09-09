@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 BASEDIR=$(dirname "$0")
 
-touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # maOS workaround
+touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # macOS workaround
+touch "crypto-config/fabric-ca-server-config-$ORG.yaml"
 
 if [ ! -f "crypto-config/hosts" ]; then #TODO
     export HOSTS_FILE_GENERATION_REQUIRED=true
@@ -10,6 +11,25 @@ fi
 
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
+
+: ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
+: ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
+
+export ORDERER_DOMAIN ORDERER_NAME
+
+
+function main() {
+    tree crypto-config
+    env|sort
+    prepareLDAPBaseDN
+    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/fabric-ca-server-config-$ORG.yaml" #TODO:remove
+    generateCryptoMaterialIfNotExists
+    renameSecretKey #TODO: ?
+    copyOrdererCertificatesForServingByPeerWWW
+    copyWellKnownTLSCerts
+    generateHostsFileIfNotExists
+    tree /etc/hyperledger/crypto-config/peerOrganizations/
+}
 
 function prepareLDAPBaseDN() {
     IFS='.' read -r -a subDomains <<< ${DOMAIN}
@@ -26,53 +46,52 @@ function prepareLDAPBaseDN() {
     [ -n "$LDAP_ENABLED" ] && echo "Using LDAP Url: $LDAP_BASE_DN"
 }
 
-######## START #######
+function generateCryptoMaterialIfNotExists() {
+    if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp" ]; then
+        echo "Generation $ORG peer MSP."
 
-tree crypto-config
-
-: ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
-: ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
-
-export ORDERER_DOMAIN ORDERER_NAME
-env|sort
-
-prepareLDAPBaseDN
-envsubst < "templates/fabric-ca-server-template.yaml" > "crypto-config/fabric-ca-server-config-$ORG.yaml"
-
-if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp" ]; then
-    echo "Generation $ORG peer MSP."
-
-    envsubst < "templates/cryptogen-peer-template.yaml" > "crypto-config/cryptogen-$ORG.yaml"
-    cryptogen generate --config=crypto-config/cryptogen-$ORG.yaml
-else
-    echo "$ORG MSP exists (crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp). Generation skipped."
-fi
-
-[ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
-[ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
-cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null
-
-mkdir -p crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known
-cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
-cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
-
-if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
-    if [ -n "$BOOTSTRAP_IP" ]; then
-        echo "Generating crypto-config/hosts"
-        echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
-        echo -e "\n\nDownload orderer MSP envs from $BOOTSTRAP_IP\n\n"
+        envsubst < "templates/cryptogen-peer-template.yaml" > "crypto-config/cryptogen-$ORG.yaml"
+        cryptogen generate --config=crypto-config/cryptogen-$ORG.yaml
     else
-        echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts
+        echo "$ORG MSP exists (crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp). Generation skipped."
     fi
-else
-    echo "crypto-config/hosts file exists. Generation skipped."
-fi
+}
 
-if [[ -n "$BOOTSTRAP_IP" && ! -f crypto-config/hosts ]]; then
-    echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
-fi
+function renameSecretKey() {
+    [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
+    [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
+}
 
-echo -e "\ncrypto-config/hosts_$ORG:\n"
-cat crypto-config/hosts_$ORG
+function copyOrdererCertificatesForServingByPeerWWW() {
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null
+}
 
-#ORDERER_DOMAIN=osn-$ORG.$DOMAIN DOMAIN=osn-$ORG.$DOMAIN ORDERER_GENESIS_PROFILE=RaftOrdererGenesis ./$BASEDIR/container-orderer.sh
+function copyWellKnownTLSCerts() {
+    mkdir -p crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known
+    cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
+    cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
+}
+
+function generateHostsFileIfNotExists() {
+    if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
+        if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" ]]; then
+            echo "Generating crypto-config/hosts"
+            echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
+#             echo -e "\n\nDownload orderer MSP certs from $BOOTSTRAP_IP\n\n"
+        else
+            echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts
+        fi
+    else
+        echo "crypto-config/hosts file exists. Generation skipped."
+    fi
+
+    if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" && ! -f crypto-config/hosts ]]; then
+        echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
+    fi
+
+    echo -e "\ncrypto-config/hosts:\n"
+    cat crypto-config/hosts
+}
+
+######## START #######
+main

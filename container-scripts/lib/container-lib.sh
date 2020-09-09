@@ -4,7 +4,7 @@
 : ${ORG:="org1"}
 : ${ORDERER_NAME:="orderer"}
 : ${ORDERER_NAME_PREFIX:="raft"}
-: ${ORDERER_DOMAIN:=${DOMAIN}}
+: ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
 : ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${PEER0_PORT:=7051}
@@ -15,7 +15,7 @@
 : ${WGET_OPTS:=--verbose -N}
 
 export ORG DOMAIN SYSTEM_CHANNEL_ID
-
+: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 : ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
@@ -41,14 +41,17 @@ function downloadMSP() {
     local typeSubPath=$1
     local mspSubPath=$2
     local serverDNSName=www.${3:-${mspSubPath}}
+    set -x
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/msp/admincerts/Admin@${mspSubPath}-cert.pem
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/msp/cacerts/ca.${mspSubPath}-cert.pem
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    set +x
 }
 
 function certificationsToEnv() {
     local org=${1:?Org is required}
     local domain=${2:-${DOMAIN}}
+    echo "Put certs to env for $org.$domain"
     local mspDir="crypto-config/peerOrganizations/${org}.${domain}/msp"
     if [ "${org}" == "orderer" ]; then
         mspDir="crypto-config/ordererOrganizations/${domain}/msp";
@@ -88,6 +91,7 @@ function updateChannelGroupConfigForOrg() {
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
     export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
+    echo "Prepare updated config crypto-config/configtx/new_config_${org}.json"
     envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
 }
@@ -133,6 +137,7 @@ function insertObjectIntoChannelConfig() {
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
+    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port"
     txTranslateChannelConfigBlock "$channel"
     updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port
 }
@@ -194,8 +199,9 @@ function createChannel() {
     envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
 
     configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+    set -x
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
-
+    set +x
     updateAnchorPeers "$ORG" "$channelName"
 
 }
@@ -275,14 +281,14 @@ function upgradeChaincode() {
 }
 
 function callChaincode() {
-    channelName=${1:?Channel name must be specified}
-    chaincodeName=${2:?Chaincode name must be specified}
-    arguments=${3:-[]}
-    arguments="{\"Args\":$arguments}"
-    action=${4:-query}
+    local channelName=${1:?Channel name must be specified}
+    local chaincodeName=${2:?Chaincode name must be specified}
+    local arguments=${3:-[]}
+    local arguments="{\"Args\":$arguments}"
+    local action=${4:-query}
     local peerPort=${5:-7051}
-    echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments'"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" ${ORDERER_TLSCA_CERT_OPTS}
+    echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

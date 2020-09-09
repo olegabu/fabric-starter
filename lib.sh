@@ -57,10 +57,10 @@ function runCLIWithComposerOverrides() {
         docker-compose -f "${composeTemplateFile}" ${multihostComposeFile} ${portsComposeFile} ${couchDBComposeFile} ${ldapComposeFile} ${composeCommandSplitted[0]} ${composeCommandSplitted[1]} ${composeCommandSplitted[2]} ${service}
     fi
 
-    if [ $? -ne 0 ]; then  
-        printRedYellow "Error occurred. See console output above." 
+    if [ $? -ne 0 ]; then
+        printRedYellow "Error occurred. See console output above."
         exit 1
-    else    
+    else
         exit 0
     fi
 }

@@ -6,55 +6,88 @@ const logger = shim.newLogger('DnsChaincode');
 
 module.exports = class DnsChaincode extends StorageChaincode {
 
-    async registerOrg(args) {
-        const req = this.toKeyValue(this.stub, args);
-        const orgNameDomain = req.key;
-        const orgIp = req.value;
-        const dnsNames = `www.${orgNameDomain} peer0.${orgNameDomain}`;
-
-        if (orgIp) {
-            await this.updateDns(orgIp, dnsNames);
+    async registerOrgByParams(args) {
+        if (args.length < 5) {
+            throw new Error('incorrect number of arguments: orgId, domain, orgIp, peer0Port, wwwPort params are required');
         }
-        const newOrgData={[orgNameDomain]:{'ip':orgIp}};
-        return this.updateRegistryObject("orgs", newOrgData);
+        const orgObj = {
+            orgId: _.get(args, "[0]"),
+            domain: _.get(args, "[1]"),
+            orgIp: _.get(args, "[2]"),
+            peer0Port: _.get(args, "[3]"),
+            wwwPort: _.get(args, "[4]")
+        }
+        logger.info("Org object got by params", JSON.stringify(orgObj));
+        return this.registerOrg([JSON.stringify(orgObj)]);
+    }
+
+    async registerOrg(args) {
+        if (args.length < 1) {
+            throw new Error('incorrect number of arguments, Org object is required');
+        }
+        const orgObj = JSON.parse(_.get(args, "[0]"));
+        const orgId = _.get(orgObj, "orgId");
+        const orgDomain = _.get(orgObj, "domain");
+        const peer0Port = _.get(orgObj, "peer0Port");
+
+        if (!(orgId && orgDomain && peer0Port)) {
+            throw new Error('orgId, domain and peer0Port properties are required');
+        }
+        const orgNameDomain=`${orgId}.${orgDomain}`;
+        if (orgObj.orgIp) {
+            await this.updateRegistryObject("dns", this.dnsUpdater(orgObj.orgIp, `www.${orgNameDomain} peer0.${orgNameDomain}`));
+        }
+        return this.updateRegistryObject("orgs", {[orgNameDomain]:orgObj});
+    }
+
+    async registerOrdererByParams(args) {
+        if (args.length < 5) {
+            throw new Error('incorrect number of arguments: ordererName, domain, ordererPort, ordererIp, wwwPort params are required');
+        }
+        const ordererObj = {
+            ordererName: _.get(args, "[0]"),
+            domain: _.get(args, "[1]"),
+            ordererPort: _.get(args, "[2]"),
+            ordererIp: _.get(args, "[3]"),
+            wwwPort: _.get(args, "[4]")
+        }
+        logger.info("Orderer object got by params", JSON.stringify(ordererObj));
+        return this.registerOrderer([JSON.stringify(ordererObj)]);
     }
 
     async registerOrderer(args) {
-        const ordererName = _.get(args, "[0]");
-        const ordererDomain = _.get(args, "[1]");
-        const ordererPort = _.get(args, "[2]");
-        const ordererIp = _.get(args, "[3]");
+        if (args.length < 1) {
+            throw new Error('incorrect number of arguments, Orderer object is required');
+        }
+        const ordererObj = JSON.parse(_.get(args, "[0]"));
 
-        if (ordererIp) {
-            await this.updateDns(ordererIp, `${ordererName}.${ordererDomain} www.${ordererDomain}`);
+        const ordererName = _.get(ordererObj, "ordererName");
+        const ordererDomain = _.get(ordererObj, "domain");
+        const ordererPort = _.get(ordererObj, "ordererPort");
+
+        if (!(ordererName && ordererDomain && ordererDomain)) {
+            throw new Error('ordererName, domain and ordererPort properties are required');
         }
 
-        const newOrdererData={[`${ordererName}.${ordererDomain}:${ordererPort}`]: {ordererName, ordererDomain, ordererPort, ordererIp}};
-        return this.updateRegistryObject("osn", newOrdererData);
-/*
-
-        let osnInfo = await this.get(["osn"]);
-        try {
-            osnInfo = JSON.parse(osnInfo);
-        } catch (err) {
-            osnInfo = {};
+        if (ordererObj.ordererIp) {
+            await this.updateRegistryObject("dns", this.dnsUpdater(ordererObj.ordererIp,
+                `${ordererName}.${ordererDomain} www.${ordererDomain} www.${ordererName}.${ordererDomain}`));
         }
-        osnInfo[`${ordererName}.${ordererDomain}:${ordererPort}`] = {ordererName, ordererDomain, ordererPort, ordererIp};
-        const osnStringified = JSON.stringify(osnInfo);
 
-        logger.debug('Updating OSN record with ', osnStringified);
-        return this.put(['osn', osnStringified]);
-*/
+        return this.updateRegistryObject("osn", {[`${ordererName}.${ordererDomain}:${ordererPort}`]: ordererObj});
     }
 
-    async updateRegistryObject(dataKey, newData){
+    async updateRegistryObject(dataKey, newData) {
         let data = await this.get([dataKey]);
         try {
             data = JSON.parse(data);
+            logger.debug(`${dataKey} Old Value: `, data);
         } catch (err) {
             data = {};
         }
-        _.assign(data, newData);
+        typeof newData === "function"
+            ? newData(data)
+            : _.assign(data, newData);
 
         const dataStringified = JSON.stringify(data);
 
@@ -62,18 +95,12 @@ module.exports = class DnsChaincode extends StorageChaincode {
         return this.put([dataKey, dataStringified]);
     }
 
-    async updateDns(ip, dnsNames) {
-        let dnsInfo = await this.get(['dns']);
-        logger.debug('DNS Info ', dnsInfo);
-        try {
-            dnsInfo = JSON.parse(dnsInfo);
-        } catch (err) {
-            dnsInfo = {};
-        }
-        dnsInfo[ip] = `${dnsInfo[ip] || ''} ${dnsNames}`;
-        const dnsStringified = JSON.stringify(dnsInfo);
-        logger.debug('Updating DNS record with ', dnsStringified);
-        return this.put(['dns', dnsStringified]);
+
+    dnsUpdater(ip, newDnsNames) {
+        return (oldDnsInfo) => {
+            oldDnsInfo[ip] = (oldDnsInfo[ip] || '') + (oldDnsInfo[ip] ? ' '  : '') + newDnsNames;
+            return oldDnsInfo;
+        };
     }
 
     async Invoke(stub) {
