@@ -25,7 +25,7 @@ services:
 
   pre-install:
     container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -58,7 +58,7 @@ services:
 
   post-install:
     container_name: post-install.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -141,7 +141,7 @@ services:
     - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric-starter_default
     - CORE_VM_DOCKER_ATTACHSTDOUT=true
 #    - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
-    - CORE_CHAINCODE_BUILDER=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_BUILDER:-hyperledger/fabric-ccenv}:${FABRIC_VERSION:-latest}
+    - CORE_CHAINCODE_BUILDER=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_BUILDER:-hyperledger/fabric-ccenv}:${FABRIC_VERSION:-1.4.4}
     - CORE_CHAINCODE_JAVA_RUNTIME=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_JAVA_RUNTIME:-hyperledger/fabric-javaenv}:${FABRIC_JAVA_RUNTIME_VERSION:-latest}
     - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
     - CORE_CHAINCODE_LOGGING_SHIM=debug
@@ -204,7 +204,7 @@ services:
 
   cli.peer:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     restart: always
     tty: true
     env_file:
@@ -250,7 +250,7 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:

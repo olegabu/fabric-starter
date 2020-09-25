@@ -10,7 +10,7 @@ services:
 
   dns.listener:
 #    build: listener
-    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-starter-listener:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-starter-listener:${FABRIC_STARTER_VERSION:-stable}
     restart: always
     container_name: dns.listener.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
@@ -32,7 +32,7 @@ services:
 #
 #  debug.listener:
 #    build: listener
-#    image: kilpio/fabric-starter-listener:${FABRIC_STARTER_VERSION:-latest}
+#    image: kilpio/fabric-starter-listener:${FABRIC_STARTER_VERSION:-stable}
 #    #    restart: always
 #    container_name: debug.listener.${ORG:-org1}.${DOMAIN:-example.com}
 #    environment:
