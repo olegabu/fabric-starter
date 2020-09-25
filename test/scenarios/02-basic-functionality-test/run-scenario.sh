@@ -33,7 +33,7 @@ SCENARIO() {
 
 #2
         runStep "Test 'Invite ORG2 to the default consortium'" \
-            RUNTEST:    invite-org-to-consortium.sh ${org1}  ${org2} 
+            RUNTEST:    invite-org-to-consortium.sh ${org1}  ${org2}
 
 #3
         runStep "Test 'The channel created in ORG1 is not visible in ORG2'" \
