@@ -57,7 +57,7 @@ services:
   orderer:
     container_name: ${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}
     restart: always
-    image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-1.4.8}
+    image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-1.4.6}
     environment:
       - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
