@@ -9,7 +9,7 @@ services:
     container_name: cli.clean
 #    build:
 #      args:
-#        FABRIC_VERSION: ${FABRIC_VERSION:-1.4.6}
+#        FABRIC_VERSION: ${FABRIC_VERSION:-1.4.4}
 #      context: ./fabric-tools-extended
     image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     working_dir: /etc/hyperledger
