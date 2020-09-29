@@ -6,6 +6,7 @@
 
 : ${DOCKER_REGISTRY:=docker.io}
 : ${DOCKER_REGISTRY_LOCAL:=localhost:5000}
+: ${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 echo "Using local docker registry address: $DOCKER_REGISTRY_LOCAL"
 
@@ -27,8 +28,8 @@ dockerImages=(\
     "hyperledger/fabric-ca:${FABRIC_VERSION}" \
     "hyperledger/fabric-couchdb" \
     "nginx" \
-#    "kilpio/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}" \
-#    "kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}"
+    "${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}" \
+    "${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}"
 #    "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
     )
 
