@@ -24,14 +24,14 @@ function main() {
   export DOCKER_COMPOSE_ORDERER_ARGS="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"
   ORDERER_DOMAIN_1=${first_org}-osn.${DOMAIN}
 
-  docker pull ${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+  docker pull ${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
 
   DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}} ./clean.sh
   printYellow "Pre-generate orderer files on local host"
   DOCKER_REGISTRY=${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}} ORDERER_PROFILE=Raft ORDERER_DOMAIN=${ORDERER_DOMAIN_1} RAFT_NODES_COUNT=${RAFT_NODES_COUNT} COMPOSE_PROJECT_NAME=orderer.${DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d pre-install
   docker wait pre-install.orderer.${ORDERER_DOMAIN_1}
   printYellow "Pre-generate completed"
-  docker run --rm  -v ./:/currdir ${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest} chown -R `id -u`  crypto-config
+  docker run --rm  -v ./:/currdir ${DOCKER_LOCAL_REGISTRY:-${DOCKER_REGISTRY:-docker.io}}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable} chown -R `id -u`  crypto-config
 #  sudo chown -R $USER crypto-config
 
   setMachineWorkDir ${first_org}
@@ -130,10 +130,10 @@ function prepareOrg() {
     setMachineWorkDir ${org}; \
     export FABRIC_STARTER_HOME=${WORK_DIR}; \
     connectMachine ${org};  \
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
-    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}; \
-    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-latest}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-1.4.4}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.4}; \
     ./clean.sh; \
     copyDirToMachine $org crypto-config/ordererOrganizations/${ordererDomain} crypto-config/ordererOrganizations; \
     copyDirToMachine $org crypto-config/configtx crypto-config "

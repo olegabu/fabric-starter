@@ -59,9 +59,9 @@ info "Cleaning up"
 
 # Create orderer organization
 
-docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
-#docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
+docker pull ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+docker pull ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
+#docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-stable}
 
 
 IFS="(" read -r -a domainBootstrapIp <<< ${DOMAIN}

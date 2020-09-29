@@ -25,7 +25,7 @@ services:
 
   pre-install:
     container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -58,7 +58,7 @@ services:
 
   post-install:
     container_name: post-install.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -204,7 +204,7 @@ services:
 
   cli.peer:
     container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     restart: always
     tty: true
     env_file:
@@ -250,7 +250,7 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/kilpio/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
