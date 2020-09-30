@@ -25,7 +25,7 @@ services:
 
   pre-install:
     container_name: pre-deploy.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-kilpio}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
