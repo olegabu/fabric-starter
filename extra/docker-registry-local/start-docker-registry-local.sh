@@ -6,7 +6,6 @@
 
 : ${DOCKER_REGISTRY:=docker.io}
 : ${DOCKER_REGISTRY_LOCAL:=localhost:5000}
-: olegabu
 
 echo "Using local docker registry address: $DOCKER_REGISTRY_LOCAL"
 
