@@ -7,7 +7,7 @@ setDocker_LocalRegistryEnv
 
 export MULTIHOST=true
 export DOMAIN=${DOMAIN-example.com}
-export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-kilpio}
+export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 export WAIT_BEFORE_INSTALL_CHAINCODES=${WAIT_BEFORE_INSTALL_CHAINCODES:-60}
 
 : ${DOCKER_COMPOSE_ARGS:= -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml }
@@ -38,8 +38,8 @@ copyDirToMachine $ordererMachineName container-scripts ${WORK_DIR}/container-scr
 
 connectMachine $ordererMachineName
 
-docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}; \
-docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}; \
+docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
+docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
 
 ./clean.sh
 
