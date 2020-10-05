@@ -33,7 +33,7 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
 fi
 
 
-#tmux new-session -d -s main "./disk_resize.sh; ./deploy.sh $@"
-#tmux pipe-pane -o -t main 'cat > deploy.log'
+tmux new-session -d -s main "./disk_resize.sh; ./deploy.sh $@"
+tmux pipe-pane -o -t main 'cat > deploy.log'
 
 
