@@ -524,7 +524,7 @@ function addOrgToChannelAPI() {
     local orgIP=$(getOrgIp "${orgToAdd}")
     setCurrentActiveOrg ${orgToAdd}
         local peerPort=$(getContainerPort ${orgToAdd} ${PEER_NAME} ${DOMAIN})
-    resetCurrentActiveOrg
+    unsetActiveOrg
     restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"\",\"peerPort\":\"${peerPort}\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
