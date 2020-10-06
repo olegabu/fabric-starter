@@ -15,7 +15,7 @@ main() {
     export DEPLOYMENT_TARGET='local'
     
     export -f setCurrentActiveOrg
-    export -f resetCurrentActiveOrg
+    export -f unsetActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
     
@@ -40,7 +40,7 @@ function setCurrentActiveOrg() {
     
 }
 
-function resetCurrentActiveOrg {
+function unsetActiveOrg {
     :
 }
 
