@@ -9,6 +9,7 @@ volumes:
 #  peer1:
   webapps:
   routes:
+  appstore:
 
 x-peer:
   &peer-defaults
@@ -47,6 +48,7 @@ services:
       - RAFT0_PORT=${RAFT0_PORT:-7050}
       - RAFT1_PORT=${RAFT1_PORT:-7150}
       - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - CRYPTO_ALGORITHM=${CRYPTO_ALGORITHM:-SW}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
@@ -288,6 +290,7 @@ services:
       - CRYPTO_ALGORITHM
       - AUTH_MODE
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - CUSTOM_APP_PORTS=${CUSTOM_APP_PORTS:-8001-8999}
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
@@ -306,6 +309,7 @@ services:
 #      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
+      - appstore:/usr/src/app/appstore
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
