@@ -60,6 +60,19 @@ function generateCryptoMaterialIfNotExists() {
 function renameSecretKey() {
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
+
+    if [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem" ]; then
+     mv crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
+set -x
+     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/tlsca.org1.example.com-cert.pem
+     cp container-scripts/tls-certs/tls-org1/tls-root/server.key crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
+
+     cp container-scripts/tls-certs/tls-org1/tls/* crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.org1.example.com/tls/
+
+     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.org1.example.com/tls/ca.crt
+     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+set +x
+    fi
 }
 
 function copyOrdererCertificatesForServingByPeerWWW() {

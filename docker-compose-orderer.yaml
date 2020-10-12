@@ -37,7 +37,7 @@ services:
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug
-#      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
+      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   post-install:

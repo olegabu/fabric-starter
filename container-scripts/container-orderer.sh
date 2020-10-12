@@ -74,6 +74,21 @@ function generateCryptoMaterialIfNotExists() {
         echo "Generating orderer MSP."
         rm -rf crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN
         cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
+
+        if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem" ]; then
+           mv crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/*_sk crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
+    set -x
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/tlsca.example.com-cert.pem
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.key crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
+
+           cp container-scripts/tls-certs/tls-orderer/tls/* crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.example.com/tls/
+
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.example.com/tls/ca.crt
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    set +x
+        fi
+
+
     else
         echo "Orderer MSP exists. Generation skipped".
     fi
