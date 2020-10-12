@@ -10,8 +10,8 @@ function main() {
 #    generateRootTlsCert 'tls-orderer/tls' example.com orderer.example.com v3_tls
 #    generateRootTlsCert 'tls-org1/tls' org1.example.com peer0.org1.example.com v3_tls
 
-    signCert 'tls-orderer' orderer.example.com
-    signCert 'tls-org1' peer0.org1.example.com
+    signCert 'tls-orderer' orderer.example.com orderer
+    signCert 'tls-org1' peer0.org1.example.com peer0
 
     #openssl req -config openssl.cnf \
     #      -key private/ca.key.pem \
@@ -46,9 +46,11 @@ function signCert() {
     local entityPath=${1:?entityPath required}
     local cnName=${2:?cn required}
 
+    export ORG=${3:?org required}
+    export CERT_COMMON_NAME=${cnName}
+
     mkdir -p ${entityPath}/tls
 
-set -x
     openssl req -nodes -newkey rsa:2048 -keyout ${entityPath}/tls/server.key -out ${entityPath}/server.csr \
         -subj "/C=US/ST=California/L=San Francisco/CN=${cnName}"
 
@@ -58,8 +60,6 @@ set -x
         -extfile ./tlsca-csr.conf  \
         -extensions v3_tls \
         -out ${entityPath}/tls/server.crt -sha256
-
-set +x
 }
 
 main
