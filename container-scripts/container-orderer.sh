@@ -78,6 +78,7 @@ function generateCryptoMaterialIfNotExists() {
         if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem" ]; then
            mv crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/*_sk crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
     set -x
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/tlscacerts/tlsca.example.com-cert.pem
            cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/tlsca.example.com-cert.pem
            cp container-scripts/tls-certs/tls-orderer/tls-root/server.key crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
 

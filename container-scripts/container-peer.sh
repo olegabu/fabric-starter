@@ -64,6 +64,7 @@ function renameSecretKey() {
     if [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem" ]; then
      mv crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
 set -x
+     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.org1.example.com-cert.pem
      cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/tlsca.org1.example.com-cert.pem
      cp container-scripts/tls-certs/tls-org1/tls-root/server.key crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
 

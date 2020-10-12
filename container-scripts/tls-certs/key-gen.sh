@@ -31,13 +31,20 @@ function generateRootTlsCert() {
     export CERT_COMMON_NAME=${cnName}
     export ORG=${org}
 
+#    openssl ecparam -genkey -name prime256v1 -out ${path}/server.key
+
+#     openssl req -new -sha256 -key ${path}/server.key \
+#        -x509 -sha256 -days 365 \
+#        -config ./tlsca-csr.conf \
+#        -extensions v3_ca \
+#        -out ${path}/server.crt
 
     openssl req \
        -newkey rsa:2048 -nodes -keyout ${path}/server.key \
-       -x509 -days 365 \
+       -x509 -sha256 -days 365 \
        -config ./tlsca-csr.conf \
        -extensions v3_ca \
-       -out ${path}/server.crt -sha256
+       -out ${path}/server.crt
 
 }
 
@@ -53,13 +60,22 @@ function signCert() {
 
     openssl req -nodes -newkey rsa:2048 -keyout ${entityPath}/tls/server.key -out ${entityPath}/server.csr \
         -subj "/C=US/ST=California/L=San Francisco/CN=${cnName}"
+set -x
+#    openssl ecparam -genkey -name prime256v1 -out ${entityPath}/tls/server.key
 
-    openssl x509 -req -in ${entityPath}/server.csr -CA ${entityPath}/tls-root/server.crt \
+#    openssl req -new -sha256 -key ${entityPath}/tls/server.key -nodes \
+#        -subj "/C=US/ST=California/L=San Francisco/CN=${cnName}" \
+#        -out ${entityPath}/server.csr
+
+
+    openssl x509 -sha256 -days 365 -req -in ${entityPath}/server.csr \
+        -CA ${entityPath}/tls-root/server.crt \
         -CAkey ${entityPath}/tls-root/server.key \
         -CAcreateserial \
         -extfile ./tlsca-csr.conf  \
         -extensions v3_tls \
-        -out ${entityPath}/tls/server.crt -sha256
+        -out ${entityPath}/tls/server.crt
+set +x
 }
 
 main
