@@ -78,14 +78,16 @@ function generateCryptoMaterialIfNotExists() {
         if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem" ]; then
            mv crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/*_sk crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
     set -x
-           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/tlscacerts/tlsca.example.com-cert.pem
-           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/tlsca.example.com-cert.pem
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/tlscacerts/tlsca.$ORDERER_DOMAIN-cert.pem
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/tlsca.$ORDERER_DOMAIN-cert.pem
            cp container-scripts/tls-certs/tls-orderer/tls-root/server.key crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
 
-           cp container-scripts/tls-certs/tls-orderer/tls/* crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.example.com/tls/
+rm crypto-config/ordererOrganizations/$ORDERER_DOMAIN/tlsca/sk.pem
 
-           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.example.com/tls/ca.crt
-           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+           cp container-scripts/tls-certs/tls-orderer/tls/* crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.$ORDERER_DOMAIN/tls/
+
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.$ORDERER_DOMAIN/tls/ca.crt
+           cp container-scripts/tls-certs/tls-orderer/tls-root/server.crt crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/orderer.$ORDERER_DOMAIN/msp/tlscacerts/tlsca.$ORDERER_DOMAIN-cert.pem
     set +x
         fi
 

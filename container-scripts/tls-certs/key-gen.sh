@@ -4,14 +4,16 @@
 function main() {
     rm -rf tls-orderer tls-org1
 
-    generateRootTlsCert 'tls-orderer/tls-root' example.com tlsca.example.com
+    generateRootTlsCert 'tls-orderer/tls-root' sebr.com ca.sebr.com
     generateRootTlsCert 'tls-org1/tls-root' org1.example.com tlsca.org1.example.com
+    generateRootTlsCert 'tls-org2/tls-root' org2.example.com tlsca.org2.example.com
 
 #    generateRootTlsCert 'tls-orderer/tls' example.com orderer.example.com v3_tls
 #    generateRootTlsCert 'tls-org1/tls' org1.example.com peer0.org1.example.com v3_tls
 
     signCert 'tls-orderer' orderer.example.com orderer
     signCert 'tls-org1' peer0.org1.example.com peer0
+    signCert 'tls-org2' peer0.org2.example.com peer0
 
     #openssl req -config openssl.cnf \
     #      -key private/ca.key.pem \

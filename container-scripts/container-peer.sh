@@ -64,14 +64,16 @@ function renameSecretKey() {
     if [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem" ]; then
      mv crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
 set -x
-     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.org1.example.com-cert.pem
-     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/tlsca.org1.example.com-cert.pem
-     cp container-scripts/tls-certs/tls-org1/tls-root/server.key crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
+     cp container-scripts/tls-certs/tls-$ORG/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem
+     cp container-scripts/tls-certs/tls-$ORG/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/tlsca.$ORG.$DOMAIN-cert.pem
+     cp container-scripts/tls-certs/tls-$ORG/tls-root/server.key crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
 
-     cp container-scripts/tls-certs/tls-org1/tls/* crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.org1.example.com/tls/
+rm crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
 
-     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.org1.example.com/tls/ca.crt
-     cp container-scripts/tls-certs/tls-org1/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+     cp container-scripts/tls-certs/tls-$ORG/tls/* crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/tls/
+
+     cp container-scripts/tls-certs/tls-$ORG/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/tls/ca.crt
+     cp container-scripts/tls-certs/tls-$ORG/tls-root/server.crt crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem
 set +x
     fi
 }
