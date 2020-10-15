@@ -34,6 +34,7 @@ docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
     -d '{\"ordererName\":\"${ORDERER_NAME}\",\"domain\":\"${ORDERER_DOMAIN}\",\"ordererPort\":\"${ORDERER_GENERAL_LISTENPORT}\",\
          \"wwwPort\":\"${WWW_PORT}\",\"ordererIp\":\"${MY_IP}\",\"orgId\":\"${ORG}\"}' "
 
+echo
 echo curl completed
 sleep 2
 
