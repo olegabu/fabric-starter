@@ -52,10 +52,7 @@ do
     echo "docker-compose ${docker_compose_args} up -d"
     docker-compose ${docker_compose_args} up -d
     info "Wait for post-install.${ORG}.${DOMAIN} completed"
-    set -x
-    docker attach --no-stdin post-install.${ORG}.${DOMAIN}
-    set +x
-    docker wait post-install.${ORG}.${DOMAIN}
+    docker logs -f post-install.${ORG}.${DOMAIN}
 
     export BOOTSTRAP_ORG_DOMAIN="${org}.${DOMAIN}" BOOTSTRAP_API_PORT=3000
     api_port=$((api_port + 1))
@@ -83,7 +80,5 @@ export COMPOSE_PROJECT_NAME=${ORG}
 
 # Wait for container scripts completed
 info "Wait for post-install.${ORG}.${DOMAIN} completed"
-set -x
-docker attach --no-stdin post-install.${ORG}.${DOMAIN}
-set +x
-docker wait post-install.${ORG}.${DOMAIN}
+
+docker logs -f post-install.${ORG}.${DOMAIN}
