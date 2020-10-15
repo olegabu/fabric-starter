@@ -110,12 +110,12 @@ services:
     restart: always
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/sk.pem
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
-    command: sh -c 'sleep 2 && fabric-ca-server start -b ${ENROLL_ID}:"${ENROLL_SECRET}" -d --ca.name default'
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
+    command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
     depends_on:
       - pre-install
     logging:
@@ -123,7 +123,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+#      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
