@@ -9,7 +9,6 @@ volumes:
 #  peer1:
   webapps:
   routes:
-  appstore:
 
 x-peer:
   &peer-defaults
@@ -310,7 +309,7 @@ services:
 #      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
-      - appstore:/usr/src/app/appstore
+      - ${FABRIC_STARTER_HOME:-.}/appstore:/usr/src/app/appstore
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
       - /var/run/docker.sock:/var/run/docker.sock
     #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
