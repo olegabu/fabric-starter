@@ -312,10 +312,10 @@ services:
       - routes:/usr/src/app/routes
       - appstore:/usr/src/app/appstore
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
-#      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
-#      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-#      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
+    #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
+    #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+    #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
     command: sh -c 'sleep 2 && npm start'
 
   # simple http server to disseminate certificates

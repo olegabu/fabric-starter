@@ -73,12 +73,3 @@ do
     ./consortium-add-org.sh ${org}
 done
 
-# First organization creates the channel
-
-export ORG=${first_org}
-export COMPOSE_PROJECT_NAME=${ORG}
-
-# Wait for container scripts completed
-info "Wait for post-install.${ORG}.${DOMAIN} completed"
-
-docker logs -f post-install.${ORG}.${DOMAIN}
