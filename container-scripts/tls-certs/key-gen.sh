@@ -82,4 +82,10 @@ set +x
 
 main
 
-
+#openssl ecparam -genkey -name prime256v1 -out server-1.key
+#openssl req -new -sha256 -key server-1.key -nodes -subj "/C=US/ST=California/L=San Francisco/CN=orderer.example.com" -out server.csr
+#openssl x509 -sha256 -days 365 -req -in server.csr -CA ca.crt -CAkey ca.crt \
+#        -CAcreateserial \
+#        -extfile ./tlsca-csr.conf  \
+#        -extensions v3_tls \
+#        -out server-1.crt
