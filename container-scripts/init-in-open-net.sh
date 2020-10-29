@@ -105,6 +105,7 @@ function requestInviteToServiceChannel() {
 
 function joinServiceChannel() {
     local serviceChannel=${1:?Service channel name is required}
+    local joinResult=1
     if [[ ${CHANNEL_AUTO_JOIN} ]]; then
         status=1
         count=1
