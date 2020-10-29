@@ -105,9 +105,9 @@ sleep 10
 
 info "Create first organization ${first_org}"
 echo "docker-compose ${docker_compose_args} up -d"
-docker logs -f post-install.${first_org}.${DOMAIN}
 
 BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET}" COMPOSE_PROJECT_NAME=${first_org} docker-compose ${docker_compose_args} up -d
+docker logs -f post-install.${first_org}.${DOMAIN}
 
 if [[ -n "$2" ]]; then
     echo -e "\nWait post-install.${first_org}.${DOMAIN} to complete"
