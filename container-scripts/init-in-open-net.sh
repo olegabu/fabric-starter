@@ -16,8 +16,10 @@ echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 
 : ${SERVICE_CC_NAME:=dns}
 : ${CONSORTIUM_AUTO_APPLY:=${CONSORTIUM_AUTO_APPLY-SampleConsortium}}
+
+#DNS_CHANNEL=${DNS_CHANNEL-common}
+: ${DNS_CHANNEL:=${DNS_CHANNEL-common}} # no auto-join if specifically set to empty or ""
 : ${CHANNEL_AUTO_JOIN:=${CHANNEL_AUTO_JOIN-${DNS_CHANNEL}}} # no auto-join if specifically set to empty or ""
-DNS_CHANNEL=${DNS_CHANNEL-common}
 
 export ORDERER_DOMAIN ORDERER_NAME ORDERER_NAMES ORDERER_WWW_PORT
 
@@ -81,34 +83,47 @@ function requestInviteToServiceChannel() {
     local creationResult=${1:?Channel Creation result is required}
     local serviceChannel=${2:?Service channel name is required}
 
-    if [[ $creationResult -ne 0 ]]; then
+    if [[ $creationResult -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
        set -x
        curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/service/orgs \
             -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       local curlResult=$?
        set +x
+       echo "Curl result: $curlResult"
+    else
+        if [[ -n $BOOTSTRAP_IP ]]; then
+            set -x
+            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/dns/org \
+                 -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+            local curlResult=$?
+            set +x
+            echo "Curl result: $curlResult"
+        fi
     fi
 }
 
 function joinServiceChannel() {
     local serviceChannel=${1:?Service channel name is required}
-    status=1
-    count=1
-    while [[ ${status} -ne 0 && ${count} -ne 20 ]]; do
-        printYellow "\n\nJoining channel '${serviceChannel}, try ${count} '\n\n"
-        joinOutput=`joinChannel ${serviceChannel} 2>&1`
-        status=$?
-        echo -e "${joinOutput}\nStatus: $status\n"
-        if [[ "${joinOutput}" =~ "LedgerID already exists" ]];then
-            status=0
-        fi
+    if [[ ${CHANNEL_AUTO_JOIN} ]]; then
+        status=1
+        count=1
+        while [[ ${status} -ne 0 && ${count} -ne 3 ]]; do
+            printYellow "\n\nJoining channel '${serviceChannel}, try ${count} '\n\n"
+            joinOutput=`joinChannel ${serviceChannel} 2>&1`
+            status=$?
+            echo -e "${joinOutput}\nStatus: $status\n"
+            if [[ "${joinOutput}" =~ "LedgerID already exists" ]];then
+                status=0
+            fi
 
-        [[ ${status} -ne 0 ]] && sleep 30
-        count=$((count + 1))
-    done
+            [[ ${status} -ne 0 ]] && sleep 10
+            count=$((count + 1))
+        done
 
-    joinResult=$?
-    printGreen "\nJoined channel '${serviceChannel}'\n"
+        joinResult=$?
+        printGreen "\nJoined channel '${serviceChannel}'\n"
+    fi
     return ${joinResult}
 }
 
