@@ -89,8 +89,13 @@ if [[ -z "$BOOTSTRAP_IP" ]]; then
     if [ "${ORDERER_TYPE}" == "SOLO" ]; then
         WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
     else
-      WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
-      export ORDERER_NAMES="orderer,raft1:7150,raft2:7250"
+        if [ "${ORDERER_TYPE}" == "RAFT" ]; then
+            WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
+            export ORDERER_NAMES="orderer,raft1:7150,raft2:7250"
+        else
+            WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/0_raft-start-1-node.sh
+            export ORDERER_NAMES="orderer"
+        fi
     fi
 else
     if [ "${ORDERER_TYPE}" != "SOLO" ]; then
