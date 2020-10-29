@@ -116,7 +116,7 @@ services:
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
-    command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:$${ENROLL_SECRET} -d --ca.name default'
+    command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
     depends_on:
       - pre-install
     logging:
