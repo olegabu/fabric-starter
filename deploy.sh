@@ -35,7 +35,7 @@ export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
 
 source ${first_org}_env;
-export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
+#export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
 
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
@@ -82,12 +82,12 @@ echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${R
 
 info "Creating orderer organization for $DOMAIN"
 
-export ORDERER_TYPE=RAFT
-
 shopt -s nocasematch
 if [[ -z "$BOOTSTRAP_IP" ]]; then
-    if [ "${ORDERER_TYPE}" == "SOLO" ]; then
-        WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+    if [[ "${ORDERER_TYPE}" == "SOLO" || "${ORDERER_TYPE}" == "RAFT1" ]]; then
+#        WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+            WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/0_raft-start-1-node.sh
+            export ORDERER_NAMES="orderer"
     else
         if [ "${ORDERER_TYPE}" == "RAFT" ]; then
             WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
