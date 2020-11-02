@@ -6,7 +6,7 @@ source ../lib/container-lib.sh 2>/dev/null # for IDE code completion
 
 newOrg=${1:?org is required}
 newOrgWwwPort=${2:-80}
-newOrgDomain=${2:-$DOMAIN}
+newOrgDomain=${3:-$DOMAIN}
 
 downloadOrgMSP ${newOrg} ${newOrgWwwPort} $newOrgDomain
 

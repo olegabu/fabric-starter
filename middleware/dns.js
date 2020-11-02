@@ -122,6 +122,7 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
     }
 
     async function login() {
+        const fabricStarterClient = new FabricStarterClient();
         await fabricStarterClient.init();
         await fabricStarterClient.loginOrRegister(username, password);
 
