@@ -109,7 +109,7 @@ function joinServiceChannel() {
     if [[ ${CHANNEL_AUTO_JOIN} ]]; then
         status=1
         count=1
-        while [[ ${status} -ne 0 && ${count} -ne 3 ]]; do
+        while [[ ${status} -ne 0 && ${count} -le 3 ]]; do
             printYellow "\n\nJoining channel '${serviceChannel}, try ${count} '\n\n"
             joinOutput=`joinChannel ${serviceChannel} 2>&1`
             status=$?
@@ -122,8 +122,12 @@ function joinServiceChannel() {
             count=$((count + 1))
         done
 
-        joinResult=$?
-        printGreen "\nJoined channel '${serviceChannel}'\n"
+        joinResult=$status
+        if [[ joinResult -eq 0 ]]; then
+           printGreen "\nJoined channel '${serviceChannel}'\n"
+        else
+           printError "\nNot joined to '${serviceChannel}'\n"
+        fi
     fi
     return ${joinResult}
 }
