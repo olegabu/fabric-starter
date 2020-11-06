@@ -79,8 +79,7 @@ echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${R
 
 #./wait-port.sh ${MY_IP} ${WWW_PORT} # wait for external availability in clouds
 
-export ORDERER_DOMAIN="osn-${first_org}.${DOMAIN}"
-info "Creating orderer organization for $ORDERER_DOMAIN"
+info "Creating orderer organization for $DOMAIN"
 
 shopt -s nocasematch
 if [[ -z "$BOOTSTRAP_IP" ]]; then
@@ -99,7 +98,8 @@ if [[ -z "$BOOTSTRAP_IP" ]]; then
     fi
 else
     if [ "${ORDERER_TYPE}" != "SOLO" ]; then
-        BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh example.com
+        export ORDERER_DOMAIN="osn-${first_org}.${DOMAIN}"
+        BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh ${DOMAIN}
     fi
 fi
 shopt -u nocasematch
