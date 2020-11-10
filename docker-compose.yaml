@@ -112,6 +112,7 @@ services:
     restart: always
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_LDAP_USERFILTER=(cn=%s)
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/sk.pem
       - FABRIC_CA_SERVER_TLS_ENABLED=true
