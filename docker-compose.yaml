@@ -15,8 +15,6 @@ x-peer:
   image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.8}
   working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
   command: peer node start
-  volumes:
-    - /var/run/:/host/var/run/
   depends_on:
     - pre-install
     - ca
