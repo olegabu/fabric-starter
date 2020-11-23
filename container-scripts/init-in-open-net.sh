@@ -10,6 +10,7 @@ echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
+: ${WWW_PORT:=${WWW_PORT:-80}}
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
 : ${ORDERER_NAMES:=${ORDERER_NAME}}
 : ${BOOTSTRAP_API_PORT:=${BOOTSTRAP_API_PORT:-${API_PORT}}}
@@ -59,9 +60,9 @@ function addMeToConsortiumIfOrdererExists() {
         status=1
         while [[ ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} && ( -z "$BOOTSTRAP_IP" || ( "$BOOTSTRAP_IP" == "$MY_IP" )) ]]; do
             printYellow "\n\nTrying to add  ${ORG} to consortium\n\n"
-            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
+            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${WWW_PORT} ${DOMAIN}
             sleep $(( RANDOM % 20 )) #TODO: make external locking for config updates
-            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
+            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${WWW_PORT} ${DOMAIN}
             status=$?
             echo -e "Status: $status\n"
             sleep 3
