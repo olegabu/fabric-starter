@@ -293,6 +293,7 @@ services:
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - CUSTOM_APP_PORTS=${CUSTOM_APP_PORTS:-8001-8999}
       - ACCEPT_ALL_ORGS
+      - AUTH_JWT_EXPIRES_IN
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api

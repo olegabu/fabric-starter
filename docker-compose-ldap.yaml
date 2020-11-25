@@ -36,8 +36,8 @@ services:
 #      - PHPLDAPADMIN_HTTPS_CA_CRT_FILENAME=${LDAPADMIN_HTTPS_CA_CRT_FILENAME:-ca.crt}
     image: osixia/phpldapadmin
     ports:
-      - ${LDAP_PORT_HTTPS:-6443}:443
-#      - ${LDAP_PORT_HTTP:-6080}:80
+#      - ${LDAP_PORT_HTTPS:-6443}:443
+      - ${LDAP_PORT_HTTP:-6080}:80
     volumes:
       - ${SSL_CERTS_PATH:-./https/certs/}${ORG:-org1}.${DOMAIN:-example.com}:/container/service/phpldapadmin/assets/apache2/certs
     depends_on:
