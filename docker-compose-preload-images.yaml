@@ -9,4 +9,3 @@ services:
 
   jre8:
     image: openjdk:8-jre
-    container_name: jre8
