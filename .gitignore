@@ -40,3 +40,4 @@ data
 *.log
 
 https/certs
+backup

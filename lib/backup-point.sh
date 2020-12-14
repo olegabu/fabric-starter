@@ -26,7 +26,7 @@ docker run --rm \
 -v $PWD/crypto-config:/opt/crypto-config \
 -v $PWD/appstore:/opt/appstore \
 olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest} bash \
--c "rm -rf /backup/* && cp -r -a /docker/volumes /backup && cp -r -a /opt/data /backup && cp -r -a /opt/crypto-config /backup && cp -r -a /backup && chown -R ${USER_ID}:${USER_GRP} /backup"
+-c "rm -rf /backup/* && cp -r -a /docker/volumes /backup && cp -r -a /opt/data /backup && cp -r -a /opt/crypto-config /backup && cp -r -a /opt/appstore /backup && chown -R ${USER_ID}:${USER_GRP} /backup"
 
 echo; printInColor "1;32" "Starting containers up"
 docker start $(docker ps -aq)
