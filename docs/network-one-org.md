@@ -1,27 +1,30 @@
 # Create a network with 1 organization for development
 
+## Clear environment
+Clear old crypto-information, docker containers, volums, etc before starting new blockchain network;
+```bash
+./clean.sh
+```  
+
+
 ## Generate and start orderer
 
-Generate crypto material and the genesis block for the *orderer* organization. Using default *example.com* DOMAIN. 
+Blockchain network related settings like `DOMAIN`, `organization names`, used `ports`, etc. can be set by environment 
+variables (by default DOMAIN=exampel.com ORG=org1 are used): 
 ```bash
-./generate-orderer.sh
-```
+export ORG=org1 DOMAIN=example.com
+```   
 
-Start docker containers for *orderer*.
+Start docker containers for *orderer* (crypto-materials, certificates and keys will be auto-generated inside the containers):
 ```bash
-docker-compose -f docker-compose-orderer.yaml up
+docker-compose -f docker-compose-orderer.yaml up -d
 ```
 
 ## Generate and start member organization
 
-Open another console. Generate crypto material for the member organization. Using default ORG name *org1*.
+Start docker containers for *org1* (crypto-materials, certificates and keys will be auto-generated inside the containers):
 ```bash
-./generate-peer.sh
-```
-
-Start docker containers for *org1*.
-```bash
-docker-compose up
+docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 ## Add organization to the consortium and create a channel

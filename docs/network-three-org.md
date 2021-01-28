@@ -13,10 +13,11 @@ This will create a network with `example.com` domain and container names like `p
 and nodejs chaincode *reference* with its source in this repo [./chaincode/node/reference](./chaincode/node/reference). 
 
 Member organization's docker containers are started with default docker-compose config files 
-`-f docker-compose.yaml -f couchdb.yaml`. You can override them by setting env variable `DOCKER_COMPOSE_ARGS`; for
+`-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml`. 
+You can override them by setting env variable `DOCKER_COMPOSE_ARGS`; for
 example to start without a CouchDb container to use LevelDb for storage:
 ```bash
-DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f ports.yaml" ./network-create-local.sh
+DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-ports.yaml" ./network-create-local.sh
 ```
  
 You can give your network and channel names, set starting API port, override chaincode location, 
@@ -44,18 +45,14 @@ Clean up. Remove all containers, delete local crypto material:
 ./clean.sh
 ```
 
-Generate crypto material and start docker containers of the *orderer* organization:
+Start docker containers of the *orderer* organization (crypto-materials, certificates and keys will be auto-generated inside the containers):
 ```bash
-./generate-orderer.sh
-
 docker-compose -f docker-compose-orderer.yaml up
 ```
 
-Open another shell. Generate and start *org1*.
+Open another shell. Start *org1* (crypto-materials, certificates and keys will be auto-generated inside the containers):
 ```bash
-./generate-peer.sh
-
-docker-compose up
+docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml up
 ```
 
 Open another shell. Note since we're reusing the same `docker-compose.yaml` file we need to redefine `COMPOSE_PROJECT_NAME`.
@@ -69,9 +66,7 @@ export API_PORT=4001
 
 Then start the peer
 ```bash
-./generate-peer.sh
-
-docker-compose up
+docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 Generate and start *org3* in another shell:
@@ -79,9 +74,7 @@ Generate and start *org3* in another shell:
 export COMPOSE_PROJECT_NAME=org3 ORG=org3 
 export API_PORT=4002
 
-./generate-peer.sh
-
-docker-compose up
+docker-compose -f docker-compose.yaml -f docker-compose-api-port.yaml up -d
 ```
 
 Now you should have 4 console windows running containers of *orderer*, *org1*, *org2*, *org3* organizations.
@@ -101,16 +94,16 @@ Open another console where we'll become *org1* again. We'll create channel *comm
 and join our peers to the channel:
 ```bash
 ./channel-create.sh common
-./channel-add-org.sh common org2 
-./channel-add-org.sh common org3 
 ./channel-join.sh common
+./channel-add-org.sh common org2
+./channel-add-org.sh common org3 
 ``` 
 
 Let's create a bilateral channel between *org1* and *org2* and join to it:
 ```bash
 ./channel-create.sh org1-org2
-./channel-add-org.sh org1-org2 org2 
 ./channel-join.sh org1-org2
+./channel-add-org.sh org1-org2 org2
 ```
 
 Install and instantiate chaincode *reference* on channel *common*. Note the path to the source code is inside `cli` 

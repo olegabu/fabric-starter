@@ -9,7 +9,7 @@ services:
 
 
   certs.generate:
-    image: ${DOCKER_REGISTRY}/olegabu/fabric-starter-rest:${FABRIC_STARTER_REST_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     container_name: certs.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
       - CERT_ORG=${ORG:-org1}.${DOMAIN:-example.com}
@@ -25,7 +25,7 @@ services:
 
   peer0:
     ports:
-      - ${PEER0_PORT:-7051}:7051
+      - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 
 
   # simple http server to disseminate certificates
@@ -43,7 +43,3 @@ services:
       - certs.generate
       - api
 
-networks:
-  default:
-    external:
-      name: fabric-starter_default

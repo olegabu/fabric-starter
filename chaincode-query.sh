@@ -8,4 +8,6 @@ channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
 arguments=${3-'[]'}
 
-queryChaincode "$channelName" "$chaincodeName" "$arguments"
+: ${PEER0_PORT:=7051}
+
+ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME} runCLI "container-scripts/network/chaincode-query.sh $channelName $chaincodeName '$arguments'"

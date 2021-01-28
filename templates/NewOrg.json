@@ -99,7 +99,7 @@
               "anchor_peers": [
                 {
                   "host": "peer0.${NEWORG}.${DOMAIN}",
-                  "port": 7051
+                  "port": "${NEWORG_PEER0_PORT}"
                 }
               ]
             },
@@ -114,7 +114,7 @@
                 ],
                 "crypto_config": {
                   "identity_identifier_hash_function": "SHA256",
-                  "signature_hash_family": "SHA2"
+                  "signature_hash_family": "${SIGNATURE_HASH_FAMILY}"
                 },
                 "name": "${NEWORG}",
                 "root_certs": [

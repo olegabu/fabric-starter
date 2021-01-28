@@ -1,0 +1,76 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+services:
+
+  pre-install:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates # for local debug
+      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+
+  post-install:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
+
+  ca:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ${WORK_DIR-/home/docker}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+
+  peer0:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
+      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    ports:
+      - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
+
+  cli.peer:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
+      - ${WORK_DIR-/home/docker}/${CHAINCODE_HOME-chaincode}:/opt/chaincode
+      - ${WORK_DIR-/home/docker}/${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
+      - ${WORK_DIR-/home/docker}/crypto-config:/etc/hyperledger/crypto-config
+#      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+#      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer
+      #    - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer1.${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peer1
+#      - ${WORK_DIR-/home/docker}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp:/etc/hyperledger/crypto/orderer
+      - ${WORK_DIR-/home/docker}/templates:/etc/hyperledger/templates # for local debug
+      - ${WORK_DIR:-/home/docker}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+
+  # fabric-rest api server
+  api:
+    environment:
+      - MULTIHOST=true
+    #      - P=${WORK_DIR-/home/docker}
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
+      - ${WORK_DIR:-/home/docker}/crypto-config/hosts_orderer:/etc/hosts_orderer
+      - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
+      - ${WORK_DIR-/home/docker}/${WEBAPP_HOME:-webapp}:/usr/src/app/webapp
+      - ${WORK_DIR:-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp:ro
+#      - ${WEBAPP_HOME-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/etc/hyperledger/msp:ro
+#      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
+#      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+      - ${WORK_DIR-/home/docker}/middleware:/usr/src/app/routes # for local debug
+      - ${WORK_DIR-/home/docker}/templates:/usr/src/app/templates # for local debug
+
+  # block event listener
+  #  listener:
+  #    volumes:
+  #      - ${WORK_DIR-/home/docker}/hosts:/etc/hosts
+  #      - ${WORK_DIR-/home/docker}/crypto-config:/usr/src/app/crypto-config
+  #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/src/app/msp
+  #      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
+
+  # simple http server to disseminate certificates
+  www.peer:
+    volumes:
+      - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
+      - ${WORK_DIR-/home/docker}/crypto-config/configtx:/usr/share/nginx/html/configtx
+    ports:
+      - ${WWW_PORT:-80}:80
