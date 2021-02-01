@@ -35,13 +35,15 @@ docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps --name raft_request 
          \"wwwPort\":\"${WWW_PORT}\",\"ordererIp\":\"${MY_IP}\",\"orgId\":\"${ORG}\"}' "
 
 
+set -x
+docker rm -f raft_request
+set +x
+
+
 echo
 echo curl completed
 sleep 2
 
-set -x
-docker rm -f raft_request
-set +x
 
 raft/4_raft-start-consenter.sh ${REMOTE_DOMAIN} www.${REMOTE_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
 
