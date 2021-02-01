@@ -28,15 +28,20 @@ ORDERER_PROFILE=Raft docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d www.ord
 
 env|sort
 
-docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
+docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps --name raft_request cli.orderer \
   bash -c "set -x; container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT}; curl -i -k  --connect-timeout 30 --max-time 240 --retry 0 \
   ${BOOTSTRAP_SERVICE_URL}://${BOOTSTRAP_IP}:${API_PORT}/integration/service/raft -H 'Content-Type: application/json'\
     -d '{\"ordererName\":\"${ORDERER_NAME}\",\"domain\":\"${ORDERER_DOMAIN}\",\"ordererPort\":\"${ORDERER_GENERAL_LISTENPORT}\",\
          \"wwwPort\":\"${WWW_PORT}\",\"ordererIp\":\"${MY_IP}\",\"orgId\":\"${ORG}\"}' "
 
+
 echo
 echo curl completed
 sleep 2
+
+set -x
+docker rm -f --name raft_request
+set +x
 
 raft/4_raft-start-consenter.sh ${REMOTE_DOMAIN} www.${REMOTE_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
 
