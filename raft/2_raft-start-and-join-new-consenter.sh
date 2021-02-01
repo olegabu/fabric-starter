@@ -40,7 +40,7 @@ echo curl completed
 sleep 2
 
 set -x
-docker rm -f --name raft_request
+docker rm -f raft_request
 set +x
 
 raft/4_raft-start-consenter.sh ${REMOTE_DOMAIN} www.${REMOTE_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
