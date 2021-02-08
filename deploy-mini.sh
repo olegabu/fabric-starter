@@ -42,4 +42,3 @@ echo "docker-compose ${docker_compose_args} up -d"
 
 docker-compose ${docker_compose_args} up -d
 docker logs api.${first_org}.${DOMAIN:-example.com}
-docker rm -rf api.${first_org}.${DOMAIN:-example.com}

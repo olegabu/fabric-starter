@@ -50,10 +50,13 @@ function parseOrdererName_Port() {
     local ordererName_Port=${2:?ordererName_Port(name:port) is required}
 
     local ordererConf
-    IFS=':' read -r -a ordererConf <<< ${ordererName_Port}
+    set -x
+    IFS=':' read -r -a ordererConf <<< ${ordererName_Port};
     local ordererName=${ordererConf[0]}
     local ordererPort=${ordererConf[1]}
+
     export ORDERER_NAME_${index}=${ordererName}
+    set +x
     export RAFT${index}_PORT=${ordererPort}
     [ $index -eq 0 ] && export ORDERER_GENERAL_LISTENPORT=${ordererPort}
 }
