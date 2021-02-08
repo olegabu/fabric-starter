@@ -28,15 +28,18 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set +x
 fi
 
+if [ -z "${DEV_MODE}" ]; then
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+fi;
+
 info "Cleaning up"
 ./clean.sh all
 
-docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
 
 info "Create empty"
 echo "docker-compose ${docker_compose_args} up -d"
 
 docker-compose ${docker_compose_args} up -d
 docker logs api.${first_org}.${DOMAIN:-example.com}
-rm -rf api.${first_org}.${DOMAIN:-example.com}
+docker rm -rf api.${first_org}.${DOMAIN:-example.com}
