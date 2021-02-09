@@ -42,6 +42,6 @@ services:
       - ${SSL_CERTS_PATH:-./https/certs/}${ORG:-org1}.${DOMAIN:-example.com}:/container/service/phpldapadmin/assets/apache2/certs
     depends_on:
       - ldap-service
-      - www.peer
+#      - www.peer
     command: --loglevel debug
 

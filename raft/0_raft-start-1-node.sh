@@ -1,20 +1,20 @@
-#!/usr/bin/env bash
+#!/usr/bin/env /bin/bash
 
-BASEDIR=$(dirname "$0")
-source $BASEDIR/../lib.sh
-source ../lib.sh 2>/dev/null # for IDE code completion
-source $BASEDIR/env.sh
+#BASEDIR=$(dirname "$0")
+#source $BASEDIR/env.sh
 
 usageMsg="ORG=org ORDERER_NAME_PREFIX=<orderer name prefix> $0 <new-consenter-name> <new-consenter-org> <new-consenter-domain> <new-consenter-port>"
 exampleMsg="ORG=org1 ORDERER_NAME_PREFIX=raft0 $0"
 
+: ${NO_DEPS:=${1}}
+: ${SERVICE:=${2}}
 : ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
 : ${ORDERER_NAME:=${ORDERER_NAME_0:-orderer}}
 : ${RAFT_NODES_COUNT:=1}
 : ${ORDERER_PROFILE:=Raft}
 : ${ORDERER_OPERATIONS_LISTENADDRESS:=0.0.0.0:9090}
-: ${NO_DEPS:=${1}}
-: ${SERVICE:=${2}}
+export FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME:-./}              # path to fabric-starter folder
+export DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS:-"-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 
 export DOMAIN ORDERER_DOMAIN WWW_PORT RAFT_NODES_COUNT
 
