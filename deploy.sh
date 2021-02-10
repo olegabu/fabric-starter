@@ -44,7 +44,7 @@ fi
 # export FABRIC_STARTER_HOME=`docker-machine ssh ${ORG}.${DOMAIN} pwd`
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
-export FABRIC_VERSION=${FABRIC_VERSION:-1.4.9}
+export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
 
 
