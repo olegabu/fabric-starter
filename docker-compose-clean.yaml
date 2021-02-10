@@ -9,7 +9,7 @@ services:
     container_name: cli.clean
 #    build:
 #      args:
-#        FABRIC_VERSION: ${FABRIC_VERSION:-latest}
+#        FABRIC_VERSION: ${FABRIC_VERSION:-1.4.9}
 #      context: ./fabric-tools-extended
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     working_dir: /etc/hyperledger
