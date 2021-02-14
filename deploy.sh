@@ -8,7 +8,8 @@ orgs=$@
 first_org=${1:-org1}
 DEV_MODE=${DEV_MODE}
 AGENT_MODE=${AGENT_MODE}
-HTTP_MODE=${DEV_MODE-${HTTP_MODE}}
+[ -z "${DEV_MODE}" ] && HTTPS_MODE=${HTTPS_MODE:-1}
+[ -z "${DEV_MODE}" ] && LDAP_ENABLED=${LDAP_ENABLED:-1}
 
 if [ -n "${AGENT_MODE}" ]; then
    source ${first_org}_env;
@@ -22,13 +23,11 @@ export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ldap.yaml -f docker-compose-preload-images.yaml"}
-if [ -z "${HTTP_MODE}" ]; then # https mode
+if [ -n "${HTTPS_MODE}" ]; then # https mode
     export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
-    export LDAP_ENABLED=${LDAP_ENABLED:-true}
-    export DOCKER_COMPOSE_EXTRA_ARGS=${DOCKER_COMPOSE_EXTRA_ARGS:-"-f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml"}
+    export DOCKER_COMPOSE_EXTRA_ARGS=${DOCKER_COMPOSE_EXTRA_ARGS:-"-f https/docker-compose-https-ports.yaml"}
 else # http mode
     export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-false}
-    export LDAP_ENABLED=${LDAP_ENABLED:-}
     export DOCKER_COMPOSE_EXTRA_ARGS=${DOCKER_COMPOSE_EXTRA_ARGS:-"-f docker-compose-dev.yaml"}
 fi
 
@@ -67,7 +66,7 @@ info "Cleaning up"
 ./clean.sh all
 
 
-if [ -z "${DEV_MODE}" ]; then
+if [ -z "${DEV_MODE}" ]; then echo 1
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     #docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
@@ -91,7 +90,8 @@ fi
 
 info "Create first organization ${ORG}"
 set -x
-BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} up -d ${AGENT_MODE:+pre-install ca api ldap-service ldapadmin www.peer}
+BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
+    up -d ${AGENT_MODE:+pre-install ca api ldap-service ldapadmin www.peer}
 set +x
 if [ -z "${AGENT_MODE}" ]; then
     docker logs -f post-install.${ORG}.${DOMAIN}

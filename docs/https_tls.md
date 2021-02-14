@@ -15,7 +15,9 @@ In order to apply existing certificates:
 
 - copy the certificate and the private key files into `ssl/certs` folder   
 OR
-- specify the path to the folder with the certificate in *SSL_CERTS_PATH* environment variable   
+- specify the path to the folder with the certificate in *SSL_CERTS_ROOT_PATH* environment variable
+- Create subpath for each organization #ORG.$DOMAIN/
+- Put `public.crt` and `private.key` into the corresponded organization's repository
 NOTE:
 - the certificate file has to be named `public.crt` 
 - the private key file has to be named `private.key`

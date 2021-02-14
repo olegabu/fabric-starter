@@ -9,6 +9,8 @@ volumes:
 #  peer1:
   webapps:
   routes:
+  nginx_templates:
+  admin_app:
 
 x-peer:
   &peer-defaults
@@ -52,6 +54,7 @@ services:
     command: container-scripts/container-peer.sh
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - nginx_templates:/etc/hyperledger/templates/nginx/conf.d
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -316,6 +319,7 @@ services:
       - ${FABRIC_STARTER_HOME:-.}/appstore:/usr/src/app/appstore
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
       - /var/run/docker.sock:/var/run/docker.sock
+      - admin_app:/usr/src/app/admin
     #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
     #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
     #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
@@ -326,6 +330,10 @@ services:
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     restart: always
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates/http
     depends_on:
       - pre-install
     logging:
@@ -335,6 +343,8 @@ services:
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
+      - nginx_templates:/etc/nginx/templates
+      - admin_app:/usr/src/app/admin
 
 networks:
   default:
