@@ -2,6 +2,7 @@
 
 ORG=${1:-${ORG:-org1}}
 DOMAIN=${2:-${DOMAIN:-example.com}}
+ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN}
 REMOTE_ORDERER_DOMAIN=${REMOTE_ORDERER_DOMAIN:-${DOMAIN}}
 ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 ORDERER_NAMES=${3:-${ORDERER_NAMES:-orderer:${ORDERER_GENERAL_LISTENPORT:-7050},raft1:7150,raft2:7250}}
@@ -12,7 +13,7 @@ function main() {
     echo "ORDERER_NAMES=${ORDERER_NAMES}"
     parseOrdererNames
 
-    info "Creating orderer service for ${ORDERER_DOMAIN:-$DOMAIN}, of type ${ORDERER_TYPE}"
+    info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
     shopt -s nocasematch # to allow Raft, RAFT, etc
 
     if [[ -z "$BOOTSTRAP_IP" ]]; then
@@ -46,6 +47,7 @@ function parseOrdererNames() {
     echo -e "\n\nUsing ORDERER_NAMES: ${ORDERER_NAMES}\n\n"
     local ordererNames
     IFS="," read -r -a ordererNames <<< ${ORDERER_NAMES}
+    ordererNames=($ordererNames)
     local i
     for i in ${!ordererNames[@]}; do
         parseOrdererName_Port $i ${ordererNames[$i]}
@@ -58,12 +60,14 @@ function parseOrdererName_Port() {
 
     local ordererConf
     IFS=':' read -r -a ordererConf <<< ${ordererName_Port};
+    ordererConf=($ordererConf)
     local ordererName=${ordererConf[0]}
     local ordererPort=${ordererConf[1]}
 
     export ORDERER_NAME_${index}=${ordererName}
     export RAFT${index}_PORT=${ordererPort}
     [ $index -eq 0 ] && export ORDERER_GENERAL_LISTENPORT=${ordererPort}
+    echo "Parsed orderer: ORDERER_NAME_${index}:${ordererName}, RAFT${index}_PORT:${ordererPort}"
 }
 
 main

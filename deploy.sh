@@ -121,3 +121,4 @@ for org in "${@:2}"; do
     COMPOSE_PROJECT_NAME=$ORG  ./channel-add-org.sh ${SERVICE_CHANNEL} ${currOrg} ${currOrgPeer0Port}
 done
 
+docker ps
