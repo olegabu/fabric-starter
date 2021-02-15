@@ -15,7 +15,7 @@ services:
       - CERT_STATE=${CERT_STATE:-N/A}
       - CERT_ORGANIZATIONAL_UNIT=${CERT_ORGANIZATIONAL_UNIT:-Hyperledger Fabric Blockchain}
       - CERT_COMMON_NAME=${CERT_COMMON_NAME:-Fabric-Starter-Rest-API}
-    command: sh -c "container-scripts/container-peer.sh; container-scripts/certificates/generate_tls_cert.sh /certs; sleep 1000"
+    command: sh -c "container-scripts/container-peer.sh; container-scripts/certificates/generate_tls_cert.sh /certs;"
     volumes:
       - ${SSL_CERTS_ROOT_PATH:-./https/certs}:/certs
 
@@ -25,7 +25,6 @@ services:
       - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 
 
-  # simple http server to disseminate certificates
   www.peer:
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates/https
@@ -37,5 +36,4 @@ services:
       - ${SSL_CERTS_ROOT_PATH:-./https/certs/}:/certs
     depends_on:
       - pre-install
-      - api
 
