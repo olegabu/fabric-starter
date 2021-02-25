@@ -44,8 +44,8 @@ See [Prerequisites](docs/install.md)
 
 <a name="setversion"></a>
 ## Using a particular version of Hyperledger Fabric
-To deploy network with a particular version of HL Fabric export desired version in the 
-FABRIC_VERSION environment variable. The `1.4.9` docker image tag is used by default.
+By default Fabric starter uses the 1.4.9 version of HL Fabric. If you want to deploy network with another version of HL Fabric then export it in the 
+FABRIC_VERSION environment variable, e.g.:
 ```bash
 export FABRIC_VERSION=1.4.8
 ```
