@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-: ${FABRIC_VERSION:="latest"}
+: ${FABRIC_VERSION:="1.4.9"}
 : ${FABRIC_STARTER_VERSION:="latest"}
 : ${JAVA_RUNTIME_VERSION:="latest"}
 
