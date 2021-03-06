@@ -20,11 +20,13 @@ function main() {
         if [[ "${ORDERER_TYPE}" == "SOLO" || "${ORDERER_TYPE}" == "RAFT1" ]]; then
                 set -x
                 WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/0_raft-start-1-node.sh
+                returnCode=$?
                 set +x
                 export ORDERER_NAMES=${ORDERER_NAME:-${ORDERER_NAME_1:-"orderer"}}
         else
                 set -x
                 WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/1_raft-start-3-nodes.sh
+                returnCode=$?
                 set +x
                 export ORDERER_NAMES=${ORDERER_NAMES}
         fi
@@ -33,10 +35,13 @@ function main() {
             set -x
             export ORDERER_DOMAIN=${ORDERER_DOMAIN:-"osn-${ORG}.${DOMAIN}"}
             BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh ${REMOTE_ORDERER_DOMAIN}
+            returnCode=$?
             set +x
         fi
     fi
     shopt -u nocasematch
+
+    return ${returnCode}
 }
 
 function info() {

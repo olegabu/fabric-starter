@@ -31,7 +31,7 @@ services:
     ports:
       - ${API_PORT:-4000}:4000
       - ${WWW_PORT:-80}:80
-      - ${WWW_SECURE_PORT:-443}:443
+      - ${EXTERNAL_COMMUNICATION_PORT:-443}:443
     volumes:
       - ${SSL_CERTS_ROOT_PATH:-./https/certs/}:/certs
     depends_on:

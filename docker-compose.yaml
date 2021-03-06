@@ -260,7 +260,7 @@ services:
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
-      - ORG=${ORG:-org1}
+      - ORG=${ORG-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES

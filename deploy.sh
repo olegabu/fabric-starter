@@ -11,15 +11,15 @@ AGENT_MODE=${AGENT_MODE}
 [ -z "${DEV_MODE}" ] && HTTPS_MODE=${HTTPS_MODE:-1}
 [ -z "${DEV_MODE}" ] && LDAP_ENABLED=${LDAP_ENABLED:-1}
 
-if [ -n "${AGENT_MODE}" ]; then
+export ORG=''
+if [ -z "${AGENT_MODE}" ]; then
    source ${first_org}_env;
+   export ORG=${ORG:-${first_org:-org1}}
+   export DOMAIN=${DOMAIN:-example.com}
 fi
 
-export ORG=${ORG:-${first_org:-org1}}
-export DOMAIN=${DOMAIN:-example.com}
 export ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
-
 
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ldap.yaml -f docker-compose-preload-images.yaml"}
@@ -66,7 +66,7 @@ info "Cleaning up"
 ./clean.sh all
 
 
-if [ -z "${DEV_MODE}" ]; then echo 1
+if [ -z "${DEV_MODE}" ]; then
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     #docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
@@ -80,7 +80,7 @@ echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${R
 
 #./wait-port.sh ${MY_IP} ${WWW_PORT} # wait for external availability in clouds
 
-export COMPOSE_PROJECT_NAME=${ORG}
+export COMPOSE_PROJECT_NAME=${ORG:-org1} #TODO: try to avoid pre-install container in AGENT_MODE
 
 if [ -z "$AGENT_MODE" ]; then
     info "Start ordering service"
@@ -91,7 +91,8 @@ fi
 info "Create first organization ${ORG}"
 set -x
 BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
-    up -d ${AGENT_MODE:+pre-install ca api ldap-service ldapadmin www.peer}
+    up -d ${AGENT_MODE:+api www.peer}
+#    up -d ${AGENT_MODE:+pre-install ca api ldap-service ldapadmin www.peer}
 set +x
 if [ -z "${AGENT_MODE}" ]; then
     docker logs -f post-install.${ORG}.${DOMAIN}
