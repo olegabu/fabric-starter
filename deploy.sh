@@ -8,7 +8,8 @@ orgs=$@
 first_org=${1:-org1}
 DEV_MODE=${DEV_MODE}
 AGENT_MODE=${AGENT_MODE}
-[ -z "${DEV_MODE}" ] && HTTPS_MODE=${HTTPS_MODE:-1}
+LOCAL_IMAGES_MODE=${LOCAL_IMAGES_MODE}
+[ -z "${DEV_MODE}" ] && HTTPS_MODE=${HTTPS_MODE-1}
 [ -z "${DEV_MODE}" ] && LDAP_ENABLED=${LDAP_ENABLED:-1}
 
 export ORG=''
@@ -65,12 +66,13 @@ fi
 info "Cleaning up"
 ./clean.sh all
 
-
-if [ -z "${DEV_MODE}" ]; then
+set -x
+if [[ -z "${DEV_MODE}" && -z "${LOCAL_IMAGES_MODE}" ]]; then
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
     #docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
 fi
+set +x
 
 export REST_API_SERVER="http://api.${ORG:-org1}.${DOMAIN:-example.com}:3000"
 echo "Using DOMAIN:${DOMAIN}, BOOTSTRAP_IP:${BOOTSTRAP_IP}, REST_API_SERVER: ${REST_API_SERVER}"
