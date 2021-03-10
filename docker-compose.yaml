@@ -288,6 +288,7 @@ services:
       - UI_LISTEN_BLOCK_OPTS
       - FABRIC_STARTER_HOME
       - FABRIC_STARTER_PWD=${PWD}
+      - FABRIC_STARTER_VERSION
 #      - HFC_LOGGING={"debug":"console","info":"console"}
       - HFC_LOGGING={"debug":"/dev/null","info":"/dev/null"}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
