@@ -12,8 +12,8 @@ echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 : ${WWW_PORT:=${WWW_PORT:-80}}
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
-: ${ORDERER_NAMES:=${ORDERER_NAME}}
-: ${BOOTSTRAP_API_PORT:=${BOOTSTRAP_API_PORT:-${API_PORT}}}
+: ${ORDERER_NAMES:=${ORDERER_NAMES:-${ORDERER_NAME}}}
+: ${BOOTSTRAP_EXTERNAL_PORT:=${BOOTSTRAP_EXTERNAL_PORT:-${API_PORT}}}
 
 : ${SERVICE_CC_NAME:=dns}
 : ${CONSORTIUM_AUTO_APPLY:=${CONSORTIUM_AUTO_APPLY-SampleConsortium}}
@@ -57,14 +57,16 @@ function addMeToConsortiumIfOrdererExists() {
     if [ -f "${ORDERER_GENERAL_TLS_ROOTCERT_FILE}" ]; then
         echo "File  ${ORDERER_GENERAL_TLS_ROOTCERT_FILE} exists. Auto apply to consortium: ${CONSORTIUM_AUTO_APPLY}"
 
-        status=1
-        while [[ ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} && ( -z "$BOOTSTRAP_IP" || ( "$BOOTSTRAP_IP" == "$MY_IP" )) ]]; do
+        local count=0
+        local status=1
+        while [[ ${count} -lt 3 && ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} && ( -z "$BOOTSTRAP_IP" || ( "$BOOTSTRAP_IP" == "$MY_IP" )) ]]; do
             printYellow "\n\nTrying to add  ${ORG} to consortium\n\n"
             runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${WWW_PORT} ${DOMAIN}
             sleep $(( RANDOM % 20 )) #TODO: make external locking for config updates
             runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${WWW_PORT} ${DOMAIN}
             status=$?
-            echo -e "Status: $status\n"
+            echo -e "Status: $status\n, Count: $count"
+            count=$((count+1))
             sleep 3
         done
     fi
@@ -87,15 +89,15 @@ function requestInviteToServiceChannel() {
     if [[ $creationResult -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
        set -x
-       curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/service/orgs \
+       curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}/integration/service/orgs \
             -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
        local curlResult=$?
        set +x
        echo "Curl result: $curlResult"
-    else
+    else #TODO: should'n go here if no AUTO_JOIN
         if [[ -n "$BOOTSTRAP_IP" ]]; then
             set -x
-            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/dns/org \
+            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}/integration/dns/org \
                  -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
             local curlResult=$?
             set +x

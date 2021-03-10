@@ -110,7 +110,7 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
             const chainOrgs = await getChaincodeData("orgs");
             if (chainOrgs) {
                 orgs = _.merge(orgs, chainOrgs);
-                // eventBus.emit('orgs-configuration-changed', orgs);
+                // eventBus.emit('orgs-configuration-changed', orgs);dep
                 // eventBus.emit('osn-configuration-changed', osns);
             }
 

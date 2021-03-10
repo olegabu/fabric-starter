@@ -162,19 +162,41 @@ function copyWellKnownTLSCerts() {
 
 function copyClientTLSCertForServingByWWW() {
     tlsCert="crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/tls/server.crt"
-    tlsNginxFolder=crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/${ORDERER_NAME}.$ORDERER_DOMAIN/tls
+
+    tlsNginxFolder=crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/tls
     echo "Copying tls certs to nginx served folder $tlsCert"
     mkdir -p ${tlsNginxFolder}
     cp "${tlsCert}" "${tlsNginxFolder}"
 
+    #deprecated
+    tlsNginxFolder=crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/${ORDERER_NAME}.$ORDERER_DOMAIN/tls
+    echo "Copying tls certs to nginx served folder $tlsCert"
+    mkdir -p ${tlsNginxFolder}
+    cp "${tlsCert}" "${tlsNginxFolder}"
+    ###########
+
+    set -x
+    tlsNginxFolder=crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/tls
+    mkdir -p ${tlsNginxFolder}
+    cp "${tlsCert}" "${tlsNginxFolder}"
+
+    mkdir -p crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/admincerts crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp 2>/dev/null
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/cacerts crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp 2>/dev/null
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/tlscacerts crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp 2>/dev/null
+    set +x
+
     if [[ -n "{ORG}" && -d "crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/" ]]; then
-        set -x
         echo "Copying tls certs to peerOrganizations nginx served folder $tlsCert"
+
+        set -x
+        #deprecated:
         tlsNginxFolder=crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/${ORDERER_NAME}.$ORDERER_DOMAIN/tls
         mkdir -p ${tlsNginxFolder}
         cp "${tlsCert}" "${tlsNginxFolder}"
 
         cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null
+        ###########
         set +x
     fi
 }

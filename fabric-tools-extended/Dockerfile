@@ -16,6 +16,7 @@ COPY templates /etc/hyperledger/templates
 COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
 COPY raft /etc/hyperledger/raft
+COPY https /etc/hyperledger/https
 COPY ordering-start.sh /etc/hyperledger/
 
 

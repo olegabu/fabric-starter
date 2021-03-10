@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 BASEDIR=$(dirname "$0")
-source $BASEDIR/../lib.sh
-source ../lib.sh 2>/dev/null # for IDE code completion
 source $BASEDIR/env.sh
 
 REMOTE_DOMAIN=${1:?Remote domain is requried}

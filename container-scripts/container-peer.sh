@@ -25,6 +25,7 @@ function main() {
     envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/fabric-ca-server-config-$ORG.yaml" #TODO:remove
     generateCryptoMaterialIfNotExists
     renameSecretKey #TODO: ?
+    copyMspToNginxSharedFolder
     copyOrdererCertificatesForServingByPeerWWW
     copyWellKnownTLSCerts
     generateHostsFileIfNotExists
@@ -64,14 +65,32 @@ function renameSecretKey() {
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/sk.pem
 }
 
+function copyMspToNginxSharedFolder() {
+    mkdir -p crypto-config/node-certs/$ORG.$DOMAIN/msp
+    cp -r crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/* crypto-config/node-certs/$ORG.$DOMAIN/msp 2>/dev/null
+}
+
 function copyOrdererCertificatesForServingByPeerWWW() {
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/admincerts crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp 2>/dev/null
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/cacerts crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp 2>/dev/null
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/tlscacerts crypto-config/node-certs/${ORDERER_NAME}.$ORDERER_DOMAIN/msp 2>/dev/null
+
+    #deprecated
+    cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/node-certs/$ORG.$DOMAIN/msp 2>/dev/null
     cp -r crypto-config/ordererOrganizations/$ORDERER_DOMAIN/msp/* crypto-config/peerOrganizations/$ORG.$DOMAIN/msp 2>/dev/null
+    ###########
 }
 
 function copyWellKnownTLSCerts() {
+    mkdir -p crypto-config/node-certs/$ORG.$DOMAIN/msp/well-known
+    cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/node-certs/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
+    cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/node-certs/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
+
+    #deprecated
     mkdir -p crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known
     cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/msp-admin.pem 2>/dev/null
     cp crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/tlscacerts/tlsca.$ORG.$DOMAIN-cert.pem crypto-config/peerOrganizations/$ORG.$DOMAIN/msp/well-known/tlsca-cert.pem 2>/dev/null
+    ##########
 }
 
 function generateHostsFileIfNotExists() {

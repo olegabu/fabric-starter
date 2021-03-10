@@ -14,6 +14,12 @@
 
 : ${WGET_OPTS:=--verbose -N}
 
+if [ `uname` == 'Darwin' ]; then
+    export BASE64_WRAP_OPT='-b' # debug on MacOs
+else
+    export BASE64_WRAP_OPT='-w'
+fi
+
 export ORG DOMAIN SYSTEM_CHANNEL_ID
 : ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
@@ -27,26 +33,29 @@ function downloadOrdererMSP() {
     local mspSubPath="$remoteOrdererDOMAIN"
 #    local serverDNSName=${remoteOrdererName}.${remoteOrdererDOMAIN}:${wwwPort}
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
-    downloadMSP "ordererOrganizations" ${remoteOrdererDOMAIN} ${serverDNSName}
-    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    downloadMSP "ordererOrganizations" "${serverDNSName}" "${remoteOrdererDOMAIN}" "${remoteOrdererName}.${remoteOrdererDOMAIN}"
+#    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
 function downloadOrgMSP() {
     local org=${1:?Org is required}
     local wwwPort=${2:-80}
     local domain=${3:-$DOMAIN}
-    downloadMSP "peerOrganizations" ${org}.${domain} ${org}.${domain}:${wwwPort}
+    downloadMSP "peerOrganizations" "${org}.${domain}:${wwwPort}" "${org}.${domain}"
 }
 
 function downloadMSP() {
     local typeSubPath=$1
-    local mspSubPath=$2
-    local wwwServerAddress=$3
+    local wwwServerAddress=$2
+    local mspSubPath=$3
+    local urlSubPath=${4:-$mspSubPath}
+
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
     set -x
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
     set +x
 }
 
@@ -59,43 +68,47 @@ function certificationsToEnv() {
         mspDir="crypto-config/ordererOrganizations/${domain}/msp";
         org=""
     fi
-    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
-      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 -w 0` \
-      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 -w 0`
+    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_WRAP_OPT} 0`
 }
 
 function ordererCertificationsToEnv() {
     local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
-    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0` \
-      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 -w 0`
+    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_WRAP_OPT} 0`
 }
 
 function fetchChannelConfigBlock() {
     local channel=${1:?"Channel name must be specified"}
     local blockNum=${2:-config}
+    local outputFile=${3:-crypto-config/configtx/${channel}.pb}
 
     mkdir -p crypto-config/configtx
-    echo "Execute: channel fetch $blockNum crypto-config/configtx/${channel}.pb -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}"
-    peer channel fetch $blockNum crypto-config/configtx/${channel}.pb -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
+    echo "Execute: channel fetch $blockNum ${outputFile} -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}"
+    peer channel fetch $blockNum ${outputFile} -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function txTranslateChannelConfigBlock() {
     local channel=$1
-    rm -f crypto-config/configtx/${channel}.pb crypto-config/configtx/${channel}.json crypto-config/configtx/config.json
+    local outputFile=${2:-crypto-config/configtx/config.json}
+    rm -f crypto-config/configtx/${channel}.pb crypto-config/configtx/${channel}.json ${outputFile}
     fetchChannelConfigBlock $channel
     configtxlator proto_decode --type 'common.Block' --input=crypto-config/configtx/${channel}.pb --output=crypto-config/configtx/${channel}.json
-    jq .data.data[0].payload.data.config crypto-config/configtx/${channel}.json > crypto-config/configtx/config.json
+    jq .data.data[0].payload.data.config crypto-config/configtx/${channel}.json > ${outputFile}
 }
 
 function updateChannelGroupConfigForOrg() {
     local org=${1:?Org is required}
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
+    local outputFile=${4:-crypto-config/configtx/updated_config.json}
+
     export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
     echo "Prepare updated config crypto-config/configtx/new_config_${org}.json"
     envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
-    jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > crypto-config/configtx/updated_config.json
+    jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > "${outputFile}"
 }
 
 function mergeListsInJsons() {
@@ -139,16 +152,19 @@ function insertObjectIntoChannelConfig() {
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
-    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port"
+    local outputFile=${5:-crypto-config/configtx/updated_config.json}
+
+    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile"
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port
+    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $outputFile
 }
 
 
 function updateChannelConfig() {
     local channel=${1:?Channel is required}
     local org=${2:?Org is required}
-
+    local templateFile=${3:?Template is required}
+    local anchorPort=${4}
     local domain=${5:-$DOMAIN}
     certificationsToEnv $org $domain
     insertObjectIntoChannelConfig $@
