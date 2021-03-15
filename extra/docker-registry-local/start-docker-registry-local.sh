@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source ../../.env
+export $(cat ../../.env| grep -v '^#'| cut -d= -f1)
 : ${FABRIC_VERSION:="1.4.9"}
 : ${FABRIC_STARTER_VERSION:="latest"}
 : ${JAVA_RUNTIME_VERSION:="latest"}
