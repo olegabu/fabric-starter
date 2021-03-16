@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 source .env
-export $(cat .env| grep -v '^#'| cut -d= -f1)
 FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 FABRIC_VERSION=${FABRIC_VERSION:-1.4.9}
 
