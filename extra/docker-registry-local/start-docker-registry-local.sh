@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0)
+source $BASEDIR/../../.env
 : ${FABRIC_VERSION:="1.4.9"}
 : ${FABRIC_STARTER_VERSION:="latest"}
 : ${JAVA_RUNTIME_VERSION:="latest"}
@@ -12,8 +14,6 @@ FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 echo "Using local docker registry address: $DOCKER_REGISTRY_LOCAL"
 
 unset DOCKER_HOST DOCKER_MACHINE_NAME DOCKER_CERT_PATH DOCKER_HOST DOCKER_TLS_VERIFY
-
-BASEDIR=$(dirname "$0")
 
 docker-compose -f ${BASEDIR}/docker-compose-local-docker.yaml up -d
 
