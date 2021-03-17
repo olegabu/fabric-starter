@@ -4,8 +4,28 @@
 
 version: '3.7'
 
+volumes:
+  portainer_data:
+
 
 services:
 
-  jre8:
+  jre8-preload:
     image: openjdk:8-jre
+
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: always
+    ports:
+      - ${PORTAINER_PORT:-9000}:9000
+#    command: --hide-label com.docker.compose.service=api
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  default:
+    external: false
+    name: fabric-starter_default
