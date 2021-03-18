@@ -33,14 +33,16 @@ function downloadOrdererMSP() {
 
 function downloadOrgMSP() {
     local org=${1:?Org is required}
-    local domain=${2:-$DOMAIN}
-    downloadMSP "peerOrganizations" ${org}.${domain}
+    local wwwPort=${2:-80}
+    local domain=${3:-$DOMAIN}
+    downloadMSP "peerOrganizations" ${org}.${domain} ${org}.${domain}:${wwwPort}
 }
 
 function downloadMSP() {
     local typeSubPath=$1
     local mspSubPath=$2
-    local serverDNSName=www.${3:-${mspSubPath}}
+    local wwwServerAddress=$3
+    local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
     set -x
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/msp/admincerts/Admin@${mspSubPath}-cert.pem
     wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/msp/cacerts/ca.${mspSubPath}-cert.pem

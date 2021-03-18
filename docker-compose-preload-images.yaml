@@ -1,0 +1,11 @@
+#
+# Copyright . All Rights Reserved.
+#
+
+version: '3.7'
+
+
+services:
+
+  jre8:
+    image: openjdk:8-jre

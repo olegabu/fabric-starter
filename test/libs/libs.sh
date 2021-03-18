@@ -6,7 +6,7 @@ main() {
     export FABRIC_DIR=${FABRIC_DIR:-$(getFabricStarterPath $(pwd))}
     export TEST_ROOT_DIR=${FABRIC_DIR}/test
     export TEST_LAUNCH_DIR=${TEST_LAUNCH_DIR:-${TEST_ROOT_DIR}}
-    export TIMEOUT_CHAINCODE_INSTANTIATE=${TIMEOUT_CHAINCODE_INSTANTIATE:-150}
+    export TIMEOUT_CHAINCODE_INSTANTIATE=${TIMEOUT_CHAINCODE_INSTANTIATE:-200}
 
     export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
@@ -402,6 +402,7 @@ function curlRequest() {
     local body
     local httpStatusCode
     res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    printDbg "CDATA: $cdata"
     exitCode=$?
 
     echo "${RED}curlRequest: (curl exit code: $exitCode) ${NORMAL}" | printDbg
@@ -606,7 +607,7 @@ function instantiateTestChaincodeAPI() {
 
     chaincode_name=$(getTestChaincodeName ${channel})
 
-    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}
+    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"chaincodeType\":\"node\",\"waitForTransactionEvent\":true,\"chaincodeVersion\":\"1.0\"}" "${jwt}" ${curlTimeout}
 }
 
 

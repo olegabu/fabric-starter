@@ -229,13 +229,21 @@ csr:
 # crypto library implementation to use
 #############################################################################
 bccsp:
-    default: SW
+    default: ${CRYPTO_ALGORITHM}
     sw:
         hash: SHA2
         security: 256
         filekeystore:
             # The directory used for the software file-based keystore
             keystore: msp/keystore
+
+    gm:
+        hash: GMSM3
+        security: 256
+        filekeystore:
+            # The directory used for the software file-based keystore
+            keystore: msp/keystore
+
 
 #############################################################################
 # Multi CA section

@@ -59,7 +59,9 @@ function generateCryptoMaterialIfNotExists() {
 
 function renameSecretKey() {
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
+    [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
+    [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/sk.pem
 }
 
 function copyOrdererCertificatesForServingByPeerWWW() {
@@ -76,7 +78,14 @@ function generateHostsFileIfNotExists() {
     if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
         if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" ]]; then
             echo "Generating crypto-config/hosts"
-            echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
+            echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
+            if [ -n "$BOOTSTRAP_ORG" ]; then
+                set -x
+                echo " peer0.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
+                set +x
+            else
+                echo " " >> crypto-config/hosts
+            fi
 #             echo -e "\n\nDownload orderer MSP certs from $BOOTSTRAP_IP\n\n"
         else
             echo -e "#generated empty at bootstrap as part of crypto- and meta-information generation" > crypto-config/hosts

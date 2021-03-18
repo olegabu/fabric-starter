@@ -12,6 +12,7 @@ exampleMsg="$0 osn1-example.com"
 
 : ${BOOTSTRAP_IP}
 : ${DOMAIN:=example.com}
+: ${ORG:=org1}
 : ${ORDERER_NAME:=orderer}
 : ${ORDERER_NAME_PREFIX:=raft}
 : ${ORDERER_DOMAIN:=$DOMAIN}
@@ -27,14 +28,22 @@ ORDERER_PROFILE=Raft docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} up -d www.ord
 
 env|sort
 
-docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
+docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps --name raft_request cli.orderer \
   bash -c "set -x; container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT}; curl -i -k  --connect-timeout 30 --max-time 240 --retry 0 \
   ${BOOTSTRAP_SERVICE_URL}://${BOOTSTRAP_IP}:${API_PORT}/integration/service/raft -H 'Content-Type: application/json'\
     -d '{\"ordererName\":\"${ORDERER_NAME}\",\"domain\":\"${ORDERER_DOMAIN}\",\"ordererPort\":\"${ORDERER_GENERAL_LISTENPORT}\",\
-         \"wwwPort\":\"${WWW_PORT}\",\"ordererIp\":\"${MY_IP}\"}' "
+         \"wwwPort\":\"${WWW_PORT}\",\"ordererIp\":\"${MY_IP}\",\"orgId\":\"${ORG}\"}' "
 
+
+set -x
+docker rm -f raft_request
+set +x
+
+
+echo
 echo curl completed
 sleep 2
+
 
 raft/4_raft-start-consenter.sh ${REMOTE_DOMAIN} www.${REMOTE_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
 

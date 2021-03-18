@@ -15,8 +15,6 @@ x-peer:
   image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.9}
   working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
   command: peer node start
-  volumes:
-    - /var/run/:/host/var/run/
   depends_on:
     - pre-install
     - ca
@@ -36,6 +34,7 @@ services:
       - ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-80}
       - PEER0_PORT=${PEER0_PORT:-7051}
       - BOOTSTRAP_IP
+      - BOOTSTRAP_ORG
       - DNS_CHANNEL
       - MY_IP
       - ENROLL_ID
@@ -47,6 +46,7 @@ services:
       - RAFT0_PORT=${RAFT0_PORT:-7050}
       - RAFT1_PORT=${RAFT1_PORT:-7150}
       - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - CRYPTO_ALGORITHM=${CRYPTO_ALGORITHM:-SW}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
@@ -80,6 +80,7 @@ services:
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
       - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - CHANNEL_AUTO_JOIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - RAFT0_PORT=${RAFT0_PORT:-7050}
@@ -109,12 +110,13 @@ services:
     restart: always
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
+      - FABRIC_CA_SERVER_LDAP_USERFILTER=(cn=%s)
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/sk.pem
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/sk.pem
-    command: sh -c 'sleep 2 && fabric-ca-server start -b ${ENROLL_ID}:"${ENROLL_SECRET}" -d --ca.name default'
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
+    command: sh -c 'fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
     depends_on:
       - pre-install
     logging:
@@ -122,7 +124,8 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+#      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
   peer0:
@@ -142,7 +145,7 @@ services:
     - CORE_VM_DOCKER_ATTACHSTDOUT=true
 #    - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
     - CORE_CHAINCODE_BUILDER=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_BUILDER:-hyperledger/fabric-ccenv}:${FABRIC_VERSION:-1.4.9}
-    - CORE_CHAINCODE_JAVA_RUNTIME=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_JAVA_RUNTIME:-hyperledger/fabric-javaenv}:${FABRIC_JAVA_RUNTIME_VERSION:-latest}
+    - CORE_CHAINCODE_JAVA_RUNTIME=${DOCKER_REGISTRY:-docker.io}/${CORE_CHAINCODE_JAVA_RUNTIME:-hyperledger/fabric-javaenv}:${FABRIC_VERSION:-1.4.9}
     - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
     - CORE_CHAINCODE_LOGGING_SHIM=debug
     - CORE_CHAINCODE_EXECUTETIMEOUT=300s
@@ -166,7 +169,7 @@ services:
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer0:/var/hyperledger/production
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
-    - /var/run/:/host/var/run/
+    - /var/run/docker.sock:/host/var/run/docker.sock
 
 #  peer1:
 #    << : *peer-defaults
@@ -288,6 +291,9 @@ services:
       - CRYPTO_ALGORITHM
       - AUTH_MODE
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - CUSTOM_APP_PORTS=${CUSTOM_APP_PORTS:-8001-8999}
+      - ACCEPT_ALL_ORGS
+      - AUTH_JWT_EXPIRES_IN
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
@@ -306,11 +312,12 @@ services:
 #      - ./crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}:/etc/hyperledger/crypto/peeradmin
       - webapps:/usr/src/app/webapps
       - routes:/usr/src/app/routes
+      - ${FABRIC_STARTER_HOME:-.}/appstore:/usr/src/app/appstore
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
-#      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
-#      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
-#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-#      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
+    #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
+    #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
+    #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
     command: sh -c 'sleep 2 && npm start'
 
   # simple http server to disseminate certificates

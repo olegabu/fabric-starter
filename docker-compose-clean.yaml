@@ -17,5 +17,6 @@ services:
     - /var/run/:/host/var/run/
     - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
     - ./data:/etc/hyperledger/data
-    - ./https/certs:/certs
+    - ./https/certs:/etc/hyperledger/certs
+    - ./appstore:/etc/hyperledger/appstore
 
