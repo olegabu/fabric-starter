@@ -5,14 +5,14 @@
 version: '3.7'
 
 services:
-  peer0:
+  peer:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.${ORG:-org1}.${DOMAIN:-example.com}:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     depends_on:
-      - couchdb.peer0
+      - couchdb.peer
 
 #  peer1:
 #    environment:
@@ -23,9 +23,9 @@ services:
 #    depends_on:
 #      - couchdb.peer0
 
-  couchdb.peer0:
+  couchdb.peer:
     restart: always
-    container_name: couchdb.peer0.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: couchdb.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-couchdb
     environment:
     - COUCHDB_USER=

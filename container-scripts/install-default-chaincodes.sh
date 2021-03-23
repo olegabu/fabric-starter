@@ -6,7 +6,7 @@ source $(dirname "$0")/lib/container-lib.sh
 
 echo -e "\n\nInstall DNS chaincode\n\n"
 
-${BASEDIR}/wait-for-ip-port.sh peer0.${ORG}.${DOMAIN} ${PEER0_PORT}
+${BASEDIR}/wait-for-ip-port.sh ${PEER_NAME}.${ORG}.${DOMAIN} ${PEER0_PORT}
 tree /etc/hyperledger/crypto-config/peerOrganizations/
 installChaincode dns /opt/chaincode/node/dns node 1.0
 

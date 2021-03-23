@@ -5,7 +5,7 @@
 version: '3.7'
 
 volumes:
-  peer0:
+  peer:
 #  peer1:
   webapps:
   routes:
@@ -29,6 +29,7 @@ services:
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - PEER_NAME=${PEER_NAME:-peer0}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
@@ -65,6 +66,7 @@ services:
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - PEER_NAME=${PEER_NAME:-peer0}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
@@ -94,7 +96,7 @@ services:
     command: sh -c "container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT:-80} && container-scripts/wait-port.sh ${MY_IP} ${PEER0_PORT:-7051} && container-scripts/install-default-chaincodes.sh"
     depends_on:
       - api
-      - peer0
+      - peer
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
@@ -131,14 +133,14 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
-  peer0:
+  peer:
     << : *peer-defaults
-    container_name: peer0.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: ${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     restart: always
     environment:
-    - CORE_PEER_ID=peer0.${ORG:-org1}.${DOMAIN:-example.com}
+    - CORE_PEER_ID=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     - CORE_PEER_LOCALMSPID=${ORG:-org1}
-    - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     - CORE_PEER_LISTENADDRESS=0.0.0.0:${PEER0_PORT:-7051}
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     # the following setting starts chaincode containers on the same
@@ -154,8 +156,8 @@ services:
     - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
-    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_BOOTSTRAP=${BOOTSTRAP_PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
@@ -164,13 +166,14 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
+    - CORE_PEER_FILESYSTEM_PATH=/var/hyperledger/production/${PEER_NAME:-peer0}
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-    - peer0:/var/hyperledger/production
+    - peer:/var/hyperledger/production/${PEER_NAME:-peer0}
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/docker.sock:/host/var/run/docker.sock
 
@@ -227,13 +230,13 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
-      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - PEER0_PORT=${PEER0_PORT:-7051}
       - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.key
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.crt
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.key
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.crt
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - RAFT0_PORT=${RAFT0_PORT:-7050}
@@ -242,7 +245,7 @@ services:
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
     working_dir: /etc/hyperledger
     depends_on:
-      - peer0
+      - peer
     volumes:
     - /var/run/:/host/var/run/
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode

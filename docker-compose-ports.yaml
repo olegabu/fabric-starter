@@ -10,7 +10,7 @@ services:
     ports:
       - ${API_PORT:-4000}:3000
 
-  peer0:
+  peer:
     ports:
       - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 #      - ${PEER0_EVENT_PORT:-7053}:7053

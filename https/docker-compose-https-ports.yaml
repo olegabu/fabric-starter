@@ -24,7 +24,7 @@ services:
       - ${SSL_CERTS_ROOT_PATH:-./https/certs}:/certs
 
 
-  peer0:
+  peer:
     ports:
       - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 

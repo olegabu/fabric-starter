@@ -2,6 +2,7 @@
 
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
+: ${PEER_NAME:="peer0"}
 : ${ORDERER_NAME:="orderer"}
 : ${ORDERER_NAME_PREFIX:="raft"}
 : ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
@@ -240,7 +241,7 @@ function joinChannel() {
 
     echo "Join $ORG to channel $channel"
     fetchChannelConfigBlock $channel "0"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b crypto-config/configtx/$channel.pb
+    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b crypto-config/configtx/$channel.pb
 }
 
 function createChaincodePackage() {
@@ -251,14 +252,14 @@ function createChaincodePackage() {
     local chaincodePackageName=${5:?Chaincode PackageName must be specified}
 
     echo "Packaging chaincode $chaincodePath to $chaincodeName"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
+    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
 }
 
 function installChaincodePackage() {
     local chaincodeName=${1:?Chaincode package must be specified}
 
     echo "Install chaincode package $chaincodeName"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
+    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
 }
 
 function installChaincode {
@@ -305,8 +306,8 @@ function callChaincode() {
     local arguments="{\"Args\":$arguments}"
     local action=${4:-query}
     local peerPort=${5:-7051}
-    echo "CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
-    CORE_PEER_ADDRESS=peer0.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
+    echo "CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

@@ -25,19 +25,46 @@ module.exports = class DnsChaincode extends StorageChaincode {
         if (args.length < 1) {
             throw new Error('incorrect number of arguments, Org object is required');
         }
+        logger.debug('Arg params:', args)
         const orgObj = JSON.parse(_.get(args, "[0]"));
+        logger.debug('Arg object:', orgObj)
         const orgId = _.get(orgObj, "orgId");
         const orgDomain = _.get(orgObj, "domain");
         const peer0Port = _.get(orgObj, "peer0Port");
+        const peers = _.get(orgObj, "peers");
 
-        if (!(orgId && orgDomain && peer0Port)) {
-            throw new Error('orgId, domain and peer0Port properties are required');
+        if (!orgId || !orgDomain || !(peer0Port || peers)) {
+            throw new Error('orgId, domain and peer0Port or peers properties are required');
         }
-        const orgNameDomain=`${orgId}.${orgDomain}`;
-        if (orgObj.orgIp) {
-            await this.updateRegistryObject("dns", this.dnsUpdater(orgObj.orgIp, `www.${orgNameDomain} peer0.${orgNameDomain}`));
+        const orgNameDomain = `${orgId}.${orgDomain}`;
+        let dnsNames = [{ip: orgObj.orgIp, dns: `www.${orgNameDomain}`}]
+
+        if (peer0Port) {
+            dnsNames.push({ip: orgObj.orgIp, dns: `peer0.${orgNameDomain}`})
         }
-        return this.updateRegistryObject("orgs", {[orgNameDomain]:orgObj});
+        if (peers) {
+            const peersDns = _.map(_.keys(peers), peerName => new Object({
+                ip: peers[peerName].ip,
+                dns: `${peerName}.${orgNameDomain}`
+            }))
+            dnsNames.push(...peersDns)
+            logger.debug('Pushed peers dns:', dnsNames)
+        }
+
+        await this.updateRegistryObject("dns", this.dnsUpdater(dnsNames));
+
+        const normalizedOrg = !peer0Port ? orgObj : {
+            ...orgObj,
+            peers: {
+                ...(orgObj.peers || {}),
+                peer0: {
+                    ip: orgObj.orgIp,
+                    port: peer0Port
+                }
+            }
+        }
+        logger.debug("Normalized org:", normalizedOrg)
+        return this.updateRegistryObject("orgs", {[orgNameDomain]: normalizedOrg});
     }
 
     async registerOrdererByParams(args) {
@@ -70,8 +97,10 @@ module.exports = class DnsChaincode extends StorageChaincode {
         }
 
         if (ordererObj.ordererIp) {
-            await this.updateRegistryObject("dns", this.dnsUpdater(ordererObj.ordererIp,
-                `${ordererName}.${ordererDomain} www.${ordererDomain} www.${ordererName}.${ordererDomain}`));
+            await this.updateRegistryObject("dns", this.dnsUpdater({
+                ip: ordererObj.ordererIp,
+                dns: `${ordererName}.${ordererDomain} www.${ordererDomain} www.${ordererName}.${ordererDomain}`
+            }));
         }
 
         return this.updateRegistryObject("osn", {[`${ordererName}.${ordererDomain}:${ordererPort}`]: ordererObj});
@@ -81,7 +110,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let data = await this.get([dataKey]);
         try {
             data = JSON.parse(data);
-            logger.debug(`${dataKey} Old Value: `, data);
+            logger.debug(`${dataKey} Current Value: `, data);
         } catch (err) {
             data = {};
         }
@@ -92,14 +121,23 @@ module.exports = class DnsChaincode extends StorageChaincode {
         const dataStringified = JSON.stringify(data);
 
         logger.debug(`Updating ${dataKey} record with `, dataStringified);
-        return this.put([dataKey, dataStringified]);
+        return await this.put([dataKey, dataStringified]);
     }
 
 
-    dnsUpdater(ip, newDnsNames) {
-        return (oldDnsInfo) => {
-            oldDnsInfo[ip] = (oldDnsInfo[ip] || '') + (oldDnsInfo[ip] ? ' '  : '') + newDnsNames;
-            return oldDnsInfo;
+    dnsUpdater(newDnsNames) {
+        newDnsNames = Array.isArray(newDnsNames) ? newDnsNames : [newDnsNames]
+        return (currentDnsInfo) => {
+            _.each(newDnsNames, dnsObj => {
+                let currentDnsRecord = _.get(currentDnsInfo, dnsObj.ip) || ''
+                logger.debug(`dnsUpdater, ip: ${dnsObj.ip}, current: ${currentDnsRecord}, new:`, newDnsNames)
+                if (!_.includes(currentDnsRecord, ' ' + dnsObj.dns)) {
+                    currentDnsRecord += (currentDnsRecord ? ' ' : '') + dnsObj.dns;
+                    logger.debug(`dns increment, ip: ${dnsObj.ip}: `, currentDnsRecord)
+                }
+                currentDnsInfo[dnsObj.ip] = currentDnsRecord
+            })
+            return currentDnsInfo;
         };
     }
 

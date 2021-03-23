@@ -12,6 +12,7 @@ fi
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
 
+: ${PEER_NAME:=peer0}
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 
@@ -48,13 +49,13 @@ function prepareLDAPBaseDN() {
 }
 
 function generateCryptoMaterialIfNotExists() {
-    if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp" ]; then
+    if [ ! -d "crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/$PEER_NAME.$ORG.$DOMAIN/msp" ]; then
         echo "Generation $ORG peer MSP."
 
         envsubst < "templates/cryptogen-peer-template.yaml" > "crypto-config/cryptogen-$ORG.yaml"
         cryptogen generate --config=crypto-config/cryptogen-$ORG.yaml
     else
-        echo "$ORG MSP exists (crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/peer0.$ORG.$DOMAIN/msp). Generation skipped."
+        echo "$ORG MSP exists (crypto-config/peerOrganizations/$ORG.$DOMAIN/peers/$PEER_NAME.$ORG.$DOMAIN/msp). Generation skipped."
     fi
 }
 
@@ -100,7 +101,7 @@ function generateHostsFileIfNotExists() {
             echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
             if [ -n "$BOOTSTRAP_ORG" ]; then
                 set -x
-                echo " peer0.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
+                echo " ${PEER_NAME:-peer0}.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
                 set +x
             else
                 echo " " >> crypto-config/hosts
