@@ -191,6 +191,14 @@ signing:
             caconstraint:
                 isca: true
                 maxpathlen: 0
+        tls:
+            usage:
+                - signing
+                - key encipherment
+                - server auth
+                - client auth
+                - key agreement
+            expiry: 8760h
 
 ###########################################################################
 #  Certificate Signing Request (CSR) section.
