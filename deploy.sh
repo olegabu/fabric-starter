@@ -86,7 +86,7 @@ BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-c
 set +x
 
 if [ -z "${AGENT_MODE}" ]; then
-    docker logs -f post-install.${ORG}.${DOMAIN}
+    docker logs -f post-install.${PEER_NAME:-peer0}.${ORG}.${DOMAIN}
 
 fi
 

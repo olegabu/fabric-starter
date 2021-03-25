@@ -21,10 +21,23 @@ x-peer:
     - pre-install
     - ca
 
+x-ca:
+  &ca-defaults
+  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.8}
+  restart: always
+  command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name=default'
+  depends_on:
+    - pre-install
+  logging:
+    options:
+      max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+      max-file: "1"
+
+
 services:
 
   pre-install:
-    container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: pre-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
@@ -61,7 +74,7 @@ services:
 
 
   post-install:
-    container_name: post-install.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: post-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
@@ -109,29 +122,38 @@ services:
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
+
   ca:
+    << : *ca-defaults
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.8}
-    restart: always
     environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server/ca
       - FABRIC_CA_SERVER_LDAP_USERFILTER=(cn=%s)
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/sk.pem
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
-    command: sh -c 'fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
-    depends_on:
-      - pre-install
-    logging:
-      options:
-        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
-        max-file: "1"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
-#      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ca/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/ca/fabric-ca-server-config.yaml
+
+  tlsca:
+    << : *ca-defaults
+    container_name: tlsca.${ORG:-org1}.${DOMAIN:-example.com}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server/tls
+      - FABRIC_CA_SERVER_PORT=${FABRIC_TLS_CA_PORT:-7055}
+      - FABRIC_CA_SERVER_CSR_NAME=tlsca
+      - FABRIC_CA_SERVER_LDAP_USERFILTER=(cn=%s)
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/tls/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/tls/fabric-ca-server-config.yaml
 
   peer:
     << : *peer-defaults
@@ -157,7 +179,7 @@ services:
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
-    - CORE_PEER_GOSSIP_BOOTSTRAP=${BOOTSTRAP_PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_BOOTSTRAP=${BOOTSTRAP_PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${BOOTSTRAP_PEER_PORT:-7051}
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
@@ -172,7 +194,7 @@ services:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
-    - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer:/var/hyperledger/production/${PEER_NAME:-peer0}
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/docker.sock:/host/var/run/docker.sock
@@ -212,7 +234,7 @@ services:
 #    - /var/run/:/host/var/run/
 
   cli.peer:
-    container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: cli.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     restart: always
     tty: true

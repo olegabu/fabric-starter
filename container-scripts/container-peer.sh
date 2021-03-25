@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 BASEDIR=$(dirname "$0")
-
-touch "crypto-config/fabric-ca-server-config-$ORG.yaml" # macOS workaround
-touch "crypto-config/fabric-ca-server-config-$ORG.yaml"
+mkdir -p crypto-config/ca/ crypto-config/tls/
+touch "crypto-config/ca/fabric-ca-server-config-$ORG.yaml" # macOS workaround
+touch "crypto-config/tls/fabric-ca-server-config-$ORG.yaml"
 
 if [ ! -f "crypto-config/hosts" ]; then #TODO
     export HOSTS_FILE_GENERATION_REQUIRED=true
@@ -23,7 +23,8 @@ function main() {
     tree crypto-config
     env|sort
     prepareLDAPBaseDN
-    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/fabric-ca-server-config-$ORG.yaml" #TODO:remove
+    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/ca/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
+    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/tls/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
     generateCryptoMaterialIfNotExists
     renameSecretKey #TODO: ?
     copyMspToNginxSharedFolder
@@ -60,10 +61,12 @@ function generateCryptoMaterialIfNotExists() {
 }
 
 function renameSecretKey() {
+    set -x
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/ca/sk.pem
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/tlsca/sk.pem
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/Admin@$ORG.$DOMAIN/msp/keystore/sk.pem
     [ ! -f "crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/sk.pem" ] && mv crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/*_sk crypto-config/peerOrganizations/$ORG.$DOMAIN/users/User1@$ORG.$DOMAIN/msp/keystore/sk.pem
+    set +x
 }
 
 function copyMspToNginxSharedFolder() {
