@@ -22,15 +22,18 @@ export ORDERER_DOMAIN ORDERER_NAME
 function main() {
     tree crypto-config
     env|sort
-    prepareLDAPBaseDN
-    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/ca/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
-    envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/tls/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
-    generateCryptoMaterialIfNotExists
-    renameSecretKey #TODO: ?
-    copyMspToNginxSharedFolder
-    copyOrdererCertificatesForServingByPeerWWW
-    copyWellKnownTLSCerts
-    generateHostsFileIfNotExists
+    echo "AGENT_MODE: ${AGENT_MODE}"
+    if [ -z "${AGENT_MODE}" ]; then
+        prepareLDAPBaseDN
+        envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/ca/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
+        envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/tls/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
+        generateCryptoMaterialIfNotExists
+        renameSecretKey #TODO: ?
+        copyMspToNginxSharedFolder
+        copyOrdererCertificatesForServingByPeerWWW
+        copyWellKnownTLSCerts
+        generateHostsFileIfNotExists
+    fi
     tree /etc/hyperledger/crypto-config/peerOrganizations/
 }
 

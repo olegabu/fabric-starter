@@ -64,6 +64,7 @@ services:
       - RAFT2_PORT=${RAFT2_PORT:-7250}
       - CRYPTO_ALGORITHM=${CRYPTO_ALGORITHM:-SW}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - AGENT_MODE
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
@@ -89,6 +90,7 @@ services:
       - BOOTSTRAP_ORG_DOMAIN
       - BOOTSTRAP_EXTERNAL_PORT
       - BOOTSTRAP_SERVICE_URL=${BOOTSTRAP_SERVICE_URL:-https} #${BOOTSTRAP_IP}:${API_PORT}}
+      - MASTER_IP
       - MY_IP
       - PEER0_PORT=${PEER0_PORT:-7051}
       - WWW_PORT=${WWW_PORT:-80}
@@ -96,8 +98,8 @@ services:
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
-      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+      - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - CHANNEL_AUTO_JOIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
@@ -314,6 +316,7 @@ services:
       - FABRIC_STARTER_HOME
       - FABRIC_STARTER_PWD=${PWD}
       - FABRIC_STARTER_VERSION
+      - FABRIC_VERSION
 #      - HFC_LOGGING={"debug":"console","info":"console"}
       - HFC_LOGGING={"debug":"/dev/null","info":"/dev/null"}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}

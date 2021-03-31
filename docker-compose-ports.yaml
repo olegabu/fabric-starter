@@ -13,7 +13,7 @@ services:
   tlsca:
     ports:
       - ${TLS_CA_PORT:-7055}:7055
-      -
+
   api:
     ports:
       - ${API_PORT:-4000}:3000

@@ -13,7 +13,7 @@ services:
 
   tlsca:
     ports:
-      - ${TLS_CA_PORT:-7055:7055
+      - ${TLS_CA_PORT:-7055}:7055
 
   pre-install:
     environment:

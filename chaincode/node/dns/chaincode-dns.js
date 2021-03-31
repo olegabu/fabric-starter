@@ -14,8 +14,9 @@ module.exports = class DnsChaincode extends StorageChaincode {
             orgId: _.get(args, "[0]"),
             domain: _.get(args, "[1]"),
             orgIp: _.get(args, "[2]"),
-            peer0Port: _.get(args, "[3]"),
-            wwwPort: _.get(args, "[4]")
+            peerPort: _.get(args, "[3]"),
+            wwwPort: _.get(args, "[4]"),
+            peerName: _.get(args, "[5]"),
         }
         logger.info("Org object got by params", JSON.stringify(orgObj));
         return this.registerOrg([JSON.stringify(orgObj)]);
@@ -30,36 +31,37 @@ module.exports = class DnsChaincode extends StorageChaincode {
         logger.debug('Arg object:', orgObj)
         const orgId = _.get(orgObj, "orgId");
         const orgDomain = _.get(orgObj, "domain");
-        const peer0Port = _.get(orgObj, "peer0Port");
+        const peerName = _.get(orgObj, "peerName") || "peer0";
+        const peerPort = _.get(orgObj, "peerPort", _.get(orgObj, "peer0Port"));
         const peers = _.get(orgObj, "peers");
 
-        if (!orgId || !orgDomain || !(peer0Port || peers)) {
-            throw new Error('orgId, domain and peer0Port or peers properties are required');
+        if (!orgId || !orgDomain || !(peerPort || peers)) {
+            throw new Error('orgId, domain and (peerPort or peers) properties are required');
         }
         const orgNameDomain = `${orgId}.${orgDomain}`;
-        let dnsNames = [{ip: orgObj.orgIp, dns: `www.${orgNameDomain}`}]
+        let dnsNames = [{ip: orgObj.orgIp, dns: peerName === 'peer0' ? `www.${orgNameDomain}` : ''}]
 
-        if (peer0Port) {
-            dnsNames.push({ip: orgObj.orgIp, dns: `peer0.${orgNameDomain}`})
+        if (peerPort) {
+            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}.${orgNameDomain}`})
         }
         if (peers) {
-            const peersDns = _.map(_.keys(peers), peerName => new Object({
-                ip: peers[peerName].ip,
-                dns: `${peerName}.${orgNameDomain}`
+            const peersDns = _.map(_.keys(peers), peersPeerName => new Object({
+                ip: peers[peersPeerName].ip,
+                dns: `${peersPeerName}.${orgNameDomain}`
             }))
             dnsNames.push(...peersDns)
             logger.debug('Pushed peers dns:', dnsNames)
         }
 
         await this.updateRegistryObject("dns", this.dnsUpdater(dnsNames));
-
-        const normalizedOrg = !peer0Port ? orgObj : {
+        delete orgObj.peerName
+        const normalizedOrg = !peerPort ? orgObj : {
             ...orgObj,
             peers: {
                 ...(orgObj.peers || {}),
-                peer0: {
+                [peerName]: {
                     ip: orgObj.orgIp,
-                    port: peer0Port
+                    port: peerPort
                 }
             }
         }
@@ -116,7 +118,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
         }
         typeof newData === "function"
             ? newData(data)
-            : _.assign(data, newData);
+            : _.merge(data, newData, {});
 
         const dataStringified = JSON.stringify(data);
 
