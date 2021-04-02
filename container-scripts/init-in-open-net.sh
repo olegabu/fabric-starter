@@ -89,16 +89,16 @@ function requestInviteToServiceChannel() {
     if [[ $creationResult -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
        set -x
-       curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-${MASTER_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/service/orgs \
-            -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${MASTER_IP:-${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/service/orgs \
+            -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\",\"peerName\":\"${PEER_NAME}\"}"
        local curlResult=$?
        set +x
        echo "Curl result: $curlResult"
     else #TODO: should'n go here if no AUTO_JOIN
         if [[ -n "$BOOTSTRAP_IP" ]]; then
             set -x
-            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}/integration/dns/org \
-                 -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerName\":\"${cfg.peerName}\", \"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${MASTER_IP:-${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/dns/org \
+                 -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerName\":\"${cfg.peerName}\", \"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\",\"peerName\":\"${PEER_NAME}\"}"
             local curlResult=$?
             set +x
             echo "Curl result: $curlResult"
@@ -128,6 +128,7 @@ function joinServiceChannel() {
         joinResult=$status
         if [[ joinResult -eq 0 ]]; then
            printGreen "\nJoined channel '${serviceChannel}'\n"
+           sleep 5
         else
            printError "\nNot joined to '${serviceChannel}'\n"
         fi

@@ -102,9 +102,10 @@ function copyWellKnownTLSCerts() {
 
 function generateHostsFileIfNotExists() {
     if [ $HOSTS_FILE_GENERATION_REQUIRED ]; then
-        if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" ]]; then
+        local ORDERER_IP=${MASTER_IP:-${BOOTSTRAP_IP}}
+        if [[ -n "$ORDERER_IP" && "$ORDERER_IP" != "$MY_IP" ]]; then
             echo "Generating crypto-config/hosts"
-            echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
+            echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${ORDERER_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " >> crypto-config/hosts
             if [ -n "$BOOTSTRAP_ORG" ]; then
                 set -x
                 echo " ${PEER_NAME:-peer0}.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
@@ -120,7 +121,9 @@ function generateHostsFileIfNotExists() {
         echo "crypto-config/hosts file exists. Generation skipped."
     fi
 
+    #TODO: should be unreachable code
     if [[ -n "$BOOTSTRAP_IP" && "$BOOTSTRAP_IP" != "$MY_IP" && ! -f crypto-config/hosts ]]; then
+        echo -e "\n\n\nSHOULD BE UNREACHABLE CODE\n\n\n"
         echo -e "#generated at bootstrap as part of crypto- and meta-information generation\n${BOOTSTRAP_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " > crypto-config/hosts
     fi
 
