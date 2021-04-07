@@ -7,7 +7,7 @@ version: '3.7'
 x-generate: &generate-defaults
   #  build:
   #    args:
-  #      FABRIC_VERSION: ${FABRIC_VERSION:-1.4.9}
+  #      FABRIC_VERSION: ${FABRIC_VERSION:-1.4.6}
   #    dockerfile: ./fabric-tools-extended/Dockerfile
   #    context: ./
   environment:
