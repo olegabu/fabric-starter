@@ -23,7 +23,7 @@ x-peer:
 
 x-ca:
   &ca-defaults
-  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.8}
+  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_CA_VERSION:-1.5}
   restart: always
   command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name=default'
   depends_on:

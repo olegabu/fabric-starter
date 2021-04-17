@@ -4,6 +4,7 @@
 : ${DOMAIN:=example.com}
 : ${RAFT_NODES_COUNT:=1}
 : ${RAFT_NODES_NUMBERING_START:=1}
+: ${CONSENTER_ID:=1}
 : ${ORDERER_PROFILE:=Solo}
 : ${ORDERER_NAME_PREFIX:=raft}
 
@@ -34,24 +35,27 @@ function constructConfigTxAndCryptogenConfigs() {
         local ordererNames
         IFS="," read -r -a ordererNames <<< ${ORDERER_NAMES}
         local start=true
+        local consenterId=${CONSENTER_ID}
         for ordererName_Port in ${ordererNames[@]}; do
             local ordererConf
             IFS=':' read -r -a ordererConf <<< ${ordererName_Port}
             local ordererName=${ordererConf[0]}
             local ordererPort=${ordererConf[1]:-${ORDERER_GENERAL_LISTENPORT}}
             writeCryptogenOrgConfig ${ordererName} ${start}
-            writeConfigtxOrgConfig "${ordererName}Org" ${ordererName} $ORDERER_DOMAIN ${ordererPort} ${start}
+            writeConfigtxOrgConfig "${ordererName}Org" ${ordererName} $ORDERER_DOMAIN ${ordererPort} ${consenterId} ${start}
             start=""
+            consenterId=$((consenterId + 1))
         done
     else
         echo -e "\n\nUsing RAFT_NODES_COUNT: ${RAFT_NODES_COUNT}, ORDERER_NAME:$ORDERER_NAME\n\n"
         writeCryptogenOrgConfig "$ORDERER_NAME" true
-        writeConfigtxOrgConfig "OrdererOrg" $ORDERER_NAME $ORDERER_DOMAIN ${RAFT0_PORT:-${ORDERER_GENERAL_LISTENPORT}} true
+        writeConfigtxOrgConfig "OrdererOrg" $ORDERER_NAME $ORDERER_DOMAIN ${RAFT0_PORT:-${ORDERER_GENERAL_LISTENPORT}} ${CONSENTER_ID} true
         local ind;
         for ((ind=1; ind<${RAFT_NODES_COUNT}; ind++)) do
             writeCryptogenOrgConfig "${ORDERER_NAME_PREFIX}${ind}"
             local ordererPortVar="RAFT${ind}_PORT"
-            writeConfigtxOrgConfig "${ORDERER_NAME_PREFIX}${ind}Org" "${ORDERER_NAME_PREFIX}${ind}" $ORDERER_DOMAIN ${!ordererPortVar:-${ORDERER_GENERAL_LISTENPORT}}
+            local consenterId=$((CONSENTER_ID + ind))
+            writeConfigtxOrgConfig "${ORDERER_NAME_PREFIX}${ind}Org" "${ORDERER_NAME_PREFIX}${ind}" $ORDERER_DOMAIN ${!ordererPortVar:-${ORDERER_GENERAL_LISTENPORT}} ${consenterId}
         done
     fi
 
@@ -85,11 +89,12 @@ function writeCryptogenOrgConfig() {
     local cryptogenFile=crypto-config/cryptogen-orderer-spec.yaml
     echo -e "\n\n\tWriting cryptogen hostname for: $ordererName, start new file:$renewFiles"
     if [[ ${renewFiles} ]]; then
-        touch ${cryptogenFile} && truncate --size 0 ${cryptogenFile}
+        touch ${cryptogenFile} && truncate -s 0 ${cryptogenFile}
     fi
-    ordererName=$ordererName  stdbuf -oL envsubst >> ${cryptogenFile} <<  "    END"
+    ordererName=$ordererName   envsubst >> ${cryptogenFile} <<  "    END"
         - Hostname: ${ordererName}
     END
+#    stdbuf -oL
 }
 
 function writeConfigtxOrgConfig() {
@@ -97,19 +102,20 @@ function writeConfigtxOrgConfig() {
     local ordererName=${2:?Orderer name is required}
     local ordererDomain=${3:?Orderer domain is required}
     local ordererPort=${4:?Orderer domain is required}
-    local renewFiles=${5}
+    local consenterId=${5:-1}
+    local renewFiles=${6}
 
-    local orgDefinitionsFile=${6:-crypto-config/configtx_org_definitions.part}
-    local orgsListFile=${7:-crypto-config/configtx_orgs_list.part}
-    local addressesListFile=${8:-crypto-config/configtx_addresses_list.part}
-    local consentersListFile=${9:-crypto-config/configtx_consenters_list.part}
+    local orgDefinitionsFile=${7:-crypto-config/configtx_org_definitions.part}
+    local orgsListFile=${8:-crypto-config/configtx_orgs_list.part}
+    local addressesListFile=${9:-crypto-config/configtx_addresses_list.part}
+    local consentersListFile=${10:-crypto-config/configtx_consenters_list.part}
 
     mkdir -p crypto-config/configtx/
     if [[ ${renewFiles} ]]; then
-        touch ${orgDefinitionsFile} && truncate --size 0 ${orgDefinitionsFile}
-        touch ${orgsListFile} && truncate --size 0 ${orgsListFile}
-        touch ${addressesListFile} && truncate --size 0 ${addressesListFile}
-        touch ${consentersListFile} && truncate --size 0 ${consentersListFile}
+        touch ${orgDefinitionsFile} && truncate -s 0 ${orgDefinitionsFile}
+        touch ${orgsListFile} && truncate -s 0 ${orgsListFile}
+        touch ${addressesListFile} && truncate -s 0 ${addressesListFile}
+        touch ${consentersListFile} && truncate -s 0 ${consentersListFile}
     fi
 
     echo "Writing ${orgDefinitionsFile}"
@@ -119,27 +125,48 @@ function writeConfigtxOrgConfig() {
         Name: $ordererName
         ID: $ordererName.$ordererDomain
         MSPDir: ordererOrganizations/${ordererDomain}/msp
+        Policies: &SampleOrgPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('$ordererName.$ordererDomain.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('$ordererName.$ordererDomain.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('$ordererName.$ordererDomain.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('$ordererName.$ordererDomain.member')"
     END
-    stdbuf -oL echo "" >> ${orgDefinitionsFile}
+    #stdbuf -oL
+    echo "" >> ${orgDefinitionsFile}
 
     echo "Writing ${orgsListFile}"
-    aliasName=$aliasName stdbuf -oL envsubst >> ${orgsListFile} <<  "    END"
-                - *${aliasName}
+    aliasName=$aliasName envsubst >> ${orgsListFile} <<  "    END"
+          - <<: *${aliasName}
     END
+#                stdbuf -oL
 
     echo "Writing ${addressesListFile}"
+    #stdbuf -oL
     ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort \
-    stdbuf -oL envsubst >> ${addressesListFile} <<  "    END"
+    envsubst >> ${addressesListFile} <<  "    END"
                 - ${ordererName}.$ordererDomain:${ordererPort}
+
     END
 
     echo "Writing ${consentersListFile}"
-    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort \
-    stdbuf -oL envsubst >> ${consentersListFile} <<  "    END"
-                - Host: ${ordererName}.$ordererDomain
+    #stdbuf -oL
+    ordererName=$ordererName ordererDomain=$ordererDomain ordererPort=$ordererPort consenterId=$consenterId \
+    envsubst >> ${consentersListFile} <<  "    END"
+                - Host: ${ordererName}.${ordererDomain}
                   Port: ${ordererPort}
                   ClientTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
                   ServerTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
+                  MSPID: ${ordererName}.${ordererDomain}
+                  Identity: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/msp/signcerts/${ordererName}.${ordererDomain}-cert.pem
+                  ConsenterId: $consenterId
     END
 }
 

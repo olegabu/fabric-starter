@@ -18,6 +18,7 @@ services:
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_NAMES
+      - CONSENTER_ID
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
