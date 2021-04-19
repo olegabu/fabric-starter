@@ -2,6 +2,25 @@
 Organizations:
     %ORGS_DEFINITIONS%
 
+    - &ordererPolicyOrg
+      Name: none
+      ID: none
+      MSPDir: none
+      Policies: &OrdererOrgPolicies
+        Readers:
+          Type: Signature
+          Rule: "OR('orderer.${DOMAIN}.member')"
+        Writers:
+          Type: Signature
+          Rule: "OR('orderer.${DOMAIN}.member')"
+        Admins:
+          Type: Signature
+          Rule: "OR('orderer.${DOMAIN}.admin')"
+        Endorsement:
+          Type: Signature
+          Rule: "OR('orderer.${DOMAIN}.member')"
+
+
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}

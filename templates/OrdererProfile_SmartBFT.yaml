@@ -22,28 +22,30 @@
           #          - *OrdererOrg
           %ORDERER_ORGS%
             Policies:
-              <<: *SampleOrgPolicies
+              <<: *OrdererOrgPolicies
 #              Admins:
 #                Type: Signature
 #                Rule: "OR('orderer.member')"
       Application:
         <<: *ApplicationDefaults
         Policies:
-          <<: *SampleOrgPolicies
+          <<: *OrdererOrgPolicies
 #          Admins:
 #            Type: Signature
 #            Rule: "OR('orderer.member')"
         Organizations:
         - <<: *OrdererOrg
           Policies:
-            <<: *SampleOrgPolicies
+            <<: *OrdererOrgPolicies
 #            Admins:
 #              Type: Signature
 #              Rule: "OR('orderer.member')"
       Consortiums:
         SampleConsortium:
           Organizations:
-
+          - <<: *OrdererOrg
+            Policies:
+              <<: *OrdererOrgPolicies
 
       Policies:
         Readers:
@@ -54,7 +56,8 @@
           Rule: ANY Writers
         Admins:
           Type: ImplicitMeta
-          Rule: MAJORITY Admins
+#          Rule: MAJORITY Admins
+          Rule: ANY Admins
         BlockValidation:
           Type: ImplicitOrderer
           Rule: SMARTBFT

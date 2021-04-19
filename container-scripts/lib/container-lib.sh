@@ -215,7 +215,7 @@ function createChannel() {
     echo -e "\nCreate channel $ORG $channelName"
     downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
     mkdir -p crypto-config/configtx
-    envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
+    envsubst < "templates/configtx-template-dynamic.yaml" > "crypto-config/configtx.yaml"
 
     configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
     set -x

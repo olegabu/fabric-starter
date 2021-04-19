@@ -125,7 +125,7 @@ function writeConfigtxOrgConfig() {
         Name: $ordererName
         ID: $ordererName.$ordererDomain
         MSPDir: ordererOrganizations/${ordererDomain}/msp
-        Policies: &SampleOrgPolicies
+        Policies:
             Readers:
                 Type: Signature
                 Rule: "OR('$ordererName.$ordererDomain.member')"
