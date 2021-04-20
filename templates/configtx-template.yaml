@@ -56,14 +56,32 @@ Organizations:
         # encoded in the genesis block in the Application section context
         - Host: peer0.${ORG}.${DOMAIN}
           Port: ${PEER0_PORT}
+        Policies:
+          Readers:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
+          Writers:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
+          Admins:
+            Type: Signature
+            Rule: "OR('${ORG}.admin')"
+          Endorsement:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
 
 Capabilities:
-  Global: &ChannelCapabilities
-    V1_1: true
+  #  Global: &ChannelCapabilities
+  #    V1_1: true
   Orderer: &OrdererCapabilities
-    V1_1: true
+    #    V1_1: true
+    V2_0: true
   Application: &ApplicationCapabilities
-    V1_2: true
+    #    V1_2: true
+    V2_0: true
+  Channel: &ChannelCapabilities
+    #    V1_3: true
+    V2_0: true
 
 Application: &ApplicationDefaults
   ACLs: &ACLsDefault
@@ -310,12 +328,66 @@ Profiles:
 
     CHANNEL:
         Orderer:
-            Organizations:
-            - *OrdererOrg
+          Policies:
+            Readers:
+              Type: ImplicitMeta
+              Rule: ANY Readers
+            Writers:
+              Type: ImplicitMeta
+              Rule: ANY Writers
+            Admins:
+              Type: ImplicitMeta
+              #          Rule: MAJORITY Admins
+              Rule: ANY Admins
+            BlockValidation:
+              Type: ImplicitOrderer
+              Rule: SMARTBFT
+          Organizations:
+          - <<: *OrdererOrg
+            Policies:
+              Readers:
+                Type: ImplicitMeta
+                Rule: ANY Readers
+              Writers:
+                Type: ImplicitMeta
+                Rule: ANY Writers
+              Admins:
+                Type: ImplicitMeta
+                #          Rule: MAJORITY Admins
+                Rule: ANY Admins
+              BlockValidation:
+                Type: ImplicitOrderer
+                Rule: SMARTBFT
         Consortium: SampleConsortium
+        Policies:
+          Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+          Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+          Admins:
+            #                Type: ImplicitMeta
+            #                Rule: "ANY Admins"
+            Type: Signature
+            Rule: "OutOf('1','${ORG}.admin')"
         Application:
+            <<: *ApplicationDefaults
             Organizations:
-            - *firstOrg
+            - <<: *firstOrg
+              Policies:
+                Readers:
+                  Type: Signature
+                  Rule: "OR('${ORG}.member')"
+                Writers:
+                  Type: Signature
+                  Rule: "OR('${ORG}.member')"
+                Admins:
+                  Type: Signature
+                  Rule: "OR('${ORG}.admin')"
+                Endorsement:
+                  Type: Signature
+                  Rule: "OR('${ORG}.member')"
             Capabilities:
                 <<: *ApplicationCapabilities
             Policies:

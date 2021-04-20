@@ -13,7 +13,7 @@
 : ${RAFT1_PORT:=7150}
 : ${RAFT2_PORT:=7250}
 
-: ${WGET_OPTS:=--verbose -N}
+: ${WGET_OPTS:=}
 
 if [ `uname` == 'Darwin' ]; then
     export BASE64_WRAP_OPT='-b' # debug on MacOs
@@ -54,9 +54,9 @@ function downloadMSP() {
 
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
     set -x
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} --directory-prefix crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} -P crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} -P crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    wget ${WGET_OPTS} -P crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
     set +x
 }
 
@@ -69,16 +69,16 @@ function certificationsToEnv() {
         mspDir="crypto-config/ordererOrganizations/${domain}/msp";
         org=""
     fi
-    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
-      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
-      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_WRAP_OPT} 0`
+    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 | tr -d '\n'` \
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 | tr -d '\n'` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 | tr -d '\n'`
 }
 
 function ordererCertificationsToEnv() {
     local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
-    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
-      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_WRAP_OPT} 0` \
-      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_WRAP_OPT} 0`
+    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 | tr -d '\n'` \
+      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 | tr -d '\n'` \
+      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 | tr -d '\n'`
 }
 
 function fetchChannelConfigBlock() {
@@ -215,7 +215,7 @@ function createChannel() {
     echo -e "\nCreate channel $ORG $channelName"
     downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
     mkdir -p crypto-config/configtx
-    envsubst < "templates/configtx-template-dynamic.yaml" > "crypto-config/configtx.yaml"
+    envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
 
     configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
     set -x

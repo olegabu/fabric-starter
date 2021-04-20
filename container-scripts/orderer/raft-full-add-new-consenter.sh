@@ -22,8 +22,8 @@ insertObjectIntoChannelConfig ${CHANNEL} ${NAME_DOMAIN} 'templates/raft/Orderer.
 echo -e "\n\nAdd Concenter: ${NEWCONSENTER_NAME}, ${NEWCONSENTER_DOMAIN}\n\n"
 export "RAFT_NEWCONSENTER_HOST"=${NAME_DOMAIN}
 export "RAFT_NEWCONSENTER_PORT"=${NEWCONSENTER_PORT}
-export "RAFT_NEWCONSENTER_CLIENT_TLS_CERT"=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${RAFT_NEWCONSENTER_HOST}/tls/server.crt | base64 ${BASE64_WRAP_OPT} 0`
-export "RAFT_NEWCONSENTER_SERVER_TLS_CERT"=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${RAFT_NEWCONSENTER_HOST}/tls/server.crt | base64 ${BASE64_WRAP_OPT} 0`
+export "RAFT_NEWCONSENTER_CLIENT_TLS_CERT"=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${RAFT_NEWCONSENTER_HOST}/tls/server.crt | base64 | tr -d '\n'`
+export "RAFT_NEWCONSENTER_SERVER_TLS_CERT"=`cat crypto-config/ordererOrganizations/${NEWCONSENTER_DOMAIN}/msp/${RAFT_NEWCONSENTER_HOST}/tls/server.crt | base64 | tr -d '\n'`
 envsubst < './templates/raft/consenters.json' > crypto-config/configtx/consenters_${RAFT_NEWCONSENTER_HOST}.json
 mergeListIntoChannelConfig ${CHANNEL} 'crypto-config/configtx/updated_config_msp.json' 'channel_group.groups.Orderer.values.ConsensusType.value.metadata.consenters' \
                             crypto-config/configtx/consenters_${RAFT_NEWCONSENTER_HOST}.json 'consenters' 'crypto-config/configtx/updated_config_concenter.json'
