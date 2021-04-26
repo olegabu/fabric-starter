@@ -308,6 +308,7 @@ services:
       - ENROLL_ID
       - ENROLL_SECRET
       - BOOTSTRAP_IP
+      - BOOTSTRAP_SERVICE_URL
       - BOOTSTRAP_EXTERNAL_PORT
       - MY_IP
       - WWW_PORT=${WWW_PORT:-80}
