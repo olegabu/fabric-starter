@@ -312,6 +312,7 @@ services:
       - BOOTSTRAP_EXTERNAL_PORT
       - MY_IP
       - WWW_PORT=${WWW_PORT:-80}
+      - LDAPADMIN_HTTPS
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
       - FABRIC_STARTER_HOME
