@@ -190,14 +190,14 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
-    - CORE_PEER_FILESYSTEM_PATH=/var/hyperledger/production/${PEER_NAME:-peer0}
+    - CORE_PEER_FILESYSTEMPATH=/var/hyperledger/production/${PEER_NAME:-peer0}
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
     volumes:
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-    - peer:/var/hyperledger/production/${PEER_NAME:-peer0}
+    - peer:/var/hyperledger/production
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/docker.sock:/host/var/run/docker.sock
 
