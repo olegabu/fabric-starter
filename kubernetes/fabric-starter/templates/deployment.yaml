@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      volumes:
+        - name: crypto-config
+          emptyDir: {}
+#          hostPath:
+#            path: crypto-config
+#            type: Directory
+
+      initContainers:
+        - name: pre-install #.$(PEER_NAME:-peer0).$(ORG:-org1).$(DOMAIN:-example.com)
+          image: docker.io/olegabu/fabric-tools-extended:baas-deploy
+          env:
+            - name: ORG
+              value: {{ .Values.ORG }}
+            - name: DOMAIN
+              value: {{ .Values.DOMAIN }}
+          workingDir: /etc/hyperledger
+          command: ["sh", "-c", "tree crypto-config; container-scripts/container-peer.sh"]
+          volumeMounts:
+            - mountPath: /etc/hyperledger/crypto-config
+              name: crypto-config
+
+      containers:
+#        - name: ca.${ORG:-org1}.${DOMAIN:-example.com}
+        - name: ca
+#          image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.8}
+          image: hyperledger/fabric-ca:1.4.8
+          env:
+            - name: FABRIC_CA_HOME
+              value: /etc/hyperledger/fabric-ca-server/ca
+            - name: FABRIC_CA_SERVER_LDAP_USERFILTER
+              value: (cn=%s)
+            - name: FABRIC_CA_SERVER_CA_CERTFILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.ORG }}.{{ .Values.DOMAIN }}/ca/ca.{{ .Values.ORG }}.{{ .Values.DOMAIN }}-cert.pem
+            - name: FABRIC_CA_SERVER_CA_KEYFILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.ORG }}.{{ .Values.DOMAIN }}/ca/sk.pem
+            - name: FABRIC_CA_SERVER_TLS_ENABLED
+              value: "true"
+            - name: FABRIC_CA_SERVER_TLS_CERTFILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.ORG }}.{{ .Values.DOMAIN }}/tlsca/tlsca.{{ .Values.ORG }}.{{ .Values.DOMAIN }}-cert.pem
+            - name: FABRIC_CA_SERVER_TLS_KEYFILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.ORG }}.{{ .Values.DOMAIN }}/tlsca/sk.pem
+            - name: ENROLL_ID
+              value: $(ENROLL_ID)
+            - name: ENROLL_SECRET
+              value: $(ENROLL_SECRET)
+          command: ["sh", "-c", "sleep 2; ls /etc/hyperledger/fabric-ca-server/ca/msp/keystore/ -l --time-style=full; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name=default"]
+
+          volumeMounts:
+            - mountPath: /etc/hyperledger/crypto-config
+              name: crypto-config
+            - mountPath: /etc/hyperledger/fabric-ca-server/ca/fabric-ca-server-config-{{ .Values.ORG }}.yaml
+              subPath: ca/fabric-ca-server-config-{{ .Values.ORG }}.yaml
+              name: crypto-config
+
+
+
+
+
