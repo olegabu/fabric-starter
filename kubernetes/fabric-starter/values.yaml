@@ -4,6 +4,10 @@
 
 ORG: org1
 DOMAIN: example.com
+PEER_NAME: peer0
+PEER0_PORT: 7051
+
+clusterDomain: svc.cluster.local
 
 replicaCount: 1
 
