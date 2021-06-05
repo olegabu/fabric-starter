@@ -1,45 +1,27 @@
-apiVersion: v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: ca
   labels:
-    app: {{ .Chart.Name }}
+    app: ca
 spec:
-  ports:
-    - port: 7054
-      targetPort: 7054
-      protocol: TCP
-  clusterIP: None
-  selector:
-    app:  {{ .Chart.Name }}
-
----
-
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: {{ .Chart.Name }}-ca
-  labels:
-    app: {{ .Chart.Name }}
-spec:
-  serviceName: ca
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: ca
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        app: ca
     spec:
 
 
       volumes:
         - name: crypto-config
           emptyDir: {}
-#          hostPath:
-#            path: crypto-config
-#            type: Directory
+        #          hostPath:
+        #            path: crypto-config
+        #            type: Directory
         - name: certs
           projected:
             sources:
@@ -47,14 +29,14 @@ spec:
                   name: fabric-dfa-certs
                   items:
                     - key: sk.pem
-                      path: peerOrganizations/{{ .Values.ORG }}.{{ .Values.DOMAIN }}/ca/sk.pem
+                      path: peerOrganizations/org1.example.com/ca/sk.pem
                     - key: signcert
-                      path: peerOrganizations/{{ .Values.ORG }}.{{ .Values.DOMAIN }}/ca/ca.{{ .Values.ORG }}.{{ .Values.DOMAIN }}-cert.pem
+                      path: peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
       containers:
-#        - name: ca.${ORG:-org1}.${DOMAIN:-example.com}
+        #        - name: ca.${ORG:-org1}.${DOMAIN:-example.com}
         - name: ca
-#          image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.8}
-          image: hyperledger/fabric-ca:1.4.8
+          #          image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.8}
+          image: registry.sigma.sbrf.ru/ci01146627/ci02605576_bchhub/fabric-peer-sber:latest
           env:
             - name: FABRIC_CA_HOME
               value: /etc/hyperledger/fabric-ca-server/ca
@@ -73,33 +55,13 @@ spec:
             - name: ENROLL_ID
               value: admin
             - name: ENROLL_SECRET
-              value: {{ .Values.ENROLL_SECRET }}
+              value: adminpw
           volumeMounts:
-#            - mountPath: /etc/hyperledger/crypto-config
-#              name: crypto-config
-            - mountPath: /etc/hyperledger/fabric-ca-server/ca/fabric-ca-server-config-{{ .Values.ORG }}.yaml
+            #            - mountPath: /etc/hyperledger/crypto-config
+            #              name: crypto-config
+            - mountPath: /etc/hyperledger/fabric-ca-server/ca/fabric-ca-server-config-org1.yaml
               subPath: ca/fabric-ca-server-config-{{ .Values.ORG }}.yaml
               name: crypto-config
             - name: certs
               mountPath: /etc/hyperledger/crypto-config
           command: ["sh", "-c", "sleep 2; echo ; cat /etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/ca/* ; echo; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name=default"]
-
-
-#      initContainers:
-#        - name: pre-install #.$(PEER_NAME:-peer0).$(ORG:-org1).$(DOMAIN:-example.com)
-#          image: docker.io/olegabu/fabric-tools-extended:baas-deploy
-#          env:
-#            - name: ORG
-#              value: {{ .Values.ORG }}
-#            - name: DOMAIN
-#              value: {{ .Values.DOMAIN }}
-#          workingDir: /etc/hyperledger
-#          command: ["sh", "-c", "tree crypto-config; container-scripts/container-peer.sh"]
-#          volumeMounts:
-#            - mountPath: /etc/hyperledger/crypto-config
-#              name: crypto-config
-#
-
-
-
-
