@@ -158,11 +158,25 @@ function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
-    sleep 5
-    if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
-        printYellow "\nRegister MY_IP: $MY_IP\n"
-        cat /etc/hosts
-        invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+    local status=1
+    local count=1
+
+    while [[ ${status} -ne 0 && ${count} -le 6 ]]; do
+      sleep 2
+      peer channel getinfo -c ${serviceChannel}
+      status=$?
+      [[ ${status} -ne 0 ]] && sleep 2
+      count=$((count + 1))
+    done
+    local channelOK=${status}
+    if [[ channelOK -eq 0 ]]; then
+        if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
+            printYellow "\nRegister MY_IP: $MY_IP\n"
+            cat /etc/hosts
+            invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+        fi
+    else
+       printError "\n'channel ${serviceChannel}' is not ready\n"
     fi
 }
 
