@@ -133,39 +133,20 @@ function joinServiceChannel() {
     return ${joinResult}
 }
 
-function registerOrdererInServiceChaincode() {
-    local serviceChannel=${1:?Service channel name is required}
-    local serviceChaincode=${2:?Service chaincode is required}
-
-    sleep 5
-    if [[ -z "$BOOTSTRAP_IP" && -n "$MY_IP" ]]; then # TODO:
-
-        local ordererNames
-        IFS="," read -r -a ordererNames <<< ${ORDERER_NAMES}
-        for ordererName_Port in ${ordererNames[@]}; do
-          local ordererConf
-          IFS=':' read -r -a ordererConf <<< ${ordererName_Port}
-          local ordererName=${ordererConf[0]}
-          local ordererPort=${ordererConf[1]:-${ORDERER_GENERAL_LISTENPORT}}
-          printYellow "\nRegister ORDERER: ${ordererName}.${ORDERER_DOMAIN}:"$MY_IP"\n"
-          invokeChaincode ${serviceChannel} ${SERVICE_CC_NAME} "[\"registerOrdererByParams\",\"${ordererName}\", \"${ORDERER_DOMAIN}\", \"${ordererPort}\", \"${MY_IP}\", \"${ORDERER_WWW_PORT}\"]"
-          sleep 5
-        done
-    fi
-}
-
 function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
     local status=1
     local count=1
+    local wait=${WAIT_FOR_CHANNEL_READY:-12}
+    echo "Wait for $wait seconds (set env var WAIT_FOR_CHANNEL_READY)"
 
-    while [[ ${status} -ne 0 && ${count} -le 6 ]]; do
-      sleep 2
+    while [[ ${status} -ne 0 && ${count} -le $wait ]]; do
+      sleep 1
       peer channel getinfo -c ${serviceChannel}
       status=$?
-      [[ ${status} -ne 0 ]] && sleep 2
+      [[ ${status} -ne 0 ]] && sleep 1
       count=$((count + 1))
     done
     local channelOK=${status}
