@@ -158,19 +158,19 @@ function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
-    local status=1
+    local channelStatus=1
     local count=1
     local wait=${WAIT_FOR_CHANNEL_READY:-12}
     echo "Wait for $wait seconds (or set env var WAIT_FOR_CHANNEL_READY)"
 
-    while [[ ${status} -ne 0 && ${count} -le $wait ]]; do
+    while [[ ${channelStatus} -ne 0 && ${count} -le $wait ]]; do
       peer channel getinfo -c ${serviceChannel}
-      status=$?
-      [[ ${status} -ne 0 ]] && sleep 1
+      channelStatus=$?
+      [[ ${channelStatus} -ne 0 ]] && sleep 1
       count=$((count + 1))
     done
 
-    if [[ status -eq 0 ]]; then
+    if [[ channelStatus -eq 0 ]]; then
         if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
             printYellow "\nRegister MY_IP: $MY_IP\n"
             cat /etc/hosts
