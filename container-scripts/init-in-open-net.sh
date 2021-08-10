@@ -158,11 +158,26 @@ function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
-    sleep 5
-    if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
-        printYellow "\nRegister MY_IP: $MY_IP\n"
-        cat /etc/hosts
-        invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+    local channelStatus=1
+    local count=1
+    local wait=${WAIT_FOR_CHANNEL_READY:-12}
+    echo "Wait for $wait seconds (or set env var WAIT_FOR_CHANNEL_READY)"
+
+    while [[ ${channelStatus} -ne 0 && ${count} -le $wait ]]; do
+      peer channel getinfo -c ${serviceChannel}
+      channelStatus=$?
+      [[ ${channelStatus} -ne 0 ]] && sleep 1
+      count=$((count + 1))
+    done
+
+    if [[ channelStatus -eq 0 ]]; then
+        if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
+            printYellow "\nRegister MY_IP: $MY_IP\n"
+            cat /etc/hosts
+            invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+        fi
+    else
+       printError "\n'channel ${serviceChannel}' is not ready\n"
     fi
 }
 
