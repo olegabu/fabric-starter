@@ -1,0 +1,42 @@
+
+version: '2.4'
+
+networks:
+  fabric-service:
+    external: true
+
+services:
+
+  peer0:
+    container_name: peer0.${ORG}.${DOMAIN}
+    image: skilpio/fabric-peer-sber:0.3
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_ID=peer0.${ORG}.${DOMAIN}
+      - CORE_PEER_ADDRESS=0.0.0.0:${PEER_PORT_1}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${PEER_PORT_1}
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG}.${DOMAIN}:${PEER_PORT_1}
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG}.${DOMAIN}:${PEER_PORT_1}
+      - CORE_PEER_LOCALMSPID=${ORG}
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:${PEER_OPS_PORT}
+      - CORE_METRICS_PROVIDER=prometheus
+      - EXTERNAL_CHAINCODE_ADDRESS=cnft-chaincode.${ORG}.${DOMAIN}:9013
+      #
+      - GODEBUG=netdns=go
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    volumes:
+      - ../crypto-config/peerOrganizations/${ORG}.${DOMAIN}/peers/peer0.${ORG}.${DOMAIN}/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/${ORG}.${DOMAIN}/peers/peer0.${ORG}.${DOMAIN}/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - ${PEER_PORT_1}:${PEER_PORT_1}
+    networks:
+      - fabric-service

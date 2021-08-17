@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+data:
+  fabric.logging.spec: 'DEBUG'
+  core.peer.tls.enabled: 'true'
+  core.peer.gossip.useleaderelection: 'true'
+  core.peer.gossip.orgleader: 'false'
+  core.peer.profile.enabled: 'false'
+  core.peer.tls.cert.file: /etc/hyperledger/crypto-config/peerOrganizations/$(ORG).example.com/peers/peer0.org1.example.com/tls/server.crt
+  core.peer.tls.key.file: '/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key'
+  core.peer.tls.rootcert.file: '/etc/hyperledger/crypto-config/peerOrganizations/${ORG2}.example.com/peers/peer0.org1.example.com/tls/ca.crt'
+  core.peer.mspconfigpath: '/etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp'
+  core.peer.id: 'peer0.org1.example.com'
+  core.peer.address: 'localhost:7051'
+  core.peer.listenaddress: 'localhost:7051'
+  core.chaincode.java.runtime: 'enterprisedlt/fabric-jar-env'
+  core.peer.gossip.bootstrap: 'localhost:7051'
+  core.peer.gossip.externalendpoint: 'localhost:7051'
+  core.peer.localmspid: $(ORG)
+  godebug: 'netdns'
+#      fabric.cfg.path: '$BASE_DIR/hlf/config'
+kind: ConfigMap
+metadata:
+  name: peer-test

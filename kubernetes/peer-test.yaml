@@ -1,0 +1,206 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peer-deployment1
+  labels:
+    app: peer
+    name: peer
+spec:
+  selector:
+    matchLabels:
+      app: peer
+  template:
+    metadata:
+      #          annotations:
+      #            sidecar.istio.io/inject: "true"
+      creationTimestamp: null
+      labels:
+        app: peer
+    spec:
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: fabric-dfa-certs-org1
+                  items:
+                    - key: ca.cert
+                      path: ca/ca.org1.example.com-cert.pem
+                    - key: ca.cert
+                      path: msp/cacerts/ca.org1.example.com-cert.pem
+                    - key: ca.cert
+                      path: users/Admin@org1.example.com.com/msp/cacerts/ca.org1.example.com-cert.pem
+                    - key: peer.admin.signcerts
+                      path: msp/admincerts/Admin@org1.example.com-cert.pem
+                    - key: peer.admin.signcerts
+                      path: users/Admin@org1.example.com/admincerts/Admin@org1.example.com-cert.pem
+                    - key: peer.admin.signcerts
+                      path: users/Admin@org1.example.com/signcerts/Admin@org1.example.com-cert.pem
+                    - key: peer.admin.keystore
+                      path: users/Admin@org1.example.com/keystore/sk.pem
+
+
+                    - key: ca.cert
+                      path: peers/peer0.org1.example.com/msp/cacerts/ca.org1.example.com-cert.pem
+                    - key: peer.admin.signcerts
+                      path: peers/peer0.org1.example.com/msp/admincerts/Admin@org1.example.com-cert.pem
+                    - key: peer.peer.signcerts
+                      path: peers/peer0.org1.example.com/msp/signcerts/peer0.org1.example.com-cert.pem
+                    - key: peer.peer.keystore
+                      path: peers/peer0.org1.example.com/msp/keystore/sk.pem
+
+
+                    - key: tlsca.cert
+                      path: peers/peer0.org1.example.com/tls/ca.crt
+                    - key: peer.tls.certs
+                      path: peers/peer0.org1.example.com/tls/server.crt
+                    - key: peer.tls.keystore
+                      path: peers/peer0.org1.example.com/tls/server.key
+
+
+
+      containers:
+        #              readinessProbe:
+        #                httpGet:
+        #                  path: /health/check
+        #                  port: 8080
+        #                initialDelaySeconds: 10
+        #              livenessProbe:
+        #                httpGet:
+        #                  path: /health/check
+        #                  port: 8080
+        #                initialDelaySeconds: 10
+        - name: peer
+          ports:
+            - name: api-port
+              containerPort: 7051
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config/peerOrganizations/org1.example.com
+          #              subPathExpr: $(ORG).$(DOMAIN)
+          image: >-
+            registry.sigma.sbrf.ru/dev/ci01146627/ci02871956_bchhub_dfa_dev/fabric-peer@sha256:4dd3b7dcf7a21036551a49220240d3943340e3c1a4d55260a7d7b9d7a7f26aaf
+          command: [ "sh", "-c", "sleep 200000; echo ; cat /etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/ca/* ; echo; cat /etc/hyperledger/crypto-config/peerOrganizations/org1.example.com/msp/cacerts/*; fabric-ca-server start -b : -d --ca.name=default" ]
+          #          command: ["peer", "node", "start"]
+          envFrom:
+            - configMapRef:
+                name: peer-test
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: BASE_DIR
+              value: /etc/hyperledger
+            #            - name: FABRIC_LOGGING_SPEC
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: fabric.logging.spec
+            #            - name: CORE_PEER_TLS_ENABLED
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.tls.enabled
+            #            - name: CORE_PEER_GOSSIP_USELEADERELECTION
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.gossip.useleaderelection
+            #            - name: CORE_PEER_GOSSIP_ORGLEADER
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.gossip.orgleader
+            #            - name: CORE_PEER_PROFILE_ENABLED
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.profile.enabled
+            - name: CORE_PEER_LOCALMSPID
+              value: $(ORG)
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.localmspid
+            - name: CORE_PEER_TLS_CERT_FILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/$(ORG).$(DOMAIN)/peers/peer0.$(ORG).$(DOMAIN)/tls/server.crt
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.tls.cert.file
+            - name: CORE_PEER_TLS_KEY_FILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/$(ORG).$(DOMAIN)/peers/peer0.$(ORG).$(DOMAIN)/tls/server.key
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.tls.key.file
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /etc/hyperledger/crypto-config/peerOrganizations/$(ORG).$(DOMAIN)/peers/peer0.$(ORG).$(DOMAIN)/msp/cacerts/ca.$(ORG).$(DOMAIN)-cert.pem
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.tls.rootcert.file
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /etc/hyperledger/crypto-config/peerOrganizations/$(ORG).$(DOMAIN)/peers/peer0.$(ORG).$(DOMAIN)/msp
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.mspconfigpath
+            - name: CORE_PEER_ID
+              value: peer0.$(ORG).$(DOMAIN)
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.id
+            - name: CORE_PEER_ADDRESS
+              value: peer0.$(ORG).$(DOMAIN).$(NAMESPACE).svc.cluster.local:7051
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.address
+            - name: CORE_PEER_GOSSIP_BOOTSTRAP
+              value: peer0.$(ORG).$(DOMAIN)..svc.cluster.local:7051
+            #              valueFrom:
+            #                configMapKeyRef:
+            #                  name: peer-test
+            #                  key: core.peer.gossip.bootstrap
+            - name: CORE_PEER_LISTENADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: peer-test
+                  key: core.peer.listenaddress
+            - name: CORE_CHAINCODE_JAVA_RUNTIME
+              valueFrom:
+                configMapKeyRef:
+                  name: peer-test
+                  key: core.chaincode.java.runtime
+            - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: peer-test
+                  key: core.peer.gossip.externalendpoint
+            - name: GODEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: peer-test
+                  key: godebug
+
+#            - name: CORE_PEER_MSPCONFIGPATH
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: peer-test
+#                  key: core.peer.mspconfigpath
+
+#            - name: FABRIC_CFG_PATH
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: peer-test
+#                  key: fabric.cfg.path
+
+
+
+
