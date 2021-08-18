@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source .env
+export $(cat .env| grep -v '^#'| cut -d= -f1)
 source lib/util/util.sh
 
 : ${DOMAIN:="example.com"}

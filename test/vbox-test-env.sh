@@ -17,7 +17,7 @@ main() {
     
     source ${BASEDIR}/common-test-env.sh $@
     export -f setCurrentActiveOrg
-    export -f resetCurrentActiveOrg
+    export -f unsetActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
 }
@@ -32,7 +32,7 @@ function setCurrentActiveOrg() {
 }
 
 
-function resetCurrentActiveOrg {
+function unsetActiveOrg {
     eval $(docker-machine env -u) >/dev/null
 }
 
@@ -47,7 +47,7 @@ function getOrgContainerPort () {
     
     setCurrentActiveOrg "${org}"
     getContainerPort $@
-    resetCurrentActiveOrg
+    unsetActiveOrg
 }
 
 main $@
