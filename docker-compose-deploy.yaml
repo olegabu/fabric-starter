@@ -12,7 +12,7 @@ volumes:
 
 x-peer:
   &peer-defaults
-  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.9}
+  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.4}
   working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
   command: peer node start
   volumes:
@@ -25,7 +25,7 @@ services:
 
   pre-install:
     container_name: pre-deploy.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-baas-test-master}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -55,7 +55,7 @@ services:
 
   deployer:
     container_name: deployer
-    image: ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-baas-test-master}
     ports:
       - ${MY_SUBSCRIPTION_PORT:-6080}:${MY_SUBSCRIPTION_PORT:-6080}
 #      - 5005:5005
