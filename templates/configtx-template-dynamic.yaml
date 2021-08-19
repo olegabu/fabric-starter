@@ -72,7 +72,8 @@ Channel: &ChannelDefaults
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
 
-
+  Capabilities:
+    <<: *ChannelCapabilities
 
 Application: &ApplicationDefaults
   ACLs: &ACLsDefault
@@ -100,6 +101,9 @@ Application: &ApplicationDefaults
     # ACL policy for _lifecycle's "QueryChaincodeDefinitions" function
     _lifecycle/QueryChaincodeDefinitions: /Channel/Application/Writers
 
+
+    # 2.x ACL policy for cscc's "GetChannelConfig" function
+    cscc/GetChannelConfig: /Channel/Application/Readers
 
 
     #---Lifecycle System Chaincode (lscc) function to policy mapping for access control---#
@@ -145,9 +149,6 @@ Application: &ApplicationDefaults
     cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
 
 
-    # 2.x ACL policy for cscc's "GetChannelConfig" function
-    cscc/GetChannelConfig: /Channel/Application/Readers
-
     #---Miscellanesous peer function to policy mapping for access control---#
 
     # ACL policy for invoking chaincodes on peer
@@ -172,6 +173,9 @@ Application: &ApplicationDefaults
   # For Application policies, their canonical path is
   #   /Channel/Application/<PolicyName>
   Policies: &ApplicationDefaultPolicies
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
     Readers:
       Type: ImplicitMeta
       Rule: "ANY Readers"

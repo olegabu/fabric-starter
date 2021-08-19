@@ -1,6 +1,7 @@
     Raft:
-      Capabilities:
-        <<: *ChannelCapabilities
+#      Capabilities:
+#        <<: *ChannelCapabilities
+      <<: *ChannelDefaults
       Orderer:
         <<: *OrdererDefaults
         OrdererType: etcdraft

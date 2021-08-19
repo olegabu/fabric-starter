@@ -164,9 +164,9 @@ function writeConfigtxOrgConfig() {
                   Port: ${ordererPort}
                   ClientTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
                   ServerTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
-                  MSPID: ${ordererName}.${ordererDomain}
-                  Identity: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/msp/signcerts/${ordererName}.${ordererDomain}-cert.pem
-                  ConsenterId: $consenterId
+#                  MSPID: ${ordererName}.${ordererDomain}
+#                  Identity: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/msp/signcerts/${ordererName}.${ordererDomain}-cert.pem
+#                  ConsenterId: $consenterId
     END
 }
 

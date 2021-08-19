@@ -14,6 +14,8 @@
 : ${RAFT2_PORT:=7250}
 
 : ${WGET_OPTS:=}
+: ${WGET_CMD:= wget --verbose -N --directory-prefix}
+: ${BASE64_UNWRAP_CODE:=-w 0} # "-b 0" for MacOs
 
 if [ `uname` == 'Darwin' ]; then
     export BASE64_WRAP_OPT='-b' # debug on MacOs
@@ -36,7 +38,7 @@ function downloadOrdererMSP() {
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" "${serverDNSName}" "${remoteOrdererDOMAIN}" "${remoteOrdererName}.${remoteOrdererDOMAIN}"
 #    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
-    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
 function downloadOrgMSP() {
@@ -53,10 +55,11 @@ function downloadMSP() {
     local urlSubPath=${4:-$mspSubPath}
 
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
+    local DIRECTORY=crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
     set -x
-    wget ${WGET_OPTS} -P crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} -P crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    wget ${WGET_OPTS} -P crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
     set +x
 }
 
@@ -69,16 +72,20 @@ function certificationsToEnv() {
         mspDir="crypto-config/ordererOrganizations/${domain}/msp";
         org=""
     fi
-    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 | tr -d '\n'` \
-      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 | tr -d '\n'` \
-      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 | tr -d '\n'`
+    set -x
+    export ORG_ADMIN_CERT=`eval "cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
+      && export ORG_ROOT_CERT=`eval "cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
+      && export ORG_TLS_ROOT_CERT=`eval "cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"`
+    set +x
 }
 
 function ordererCertificationsToEnv() {
     local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
-    export ORG_ADMIN_CERT=`cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 | tr -d '\n'` \
-      && export ORG_ROOT_CERT=`cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 | tr -d '\n'` \
-      && export ORG_TLS_ROOT_CERT=`cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 | tr -d '\n'`
+    set -x
+    export ORG_ADMIN_CERT=`eval "cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
+      && export ORG_ROOT_CERT=`eval "cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
+      && export ORG_TLS_ROOT_CERT=`eval "cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"`
+    set +x
 }
 
 function fetchChannelConfigBlock() {

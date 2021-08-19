@@ -82,7 +82,7 @@ info "Create first organization ${ORG}"
 set -x
 docker-compose -f docker-compose-preload-images.yaml up -d
 BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
-    up -d ${AGENT_MODE:+ api www.peer }
+    up -d --force-recreate ${AGENT_MODE:+ api www.peer }
 set +x
 
 if [ -z "${AGENT_MODE}" ]; then

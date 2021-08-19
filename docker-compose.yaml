@@ -107,6 +107,8 @@ services:
       - RAFT1_PORT=${RAFT1_PORT:-7150}
       - RAFT2_PORT=${RAFT2_PORT:-7250}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - WGET_CMD
+      - BASE64_UNWRAP_CODE
     working_dir: /etc/hyperledger
     command: sh -c "container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT:-80} && container-scripts/wait-port.sh ${MY_IP} ${PEER0_PORT:-7051} && container-scripts/install-default-chaincodes.sh"
     depends_on:
