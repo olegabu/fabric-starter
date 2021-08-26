@@ -85,6 +85,8 @@ services:
       - ORDERER_NAMES
       - ORDERER_DOMAIN
       - DNS_CHANNEL
+      - ENROLL_ID
+      - ENROLL_SECRET
       - API_PORT=${API_PORT:-4000}
       - BOOTSTRAP_IP
       - BOOTSTRAP_ORG_DOMAIN
@@ -109,6 +111,7 @@ services:
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - WGET_CMD
       - BASE64_UNWRAP_CODE
+      - FABRIC_VERSION
     working_dir: /etc/hyperledger
     command: sh -c "container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT:-80} && container-scripts/wait-port.sh ${MY_IP} ${PEER0_PORT:-7051} && container-scripts/install-default-chaincodes.sh"
     depends_on:
@@ -252,6 +255,8 @@ services:
       - ENROLL_ID
       - ENROLL_SECRET
       - LDAP_ENABLED
+      - FABRIC_VERSION
+      - DNS_CHANNEL
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_LOCALMSPID=${ORG:-org1}

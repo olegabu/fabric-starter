@@ -7,9 +7,11 @@ exampleMsg="$0 common chaincode1 '[\"Init\",\"a\",\"10\", \"b\", \"0\"]'"
 
 channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
 chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
-initArguments=${3-'[]'}
+initArguments=${3}
 chaincodeVersion=${4-1.0}
 privateCollectionPath=${5}
 endorsementPolicy=${6}
-
+set -x
 instantiateChaincode "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$privateCollectionPath" "$endorsementPolicy"
+set +x
+exit

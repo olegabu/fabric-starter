@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
+[ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0) #extract script's dir
+
+source ${LIBDIR}/container-util.sh
+
+FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
+FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
+
+source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics.sh
+
+export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
+if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
+    export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+fi
+
 
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
@@ -14,7 +28,9 @@
 : ${RAFT2_PORT:=7250}
 
 : ${WGET_OPTS:=}
+set -x
 : ${WGET_CMD:= wget --verbose -N --directory-prefix}
+set +x
 : ${BASE64_UNWRAP_CODE:=-w 0} # "-b 0" for MacOs
 
 if [ `uname` == 'Darwin' ]; then
@@ -72,20 +88,16 @@ function certificationsToEnv() {
         mspDir="crypto-config/ordererOrganizations/${domain}/msp";
         org=""
     fi
-    set -x
     export ORG_ADMIN_CERT=`eval "cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
       && export ORG_ROOT_CERT=`eval "cat ${mspDir}/cacerts/ca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
       && export ORG_TLS_ROOT_CERT=`eval "cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"`
-    set +x
 }
 
 function ordererCertificationsToEnv() {
     local mspDir="crypto-config/ordererOrganizations/${DOMAIN}/msp";
-    set -x
     export ORG_ADMIN_CERT=`eval "cat ${mspDir}/admincerts/Admin@${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
       && export ORG_ROOT_CERT=`eval "cat ${mspDir}/cacerts/ca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
       && export ORG_TLS_ROOT_CERT=`eval "cat ${mspDir}/tlscacerts/tlsca.${org}${org:+.}${DOMAIN:-example.com}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"`
-    set +x
 }
 
 function fetchChannelConfigBlock() {
@@ -262,44 +274,50 @@ function createChaincodePackage() {
     CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
 }
 
-function installChaincodePackage() {
-    local chaincodeName=${1:?Chaincode package must be specified}
+#function installChaincodePackage() {
+#    local chaincodeName=${1:?Chaincode package must be specified}
+#
+#    echo "Install chaincode package $chaincodeName"
+#    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
+#}
 
-    echo "Install chaincode package $chaincodeName"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
-}
+#function installChaincode {
+#    local chaincodeName=${1:?Chaincode name must be specified}
+#    local chaincodePath=${2:-$chaincodeName}
+#    local lang=${3:-golang}
+#    local chaincodeVersion=${4:-1.0}
+#
+#    echo "Install chaincode $chaincodeName  $chaincodePath $lang $chaincodeVersion"
+#    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
+#}
 
-function installChaincode {
-    local chaincodeName=${1:?Chaincode name must be specified}
-    local chaincodePath=${2:-$chaincodeName}
-    local lang=${3:-golang}
-    local chaincodeVersion=${4:-1.0}
-
-    echo "Install chaincode $chaincodeName  $chaincodePath $lang $chaincodeVersion"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
-}
-
-function initChaincode() {
-    local operation=${1:?Operation is required}
-    local channelName=${2:?Channel is required}
-    local chaincodeName=${3:?Chaincode is required}
-    local initArguments=${4:-[]}
-    local chaincodeVersion=${5:-1.0}
-    local privateCollectionPath=${6}
-    local endorsementPolicy=${7}
-    local arguments="{\"Args\":$initArguments}"
-
-    if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
-    [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config /opt/chaincode/${privateCollectionPath}"
-
-    [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
-
-    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode ${operation} -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
-}
+#function initChaincode() {
+#    local operation=${1:?Operation is required}
+#    local channelName=${2:?Channel is required}
+#    local chaincodeName=${3:?Chaincode is required}
+#    local initArguments=${4:-[]}
+#    local chaincodeVersion=${5:-1.0}
+#    local privateCollectionPath=${6}
+#    local endorsementPolicy=${7}
+#    local arguments="{\"Args\":$initArguments}"
+#
+#    if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
+#    [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config /opt/chaincode/${privateCollectionPath}"
+#
+#    [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
+#
+#    echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
+#    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode ${operation} -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
+#}
 
 function instantiateChaincode() {
-    initChaincode instantiate $@
+    local channelName=${1:?`printUsage "$usageMsg" "$exampleMsg"`}
+    local chaincodeName=${2:?`printUsage "$usageMsg" "$exampleMsg"`}
+    local initArguments=${3}
+    local chaincodeVersion=${4-1.0}
+    local privateCollectionPath=${5}
+    local endorsementPolicy=${6}
+    initChaincode instantiate "$channelName" "$chaincodeName" "$initArguments" "$chaincodeVersion" "$privateCollectionPath" "$endorsementPolicy"
 }
 
 function upgradeChaincode() {

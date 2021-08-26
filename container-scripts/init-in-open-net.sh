@@ -45,6 +45,8 @@ function main() {
     if [[ $createResult -eq 0 ]]; then
         instantiateChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
         registerOrdererInServiceChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
+    else
+        approveChaincode ${DNS_CHANNEL} ${SERVICE_CC_NAME}
     fi
 
     if [[ $joinResult -eq 0 ]]; then

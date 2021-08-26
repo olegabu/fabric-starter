@@ -10,7 +10,7 @@ ORDERER_ADDRESSES=${@:?Orderer addresses are required}
 : ${ORDERER_DOMAIN:=${DOMAIN}}
 : ${ORDERER_NAME:=orderer}
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml"}
-
+: ${WGET_CMD:=wget --verbose -N --directory-prefix}
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN
 
 for ordererAddr in ${ORDERER_ADDRESSES}; do
@@ -21,6 +21,6 @@ for ordererAddr in ${ORDERER_ADDRESSES}; do
     ordererName=${addrParts[0]}
     remoteOrdererDomain=${ordererHost:((${#ordererName}+1))}
     echo "Download: ${ordererName}.${remoteOrdererDomain}:${ordererPort}"
-    COMPOSE_PROJECT_NAME=TLS docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --rm --no-deps cli.orderer wget --verbose -N --directory-prefix crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/${ordererName}.${remoteOrdererDomain}/tls http://${ordererHost}/msp/${ordererHost}/tls/server.crt
+    COMPOSE_PROJECT_NAME=TLS docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --rm --no-deps cli.orderer ${WGET_CMD} crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/${ordererName}.${remoteOrdererDomain}/tls http://${ordererHost}/msp/${ordererHost}/tls/server.crt
 done
 

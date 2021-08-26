@@ -121,6 +121,7 @@ services:
       - DNS_CHANNEL
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - WGET_CMD
     working_dir: /etc/hyperledger
     depends_on:
       - pre-install

@@ -13,10 +13,10 @@ function main() {
     echo "ORDERER_NAMES=${ORDERER_NAMES}"
     parseOrdererNames
 
-    info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
     shopt -s nocasematch # to allow Raft, RAFT, etc
 
     if [[ -z "$BOOTSTRAP_IP" ]]; then
+        info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
         if [[ "${ORDERER_TYPE}" == "SOLO" || "${ORDERER_TYPE}" == "RAFT1" ]]; then
                 set -x
                 WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} ./raft/0_raft-start-1-node.sh
@@ -32,8 +32,9 @@ function main() {
         fi
     else
         if [ "${ORDERER_TYPE}" != "SOLO" ]; then
-            set -x
             export ORDERER_DOMAIN=${ORDERER_DOMAIN:-"osn-${ORG}.${DOMAIN}"}
+            info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
+            set -x
             BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh ${REMOTE_ORDERER_DOMAIN}
             returnCode=$?
             set +x

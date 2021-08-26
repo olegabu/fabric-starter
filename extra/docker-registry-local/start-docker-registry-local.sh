@@ -2,6 +2,7 @@
 
 : ${FABRIC_VERSION:="latest"}
 : ${FABRIC_STARTER_VERSION:="latest"}
+: ${FABRIC_CA_VERSION:=1.5}
 : ${JAVA_RUNTIME_VERSION:="latest"}
 
 : ${DOCKER_REGISTRY:=docker.io}
@@ -22,9 +23,10 @@ docker-compose -f ${BASEDIR}/docker-compose-local-docker.yaml up -d
 
 dockerImages=(\
     "hyperledger/fabric-ccenv:${FABRIC_VERSION}" \
+    "hyperledger/fabric-nodeenv:${FABRIC_VERSION}" \
     "hyperledger/fabric-orderer:${FABRIC_VERSION}" \
     "hyperledger/fabric-peer:${FABRIC_VERSION}" \
-    "hyperledger/fabric-ca:${FABRIC_VERSION}" \
+    "hyperledger/fabric-ca:${FABRIC_CA_VERSION}" \
     "hyperledger/fabric-couchdb" \
     "nginx" \
     "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}" \
@@ -40,7 +42,7 @@ function checkError() {
 for image in "${dockerImages[@]}"
 do
     docker pull ${DOCKER_REGISTRY}/${image}
-    checkError
+    #checkError
     docker tag ${DOCKER_REGISTRY}/${image} "${DOCKER_REGISTRY_LOCAL}/${image}"
     checkError
     docker push ${DOCKER_REGISTRY_LOCAL}/${image}

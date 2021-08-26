@@ -18,10 +18,13 @@ fi
 
 export ORG=''
 if [ -z "${AGENT_MODE}" ]; then
-   source ${first_org}_env;
+   source org_env 2>/dev/null
+   [ $? -ne 0 ] && source ${first_org}_env;
    export ORG=${ORG:-${first_org:-org1}}
    export DOMAIN=${DOMAIN:-example.com}
 fi
+
+echo -e "\n\n\n\n\n\n BOOTSTRAP_IP: $BOOTSTRAP_IP \n\n\n\n\n\n"
 
 export ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}

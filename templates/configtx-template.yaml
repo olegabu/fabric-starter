@@ -178,22 +178,22 @@ Application: &ApplicationDefaults
   # Policies defines the set of policies at this level of the config tree
   # For Application policies, their canonical path is
   #   /Channel/Application/<PolicyName>
-  Policies: &ApplicationDefaultPolicies
-    LifecycleEndorsement:
-      Type: ImplicitMeta
-      Rule: "MAJORITY Endorsement"
-    Endorsement:
-      Type: ImplicitMeta
-      Rule: "MAJORITY Endorsement"
-    Readers:
-      Type: ImplicitMeta
-      Rule: "ANY Readers"
-    Writers:
-      Type: ImplicitMeta
-      Rule: "ANY Writers"
-    Admins:
-      Type: ImplicitMeta
-      Rule: "MAJORITY Admins"
+#  Policies: &ApplicationDefaultPolicies
+#    LifecycleEndorsement:
+#      Type: ImplicitMeta
+#      Rule: "MAJORITY Endorsement"
+#    Endorsement:
+#      Type: ImplicitMeta
+#      Rule: "MAJORITY Endorsement"
+#    Readers:
+#      Type: ImplicitMeta
+#      Rule: "ANY Readers"
+#    Writers:
+#      Type: ImplicitMeta
+#      Rule: "ANY Writers"
+#    Admins:
+#      Type: ImplicitMeta
+#      Rule: "MAJORITY Admins"
 
   # Capabilities describes the application level capabilities, see the
   # dedicated Capabilities section elsewhere in this file for a full
@@ -416,12 +416,16 @@ Profiles:
             Capabilities:
                 <<: *ApplicationCapabilities
             Policies:
-              LifecycleEndorsement:
-                Type: ImplicitMeta
-                Rule: "MAJORITY Endorsement"
+              lifecycleEndorsement:
+#                Type: ImplicitMeta
+#                Rule: "MAJORITY Endorsement"
+                Type: Signature
+                Rule: "OutOf('1','${ORG}.admin')"
               Endorsement:
-                Type: ImplicitMeta
-                Rule: "MAJORITY Endorsement"
+#                Type: ImplicitMeta
+#                Rule: "MAJORITY Writers"
+                Type: Signature
+                Rule: "OutOf('1','${ORG}.member')"
               Readers:
                 Type: ImplicitMeta
                 Rule: "ANY Readers"
