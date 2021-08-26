@@ -7,7 +7,7 @@ Adjust environment in file `org_env`,
 
 Start org1:
 ```bash
-FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy.sh 
+FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy-2x.sh 
 ```
 
 
@@ -21,7 +21,7 @@ Adjust environment in file `org_env`,
        
 Start orgN:
 ```bash
-FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy.sh 
+FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy-2x.sh 
 ```
 
 
