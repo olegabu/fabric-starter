@@ -71,7 +71,7 @@ function commitChaincode() {
     local initArguments=${6:-[]}
     local arguments="{\"Args\":$initArguments}"
 
-    printYellow  "Commiting chaincode: $chaincodeName_$chaincodeVersion on channel: $channelName"
+    printYellow  "Committing chaincode: $chaincodeName_$chaincodeVersion on channel: $channelName"
 
     if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
     [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config ${privateCollectionPath}"
