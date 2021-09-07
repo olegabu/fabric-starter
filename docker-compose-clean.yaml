@@ -11,7 +11,7 @@ services:
 #      args:
 #        FABRIC_VERSION: ${FABRIC_VERSION:-1.4.9}
 #      context: ./fabric-tools-extended
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-baas-test-master-no-gost}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     working_dir: /etc/hyperledger
     volumes:
     - /var/run/:/host/var/run/
