@@ -77,7 +77,7 @@ function addMeToConsortiumIfOrdererExists() {
 function createServiceChannel() {
     local serviceChannel=${1:?Service channel name is required}
     printYellow "\nTrying to create channel ${serviceChannel}\n"
-    createChannel ${serviceChannel}
+    [[ -z "$BOOTSTRAP_IP" ]] && createChannel ${serviceChannel}
     createResult=$?
     sleep 3
     [[ $createResult -eq 0 ]] && printGreen "\nChannel 'common' has been created\n" || printYellow "\nChannel '${serviceChannel}' cannot be created or already exists\n"
@@ -87,6 +87,11 @@ function createServiceChannel() {
 function requestInviteToServiceChannel() {
     local creationResult=${1:?Channel Creation result is required}
     local serviceChannel=${2:?Service channel name is required}
+
+    ${BASEDIR}/wait-port.sh ${ORDERER_NAME}.${DOMAIN} ${ORDERER_GENERAL_LISTENPORT}
+    set -x
+    sleep ${ORDERER_STARTING_PERIOD:-20} # TODO: orderer may have open port but not be operating yet
+    set +x
 
     if [[ $creationResult -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
