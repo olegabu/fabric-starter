@@ -196,7 +196,7 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
-    - CORE_PEER_FILESYSTEM_PATH=/var/hyperledger/production/${PEER_NAME:-peer0}
+    - CORE_PEER_FILESYSTEMPATH=/var/hyperledger/production/${PEER_NAME:-peer0}
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
