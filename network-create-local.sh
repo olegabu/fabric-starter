@@ -12,7 +12,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml -f docker-compose-preload-images.yaml}
 
 # Clean up. Remove all containers, delete local crypto material
 
@@ -52,10 +52,7 @@ do
     echo "docker-compose ${docker_compose_args} up -d"
     docker-compose ${docker_compose_args} up -d
     info "Wait for post-install.${ORG}.${DOMAIN} completed"
-    set -x
-    docker attach --no-stdin post-install.${ORG}.${DOMAIN}
-    set +x
-    docker wait post-install.${ORG}.${DOMAIN}
+    docker logs -f post-install.${ORG}.${DOMAIN}
 
     export BOOTSTRAP_ORG_DOMAIN="${org}.${DOMAIN}" BOOTSTRAP_API_PORT=3000
     api_port=$((api_port + 1))
@@ -76,14 +73,3 @@ do
     ./consortium-add-org.sh ${org}
 done
 
-# First organization creates the channel
-
-export ORG=${first_org}
-export COMPOSE_PROJECT_NAME=${ORG}
-
-# Wait for container scripts completed
-info "Wait for post-install.${ORG}.${DOMAIN} completed"
-set -x
-docker attach --no-stdin post-install.${ORG}.${DOMAIN}
-set +x
-docker wait post-install.${ORG}.${DOMAIN}

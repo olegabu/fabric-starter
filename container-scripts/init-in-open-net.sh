@@ -10,14 +10,17 @@ echo -e "\n\nInit Open Net. Add myself to Consortium \n\n"
 
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
+: ${WWW_PORT:=${WWW_PORT:-80}}
 : ${ORDERER_WWW_PORT:=${ORDERER_WWW_PORT:-80}}
 : ${ORDERER_NAMES:=${ORDERER_NAME}}
 : ${BOOTSTRAP_API_PORT:=${BOOTSTRAP_API_PORT:-${API_PORT}}}
 
 : ${SERVICE_CC_NAME:=dns}
 : ${CONSORTIUM_AUTO_APPLY:=${CONSORTIUM_AUTO_APPLY-SampleConsortium}}
+
+#DNS_CHANNEL=${DNS_CHANNEL-common}
+: ${DNS_CHANNEL:=${DNS_CHANNEL-common}} # no auto-join if specifically set to empty or ""
 : ${CHANNEL_AUTO_JOIN:=${CHANNEL_AUTO_JOIN-${DNS_CHANNEL}}} # no auto-join if specifically set to empty or ""
-DNS_CHANNEL=${DNS_CHANNEL-common}
 
 export ORDERER_DOMAIN ORDERER_NAME ORDERER_NAMES ORDERER_WWW_PORT
 
@@ -57,9 +60,9 @@ function addMeToConsortiumIfOrdererExists() {
         status=1
         while [[ ${status} -ne 0 && ${CONSORTIUM_AUTO_APPLY} && ( -z "$BOOTSTRAP_IP" || ( "$BOOTSTRAP_IP" == "$MY_IP" )) ]]; do
             printYellow "\n\nTrying to add  ${ORG} to consortium\n\n"
-            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
+            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${WWW_PORT} ${DOMAIN}
             sleep $(( RANDOM % 20 )) #TODO: make external locking for config updates
-            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${DOMAIN}
+            runAsOrderer ${BASEDIR}/orderer/consortium-add-org.sh ${ORG} ${WWW_PORT} ${DOMAIN}
             status=$?
             echo -e "Status: $status\n"
             sleep 3
@@ -81,34 +84,52 @@ function requestInviteToServiceChannel() {
     local creationResult=${1:?Channel Creation result is required}
     local serviceChannel=${2:?Service channel name is required}
 
-    if [[ $creationResult -ne 0 ]]; then
+    if [[ $creationResult -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
        set -x
        curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/service/orgs \
             -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+       local curlResult=$?
        set +x
+       echo "Curl result: $curlResult"
+    else
+        if [[ -n "$BOOTSTRAP_IP" ]]; then
+            set -x
+            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_API_PORT}/integration/dns/org \
+                 -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\"}"
+            local curlResult=$?
+            set +x
+            echo "Curl result: $curlResult"
+        fi
     fi
 }
 
 function joinServiceChannel() {
     local serviceChannel=${1:?Service channel name is required}
-    status=1
-    count=1
-    while [[ ${status} -ne 0 && ${count} -ne 20 ]]; do
-        printYellow "\n\nJoining channel '${serviceChannel}, try ${count} '\n\n"
-        joinOutput=`joinChannel ${serviceChannel} 2>&1`
-        status=$?
-        echo -e "${joinOutput}\nStatus: $status\n"
-        if [[ "${joinOutput}" =~ "LedgerID already exists" ]];then
-            status=0
+    local joinResult=1
+    if [[ ${CHANNEL_AUTO_JOIN} ]]; then
+        status=1
+        count=1
+        while [[ ${status} -ne 0 && ${count} -le 3 ]]; do
+            printYellow "\n\nJoining channel '${serviceChannel}, try ${count} '\n\n"
+            joinOutput=`joinChannel ${serviceChannel} 2>&1`
+            status=$?
+            echo -e "${joinOutput}\nStatus: $status\n"
+            if [[ "${joinOutput}" =~ "LedgerID already exists" ]];then
+                status=0
+            fi
+
+            [[ ${status} -ne 0 ]] && sleep 10
+            count=$((count + 1))
+        done
+
+        joinResult=$status
+        if [[ joinResult -eq 0 ]]; then
+           printGreen "\nJoined channel '${serviceChannel}'\n"
+        else
+           printError "\nNot joined to '${serviceChannel}'\n"
         fi
-
-        [[ ${status} -ne 0 ]] && sleep 30
-        count=$((count + 1))
-    done
-
-    joinResult=$?
-    printGreen "\nJoined channel '${serviceChannel}'\n"
+    fi
     return ${joinResult}
 }
 
@@ -137,11 +158,26 @@ function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
-    sleep 5
-    if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
-        printYellow "\nRegister MY_IP: $MY_IP\n"
-        cat /etc/hosts
-        invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+    local channelStatus=1
+    local count=1
+    local wait=${WAIT_FOR_CHANNEL_READY:-12}
+    echo "Wait for $wait seconds (or set env var WAIT_FOR_CHANNEL_READY)"
+
+    while [[ ${channelStatus} -ne 0 && ${count} -le $wait ]]; do
+      peer channel getinfo -c ${serviceChannel}
+      channelStatus=$?
+      [[ ${channelStatus} -ne 0 ]] && sleep 1
+      count=$((count + 1))
+    done
+
+    if [[ channelStatus -eq 0 ]]; then
+        if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
+            printYellow "\nRegister MY_IP: $MY_IP\n"
+            cat /etc/hosts
+            invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+        fi
+    else
+       printError "\n'channel ${serviceChannel}' is not ready\n"
     fi
 }
 
