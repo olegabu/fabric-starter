@@ -132,8 +132,8 @@ function prepareOrg() {
     connectMachine ${org};  \
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}; \
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}; \
-    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-1.4.9}; \
-    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.9}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}; \
+    docker pull ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-latest}; \
     ./clean.sh; \
     copyDirToMachine $org crypto-config/ordererOrganizations/${ordererDomain} crypto-config/ordererOrganizations; \
     copyDirToMachine $org crypto-config/configtx crypto-config "

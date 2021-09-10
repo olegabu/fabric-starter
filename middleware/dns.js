@@ -10,7 +10,7 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
     const jwt = require('jsonwebtoken');
 
     const FabricStarterClient = require('../fabric-starter-client');
-    const fabricStarterClient = new FabricStarterClient();
+    let fabricStarterClient = new FabricStarterClient();
     const fabricCLI = require('../fabric-cli');
     const util = require('../util');
     const cfg = require('../config.js');
@@ -122,6 +122,7 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
     }
 
     async function login() {
+        fabricStarterClient = new FabricStarterClient();
         await fabricStarterClient.init();
         await fabricStarterClient.loginOrRegister(username, password);
 

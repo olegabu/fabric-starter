@@ -22,3 +22,4 @@ function portProbe() {
 export -f portProbe
 
 timeout ${waitTime} bash -c "portProbe ${host} ${port}"
+echo "Result code: $?"

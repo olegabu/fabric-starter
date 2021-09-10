@@ -37,7 +37,7 @@ export FABRIC_STARTER_VERSION=baas-test
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
     export DOCKER_REGISTRY=registry.labdlt.ru
-    export FABRIC_VERSION=1.4.4
+    export FABRIC_VERSION=latest
     export FABRIC_STARTER_VERSION=baas-test
     export AUTH_MODE=ADMIN
     export CRYPTO_ALGORITHM=GOST
