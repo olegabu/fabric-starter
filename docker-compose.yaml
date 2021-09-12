@@ -197,15 +197,20 @@ services:
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
     - CORE_PEER_FILESYSTEMPATH=/var/hyperledger/production/${PEER_NAME:-peer0}
+    - ORG=${ORG:-org1}
+    - DOMAIN=${DOMAIN:-example.com}
+    - SDK_API_URL
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
+    command: sh -c "sed  -i 's/\(\s*\)externalBuilders.*/\1externalBuilders:\ \[{\"path\":\"\/external\",\"name\":\"remote\",\"propagateEnvironment\":[\"CORE_PEER_ADDRESS\",\"ORG\",\"DOMAIN\",\"SDK_API_URL\"]}\]/' /etc/hyperledger/fabric/core.yaml; peer node start"
     volumes:
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer:/var/hyperledger/production/${PEER_NAME:-peer0}
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/docker.sock:/host/var/run/docker.sock
+    - ./external-builders:/external
 
 #  peer1:
 #    << : *peer-defaults
@@ -284,6 +289,7 @@ services:
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
+    - ./external-builders:/external
 #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 

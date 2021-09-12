@@ -6,7 +6,7 @@ fabric-rest-api.iml
 fabric-rest-api.ipr
 fabric-rest-api.iws
 .gradle
-build
+/build
 
 /artifacts/crypto-config/
 /artifacts/channel/

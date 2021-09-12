@@ -1,4 +1,10 @@
 
+### Fabric-starter-rest
+    Common
+        - [ ] Move Fabric specific code to separate components   
+
+    V1.4
+        - [ ] Move to fabric-client 1.4.18 as it supports Node v.12
 
 ### Configtx
 
@@ -14,4 +20,6 @@
     in the Dockerfile thus they are clashes. Need to test it to avoid future bugs.
     
 - [ ] Need to orginize chaincodes by versions (as fabric-shim is of different versions),
-      but do we need to extract common business-logic (to prevent duplication) ?  
+      but do we need to extract common business-logic (to prevent duplication) ?
+      
+         
