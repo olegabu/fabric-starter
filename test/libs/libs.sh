@@ -342,11 +342,18 @@ function queryContainerNetworkSettings() {
     
     local TMP_LOG_FILE
     local query
+    local api_query
     local result
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     query='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
+    api_query='.[0].NetworkSettings.Ports."4000/tcp" | keys[] as $k | "\(.[0].'"${parameter}"')"'
     result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE});
+    if [[ "${DEPLOYMENT_TARGET}" == "raft-local" ]]; then
+        if [[ "${container}" == "api" ]]; then
+            result=$(docker inspect 'www'.${organization}.${domain} | jq -r "${api_query}" | uniq  2>${TMP_LOG_FILE});
+        fi
+    fi
     echo  "queryContainerNetworkSettings returns:" ${result} | printLog
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
