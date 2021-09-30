@@ -416,9 +416,9 @@ Profiles:
             Capabilities:
                 <<: *ApplicationCapabilities
             Policies:
-              lifecycleEndorsement:
+              LifecycleEndorsement:
 #                Type: ImplicitMeta
-#                Rule: "MAJORITY Endorsement"
+#                Rule: ANY MEMBER
                 Type: Signature
                 Rule: "OutOf('1','${ORG}.admin')"
               Endorsement:

@@ -76,7 +76,6 @@ fi
 export COMPOSE_PROJECT_NAME=${ORG:-org1}
 
 if [ -z "$AGENT_MODE" ]; then
-    info "Start ordering service"
     ORDERER_WWW_PORT=${ORDERER_WWW_PORT} ./ordering-start.sh $ORG $DOMAIN
     sleep 5
 fi

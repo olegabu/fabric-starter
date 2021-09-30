@@ -343,6 +343,7 @@ services:
       - ACCEPT_ALL_ORGS
       - AUTH_JWT_EXPIRES_IN
       - DOCKER_COMPOSE_EXTRA_ARGS
+      - SDK_API_URL
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
@@ -370,6 +371,21 @@ services:
     #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
     command: sh -c 'sleep 2 && npm start'
 
+  sdk:
+    container_name: sdk.${ORG}.${DOMAIN}
+    image: ${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-2x}
+    restart: always
+    ports:
+      - ${SDK_PORT:-8080}:8080
+    environment:
+      - ORG=${ORG-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - PEER0_PORT=${PEER0_PORT:-7051}
+      - CRYPTO_CONFIG_DIR=${CRYPTO_CONFIG_DIR:-/etc/hyperledger/crypto-config}
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+
+
   # simple http server to disseminate certificates
   www.local: #TODO: script can try download certs from localhost, if we avoid that this service can be removed
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
@@ -392,7 +408,7 @@ services:
       - admin_app:/usr/src/app/admin
 
   www.peer:
-    container_name: www.peer
+    container_name: www.peer.${ORG}.${DOMAIN}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     restart: always
     environment:
