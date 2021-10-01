@@ -420,7 +420,7 @@ Profiles:
 #                Type: ImplicitMeta
 #                Rule: ANY MEMBER
                 Type: Signature
-                Rule: "OutOf('1','${ORG}.admin')"
+                Rule: "OutOf('1','${ORG}.member')"
               Endorsement:
 #                Type: ImplicitMeta
 #                Rule: "MAJORITY Writers"

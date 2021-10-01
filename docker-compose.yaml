@@ -372,7 +372,7 @@ services:
     command: sh -c 'sleep 2 && npm start'
 
   sdk:
-    container_name: sdk.${ORG}.${DOMAIN}
+    container_name: sdk.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-2x}
     restart: always
     ports:
