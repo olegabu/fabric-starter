@@ -7,7 +7,7 @@ Adjust environment in file `org_env`,
 
 Start org1:
 ```bash
-FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy-2x.sh 
+./deploy-2x.sh 
 ```
 
 
@@ -21,7 +21,7 @@ Adjust environment in file `org_env`,
        
 Start orgN:
 ```bash
-FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy-2x.sh 
+./deploy-2x.sh 
 ```
 
 
@@ -29,37 +29,14 @@ FABRIC_VERSION=2.3 FABRIC_STARTER_VERSION=2x ./deploy-2x.sh
 Assuming environment in file `org_env` is configured for curretn org. 
 
 
-#### Install from source code:
-- copy source code  folder to `./chaincode` folder (as it's shared with the `cli` container)
-- install chaincode:
-    ```bash
-    ./chaincode-install ${chaincodeName} ${chaincodeVersion} /opt/chaincode/${ccfolder}
-    ```
- 
+#### Install chaincode (from package (Fabric 2x))
+- at first it's necessary to prepare install package in the `cli.peer` container:
+    - copy source code  folder to `./chaincode` folder (as it's shared with the `cli` container)
+    - prepare package:
+        ```bash
+      docker exec -t cli.peer0.${ORG}.${DOMAIN} peer lifecycle chaincode \
+        package /opt/chaincode/${chaincodeName}.tar.gz --path /opt/chaincode/${chaincodeFolder} \
+        --lang node --label ${chaincodeName}_1.0
+        ```
 
-#### Install from package (Fabric 2x)
-- prepare package by yourself according to 2x lifecycle process:
-    ```bash
-        CC_LABEL=${chaincodeName}_${chaincodeVersion} # required (!)
-        peer lifecycle chaincode package ${chaincodeName}.tar.gz --label $CC_LABEL --path $chaincodePath --lang $lang 
-    ```
-  Example
-    ```bash
-        peer lifecycle chaincode package account.tar.gz --label account_1.0 --path /opt/chaincode/account --lang golang
-    ```
-- install the package:
-    ```bash
-    ./chaincode-install-package.sh ${chaincodeName}.tar.gz
-    ```
-
-#### Instantiate (commit) chaincode
-- copy private collection definition file to `./chaincode` folder if any
-- instantiate previously installed chaincode
-    ```bash
-    ./chaincode-instantiate.sh ${channel} ${chaincodeName} ${initRequired} ${chaincodeVersion} ${privateCollectionPath} ${endorsementPolicy}
-    ```
-Example:
-```bash
-    ./chaincode-instantiate.sh common account '' 1.0 
-```
-
+    - on UI install the package and instantiate chaincode 
