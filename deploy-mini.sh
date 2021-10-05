@@ -11,7 +11,7 @@ export COMPOSE_PROJECT_NAME=${first_org}
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=1.4.4
-export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
