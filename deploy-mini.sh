@@ -10,8 +10,9 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose-mini.yaml -f docke
 export COMPOSE_PROJECT_NAME=${first_org}
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
-export FABRIC_VERSION=1.4.4
-export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
+export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
+export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
@@ -29,8 +30,8 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
 fi
 
 if [ -z "${DEV_MODE}" ]; then
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
 fi;
 
 info "Cleaning up"

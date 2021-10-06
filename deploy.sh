@@ -12,7 +12,7 @@ export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 #export LDAP_ENABLED=${LDAP_ENABLED:-true}
 export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
 
-FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
+export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml -f docker-compose-preload-images.yaml"}
 #docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "}
@@ -32,8 +32,8 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-com
 unset ORG COMPOSE_PROJECT_NAME
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
-export FABRIC_VERSION=1.4.4
-export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
+export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
 
 source ${first_org}_env;
 #export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
