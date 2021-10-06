@@ -20,7 +20,6 @@ exampleMsg="$0 osn1-example.com"
 : ${BOOTSTRAP_SERVICE_URL:=https}
 : ${API_PORT:=4000}
 : ${WWW_PORT:=79}
-: ${REMOTE_WWW_PORT:=79}
 
 export DOMAIN ORDERER_NAME ORDERER_DOMAIN ORDERER_GENERAL_LISTENPORT WWW_PORT
 
@@ -46,7 +45,7 @@ echo curl completed
 sleep 2
 
 
-raft/4_raft-start-consenter.sh ${REMOTE_DOMAIN} www.${REMOTE_DOMAIN}:${REMOTE_WWW_PORT} ${BOOTSTRAP_IP}
+raft/4_raft-start-consenter.sh ${REMOTE_DOMAIN} www.${REMOTE_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
 
 #docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
 #  bash -c "echo -e '${REMOTE_IP}\t www.${REMOTE_DOMAIN} orderer.${REMOTE_DOMAIN} ${ORDERER_NAME_2:-raft1}.${REMOTE_DOMAIN} ${ORDERER_NAME_3:-raft2}.${REMOTE_DOMAIN}' >> /etc/hosts"
