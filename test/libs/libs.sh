@@ -12,6 +12,7 @@ main() {
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
+    export BOOTSTRAP_SERVICE_URL=${BOOTSTRAP_SERVICE_URL:-http}
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
     source ./lib.sh
@@ -341,11 +342,18 @@ function queryContainerNetworkSettings() {
     
     local TMP_LOG_FILE
     local query
+    local api_query
     local result
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     query='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
+    api_query='.[0].NetworkSettings.Ports."4000/tcp" | keys[] as $k | "\(.[0].'"${parameter}"')"'
     result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE});
+    if [[ "${DEPLOYMENT_TARGET}" == "raft-local" ]]; then
+        if [[ "${container}" == "api" ]]; then
+            result=$(docker inspect 'www'.${organization}.${domain} | jq -r "${api_query}" | uniq  2>${TMP_LOG_FILE});
+        fi
+    fi
     echo  "queryContainerNetworkSettings returns:" ${result} | printLog
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
@@ -401,7 +409,7 @@ function curlRequest() {
     local exitCode
     local body
     local httpStatusCode
-    res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    res=$(curl -k --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     exitCode=$?
 
     echo "${RED}curlRequest: (curl exit code: $exitCode) ${NORMAL}" | printDbg
@@ -432,8 +440,8 @@ function restQuery() {
     api_ip=$(getOrgIp "${org}")
     api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     
-    echo  restQuery:  curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
-    curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
+    echo  restQuery:  curlRequest "${BOOTSTRAP_SERVICE_URL}://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
+    curlRequest "${BOOTSTRAP_SERVICE_URL}://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
 }
 
 
@@ -578,7 +586,7 @@ function installZippedChaincodeAPI() {
     echo -n -e "${multipart_tail}" >> "${tmp_out_file}"
     
     
-    res=$(curl http://${api_ip}:${api_port}/chaincodes \
+    res=$(curl -k ${BOOTSTRAP_SERVICE_URL}://${api_ip}:${api_port}/chaincodes \
         -sw ":%{http_code}" \
         -H "Authorization: Bearer ${jwt}" \
         -H 'Content-Type: multipart/form-data; boundary=--'${boundary} \

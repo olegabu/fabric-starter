@@ -27,13 +27,13 @@ unset ORG COMPOSE_PROJECT_NAME
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=1.4.4
-export FABRIC_STARTER_VERSION=baas-test
+export FABRIC_STARTER_VERSION=latest
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
     export DOCKER_REGISTRY=registry.labdlt.ru
     export FABRIC_VERSION=1.4.4
-    export FABRIC_STARTER_VERSION=baas-test
+    export FABRIC_STARTER_VERSION=latest
     export AUTH_MODE=ADMIN
     export CRYPTO_ALGORITHM=GOST
     export SIGNATURE_HASH_FAMILY=SM3
