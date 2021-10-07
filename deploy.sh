@@ -32,7 +32,6 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-com
 unset ORG COMPOSE_PROJECT_NAME
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
-export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
 
 source ${first_org}_env;
@@ -109,14 +108,3 @@ for org in ${@:2}; do
     echo "docker-compose ${docker_compose_args} up -d"
     COMPOSE_PROJECT_NAME=${org} docker-compose ${docker_compose_args} up -d
 done
-
-sleep 4
-for org in "${@:2}"; do
-    source ${org}_env
-    orgPeer0Port=${PEER0_PORT}
-
-    info "Adding $org to channel ${SERVICE_CHANNEL}"
-    source ${first_org}_env;
-    COMPOSE_PROJECT_NAME=$first_org ORG=$first_org ./channel-add-org.sh ${SERVICE_CHANNEL} ${org} ${orgPeer0Port}
-done
-
