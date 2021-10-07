@@ -32,7 +32,6 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-com
 unset ORG COMPOSE_PROJECT_NAME
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
-export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
 
 source ${first_org}_env;
