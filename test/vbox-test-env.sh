@@ -9,7 +9,6 @@ main() {
     VBOX_HOST_IP=${VBOX_HOST_IP:-$(VBoxManage list hostonlyifs | grep 'IPAddress' | cut -d':' -f2 | sed -e 's/^[[:space:]]*//')}
     setDocker_LocalRegistryEnv
     export DEPLOYMENT_TARGET='vbox'
-    export BOOTSTRAP_SERVICE_URL='http'
     
     if [ $# -lt 1 ]; then
         printYellow "source ./vbox-test-env <DOMAIN>"

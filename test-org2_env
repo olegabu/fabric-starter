@@ -1,0 +1,30 @@
+export ORG=${ORG}
+export DOMAIN=${DOMAIN}
+#--------------------------------------------
+export MY_IP=${MY_IP}
+export API_PORT=4000
+#--------------------------------------------
+export BOOTSTRAP_IP=${BOOTSTRAP_IP}
+export BOOTSTRAP_API_PORT=4000
+export BOOTSTRAP_ORG_DOMAIN=${ORG1}.${DOMAIN}
+export BOOTSTRAP_SERVICE_URL='http'
+#--------------------------------------------
+export REMOTE_DOMAIN=${DOMAIN}
+export REMOTE_WWW_ADDR=${BOOTSTRAP_IP}
+#--------------------------------------------
+export ORDERER_TYPE=RAFT1
+export ORDERER_PORT=7050
+export ORDERER_WWW_PORT=79
+export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN}
+export ORDERER_GENERAL_LISTENPORT=7050
+export ORDERER_NAME=orderer
+#--------------------------------------------
+export ENROLL_SECRET=adminpw
+#--------------------------------------------
+export WWW_PORT=80
+export CA_PORT=7054
+export PEER0_PORT=7051
+export LDAP_PORT_HTTP=6080
+export LDAP_PORT_HTTPS=6443
+#--------------------------------------------
+export FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME}
