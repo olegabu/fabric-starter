@@ -396,7 +396,7 @@ function curlRequest() {
     local cdata=$2
     local wtoken=$3
     local curlTimeout=${4:-15}
-    
+
     local res
     local exitCode
     local body
@@ -425,13 +425,13 @@ function restQuery() {
     local query=${3}
     local jwt=${4}
     local curlTimeout=${5}
-    
+
     local api_ip
     local api_port
-    
+
     api_ip=$(getOrgIp "${org}")
     api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    
+
     echo  restQuery:  curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
     curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
 }
@@ -471,13 +471,11 @@ function getJWT() {
 
 function APIAuthorize() {
     local org=${1}
-    
+
     local result
     local jwt
     local httpStatusCode
-    
     result=$(getJWT ${org})
-
     jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
     jwt="${jwt:0:${#jwt}-3}"
     httpStatusCode="${result:${#result}-3}"
@@ -674,9 +672,9 @@ function queryPeer() {
     
     local TMP_LOG_FILE
     local result
-    
+
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    
+
     result=$(docker exec cli.${org}.${domain} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
         peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
@@ -706,8 +704,8 @@ function verifyOrgIsInChannel() {
     local org2_=${2}
 
     local result
-    
-    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
+
+    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.\"'${org2_}'\".values.MSP.value' '.config.name')
     printDbg "${result}"
     
     setExitCode [ "${result}" = "${org2_}" ]

@@ -34,7 +34,7 @@ unset ORG COMPOSE_PROJECT_NAME
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
 
-source ${first_org}_env;
+source ${first_org}_env
 #export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
 
 info "Cleaning up"
