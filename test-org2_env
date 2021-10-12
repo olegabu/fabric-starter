@@ -6,17 +6,14 @@ export API_PORT=4000
 #--------------------------------------------
 export BOOTSTRAP_IP=192.168.99.109
 export BOOTSTRAP_API_PORT=4000
-export BOOTSTRAP_ORG_DOMAIN=test-org1.example.com
+export BOOTSTRAP_ORG_DOMAIN=
 export BOOTSTRAP_SERVICE_URL=http
 #--------------------------------------------
-export REMOTE_DOMAIN=example.com
-export REMOTE_WWW_ADDR=192.168.99.109
-#--------------------------------------------
 export ORDERER_TYPE=RAFT1
-export ORDERER_PORT=7050
+export ORDERER_PORT=8050
 export ORDERER_WWW_PORT=79
-export ORDERER_DOMAIN=osn-test-org2.example.com
-export ORDERER_GENERAL_LISTENPORT=7050
+#export ORDERER_DOMAIN=osn-test-org2.example.com
+#export ORDERER_GENERAL_LISTENPORT=7050
 export ORDERER_NAME=orderer
 #--------------------------------------------
 export ENROLL_SECRET=adminpw
@@ -26,6 +23,6 @@ export WWW_PORT=80
 export CA_PORT=7055
 export PEER0_PORT=8051
 export LDAP_PORT_HTTP=6180
-export LDAP_PORT_HTTPS=6543
+export LDAP_PORT_HTTPS=6533
 #--------------------------------------------
 export FABRIC_STARTER_HOME=/home/docker
