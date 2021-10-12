@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    {{ include "orderer-generate.labels" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "orderer-generate.labels" . }}
+  template:
+    metadata:
+      labels:
+        {{ include "orderer-generate.labels" . }}
+    spec:
+      initContainers:
+        - name: orderer-pre-install
+          image: {{ .Values.images.fabric_tools_extended}}
+{{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
+          command: [./container-scripts/container-orderer.sh]
+      containers:
+        - name: nginx
+          image: docker.io/nginx
+{{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
+
