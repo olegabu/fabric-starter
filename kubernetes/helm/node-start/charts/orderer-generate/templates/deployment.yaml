@@ -17,7 +17,13 @@ spec:
       initContainers:
         - name: orderer-pre-install
           image: {{ .Values.images.fabric_tools_extended}}
+          env:
+{{/*          {{- include "common.env" . | nindent 12 }}*/}}
+                      {{- .Files.Get .Values.env_file | nindent 12}}
+          {{/*              {{- toYaml .Values.common.env | indent 6 }}*/}}
+
 {{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
+          workingDir: /etc/hyperledger
           command: [./container-scripts/container-orderer.sh]
       containers:
         - name: nginx

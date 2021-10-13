@@ -1,2 +1,9 @@
 images:
-  fabric_tools_extended: docker.io/olegabu/fabric-tools-extened:2x
+  fabric_tools_extended: olegabu/fabric-tools-extended:2x
+
+common:
+  env:
+    - name: ORDERE
+      value: SS
+
+env_file: env
