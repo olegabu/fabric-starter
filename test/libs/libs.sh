@@ -643,6 +643,10 @@ function getCurrentChaincodeName() {
     echo ${CHAINCODE_PREFIX:-reference}
 }
 
+function getDockerGatewayAddress() {
+    echo $(docker network inspect bridge | jq -r '.[].IPAM.Config | .[].Gateway')
+}
+
 
 function getTestChaincodeName() {
     local channel=${1}
