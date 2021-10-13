@@ -475,7 +475,9 @@ function APIAuthorize() {
     local result
     local jwt
     local httpStatusCode
+
     result=$(getJWT ${org})
+
     jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
     jwt="${jwt:0:${#jwt}-3}"
     httpStatusCode="${result:${#result}-3}"
