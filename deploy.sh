@@ -70,6 +70,7 @@ if [ -z "${NO_CLEAN}" ]; then
 if [[ -n "${RENEW_IMAGES}" ]]; then
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-sdk-api:${FABRIC_STARTER_VERSION:-latest}
 fi
 
 
