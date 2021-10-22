@@ -11,12 +11,12 @@ volumes:
 services:
 
   jre8-preload:
-    image: openjdk:8-jre
+    image: ${DOCKER_REGISTRY:-docker.io}/openjdk:8-jre
 
 
   portainer:
     container_name: portainer
-    image: portainer/portainer-ce
+    image: ${DOCKER_REGISTRY:-docker.io}/portainer/portainer-ce
     restart: always
     ports:
       - ${PORTAINER_PORT:-9000}:9000
