@@ -1,0 +1,5 @@
+export ORG=org1
+export DOMAIN=example.com
+export ORDERER_DOMAIN=${DOMAIN}
+
+export FABRIC_STARTER_VERSION=2x

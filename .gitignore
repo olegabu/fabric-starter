@@ -30,7 +30,8 @@ fabric-rest-api.iws
 /dockercompose/*.yaml
 /artifacts/
 
-/crypto-config
+**/crypto-config
+!**/crypto-config/.keep
 
 /client-node/hfc-*
 

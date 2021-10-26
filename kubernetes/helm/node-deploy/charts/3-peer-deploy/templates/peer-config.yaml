@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: peer
+data:
+  ORG: {{ .Values.org }}
+  DOMAIN: {{ .Values.domain }}
+  FABRIC_LOGGING_SPEC: INFO
+  CORE_PEER_TLS_ENABLED: 'true'
+  CORE_PEER_GOSSIP_USELEADERELECTION: 'true'
+  CORE_PEER_GOSSIP_ORGLEADER: 'false'
+  CORE_PEER_GOSSIP_BOOTSTRAP: peer0.{{ .Values.NAMESPACE }}:7051
+  CORE_PEER_GOSSIP_EXTERNALENDPOINT: peer0.{{ .Values.NAMESPACE }}:7051
+
+  CORE_PEER_PROFILE_ENABLED: 'false'
+  EXTERNAL_CHAINCODE_ADDRESS: cnft-chaincode.{{ .Values.NAMESPACE }}:3737
+
+  CORE_PEER_ID: peer0.{{ .Values.org }}.{{ .Values.domain }}
+  CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:7052
+  CORE_PEER_CHAINCODEADDRESS: peer0.{{ .Values.NAMESPACE }}:7052
+  CORE_PEER_ADDRESS: peer0.{{ .Values.NAMESPACE }}:7051
+
+  CORE_LEDGER_STATE_STATEDATABASE: 'PostgreSQL'
+  DB_HOST: 'tkled-mvp000256.vm.esrt.cloud.sbrf.ru'
+  DB_PORT: '5433'
+  CORE_PEER_POSTGRES_SCHEMANAME: public
+  DB_NAME: dfabch
+  DB_USERNAME: dfa_tech_account
+
+  CHANNEL_NAME: 'cnft'
+  ORDERER_CA: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/orderer/tlsca/tlsca.${DOMAIN}-cert.pem
+  OSN_PORT: '7150'
+  ORDERER_ADDRESS: orderer.${DOMAIN}:7150
+  CHAINCODE_NAME: 'cnft'
+
+  CORE_PEER_LISTENADDRESS: '0.0.0.0:7051'
+  CORE_CHAINCODE_JAVA_RUNTIME: 'enterprisedlt/fabric-jar-env'
+  GODEBUG: 'netdns'
+#      fabric.cfg.path: '$BASE_DIR/hlf/config'
+

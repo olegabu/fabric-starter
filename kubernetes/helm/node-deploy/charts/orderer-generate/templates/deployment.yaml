@@ -18,15 +18,18 @@ spec:
         - name: orderer-pre-install
           image: {{ .Values.images.fabric_tools_extended}}
           env:
-{{/*          {{- include "common.env" . | nindent 12 }}*/}}
-                      {{- .Files.Get .Values.env_file | nindent 12}}
-          {{/*              {{- toYaml .Values.common.env | indent 6 }}*/}}
+          {{- include "common.env" . | nindent 12 }}
+                      {{- $a :=.Files.Get .Values.env_file }}
+            {{ range $k, $v := regexSplit "\n" $a -1 }}
+             {{ replace "=" ": " $v }}
+            {{ end }}
+                        {{- toYaml .Values.common.env | indent 6 }}
 
 {{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
           workingDir: /etc/hyperledger
-          command: [./container-scripts/container-orderer.sh]
+          command: [ls, sleeep 200000, ./container-scripts/container-orderer.sh, sleep 20000]
       containers:
         - name: nginx
-          image: docker.io/nginx
+          image: nginx
 {{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
 
