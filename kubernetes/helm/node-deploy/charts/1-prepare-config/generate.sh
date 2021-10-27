@@ -3,7 +3,7 @@
 source ./env
 : ${ORG:=$1}
 : ${RAFT_NODES_COUNT:=1}
-FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME:-../../../../../}
+FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME:-../../../../..}
 
 pushd $FABRIC_STARTER_HOME
 ./clean.sh
@@ -13,5 +13,6 @@ popd
 
 rm -rf ./crypto-config/*
 set -x
+sudo chown -R ${USER}  ${FABRIC_STARTER_HOME}/crypto-config/
 cp -r ${FABRIC_STARTER_HOME}/crypto-config/* ./crypto-config
 set +x

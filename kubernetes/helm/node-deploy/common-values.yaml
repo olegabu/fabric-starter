@@ -1,14 +1,19 @@
-NAMESPACE: default
+NAMESPACE: &namespace default
 
 org: &org org1
-domain: example.com
-peer_name: peer0
+domain: &domain example.com
+#bootstrapIp: ''
+#myIp: ""
+
+peerName: peer0
 orderer_name: orderer
+
 FABRIC_VERSION: 2.3.3
 
 
 images:
   fabric_tools_extended: olegabu/fabric-tools-extended:2x
+  fabric_starter_rest: olegabu/fabric-starter-rest:2x
   orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
   peer: hyperledger/fabric-peer:{{ .Values.FABRIC_VERSION }}
 
@@ -16,9 +21,9 @@ images:
 common:
   env:
     - name: ORG
-      value: "{{ .Release.Name }}"
+      value: *org
     - name: DOMAIN
-      value: example.com
+      value: *domain
 
 genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
 
@@ -48,13 +53,13 @@ peer:
     - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
     - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts
     - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/msp
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/msp/keystore
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/msp/signcerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peer_name }}.{{ .Values.org }}.{{ .Values.domain }}/tls
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/keystore
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/signcerts
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/tls
     - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/tlsca
     - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
     - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts

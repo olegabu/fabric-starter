@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns-deployment
+  labels:
+    app: dns
+    name: dns
+spec:
+  selector:
+    matchLabels:
+      app: dns
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      #          annotations:
+      #            sidecar.istio.io/inject: "true"
+      creationTimestamp: null
+      labels:
+        app: dns
+    spec:
+      containers:
+        - name: dns
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+
+          image: >-
+            {{ tpl .Values.images.fabric_starter_rest . }}
+          {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]

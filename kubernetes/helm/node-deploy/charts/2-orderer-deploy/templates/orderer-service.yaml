@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: orderer
+  namespace: ${NAMESPACE}
+spec:
+  ports:
+    - protocol: TCP
+      name: http
+      port: 7050
+      targetPort: 7050
+  selector:
+    app: orderer
