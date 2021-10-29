@@ -4,7 +4,7 @@ CHAINCODE_SOURCE_DIR=${1}
 CHAINCODE_METADATA_DIR=${2}
 
 main () {
-  local logDir=/external/log
+  local logDir=/tmp/external-builders
   mkdir -p ${logDir}
   local logFile="${logDir}/detect_`date`.log"
   echo "DETECT: $CHAINCODE_SOURCE_DIR, $CHAINCODE_METADATA_DIR" > "${logFile}"

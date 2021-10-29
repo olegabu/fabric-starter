@@ -49,10 +49,13 @@ spec:
           image: >-
             {{ tpl .Values.images.fabric_starter_rest . }}
 {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+
+          {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
+          command: ["npm", "start"]
+
           envFrom:
             - configMapRef:
                 name: common
-          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]
           env:
 {{/*            - name: DB_PASSWORD*/}}
 {{/*              valueFrom:*/}}

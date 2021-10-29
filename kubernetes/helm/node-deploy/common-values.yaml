@@ -1,7 +1,7 @@
 NAMESPACE: &namespace default
 
 org: &org org1
-domain: &domain example.com
+domain: &domain default
 #bootstrapIp: ''
 #myIp: ""
 
@@ -14,9 +14,9 @@ FABRIC_VERSION: 2.3.3
 images:
   fabric_tools_extended: olegabu/fabric-tools-extended:2x
   fabric_starter_rest: olegabu/fabric-starter-rest:2x
+  dns_chaincode: olegabu/dns-chaincode:2x
   orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
   peer: hyperledger/fabric-peer:{{ .Values.FABRIC_VERSION }}
-
 
 common:
   env:

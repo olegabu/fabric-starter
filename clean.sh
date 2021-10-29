@@ -4,15 +4,16 @@ source lib.sh
 
 all=${1}
 localRegistryStarted=`runningDockerContainer docker-registry`
+minikubeContainerId=`runningDockerContainer minikube`
 
-if [ -z "$localRegistryStarted" ] ; then
-    docker rm -f $(docker ps -aq)
-else
+#if [ -z "$localRegistryStarted" ] ; then
+#    docker rm -f $(docker ps -aq)
+#else
     echo "localRegistryStarted=$localRegistryStarted"
-    killContainers=`docker ps -aq | sed -e "s/${localRegistryStarted}/ /"`
+    killContainers=`docker ps -aq | sed -e "s/${localRegistryStarted}/ /" | sed -e "s/${minikubeContainerId}/ /" `
     echo "killContainers=$killContainers"
     docker rm -f ${killContainers}
-fi
+#fi
 
 #TODO [ "${DOCKER_MACHINE_NAME}" == "orderer" ]  && EXECUTE_BY_ORDERER=1 runCLIWithComposerOverrides down || runCLIWithComposerOverrides down
 

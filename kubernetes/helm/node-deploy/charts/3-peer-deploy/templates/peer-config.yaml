@@ -5,7 +5,9 @@ metadata:
 data:
   ORG: {{ .Values.org }}
   DOMAIN: {{ .Values.domain }}
-  FABRIC_LOGGING_SPEC: INFO
+#  FABRIC_LOGGING_SPEC: INFO
+  FABRIC_LOGGING_SPEC: DEBUG
+
   CORE_PEER_TLS_ENABLED: 'true'
   CORE_PEER_GOSSIP_USELEADERELECTION: 'true'
   CORE_PEER_GOSSIP_ORGLEADER: 'false'
@@ -19,6 +21,9 @@ data:
   CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:7052
   CORE_PEER_CHAINCODEADDRESS: {{ .Values.peerName }}.{{ .Values.NAMESPACE }}:7052
   CORE_PEER_ADDRESS: {{ .Values.peerName }}.{{ .Values.NAMESPACE }}:7051
+
+
+  CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/msp
 
   CORE_LEDGER_STATE_STATEDATABASE: 'PostgreSQL'
   DB_HOST: 'tkled-mvp000256.vm.esrt.cloud.sbrf.ru'

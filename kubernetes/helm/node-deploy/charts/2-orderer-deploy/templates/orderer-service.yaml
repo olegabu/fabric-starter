@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: orderer
-  namespace: ${NAMESPACE}
+  namespace: {{ .Values.NAMESPACE }}
 spec:
   ports:
     - protocol: TCP

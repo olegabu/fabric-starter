@@ -19,63 +19,27 @@ spec:
         app: peer
     spec:
       volumes:
-        - name: genesis-block
-          secret:
-            secretName: genesis-block-{{ .Values.org }}
-
         - name: certs
           projected:
             sources:
               - secret:
                   name: certs-{{ .Values.org }}
                   items:
-                    {{- include "certificates.decode" (merge (deepCopy .) .Values.peer) | nindent 12 }}
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.peer) | nindent 12 }}
 
-{{/*                    - key: orderer.ca.certs*/}}
-{{/*                      path: ca/ca.${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.ca.certs*/}}
-{{/*                      path: msp/cacerts/ca.${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.ca.certs*/}}
-{{/*                      path: users/Admin@${DOMAIN}.com/msp/cacerts/ca.${DOMAIN}-cert.pem*/}}
+        - name: fabric-core-yaml
+          configMap:
+            name: fabric-core-yaml-cm
 
-{{/*                    - key: orderer.admin.signcerts*/}}
-{{/*                      path: msp/admincerts/Admin@${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.admin.signcerts*/}}
-{{/*                      path: users/Admin@${DOMAIN}/msp/admincerts/Admin@${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.admin.signcerts*/}}
-{{/*                      path: users/Admin@${DOMAIN}/msp/signcerts/Admin@${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.admin.keystore*/}}
-{{/*                      path: users/Admin@${DOMAIN}/msp/keystore/sk.pem*/}}
-
-
-{{/*                    - key: orderer.admin.signcerts*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/msp/admincerts/Admin@${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.ca.certs*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/msp/cacerts/ca.${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.tlsca.certs*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/msp/tlscacerts/tlsca.${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.orderer.signcerts*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/msp/signcerts/orderer.${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.orderer.keystore*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/msp/keystore/sk.pem*/}}
-
-{{/*                    - key: orderer.tlsca.certs*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/tls/ca.crt*/}}
-{{/*                    - key: orderer.tls.certs*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/tls/server.crt*/}}
-{{/*                    - key: orderer.tls.keystore*/}}
-{{/*                      path: orderers/orderer.${DOMAIN}/tls/server.key*/}}
-
-
-{{/*                    - key: orderer.tlsca.certs*/}}
-{{/*                      path: tlsca/tlsca.${DOMAIN}-cert.pem*/}}
-{{/*                    - key: orderer.tlsca.keystore*/}}
-{{/*                      path: tlsca/sk.pem*/}}
+        - name: external-builders
+          configMap:
+            name: external-builers-cm
+            defaultMode: 0777
 
       containers:
         - name: peer
           ports:
-            - name: peerr-port
+            - name: peer-port
               containerPort: 7051
               protocol: TCP
           imagePullPolicy: IfNotPresent
@@ -83,22 +47,26 @@ spec:
           volumeMounts:
             - name: certs
               mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
-            - name: genesis-block
-              mountPath: /etc/hyperledger/channel-artifacts
+            - name: fabric-core-yaml
+              mountPath: /etc/hyperledger/fabric
+            - name: external-builders
+              mountPath: /external-builders/bin
 
           image: >-
             {{ tpl .Values.images.peer . }}
-{{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+          {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
+                name: common
+            - configMapRef:
                 name: peer
-{{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
+          {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           env:
-{{/*            - name: DB_PASSWORD*/}}
-{{/*              valueFrom:*/}}
-{{/*                secretKeyRef:*/}}
-{{/*                  name: db-password*/}}
-{{/*                  key: password*/}}
+            {{/*            - name: DB_PASSWORD*/}}
+            {{/*              valueFrom:*/}}
+            {{/*                secretKeyRef:*/}}
+            {{/*                  name: db-password*/}}
+            {{/*                  key: password*/}}
             - name: ORDERER_POSTGRESLEDGER_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
 
@@ -127,13 +95,13 @@ spec:
               value: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/msp
 
 
-#          resources:
-#            limits:
-#              cpu: ${CPULIMIT}
-#              memory: ${MEMORYLIMIT}
-#            requests:
-#              cpu: ${CPUREQUEST}
-#              memory: ${MEMORYREQUEST}
+          #          resources:
+          #            limits:
+          #              cpu: ${CPULIMIT}
+          #              memory: ${MEMORYLIMIT}
+          #            requests:
+          #              cpu: ${CPUREQUEST}
+          #              memory: ${MEMORYREQUEST}
           #              readinessProbe:
           #                httpGet:
           #                  path: /health/check

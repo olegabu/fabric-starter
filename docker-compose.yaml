@@ -204,13 +204,13 @@ services:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
-    command: sh -c "sed  -i 's/\(\s*\)externalBuilders.*/\1externalBuilders:\ \[{\"path\":\"\/external\",\"name\":\"remote\",\"propagateEnvironment\":[\"CORE_PEER_ADDRESS\",\"ORG\",\"DOMAIN\",\"SDK_API_URL\"]}\]/' /etc/hyperledger/fabric/core.yaml; peer node start"
+    command: sh -c "sed  -i 's/\(\s*\)externalBuilders.*/\1externalBuilders:\ \[{\"path\":\"\/external-builders\",\"name\":\"remote\",\"propagateEnvironment\":[\"CORE_PEER_ADDRESS\",\"ORG\",\"DOMAIN\",\"SDK_API_URL\"]}\]/' /etc/hyperledger/fabric/core.yaml; peer node start"
     volumes:
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
     - peer:/var/hyperledger/production/${PEER_NAME:-peer0}
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/docker.sock:/host/var/run/docker.sock
-    - ./external-builders:/external
+    - ./external-builders:/external-builders
 
 #  peer1:
 #    << : *peer-defaults

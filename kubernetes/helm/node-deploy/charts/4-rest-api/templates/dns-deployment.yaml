@@ -18,12 +18,71 @@ spec:
       labels:
         app: dns
     spec:
+      volumes:
+        - name: shared-vol
+          emptyDir:
+            medium: Memory
+
+        - name: dns-meta
+          configMap:
+            name: dns-meta-cm
+
+        - name: tool-scripts
+          configMap:
+            name: tool-scripts-cm
+            defaultMode: 0777
+
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
+
+      initContainers:
+        - name: init
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+
+          workingDir: /etc/hyperledger
+          command: ["./container-scripts/kscripts/init-dns.sh", "/tmp/dns-external" ]
+{{/*          command: ["sleep", "200000" ]*/}}
+          volumeMounts:
+            - name: shared-vol
+              mountPath: /tmp/sharedVol
+            - name: dns-meta
+              mountPath: /tmp/dns-external
+            - name: tool-scripts
+              mountPath: /etc/hyperledger/container-scripts/kscripts
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+
+          envFrom:
+            - configMapRef:
+                name: common
+
       containers:
         - name: dns
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
-
+          ports:
+            - name: chaincode-port
+              containerPort: 9999
+              protocol: TCP
           image: >-
-            {{ tpl .Values.images.fabric_starter_rest . }}
-          {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
-          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]
+            {{ tpl .Values.images.dns_chaincode . }}
+          #  ${IMAGE_PATH}@sha256:${IMAGE_TAG}
+
+          command: ["sh", "-c", "cat /tpm/sharedVol/dns.data; export PACKAGE_ID=`cat /tpm/sharedVol/dns.data`; npm start"]
+          volumeMounts:
+            - name: shared-vol
+              mountPath: /tmp/sharedVol
+          env:
+            - name: EXTERNAL
+              value: "true"
+            - name: ADDRESS
+              value: 0.0.0.0:9999
+
+

@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: peer0
+  name: {{ .Values.peerName }}
   namespace:  {{ .Values.NAMESPACE }}
 spec:
   ports:

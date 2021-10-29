@@ -5,11 +5,11 @@ metadata:
 data:
   ORG: {{ .Values.org }}
   DOMAIN: {{ .Values.domain }}
-
-{{/*  MY_IP: {{ .Values.myIp | default "" }}*/}}
-{{/*  BOOTSTRAP_IP: {{ .Values.bootstrapIp | default "" }}*/}}
-
   ORDERER_NAME: {{ .Values.ORDERER_NAME | default "orderer"  }}
+  FABRIC_VERSION: {{ .Values.FABRIC_VERSION }}
+  {{/*  MY_IP: {{ .Values.myIp | default "" }}*/}}
+  {{/*  BOOTSTRAP_IP: {{ .Values.bootstrapIp | default "" }}*/}}
+
 
   CORE_PEER_ID: {{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}
   CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:7052
@@ -19,7 +19,13 @@ data:
 
   CRYPTO_CONFIG_DIR: /etc/hyperledger/crypto-config
   CORE_PEER_LOCALMSPID: {{ .Values.org }}
-  CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@${{ .Values.org }}.{{ .Values.domain }}/msp
+
+  CORE_PEER_TLS_ENABLED: "true"
+  CORE_PEER_TLS_CERT_FILE: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/tls/server.crt
+  CORE_PEER_TLS_KEY_FILE: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/tls/server.key
+  CORE_PEER_TLS_ROOTCERT_FILE: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/tls/ca.crt
+  CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp
+
   ENROLL_ID: admin
   ENROLL_SECRET: adminpw
   {{/*  BOOTSTRAP_EXTERNAL_PORT: */}}
