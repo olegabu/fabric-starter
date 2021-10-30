@@ -10,6 +10,7 @@ orderer_name: orderer
 
 FABRIC_VERSION: 2.3.3
 
+enroll_secret: adminpw
 
 images:
   fabric_tools_extended: olegabu/fabric-tools-extended:2x

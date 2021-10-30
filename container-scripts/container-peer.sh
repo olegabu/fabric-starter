@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 BASEDIR=$(dirname "$0")
-mkdir -p crypto-config/ca/ crypto-config/tls/
+mkdir -p crypto-config/ca/ crypto-config/tls/ crypto-config/node-certs/
 touch "crypto-config/ca/fabric-ca-server-config-$ORG.yaml" # macOS workaround
 touch "crypto-config/tls/fabric-ca-server-config-$ORG.yaml"
 
@@ -105,7 +105,7 @@ function generateHostsFileIfNotExists() {
         local ORDERER_IP=${MASTER_IP:-${BOOTSTRAP_IP}}
         if [[ -n "$ORDERER_IP" && "$ORDERER_IP" != "$MY_IP" ]]; then
             echo "Generating crypto-config/hosts"
-            echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${ORDERER_IP}\t${ORDERER_NAME}.${ORDERER_DOMAIN} www.${ORDERER_DOMAIN} " >> crypto-config/hosts
+            echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${ORDERER_IP}\t${ORDERER_NAME}.${DOMAIN} www.${DOMAIN} " >> crypto-config/hosts
             if [ -n "$BOOTSTRAP_ORG" ]; then
                 set -x
                 echo " ${PEER_NAME:-peer0}.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts

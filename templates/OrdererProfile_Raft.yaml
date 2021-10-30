@@ -40,8 +40,14 @@
             Type: ImplicitMeta
             Rule: "ANY Writers"
 
-
+      Application:
+        <<: *ApplicationDefaults
+        Organizations:
+          - <<: *firstOrg
+            Policies:
+              <<: *OrgPolicies
       Consortiums:
         SampleConsortium:
           Organizations:
+             - <<: *firstOrg
     #            - *OrdererOrg

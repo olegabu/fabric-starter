@@ -60,7 +60,7 @@ services:
     restart: always
     image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-latest}
     environment:
-      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+      - FABRIC_LOGGING_SPEC=${FABRIC_LOGGING_SPEC:-orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}/genesis.pb
@@ -79,7 +79,7 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
     working_dir: /etc/hyperledger
-    command: orderer
+    command: sh -c "sleep 2 && orderer"
     depends_on:
       - pre-install
     logging:

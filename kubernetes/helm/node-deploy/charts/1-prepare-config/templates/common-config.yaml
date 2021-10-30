@@ -27,7 +27,7 @@ data:
   CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp
 
   ENROLL_ID: admin
-  ENROLL_SECRET: adminpw
+  ENROLL_SECRET: {{ .Values.enroll_secret }}
   {{/*  BOOTSTRAP_EXTERNAL_PORT: */}}
 
 
@@ -51,3 +51,5 @@ data:
 #      fabric.cfg.path: '$BASE_DIR/hlf/config'
 
   EXTERNAL_CHAINCODE_ADDRESS: cnft-chaincode.{{ .Values.NAMESPACE }}:3737
+
+  CRYPTO_ALGORITHM: {{ "SW" | default .Values.cryptoAlgorithm }}

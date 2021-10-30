@@ -24,13 +24,26 @@ Organizations:
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}
-        MSPDir: peerOrganizations/${ORG}.${DOMAIN}/msp
+        MSPDir: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp
         AnchorPeers:
         # AnchorPeers defines the location of peers which can be used
         # for cross org gossip communication.  Note, this value is only
         # encoded in the genesis block in the Application section context
         - Host: peer0.${ORG}.${DOMAIN}
           Port: ${PEER0_PORT}
+        Policies: &OrgPolicies
+          Readers:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
+          Writers:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
+          Admins:
+            Type: Signature
+            Rule: "OR('${ORG}.admin')"
+          Endorsement:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
 
 Capabilities:
 #  Global: &ChannelCapabilities
