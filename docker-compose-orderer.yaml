@@ -79,7 +79,7 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
     working_dir: /etc/hyperledger
-    command: sh -c "sleep 2 && orderer"
+    command: sh -c "sleep 3 && orderer"
     depends_on:
       - pre-install
     logging:

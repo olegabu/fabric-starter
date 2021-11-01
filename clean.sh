@@ -9,7 +9,7 @@ minikubeContainerId=`runningDockerContainer minikube`
 if [ -z "$localRegistryStarted" ]; then
     docker rm -f $(docker ps -aq)
 else
-    echo "localRegistryStarted=$localRegistryStarted"
+    echo "localRegistryStarted=${localRegistryStarted}, minikube=${minikubeContainerId}"
 
     killContainers=`docker ps -aq | sed -e "s/${localRegistryStarted}/ /" `
     if [ -n "$minikubeContainerId" ]; then

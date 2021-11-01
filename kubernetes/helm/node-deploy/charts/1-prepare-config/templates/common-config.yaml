@@ -53,3 +53,5 @@ data:
   EXTERNAL_CHAINCODE_ADDRESS: cnft-chaincode.{{ .Values.NAMESPACE }}:3737
 
   CRYPTO_ALGORITHM: {{ "SW" | default .Values.cryptoAlgorithm }}
+
+  TMP_DIR: {{ .Values.tmpDir }}

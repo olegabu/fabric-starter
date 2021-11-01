@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source $BASEDIR/../lib/container-lib.sh
+source ././../../../../../../container-scripts/lib/container-lib.sh # fro IDE autocomplete
 
+env|sort
+createChannel common
+
+exit
 
 chaincodePath=${1:?Path to chaincode is requried}
 

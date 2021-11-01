@@ -25,6 +25,7 @@ fi
 : ${RAFT0_PORT:=7050}
 : ${RAFT1_PORT:=7150}
 : ${RAFT2_PORT:=7250}
+: ${ORDERER_BATCH_TIMEOUT:=5}
 
 : ${WGET_OPTS:=}
 set -x
@@ -40,9 +41,10 @@ else
     export BASE64_WRAP_OPT='-w'
 fi
 
-export ORG DOMAIN SYSTEM_CHANNEL_ID
-: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
-: ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
+export ORG DOMAIN SYSTEM_CHANNEL_ID ORDERER_DOMAIN ORDERER_BATCH_TIMEOUT
+#: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
+: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
+: ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile ${ORDERER_GENERAL_TLS_ROOTCERT_FILE}"}
 : ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
@@ -236,9 +238,10 @@ function createChannel() {
     local channelName=${1:?Channel name must be specified}
     echo -e "\nCreate channel $ORG $channelName"
 #    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} #${ORDERER_WWW_PORT}
+    set -x
     mkdir -p ${GENERATE_DIR}/configtx
     envsubst < "templates/configtx-template.yaml" > "${GENERATE_DIR}/configtx.yaml"
-    set -x
+    cat ${GENERATE_DIR}/configtx.yaml
 
     configtxgen -configPath ${GENERATE_DIR}/ -outputCreateChannelTx ${GENERATE_DIR}/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f ${GENERATE_DIR}/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}

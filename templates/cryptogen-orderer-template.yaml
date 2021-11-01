@@ -7,7 +7,7 @@ PeerOrgs:
       Hostname: ca # implicitly ca.ORG.example.com
 
     Template:
-      Count: 2
+      Count: 1
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
       SANS:

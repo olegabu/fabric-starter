@@ -12,6 +12,10 @@ FABRIC_VERSION: 2.3.3
 
 enroll_secret: adminpw
 
+genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
+
+tmpDir: /tmp
+
 images:
   fabric_tools_extended: olegabu/fabric-tools-extended:2x
   fabric_starter_rest: olegabu/fabric-starter-rest:2x
@@ -26,7 +30,6 @@ common:
     - name: DOMAIN
       value: *domain
 
-genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
 
 orderer:
   certificatePathes:

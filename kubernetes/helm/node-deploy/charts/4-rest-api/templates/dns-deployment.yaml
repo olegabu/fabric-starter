@@ -47,7 +47,7 @@ spec:
             {{ tpl .Values.images.fabric_tools_extended . }}
 
           workingDir: /etc/hyperledger
-          command: ["./container-scripts/kscripts/init-dns.sh", "/tmp/dns-external" ]
+          command: ["./container-scripts/k-scripts/init-dns.sh", "/tmp/dns-external" ]
 {{/*          command: ["sleep", "200000" ]*/}}
           volumeMounts:
             - name: shared-vol
