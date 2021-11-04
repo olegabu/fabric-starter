@@ -14,7 +14,7 @@ Organizations:
         # AnchorPeers defines the location of peers which can be used
         # for cross org gossip communication.  Note, this value is only
         # encoded in the genesis block in the Application section context
-        - Host: peer0.${ORG}.${DOMAIN}
+        - Host: peer0-${ORG}.${DOMAIN}
           Port: ${PEER0_PORT}
         Policies: &OrgPolicies
           Readers:
@@ -256,8 +256,10 @@ Profiles:
               Endorsement:
 #                Type: ImplicitMeta
 #                Rule: "MAJORITY Writers"
-                Type: Signature
-                Rule: "OutOf('1','${ORG}.member')"
+#                Type: Signature
+#                Rule: "OutOf('1','${ORG}.member')"
+                 Type: ImplicitMeta
+                 Rule: "ANY Writers"
               Readers:
                 Type: ImplicitMeta
                 Rule: "ANY Readers"

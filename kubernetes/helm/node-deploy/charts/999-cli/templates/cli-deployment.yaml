@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cli-deployment
+  labels:
+    app: dns
+    name: dns
+spec:
+  selector:
+    matchLabels:
+      app: dns
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      #          annotations:
+      #            sidecar.istio.io/inject: "true"
+      creationTimestamp: null
+      labels:
+        app: dns
+    spec:
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
+
+      containers:
+        - name: cli
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+
+          workingDir: /etc/hyperledger
+          command: ["sleep", "200000" ]
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+
+          envFrom:
+            - configMapRef:
+                name: common
+
+
+

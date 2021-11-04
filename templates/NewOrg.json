@@ -98,7 +98,7 @@
             "value": {
               "anchor_peers": [
                 {
-                  "host": "peer0.${NEWORG}.${DOMAIN}",
+                  "host": "peer0-${NEWORG}.${DOMAIN}",
                   "port": "${NEWORG_PEER0_PORT}"
                 }
               ]

@@ -1,11 +1,15 @@
 NAMESPACE: &namespace default
+logLevel: INFO # DEBUG
 
 org: &org org1
+peerName: peer0
 domain: &domain default
 #bootstrapIp: ''
 #myIp: ""
+authMode: ADMIN
 
-peerName: peer0
+peerOrgName: "{{ .Values.peerName }}-{{ .Values.org }}"
+
 orderer_name: orderer
 
 FABRIC_VERSION: 2.3.3
@@ -22,6 +26,8 @@ images:
   dns_chaincode: olegabu/dns-chaincode:2x
   orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
   peer: hyperledger/fabric-peer:{{ .Values.FABRIC_VERSION }}
+
+peer0Port: 7051
 
 common:
   env:

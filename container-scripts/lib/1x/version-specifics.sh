@@ -14,14 +14,14 @@ function installChaincode {
     local chaincodeVersion=${4:-1.0}
 
     echo "Install chaincode 1.x $chaincodeName  $chaincodePath $lang $chaincodeVersion"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
 }
 
 function installChaincodePackage() {
     local chaincodeName=${1:?Chaincode package must be specified}
 
     echo "Install chaincode package $chaincodeName"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode install $chaincodeName
 }
 
 
@@ -41,6 +41,6 @@ function initChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" -P \"${endorsementPolicy}\""
 
     echo "Instantiate chaincode $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode ${operation} -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode ${operation} -n $chaincodeName -v ${chaincodeVersion} -c "${arguments}" -o ${ORDERER_ADDRESS} -C $channelName ${ORDERER_TLSCA_CERT_OPTS} $privateCollectionParam $endorsementPolicyParam
 }
 

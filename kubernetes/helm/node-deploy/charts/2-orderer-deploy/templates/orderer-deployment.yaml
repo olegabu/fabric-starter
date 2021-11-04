@@ -50,6 +50,8 @@ spec:
 {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
+                name: common
+            - configMapRef:
                 name: orderer
 {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           env:

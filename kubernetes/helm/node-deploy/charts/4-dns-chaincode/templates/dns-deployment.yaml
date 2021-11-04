@@ -20,8 +20,8 @@ spec:
     spec:
       volumes:
         - name: shared-vol
-          emptyDir:
-            medium: Memory
+          emptyDir: {}
+            #medium: Memory
 
         - name: dns-meta
           configMap:
@@ -41,6 +41,8 @@ spec:
                   {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
                   {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
 
+      {{ $sharedDir := "/tmp/sharedVol" }}
+      {{ $dnsEnvFile := print $sharedDir "/dns.env" }}
       initContainers:
         - name: init
           image: >-
@@ -48,10 +50,12 @@ spec:
 
           workingDir: /etc/hyperledger
           command: ["./container-scripts/k-scripts/init-dns.sh", "/tmp/dns-external" ]
+{{/*          command: ["sh", "-c", "./container-scripts/k-scripts/init-dns.sh /tmp/dns-external; sleep 200000" ]*/}}
 {{/*          command: ["sleep", "200000" ]*/}}
           volumeMounts:
             - name: shared-vol
-              mountPath: /tmp/sharedVol
+              mountPath: {{ $sharedDir }}
+              readOnly: false
             - name: dns-meta
               mountPath: /tmp/dns-external
             - name: tool-scripts
@@ -62,6 +66,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: common
+          env:
+            - name: CHAINCODE_ENV_FILE
+              value: "{{ $dnsEnvFile }}"
 
       containers:
         - name: dns
@@ -75,14 +82,17 @@ spec:
             {{ tpl .Values.images.dns_chaincode . }}
           #  ${IMAGE_PATH}@sha256:${IMAGE_TAG}
 
-          command: ["sh", "-c", "cat /tpm/sharedVol/dns.data; export PACKAGE_ID=`cat /tpm/sharedVol/dns.data`; npm start"]
+          command: ["npm", "start"]
           volumeMounts:
             - name: shared-vol
-              mountPath: /tmp/sharedVol
+              mountPath: {{ $sharedDir }}
+              readOnly: false
           env:
             - name: EXTERNAL
               value: "true"
-            - name: ADDRESS
+            - name: CHAINCODE_ENV_FILE
+              value: "{{ $dnsEnvFile }}"
+            - name: CHAINCODE_BIND_ADDRESS
               value: 0.0.0.0:9999
 
 

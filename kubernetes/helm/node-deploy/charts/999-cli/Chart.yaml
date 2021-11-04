@@ -1,5 +1,5 @@
 apiVersion: v2
-name: 4-rest-api
+name: 999-cli
 description: Fabric-starter orderer crypto\config generate helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.

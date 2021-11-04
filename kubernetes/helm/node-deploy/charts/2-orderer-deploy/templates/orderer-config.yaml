@@ -16,13 +16,11 @@ data:
   DB_USERNAME: dfa_tech_account
   DFA_INTEGRATION_JAVA_TOOL_OPTIONS: '-XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=95.0  -Dfile.encoding=UTF-8'
 
-  FABRIC_LOGGING_SPEC: 'INFO'
   ORDERER_GENERAL_LISTENADDRESS: '0.0.0.0'
-  ORDERER_GENERAL_LISTENPORT: '7050'
+  # ORDERER_GENERAL_LISTENPORT: '7050' # from common-cm
   ORDERER_GENERAL_GENESISMETHOD: 'file'
-  ORDERER_GENERAL_GENESISFILE: '/etc/hyperledger/channel-artifacts/genesis.block'
-  ORDERER_GENERAL_LOCALMSPID: 'OrdererMSP'
-  ORDERER_GENERAL_TLS_ENABLED: 'true'
+#  ORDERER_GENERAL_GENESISFILE: '/etc/hyperledger/channel-artifacts/genesis.block'
+  ORDERER_GENERAL_BOOTSTRAPFILE: '/etc/hyperledger/channel-artifacts/genesis.block'
 
 #      fabric.cfg.path: '$BASE_DIR/hlf/config'
 #      orderer.consensus.snapdir: '$BASE_DIR/persistence/orderer/etcdraft/snapshot'

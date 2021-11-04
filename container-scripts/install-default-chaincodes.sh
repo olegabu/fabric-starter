@@ -4,7 +4,7 @@ BASEDIR=$(dirname "$0")
 source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
 
-${BASEDIR}/wait-for-ip-port.sh ${PEER_NAME}.${ORG}.${DOMAIN} ${PEER0_PORT}
+${BASEDIR}/wait-for-ip-port.sh ${PEER_NAME}-${ORG}.${DOMAIN} ${PEER0_PORT}
 tree /etc/hyperledger/crypto-config/peerOrganizations/
 
 echo -e "\n\nInstall DNS chaincode\n\n"

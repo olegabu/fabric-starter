@@ -55,7 +55,7 @@ PeerOrgs:
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
       SANS:
-        - "${PEER_NAME}.${DOMAIN}"
+        - "${PEER_NAME}-${ORG}.${DOMAIN}"
         - "localhost"
 
     # ---------------------------------------------------------------------------

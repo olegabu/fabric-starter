@@ -2,6 +2,7 @@
 [ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0) #extract script's dir
 
 source ${LIBDIR}/container-util.sh
+source ./container-util.sh # IDE autocompletion
 
 FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
 FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
@@ -236,14 +237,16 @@ function updateAnchorPeers() {
 
 function createChannel() {
     local channelName=${1:?Channel name must be specified}
-    echo -e "\nCreate channel $ORG $channelName"
+    printYellow "\nCreate channel $ORG $channelName\n"
 #    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} #${ORDERER_WWW_PORT}
     set -x
     mkdir -p ${GENERATE_DIR}/configtx
     envsubst < "templates/configtx-template.yaml" > "${GENERATE_DIR}/configtx.yaml"
     cat ${GENERATE_DIR}/configtx.yaml
 
+    printYellow "\n configtxgen \n"
     configtxgen -configPath ${GENERATE_DIR}/ -outputCreateChannelTx ${GENERATE_DIR}/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+    printYellow "\n peer channel create \n"
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f ${GENERATE_DIR}/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
     set +x
     updateAnchorPeers "$ORG" "$channelName"
@@ -266,7 +269,7 @@ function joinChannel() {
 
     echo "Join $ORG to channel $channel"
     fetchChannelConfigBlock $channel "0"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
 }
 
 function createChaincodePackage() {
@@ -277,7 +280,7 @@ function createChaincodePackage() {
     local chaincodePackageName=${5:?Chaincode PackageName must be specified}
 
     echo "Packaging chaincode $chaincodePath to $chaincodeName"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
 }
 
 #function installChaincodePackage() {
@@ -337,8 +340,8 @@ function callChaincode() {
     local arguments="{\"Args\":$arguments}"
     local action=${4:-query}
     local peerPort=${5:-7051}
-    echo "CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
+    echo "CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

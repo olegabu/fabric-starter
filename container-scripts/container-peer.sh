@@ -108,7 +108,7 @@ function generateHostsFileIfNotExists() {
             echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${ORDERER_IP}\t${ORDERER_NAME}.${DOMAIN} www.${DOMAIN} " >> crypto-config/hosts
             if [ -n "$BOOTSTRAP_ORG" ]; then
                 set -x
-                echo " ${PEER_NAME:-peer0}.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
+                echo " ${PEER_NAME:-peer0}-${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
                 set +x
             else
                 echo " " >> crypto-config/hosts

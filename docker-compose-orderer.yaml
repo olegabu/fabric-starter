@@ -19,6 +19,7 @@ services:
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_NAMES
       - CONSENTER_ID
+      - PEER_NAME=${PEER_NAME:-peer0}
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN

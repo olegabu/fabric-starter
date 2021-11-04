@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: peer-deployment
+  name: rest-api-deployment
   labels:
-    app: peer
-    name: peer
+    app: rest-api
+    name: rest-api
 spec:
   selector:
     matchLabels:
-      app: peer
+      app: rest-api
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: peer
+        app: rest-api
     spec:
       volumes:
         - name: certs
@@ -25,52 +25,42 @@ spec:
               - secret:
                   name: certs-{{ .Values.org }}
                   items:
-                  {{- include "certificates.decode" (merge (deepCopy .) .Values.peer) | nindent 12 }}
-
-        - name: fabric-core-yaml
-          configMap:
-            name: fabric-core-yaml-cm
-
-        - name: external-builders
-          configMap:
-            name: external-builers-cm
-            defaultMode: 0777
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
 
       containers:
-        - name: peer
+        - name: rest
           ports:
-            - name: peer-port
-              containerPort: 7051
+            - name: rest-api-port
+              containerPort: 3000
               protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
           volumeMounts:
             - name: certs
               mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
-            - name: fabric-core-yaml
-              mountPath: /etc/hyperledger/fabric
-            - name: external-builders
-              mountPath: /external-builders/bin
 
           image: >-
-            {{ tpl .Values.images.peer . }}
-          {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+            {{ tpl .Values.images.fabric_starter_rest . }}
+{{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+
+          {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
+          command: ["npm", "start"]
+
           envFrom:
             - configMapRef:
                 name: common
             - configMapRef:
-                name: peer
-          {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
+                name: rest-cm
 
 
-
-          #          resources:
-          #            limits:
-          #              cpu: ${CPULIMIT}
-          #              memory: ${MEMORYLIMIT}
-          #            requests:
-          #              cpu: ${CPUREQUEST}
-          #              memory: ${MEMORYREQUEST}
+#          resources:
+#            limits:
+#              cpu: ${CPULIMIT}
+#              memory: ${MEMORYLIMIT}
+#            requests:
+#              cpu: ${CPUREQUEST}
+#              memory: ${MEMORYREQUEST}
           #              readinessProbe:
           #                httpGet:
           #                  path: /health/check

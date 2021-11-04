@@ -48,7 +48,7 @@ function approveChaincode() {
     local CC_PACKAGE_ID=`peer lifecycle chaincode queryinstalled | grep $CC_LABEL`
     CC_PACKAGE_ID=${CC_PACKAGE_ID#*: }
     CC_PACKAGE_ID=${CC_PACKAGE_ID%,*}
-    printYellow  "Approving chaincode: $CC_PACKAGE_ID"
+    printYellow  "\n Approving chaincode: $CC_PACKAGE_ID \n"
 
     set -x
     local SEQUENCE=`peer lifecycle chaincode queryapproved --channelID ${channelName} --name ${chaincodeName} | grep "$CC_PACKAGE_ID"`
@@ -71,7 +71,7 @@ function commitChaincode() {
     local initArguments=${6:-[]}
     local arguments="{\"Args\":$initArguments}"
 
-    printYellow  "Committing chaincode: $chaincodeName_$chaincodeVersion on channel: $channelName"
+    printYellow  "\n Committing chaincode: $chaincodeName_$chaincodeVersion on channel: $channelName \n"
 
     if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
     [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config ${privateCollectionPath}"

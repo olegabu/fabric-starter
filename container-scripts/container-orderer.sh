@@ -124,7 +124,7 @@ function writeConfigtxOrgConfig() {
     - &${aliasName}
         Name: $ordererName
         ID: $ordererName.$ordererDomain
-        MSPDir: ordererOrganizations/${ordererDomain}/msp
+        MSPDir: /etc/hyperledger/crypto-config/ordererOrganizations/${ordererDomain}/msp
         Policies:
             Readers:
                 Type: Signature
