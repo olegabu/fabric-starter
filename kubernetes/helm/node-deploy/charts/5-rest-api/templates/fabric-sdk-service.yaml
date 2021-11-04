@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: fabric-sdk
+  namespace:  {{ .Values.NAMESPACE }}
+spec:
+  ports:
+    - name: sdk-port
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: fabric-sdk

@@ -21,11 +21,12 @@ genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
 tmpDir: /tmp
 
 images:
+  orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
+  peer: hyperledger/fabric-peer:{{ .Values.FABRIC_VERSION }}
   fabric_tools_extended: olegabu/fabric-tools-extended:2x
   fabric_starter_rest: olegabu/fabric-starter-rest:2x
   dns_chaincode: olegabu/dns-chaincode:2x
-  orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
-  peer: hyperledger/fabric-peer:{{ .Values.FABRIC_VERSION }}
+  fabric_sdk: olegabu/fabric-sdk-api:2x
 
 peer0Port: 7051
 
