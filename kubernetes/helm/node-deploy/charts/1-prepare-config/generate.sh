@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 source ./env
-: ${ORG:=$1}
+ORG=${1:-$ORG}
+DOMAIN=${2:-$DOMAIN}
+
+echo -e "\n ---------------------- GENERATE CRYPTO, GENESIS FOR: $ORG.$DOMAIN ---------------------------------- \n"
+
 : ${RAFT_NODES_COUNT:=1}
 FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME:-../../../../..}
 
