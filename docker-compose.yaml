@@ -315,6 +315,7 @@ services:
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
       - ORG=${ORG-org1}
+      - PEER_NAME=${PEER_NAME:-peer0}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
@@ -358,7 +359,7 @@ services:
       - DOCKER_COMPOSE_EXTRA_ARGS
       - SDK_API_URL
       - TMP_DIR
-      - PEER_ADDRESS_TEMPLATE
+      - PEER_ADDRESS_TEMPLATE=$${PEER_NAME}-$${ORG}.$${DOMAIN}
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
