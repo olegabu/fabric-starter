@@ -5,4 +5,4 @@ metadata:
 data:
   AUTH_MODE: {{ .Values.authMode }}
   PEER_ADDRESS_TEMPLATE: "${PEER_NAME}-${ORG}.${DOMAIN}"
-  SDK_API_URL: "fabric-sdk.{{ .Values.domain }}:8080"
+  SDK_API_URL: "http://fabric-sdk.{{ .Values.domain }}:8080"
