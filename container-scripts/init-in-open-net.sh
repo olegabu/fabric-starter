@@ -27,13 +27,13 @@ export ORDERER_DOMAIN ORDERER_NAME ORDERER_NAMES ORDERER_WWW_PORT
 env|sort
 
 function main() {
-    env|sort
-    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} #${ORDERER_WWW_PORT}
 #    addMeToConsortiumIfOrdererExists
-    if [[ ! ${DNS_CHANNEL} ]]; then
-        printYellow "\nDNS_CHANNEL is set to empty. Skipping joining."
+    if [[ ! ${CHANNEL_AUTO_JOIN} ]]; then
+        printYellow "\nCHANNEL_AUTO_JOIN is set to empty. Skipping joining."
         exit
     fi
+    env|sort
+    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} #${ORDERER_WWW_PORT}
     createServiceChannel ${DNS_CHANNEL}
     createResult=$?
     requestInviteToServiceChannel ${createResult} ${DNS_CHANNEL} #todo
@@ -103,15 +103,15 @@ function requestInviteToServiceChannel() {
        local curlResult=$?
        set +x
        echo "Curl result: $curlResult"
-    else #TODO: should'n go here if no AUTO_JOIN
-        if [[ -n "$BOOTSTRAP_IP" ]]; then
-            set -x
-            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${MASTER_IP:-${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/dns/org \
-                 -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerName\":\"${cfg.peerName}\", \"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\",\"peerName\":\"${PEER_NAME}\"}"
-            local curlResult=$?
-            set +x
-            echo "Curl result: $curlResult"
-        fi
+#    else #TODO: should'n go here if no AUTO_JOIN
+#        if [[ -n "$BOOTSTRAP_IP" ]]; then
+#            set -x
+#            curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${MASTER_IP:-${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/dns/org \
+#                 -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\",\"peerName\":\"${PEER_NAME}\",\"peerName\":\"${PEER_NAME}\"}"
+#            local curlResult=$?
+#            set +x
+#            echo "Curl result: $curlResult"
+#        fi
     fi
 }
 

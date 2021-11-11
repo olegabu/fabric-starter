@@ -2,7 +2,7 @@
 [ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0) #extract script's dir
 
 source ${LIBDIR}/container-util.sh
-source ./container-util.sh # IDE autocompletion
+source ./container-util.sh 2>/dev/null # IDE autocompletion
 
 FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
 FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
