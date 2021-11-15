@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cli-deployment
+  name: cli-deployment-{{ .Values.org }}
   labels:
     app: dns
     name: dns
 spec:
   selector:
     matchLabels:
-      app: dns
+      app: cli-{{ .Values.org }}
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: dns
+        app: cli-{{ .Values.org }}
     spec:
       volumes:
         - name: certs
@@ -41,7 +41,7 @@ spec:
 
           envFrom:
             - configMapRef:
-                name: common
+                name: common-{{ .Values.org }}
 
 
 

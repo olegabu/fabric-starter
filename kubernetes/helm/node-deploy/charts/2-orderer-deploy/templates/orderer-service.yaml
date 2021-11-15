@@ -10,4 +10,4 @@ spec:
       port: 7050
       targetPort: 7050
   selector:
-    app: orderer
+    app: orderer-{{ .Values.org }}

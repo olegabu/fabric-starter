@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orderer-deployment
+  name: orderer-deployment-{{ .Values.org }}
   labels:
-    app: orderer
-    name: orderer
+    app: orderer-{{ .Values.org }}
+    name: orderer-{{ .Values.org }}
 spec:
   selector:
     matchLabels:
-      app: orderer
+      app: orderer-{{ .Values.org }}
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: orderer
+        app: orderer-{{ .Values.org }}
     spec:
       volumes:
         - name: genesis-block
@@ -50,9 +50,9 @@ spec:
 {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
-                name: common
+                name: common-{{ .Values.org }}
             - configMapRef:
-                name: orderer
+                name: orderer-{{ .Values.org }}
 {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           env:
 {{/*            - name: DB_PASSWORD*/}}

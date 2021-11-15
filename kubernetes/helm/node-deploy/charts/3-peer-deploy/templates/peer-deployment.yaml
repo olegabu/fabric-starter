@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: peer-deployment
+  name: peer-deployment-{{ .Values.org }}
   labels:
-    app: peer
-    name: peer
+    app: peer-{{ .Values.org }}
+    name: peer-{{ .Values.org }}
 spec:
   selector:
     matchLabels:
-      app: peer
+      app: peer-{{ .Values.org }}
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: peer
+        app: peer-{{ .Values.org }}
     spec:
       volumes:
         - name: certs
@@ -57,9 +57,9 @@ spec:
           {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
-                name: common
+                name: common-{{ .Values.org }}
             - configMapRef:
-                name: peer
+                name: peer-{{ .Values.org }}
           {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
 
 

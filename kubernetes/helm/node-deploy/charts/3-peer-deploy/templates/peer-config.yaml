@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: peer
+  name: peer-{{ .Values.org }}
 data:
   ORG: {{ .Values.org }}
   DOMAIN: {{ .Values.domain }}

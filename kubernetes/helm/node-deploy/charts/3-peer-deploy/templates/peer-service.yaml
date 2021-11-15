@@ -14,4 +14,4 @@ spec:
       port: 7052
       targetPort: 7052
   selector:
-    app: peer
+    app: peer-{{ .Values.org }}
