@@ -10,7 +10,7 @@ authMode: ADMIN
 
 peerOrgName: "{{ .Values.peerName }}-{{ .Values.org }}"
 
-orderer_name: orderer
+ordererName: orderer
 
 FABRIC_VERSION: 2.3.3
 
@@ -40,40 +40,56 @@ common:
 
 orderer:
   certificatePathes:
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/ca
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/msp/admincerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/msp/cacerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/msp/tlscacerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/msp
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/msp/admincerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/msp/cacerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/msp/keystore
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/msp/signcerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/msp/tlscacerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.orderer_name }}.{{ .Values.domain }}/tls
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/tlsca
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/admincerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/cacerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/keystore
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/signcerts
-    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/tlscacerts
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/ca/ca.{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/ca/priv_sk
+
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/msp/admincerts/Admin@{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/msp/cacerts/ca.{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/msp/tlscacerts/tlsca.{{ .Values.domain }}-cert.pem
+
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/msp/admincerts/Admin@{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/msp/cacerts/ca.{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/msp/keystore/priv_sk
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/msp/signcerts/{{ .Values.ordererName }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/msp/tlscacerts/tlsca.{{ .Values.domain }}-cert.pem
+
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/tls/ca.crt
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/tls/server.crt
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ .Values.ordererName }}.{{ .Values.domain }}/tls/server.key
+
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/tlsca/tlsca.{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/tlsca/priv_sk
+
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/admincerts/Admin@{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/cacerts/ca.{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/keystore/priv_sk
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/signcerts/Admin@{{ .Values.domain }}-cert.pem
+    - crypto-config/ordererOrganizations/{{ .Values.domain }}/users/Admin@{{ .Values.domain }}/msp/tlscacerts/tlsca.{{ .Values.domain }}-cert.pem
 
 peer:
   certificatePathes:
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/ca
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/keystore
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/signcerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/tls
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/tlsca
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/keystore
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/signcerts
-    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/ca/ca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/ca/priv_sk
+
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts/Admin@{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts/ca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts/tlsca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts/Admin@{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts/ca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/keystore/priv_sk
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/signcerts/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts/tlsca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/tls/ca.crt
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/tls/server.crt
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/{{ .Values.peerName }}.{{ .Values.org }}.{{ .Values.domain }}/tls/server.key
+
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/tlsca/tlsca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/tlsca/priv_sk
+
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/admincerts/Admin@{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/cacerts/ca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/keystore/priv_sk
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/signcerts/Admin@{{ .Values.org }}.{{ .Values.domain }}-cert.pem
+    - crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/users/Admin@{{ .Values.org }}.{{ .Values.domain }}/msp/tlscacerts/tlsca.{{ .Values.org }}.{{ .Values.domain }}-cert.pem
