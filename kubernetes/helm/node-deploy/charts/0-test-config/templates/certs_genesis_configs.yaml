@@ -42,7 +42,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: common
+  name: common-org1
 data:
   ORG: org1
   DOMAIN: default
