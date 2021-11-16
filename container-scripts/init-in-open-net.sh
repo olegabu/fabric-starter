@@ -90,7 +90,7 @@ function requestInviteToServiceChannel() {
     local creationResult=${1:?Channel Creation result is required}
     local serviceChannel=${2:?Service channel name is required}
 
-    ${BASEDIR}/wait-port.sh ${ORDERER_NAME}.${DOMAIN} ${ORDERER_GENERAL_LISTENPORT}
+    ${BASEDIR}/wait-port.sh ${ORDERER_NAME}.${ORDERER_DOMAIN} ${ORDERER_GENERAL_LISTENPORT}
     set -x
     sleep ${ORDERER_STARTING_PERIOD:-30} # TODO: orderer may have open port but not be operating yet
     set +x
