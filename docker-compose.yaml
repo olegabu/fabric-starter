@@ -400,6 +400,7 @@ services:
       - PEER0_PORT=${PEER0_PORT:-7051}
       - CRYPTO_CONFIG_DIR=${CRYPTO_CONFIG_DIR:-/etc/hyperledger/crypto-config}
       - TMP_DIR
+      - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}-${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     depends_on:
       - pre-install
     volumes:
