@@ -83,7 +83,7 @@ fi
 
 info "Create first organization ${ORG}"
 if [ "ORDERER_TYPE" != "RAFT" ]; then
-   export ORDERER_DOMAIN=${DOMAIN}
+   export ORDERER_DOMAIN=${ORDERER_DOMAIN:-${DOMAIN}}
 fi
 set -x
 docker-compose -f docker-compose-preload-images.yaml up -d
