@@ -6,7 +6,6 @@ export MY_IP=${MY_IP}
 export BOOTSTRAP_IP=${BOOTSTRAP_IP}
 export BOOTSTRAP_API_PORT=4000
 export BOOTSTRAP_ORG_DOMAIN=
-export BOOTSTRAP_SERVICE_URL=${BOOTSTRAP_SERVICE_URL:-https}
 #--------------------------------------------
 export ORDERER_TYPE=${ORDERER_TYPE:-RAFT1}
 export ORDERER_PORT=${ORDERER_PORT:-7050}
