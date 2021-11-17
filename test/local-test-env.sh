@@ -52,7 +52,6 @@ function setCurrentActiveOrg() {
     local org="${1:?Org name is required}"
     export ORG=${org}
     export PEER0_PORT=$(getContainerPort ${org} ${PEER_NAME} ${DOMAIN})
-
 }
 
 function connectOrgMachine() {
