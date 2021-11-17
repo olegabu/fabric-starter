@@ -22,16 +22,14 @@ main() {
       for org in ${orgs[@]}; do
            eval $(connectOrgMachine "${org}")
            env | grep DOCKER
-           #eval $(docker-machine env ${org}.${DOMAIN})
           ./clean.sh all
       done
       echo "Cleaned up"
 
       for org in ${orgs[@]}; do
-          #eval $(docker-machine env ${org}.${DOMAIN})
           eval $(connectOrgMachine "${org}")
           env | grep DOCKER
-          SKIP_CLEANING=true ./deploy.sh ${org}
+          NO_CLEAN=true ./deploy.sh ${org}
       done
     unsetActiveOrg
 
@@ -47,40 +45,22 @@ function envSubstWithDefualts() {
 
 
 function createOrgEnvFiles() {
-  local first_org
-  local bootstrap_ip_val
-  local bootstrap_api_port_val
-  local bootstrap_service_url
-  local orderer_type
-  local orderer_port
-  local orderer_www_port
-  local orderer_name
-  local api_port
-  local www_port
-  local ca_port
-  local peer0_port
-  local ldap_port_http
-  local ldap_port_https
-  local orderer_general_listenport
 
-
-  first_org=${1}
-  bootstrap_ip_val=$(getOrgIp "${first_org}")
-  bootstrap_api_port_val=4000
-  bootstrap_service_url='http'
-  orderer_type='SOLO'
-  orderer_port=7050
-  orderer_www_port=79
-  orderer_name='orderer'
-  api_port=4000
-  www_port=80
-  ca_port=7054
-  peer0_port=7051
-  ldap_port_http=6080
-  ldap_port_https=6433
-  orderer_general_listenport=7050
-
-
+  local first_org=${1}
+  local bootstrap_ip_val=$(getOrgIp "${first_org}")
+  local bootstrap_api_port_val=4000
+  local bootstrap_service_url='http'
+  local orderer_type='SOLO'
+  local orderer_port=7050
+  local orderer_www_port=79
+  local orderer_name='orderer'
+  local api_port=4000
+  local www_port=80
+  local ca_port=7054
+  local peer0_port=7051
+  local ldap_port_http=6080
+  local ldap_port_https=6433
+  local orderer_general_listenport=7050
 
   for org in ${@}; do
     local result
@@ -88,9 +68,7 @@ function createOrgEnvFiles() {
     local bootstrap_ip="${bootstrap_ip_val}"
     local bootstrap_api_port="${bootstrap_api_port_val}"
 
-    #if [[ "${DEPLOYMENT_TARGET}" == "vbox" ]]; then
-        fabric_starter_home=$(getFabricStarterHome "${org}")
-    #fi
+    fabric_starter_home=$(getFabricStarterHome "${org}")
 
     if [[ "${org}" == "${first_org}" ]]; then
         bootstrap_ip=''

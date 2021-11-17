@@ -38,7 +38,7 @@ source ${first_org}_env
 #export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
 
 
-if [ -z $SKIP_CLEANING ]; then
+if [ -z $NO_CLEAN ]; then
  info "Cleaning up"
 ./clean.sh all
 fi
