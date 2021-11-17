@@ -34,12 +34,14 @@ unset ORG COMPOSE_PROJECT_NAME
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-latest}
 
-source ${first_org}_env;
+source ${first_org}_env
 #export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`
 
-info "Cleaning up"
-./clean.sh all
 
+if [ -z $NO_CLEAN ]; then
+ info "Cleaning up"
+./clean.sh all
+fi
 # Create orderer organization
 
 docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}

@@ -645,6 +645,9 @@ function getCurrentChaincodeName() {
     echo ${CHAINCODE_PREFIX:-reference}
 }
 
+function getDockerGatewayAddress() {
+    echo $(docker network inspect bridge | jq -r '.[].IPAM.Config | .[].Gateway')
+}
 
 function getTestChaincodeName() {
     local channel=${1}
@@ -707,7 +710,7 @@ function verifyOrgIsInChannel() {
 
     local result
     
-    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
+    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.\"'${org2_}'\".values.MSP.value' '.config.name')
     printDbg "${result}"
     
     setExitCode [ "${result}" = "${org2_}" ]

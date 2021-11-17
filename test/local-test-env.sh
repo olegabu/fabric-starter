@@ -18,13 +18,25 @@ main() {
     export -f unsetActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
-    
+    export -f getFabricStarterHome
+    export -f connectOrgMachine
+    export -f getApiPortDelta
+    export -f getWwwPortDelta
+
     source ${BASEDIR}/common-test-env.sh $@
+}
+
+function getApiPortDelta() {
+  echo 1
+}
+
+function getWwwPortDelta() {
+  echo 1
 }
 
 
 function getOrgIp() {
-    echo '127.0.0.1'
+    echo $(getDockerGatewayAddress)
 }
 
 
@@ -32,12 +44,18 @@ function getOrgContainerPort () {
     getContainerPort $@
 }
 
+function getFabricStarterHome {
+  echo "."
+}
 
 function setCurrentActiveOrg() {
     local org="${1:?Org name is required}"
     export ORG=${org}
     export PEER0_PORT=$(getContainerPort ${org} ${PEER_NAME} ${DOMAIN})
-    
+}
+
+function connectOrgMachine() {
+    :
 }
 
 function unsetActiveOrg {
