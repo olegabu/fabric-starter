@@ -75,7 +75,8 @@ function createOrgEnvFiles() {
         bootstrap_api_port=''
     fi
 
-    result=$(ORG=${org} DOMAIN=${DOMAIN} \
+    result=$(ORG=${org} \
+    DOMAIN=${DOMAIN} \
     MY_IP=$(getOrgIp ${org}) \
     API_PORT=${api_port} \
     WWW_PORT=${www_port} \
@@ -92,9 +93,9 @@ function createOrgEnvFiles() {
     LDAP_PORT_HTTPS=${ldap_port_https} \
     FABRIC_STARTER_HOME=${fabric_starter_home} \
     ORDERER_GENERAL_LISTENPORT=${orderer_general_listenport} \
-    envSubstWithDefualts "org_env"  > "${org}"_env)
+    envSubstWithDefualts "org_env_sample"  > "${org}"_env)
 
-    if [ -n ${DONT_ENCREASE_PORTS} ]; then
+    if [ -n ${DONT_INCREASE_PORTS} ]; then
         api_port=$((api_port + 1))
         www_port=$((www_port + 1))
         ca_port=$((ca_port + 1))
