@@ -55,7 +55,7 @@ function setCurrentActiveOrg() {
 }
 
 function connectOrgMachine() {
-  :
+    :
 }
 
 function unsetActiveOrg {
