@@ -67,7 +67,7 @@ function getOrgIp() {
 
 function getOrgContainerPort () {
     local org="${1:?Org name is required}"
-
+    
     setCurrentActiveOrg "${org}"
     getContainerPort $@
     unsetActiveOrg
