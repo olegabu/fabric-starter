@@ -76,7 +76,7 @@ function generateCryptoMaterialIfNotExists() {
     if [ ! -f "crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
         echo "Crypto-config not exists. File does not exists: crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
         echo "Generating orderer MSP."
-        rm -rf crypto-config/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN
+        rm -rf crypto-config/ordererOrganizations/$ORDERER_DOMAIN
         cryptogen generate --config=crypto-config/cryptogen-orderer.yaml
     else
         echo "Orderer MSP exists. Generation skipped".
