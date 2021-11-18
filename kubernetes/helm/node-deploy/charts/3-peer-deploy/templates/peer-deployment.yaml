@@ -60,8 +60,10 @@ spec:
                 name: common-{{ .Values.org }}
             - configMapRef:
                 name: peer-{{ .Values.org }}
+          env:
+            - name: CORE_PEER_POSTGRES_DATASOURCENAME
+              value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
           {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
-
 
 
           #          resources:
