@@ -12,6 +12,8 @@ main() {
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
+    export FABRIC_VERSION=${FABRIC_VERSION:-2.3.3}
+
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
     source ./lib.sh
@@ -342,9 +344,8 @@ function queryContainerNetworkSettings() {
     local TMP_LOG_FILE
     local query
     local result
-    
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    query='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
+    query='.[0].NetworkSettings.Ports[] | select(. != null)[0].'"${parameter}"''
     result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE});
     echo  "queryContainerNetworkSettings returns:" ${result} | printLog
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -396,12 +397,16 @@ function curlRequest() {
     local cdata=$2
     local wtoken=$3
     local curlTimeout=${4:-15}
-    
+
     local res
     local exitCode
     local body
     local httpStatusCode
-    res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+
+    #echo "curl --max-time ${curlTimeout} --compressed -sw \"%{http_code}\" \"${url}\" -X POST  -d \"${cdata}\" -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H \"Content-Type: application/json\" -H \"Authorization: Bearer ${wtoken}\"" > /dev/tty
+    #set -x
+    #res=$(curl --max-time ${curlTimeout} --compressed -sw "%{http_code}" "${url}" -X POST -d "${cdata}" -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    res=$(curl --max-time ${curlTimeout} -sw "%{http_code}" "${url}" -X POST -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     exitCode=$?
 
     echo "${RED}curlRequest: (curl exit code: $exitCode) ${NORMAL}" | printDbg
@@ -425,13 +430,13 @@ function restQuery() {
     local query=${3}
     local jwt=${4}
     local curlTimeout=${5}
-    
+
     local api_ip
     local api_port
-    
+
     api_ip=$(getOrgIp "${org}")
     api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    
+
     echo  restQuery:  curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
     curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
 }
@@ -471,11 +476,11 @@ function getJWT() {
 
 function APIAuthorize() {
     local org=${1}
-    
+
     local result
     local jwt
     local httpStatusCode
-    
+
     result=$(getJWT ${org})
 
     jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
@@ -499,22 +504,41 @@ function createChannelAPI() {
 }
 
 
+function getConsortiumMembers() {
+    #TODO: now returns noting
+    local org=${1}
+    local jwt=${2}
+
+    restQuery ${org} "consortium/members" "{\"waitForTransactionEvent\":true}" "${jwt}"
+}
+
+function inviteOrgToDefaultConsortiumAPI() {
+    local org=${1}
+    local orgToInvite=${2}
+    local jwt=${3}
+
+    restAPIWrapper ${org} "consortium/members" "{\"orgId\":\"${orgToInvite}\",\"orgIp\":\"\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
+}
+
 function addOrgToChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     local orgToAdd=${4}
 
-    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"
+    local orgIP=$(getOrgIp "${orgToAdd}")
+    setCurrentActiveOrg ${orgToAdd}
+        local peerPort=$(getContainerPort ${orgToAdd} ${PEER_NAME} ${DOMAIN})
+    unsetActiveOrg
+    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"\",\"peerPort\":\"${peerPort}\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
-
 
 function joinChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     
-    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}"
+    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}" 300
 }
 
 
@@ -587,7 +611,7 @@ function instantiateTestChaincodeAPI() {
 
     chaincode_name=$(getTestChaincodeName ${channel})
 
-    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}
+    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true,\"chaincodeType\":\"node\",\"chaincodeVersion\":\"1.0\"}" "${jwt}" ${curlTimeout}
 }
 
 
@@ -610,7 +634,7 @@ function ListPeerChannels() {
     local TMP_LOG_FILE
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(docker exec cli.${org}.${domain} /bin/bash -c \
+    result=$(docker exec cli.peer0.${org}.${domain} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
     peer channel list -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS' 2>"${TMP_LOG_FILE}")
     cat "${TMP_LOG_FILE}" | printDbg
@@ -624,6 +648,10 @@ function ListPeerChannels() {
 
 function getCurrentChaincodeName() {
     echo ${CHAINCODE_PREFIX:-reference}
+}
+
+function getDockerGatewayAddress() {
+    echo $(docker network inspect bridge | jq -r '.[].IPAM.Config | .[].Gateway')
 }
 
 
@@ -655,10 +683,10 @@ function queryPeer() {
     
     local TMP_LOG_FILE
     local result
-    
+
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    
-    result=$(docker exec cli.${org}.${domain} /bin/bash -c \
+
+    result=$(docker exec cli.peer0.${org}.${domain} /bin/bash -c \
         'source container-scripts/lib/container-lib.sh; \
         peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
         configtxlator  proto_decode --type "common.Block"  | \
@@ -687,8 +715,8 @@ function verifyOrgIsInChannel() {
     local org2_=${2}
 
     local result
-    
-    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
+
+    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.\"'${org2_}'\".values.MSP.value' '.config.name')
     printDbg "${result}"
     
     setExitCode [ "${result}" = "${org2_}" ]
@@ -724,9 +752,9 @@ function copyTestChiancodeCLI() {
     pushd ${FABRIC_DIR} > /dev/null
     
     result=$(ORG=${org} runCLI \
-        "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${channel} ;\
-    cp -R /opt/chaincode/node/reference/* \
-    /opt/chaincode/node/${chaincode_init_name}_${channel}")
+        "mkdir -p /opt/chaincode/2x/node/${chaincode_init_name}_${channel} ;\
+    cp -R /opt/chaincode/2x/node/reference/* \
+    /opt/chaincode/2x/node/${chaincode_init_name}_${channel}")
     exitCode=$?
     printDbg "${result}"
     
@@ -741,10 +769,11 @@ function installTestChiancodeCLI() {
     local chaincode_name=$(getTestChaincodeName "${channel}")
     
     local exitCode
-    
+
     pushd ${FABRIC_DIR} > /dev/null
     
-    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}'" 2>&1 | printDbg
+
+    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 /opt/chaincode/2x/node/${chaincode_name}" node 2>&1 | printDbg
     local exitCode=$?
     
     popd > /dev/null

@@ -11,6 +11,8 @@ source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics.sh
 export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
 if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
     export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+    export WGET_CMD="wget -P"
+    export BASE64_UNWRAP_CODE="| tr -d '\n'"
 fi
 
 
@@ -123,7 +125,8 @@ function updateChannelGroupConfigForOrg() {
     local org=${1:?Org is required}
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
-    local outputFile=${4:-crypto-config/configtx/updated_config.json}
+    local domain=${4:-$DOMAIN}
+    local outputFile=${5:-crypto-config/configtx/updated_config.json}
 
     export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
     echo "Prepare updated config crypto-config/configtx/new_config_${org}.json"
@@ -172,11 +175,12 @@ function insertObjectIntoChannelConfig() {
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
-    local outputFile=${5:-crypto-config/configtx/updated_config.json}
+    local domain=${5:-$DOMAIN}
+    local outputFile=${6:-crypto-config/configtx/updated_config.json}
 
     echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile"
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $outputFile
+    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $domain $outputFile
 }
 
 
@@ -187,7 +191,7 @@ function updateChannelConfig() {
     local anchorPort=${4}
     local domain=${5:-$DOMAIN}
     certificationsToEnv $org $domain
-    insertObjectIntoChannelConfig $@
+    insertObjectIntoChannelConfig ${channel} ${org} ${templateFile} ${anchorPort} ${domain}
     createConfigUpdateEnvelope $channel
 }
 

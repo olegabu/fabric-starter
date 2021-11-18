@@ -15,7 +15,6 @@ printToLogAndToScreenCyan "\nCopying test chaincode to [${org}]"
 copyTestChiancodeCLI ${channelName} ${org}
 
 printToLogAndToScreenCyan "\nInstalling [$(getTestChaincodeName ${channelName})] chaincode in [${org}]"
-
 installTestChiancodeCLI ${channelName} ${org}
 
 printResultAndSetExitCode "Test chaincode installed in [${org}]"

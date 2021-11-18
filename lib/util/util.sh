@@ -32,6 +32,18 @@ function printUsage() {
     printRedYellow "\nExample:" "$exampleMsg"
 }
 
+ function printYellowRed() {
+     printInColor "1;33" "$1" "1;31" "$2"
+ }
+ function printCyan() {
+     printInColor "1;36" "$1"
+ }
+ function printBlue() {
+     printInColor "1;34" "$1"
+ }
+ function printWhite() {
+     printInColor "1;37" "$1"
+ }
 
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
