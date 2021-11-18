@@ -9,6 +9,24 @@ serviceAccount:
 ordererGenerate:
   enabled: false
 
+resources:
+  CPULIMIT: 500m
+  MEMORYLIMIT: 512Mi
+  peer:
+    CPULIMIT: 1000m
+    MEMORYLIMIT: 8192Mi
+  orderer:
+    CPULIMIT: 1000m
+    MEMORYLIMIT: 4096Mi
+  sdk:
+    CPULIMIT: 200m
+    MEMORYLIMIT: 512Mi
+  rest:
+    CPULIMIT: 200m
+    MEMORYLIMIT: 512Mi
+  dnsChaincode:
+    CPULIMIT: 500m
+    MEMORYLIMIT: 512Mi
 
 
 orderer:

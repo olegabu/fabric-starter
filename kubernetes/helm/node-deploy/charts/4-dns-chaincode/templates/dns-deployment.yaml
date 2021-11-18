@@ -70,6 +70,7 @@ spec:
             - name: CHAINCODE_ENV_FILE
               value: "{{ $dnsEnvFile }}"
 
+          {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode) }}
       containers:
         - name: dns
           imagePullPolicy: IfNotPresent
@@ -95,4 +96,5 @@ spec:
             - name: CHAINCODE_BIND_ADDRESS
               value: 0.0.0.0:9999
 
+          {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode)  | nindent 4 }}
 

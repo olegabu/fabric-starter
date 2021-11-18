@@ -43,5 +43,5 @@ spec:
             - configMapRef:
                 name: common-{{ .Values.org }}
 
-
+          {{- include "resources" . | nindent 4 }}
 

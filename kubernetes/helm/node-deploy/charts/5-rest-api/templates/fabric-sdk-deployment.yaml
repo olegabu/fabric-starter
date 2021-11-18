@@ -47,6 +47,8 @@ spec:
             - configMapRef:
                 name: common-{{ .Values.org }}
 
+          {{- include "resources" (merge (deepCopy .) .Values.resources.sdk) }}
+
 
 #          resources:
 #            limits:

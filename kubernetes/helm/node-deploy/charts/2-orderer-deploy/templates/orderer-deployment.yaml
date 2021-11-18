@@ -55,11 +55,13 @@ spec:
                 name: orderer-{{ .Values.org }}
 {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           env:
-{{/*            - name: DB_PASSWORD*/}}
-{{/*              valueFrom:*/}}
-{{/*                secretKeyRef:*/}}
-{{/*                  name: db-password*/}}
-{{/*                  key: password*/}}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  optional: true
+                  key: password
+
             - name: ORDERER_POSTGRESLEDGER_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
 
@@ -77,6 +79,8 @@ spec:
               value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.key
             - name: ORDERER_CA
               value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/tlsca/tlsca.{{ .Values.domain }}-cert.pem
+
+            {{- include "resources" (merge (deepCopy .) .Values.resources.orderer)  | nindent 4 }}
 
 #          resources:
 #            limits:

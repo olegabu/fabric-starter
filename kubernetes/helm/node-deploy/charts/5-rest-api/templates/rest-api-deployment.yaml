@@ -53,6 +53,8 @@ spec:
             - configMapRef:
                 name: rest-cm
 
+          {{- include "resources" (merge (deepCopy .) .Values.resources.rest) }}
+
 
 #          resources:
 #            limits:

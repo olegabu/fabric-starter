@@ -61,10 +61,17 @@ spec:
             - configMapRef:
                 name: peer-{{ .Values.org }}
           env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  optional: true
+                  key: password
             - name: CORE_PEER_POSTGRES_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
           {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
 
+          {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
 
           #          resources:
           #            limits:
