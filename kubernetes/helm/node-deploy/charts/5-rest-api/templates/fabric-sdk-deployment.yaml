@@ -47,7 +47,7 @@ spec:
             - configMapRef:
                 name: common-{{ .Values.org }}
 
-          {{- include "resources" (merge (deepCopy .) .Values.resources.sdk) }}
+          {{- include "resources" (merge (deepCopy .) .Values.resources.sdk) | nindent 4 }}
 
 
 #          resources:

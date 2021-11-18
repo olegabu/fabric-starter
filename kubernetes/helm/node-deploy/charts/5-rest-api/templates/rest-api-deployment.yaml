@@ -53,7 +53,7 @@ spec:
             - configMapRef:
                 name: rest-cm
 
-          {{- include "resources" (merge (deepCopy .) .Values.resources.rest) }}
+          {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
 
 
 #          resources:
