@@ -26,13 +26,6 @@ data:
 
   CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/msp
 
-  CORE_LEDGER_STATE_STATEDATABASE: 'PostgreSQL'
-  DB_HOST: 'tkled-mvp000256.vm.esrt.cloud.sbrf.ru'
-  DB_PORT: '5433'
-  CORE_PEER_POSTGRES_SCHEMANAME: public
-  DB_NAME: dfabch
-  DB_USERNAME: dfa_tech_account
-
   CHANNEL_NAME: 'cnft'
   ORDERER_CA: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/orderer/tlsca/tlsca.${DOMAIN}-cert.pem
   OSN_PORT: '7150'

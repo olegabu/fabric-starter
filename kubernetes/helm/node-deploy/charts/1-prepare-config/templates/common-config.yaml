@@ -51,12 +51,16 @@ data:
   {{/*  BOOTSTRAP_EXTERNAL_PORT: */}}
 
 
-  CORE_LEDGER_STATE_STATEDATABASE: 'PostgreSQL'
-  DB_HOST: 'tkled-mvp000256.vm.esrt.cloud.sbrf.ru'
-  DB_PORT: '5433'
-  CORE_PEER_POSTGRES_SCHEMANAME: public
-  DB_NAME: dfabch
-  DB_USERNAME: dfa_tech_account
+  CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.CORE_LEDGER_STATE_STATEDATABASE }}
+  DB_HOST: {{ .Values.DB_HOST }}
+  DB_PORT: "{{ .Values.DB_PORT }}"
+  CORE_PEER_POSTGRES_SCHEMANAME: {{ .Values.CORE_PEER_POSTGRES_SCHEMANAME }}
+  DB_NAME: {{ .Values.DB_NAME }}
+  DB_USERNAME: {{ .Values.DB_USERNAME }}
+
+  CORE_PEER_POSTGRES_TABLEPREFIX: {{ .Values.POSTGRES_TABLE_PREFIX }}
+  ORDERER_POSTGRES_TABLEPREFIX: {{ .Values.POSTGRES_TABLE_PREFIX }}
+
 
   CHANNEL_NAME: 'cnft'
   ORDERER_CA: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/orderer/tlsca/tlsca.${DOMAIN}-cert.pem

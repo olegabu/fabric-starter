@@ -3,6 +3,7 @@ set -x
 source ./env
 export ORG=${1:-$ORG}
 export DOMAIN=${2:-$DOMAIN}
+export ORDERER_DOMAIN=${3:-$DOMAIN}
 set +x
 
 
