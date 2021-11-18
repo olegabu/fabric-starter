@@ -64,7 +64,7 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-password
+                  name: {{ default "db-password" | .Values.dbPasswordSecret }}
                   optional: true
                   key: password
             - name: CORE_PEER_POSTGRES_DATASOURCENAME
