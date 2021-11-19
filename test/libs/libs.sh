@@ -865,6 +865,22 @@ function installTestChiancodeCLI() {
 #    setExitCode [ "${result}" = "${chaincode_name}" ]
 #}
 
+function verifyChiancodeInstalled() {
+    local channel=${1}
+    local org=${2}
+
+    local chaincode_init_name
+    local chaincode_name
+    local result
+
+    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    chaincode_name=${chaincode_init_name}_${channel}
+    #chaincode_list=$(getChaincodeListFromPeer2x $channel $org)
+    result=$(getChaincodeListFromPeer)
+    printDbg "Result: ${result}"
+
+    setExitCode [ "${result}" = "${chaincode_name}" ]
+}
 
 function verifyChiancodeInstantiated() {
     local channel=${1}

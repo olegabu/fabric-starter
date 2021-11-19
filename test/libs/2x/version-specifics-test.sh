@@ -47,34 +47,9 @@ function ListPeerChaincodesInstantiated() {
     setExitCode [ "${exitCode}" = "0" ]
 }
 
-function getChaincodeListFromPeer2x() {
+function getChaincodeListFromPeer() {
     local channel=${1}
     local org=${2}
 
-    echo $(ListPeerChaincodes ${channel} ${org}| grep Label | cut -d':' -f 2 | sed -e 's/\s//g' | grep -E "^${chaincode_name}_")
+    echo $(ListPeerChaincodes ${channel} ${org}| grep Label | cut -d':' -f 2 | sed -e 's/\s//g' | grep -E "^${chaincode_name}_" | rev | cut -d '_' -f 2- | rev)
 }
-
-function cutChaincodeNameFromPeer2x() {
-    local chaincode_string=${1}
-    echo $chaincode_string | rev | cut -d '_' -f 2- | rev
-}
-
-
-function verifyChiancodeInstalled() {
-    local channel=${1}
-    local org=${2}
-
-    local chaincode_init_name
-    local chaincode_name
-    local chaincode_list
-    local result
-
-    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    chaincode_name=${chaincode_init_name}_${channel}
-    chaincode_list=$(getChaincodeListFromPeer2x $channel $org)
-    result=$(cutChaincodeNameFromPeer2x $chaincode_list)
-    printDbg "Result: ${result}"
-    
-    setExitCode [ "${result}" = "${chaincode_name}" ]
-}
-

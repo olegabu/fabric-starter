@@ -50,20 +50,9 @@ function ListPeerChaincodesInstantiated() {
     setExitCode [ "${exitCode}" = "0" ]
 }
 
-function verifyChiancodeInstalled() {
+function getChaincodeListFromPeer() {
     local channel=${1}
     local org=${2}
 
-    local chaincode_init_name
-    local chaincode_name
-    local result
-
-    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    chaincode_name=${chaincode_init_name}_${channel}
-    result=$(ListPeerChaincodes ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
-
-    printDbg "${result}"
-    
-    setExitCode [ "${result}" = "${chaincode_name}" ]
+    echo $(ListPeerChaincodes ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
 }
-
