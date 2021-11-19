@@ -65,7 +65,7 @@ spec:
 
           envFrom:
             - configMapRef:
-                name: common
+                name: common-{{ .Values.org }}
           env:
             - name: CHAINCODE_ENV_FILE
               value: "{{ $dnsEnvFile }}"
