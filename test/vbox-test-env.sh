@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
+[ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0)
+
 
 source ${BASEDIR}/libs/libs.sh
 
@@ -15,7 +16,7 @@ main() {
         return 1
     fi
     
-    source ${BASEDIR}/common-test-env.sh $@
+    source ${LIBDIR}/common-test-env.sh $@
     export -f setCurrentActiveOrg
     export -f unsetActiveOrg
     export -f getOrgIp
@@ -25,7 +26,6 @@ main() {
     export -f getApiPortDelta
     export -f getWwwPortDelta
 
-    source ${BASEDIR}/common-test-env.sh $@
 }
 
 function getApiPortDelta() {
