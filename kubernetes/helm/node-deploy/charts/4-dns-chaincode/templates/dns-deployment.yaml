@@ -77,7 +77,7 @@ spec:
           terminationMessagePolicy: File
           ports:
             - name: chaincode-port
-              containerPort: 9999
+              containerPort: {{ .Values.dnsChaincodePort }}
               protocol: TCP
           image: >-
             {{ tpl .Values.images.dns_chaincode . }}

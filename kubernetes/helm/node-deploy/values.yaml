@@ -2,6 +2,20 @@ org: org1
 domain: example.com
 ordererName: orderer
 
+authMode: ADMIN
+
+peerOrgName: "{{ .Values.peerName }}-{{ .Values.org }}"
+
+FABRIC_VERSION: 2.3.3
+
+genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
+
+peer0Port: 7051
+dnsChaincodePort: 9999
+
+
+
+tmpDir: /tmp
 
 serviceAccount:
   create: true

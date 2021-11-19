@@ -6,19 +6,8 @@ peerName: peer0
 domain: &domain default
 #bootstrapIp: ''
 #myIp: ""
-authMode: ADMIN
-
-peerOrgName: "{{ .Values.peerName }}-{{ .Values.org }}"
-
-ordererName: orderer
-
-FABRIC_VERSION: 2.3.3
 
 enroll_secret: adminpw
-
-genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
-
-tmpDir: /tmp
 
 images:
   orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
@@ -28,7 +17,6 @@ images:
   dns_chaincode: olegabu/dns-chaincode:2x
   fabric_sdk: olegabu/fabric-sdk-api:2x
 
-peer0Port: 7051
 
 CORE_LEDGER_STATE_STATEDATABASE: PostgreSQL
 DB_HOST: test

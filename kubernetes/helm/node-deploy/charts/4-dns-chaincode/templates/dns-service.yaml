@@ -7,7 +7,7 @@ spec:
   ports:
     - name: chaincodeport
       protocol: TCP
-      port: 9999
-      targetPort: 9999
+      port: {{ .Values.dnsChaincodePort }}
+      targetPort: {{ .Values.dnsChaincodePort }}
   selector:
     app: dns
