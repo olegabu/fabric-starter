@@ -17,7 +17,7 @@ main() {
     FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
     FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
 
-    source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics-test.sh
+    #source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics-test.sh
 
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
@@ -875,10 +875,15 @@ function verifyChiancodeInstalled() {
 
     chaincode_init_name=${CHAINCODE_PREFIX:-reference}
     chaincode_name=${chaincode_init_name}_${channel}
-    #chaincode_list=$(getChaincodeListFromPeer2x $channel $org)
-    result=$(getChaincodeListFromPeer)
+
+    set -f
+    IFS=
+
+    result=$(COMPOSE_PROJECT_NAME=${org} ORG=$org docker-compose exec cli.peer ./container-scripts/network/chaincode-list-installed.sh  $channel $org 2>/dev/null)
+    result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name$")
     printDbg "Result: ${result}"
 
+    set +f
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }
 
@@ -892,9 +897,16 @@ function verifyChiancodeInstantiated() {
 
     chaincode_init_name=${CHAINCODE_PREFIX:-reference}
     chaincode_name=${chaincode_init_name}_${channel}
-    result=$(ListPeerChaincodesInstantiated ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
-    
-    printDbg "${result}"
+
+    set -f
+    IFS=
+#    result=$(ListPeerChaincodesInstantiated ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
+    result=$(COMPOSE_PROJECT_NAME=${org} ORG=$org docker-compose exec cli.peer ./container-scripts/network/chaincode-list-instantiated.sh  $channel $org 2>/dev/null)
+    result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name")
+
+    set +f
+
+    printDbg "Result: ${result}"
     
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }

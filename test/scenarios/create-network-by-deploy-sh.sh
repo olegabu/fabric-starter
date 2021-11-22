@@ -56,8 +56,11 @@ function createOrgEnvFiles() {
   local orderer_name='orderer'
   local api_port=4000
   local www_port=80
+  local sdk_port=8080
+  local tls_ca_port=7055
   local ca_port=7054
   local peer0_port=7051
+  local external_communication_port=443
   local ldap_port_http=6080
   local ldap_port_https=6433
   local orderer_general_listenport=7050
@@ -88,7 +91,10 @@ function createOrgEnvFiles() {
     ORDERER_WWW_PORT=${orderer_www_port} \
     ORDERER_NAME=${orderer_name} \
     CA_PORT=${ca_port} \
+    SDK_PORT=${sdk_port} \
+    TLS_CA_PORT=${tls_ca_port} \
     PEER0_PORT=${peer0_port} \
+    EXTERNAL_COMMUNICATION_PORT=${external_communication_port} \
     LDAP_PORT_HTTP=${ldap_port_http} \
     LDAP_PORT_HTTPS=${ldap_port_https} \
     FABRIC_STARTER_HOME=${fabric_starter_home} \
@@ -98,8 +104,11 @@ function createOrgEnvFiles() {
     if [ -n ${DONT_INCREASE_PORTS} ]; then
         api_port=$((api_port + 1))
         www_port=$((www_port + 1))
-        ca_port=$((ca_port + 1))
+        ca_port=$((ca_port + 100))
+        sdk_port=$((sdk_port + 1000))
+        tls_ca_port=$((tls_ca_port + 1000))
         peer0_port=$((peer0_port + 1000))
+        external_communication_port=$((external_communication_port+1000))
         ldap_port_http=$((ldap_port_http + 100))
         ldap_port_https=$((ldap_port_https + 100))
     fi

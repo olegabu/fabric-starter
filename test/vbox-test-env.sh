@@ -3,7 +3,7 @@
 [ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0)
 
 
-source ${BASEDIR}/libs/libs.sh
+source ${LIBDIR}/libs/libs.sh
 
 main() {
     export MULTIHOST=true

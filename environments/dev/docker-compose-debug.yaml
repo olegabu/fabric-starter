@@ -21,7 +21,7 @@ services:
 #    command: "sh"
 
 
-  peer0:
+  peer:
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
       - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug

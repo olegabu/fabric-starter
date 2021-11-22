@@ -53,6 +53,7 @@ function ListPeerChaincodesInstantiated() {
 function getChaincodeListFromPeer() {
     local channel=${1}
     local org=${2}
+    local chaincode_name=${3}
 
     echo $(ListPeerChaincodes ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
 }

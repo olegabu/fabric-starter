@@ -9,7 +9,8 @@ function ListPeerChaincodes() {
     
     pushd ${FABRIC_DIR} > /dev/null
     
-    result=$(runCLI "peer lifecycle chaincode queryinstalled")
+    #result=$(runCLI "peer lifecycle chaincode queryinstalled")
+    result=$(COMPOSE_PROJECT_NAME=${ORG} docker-compose exec cli.peer lifecycle chaincode querycommitted -C ${channel})
     exitCode=$?
     
     popd > /dev/null
@@ -32,7 +33,9 @@ function ListPeerChaincodesInstantiated() {
     
     pushd ${FABRIC_DIR} > /dev/null
     
-    result=$(ORG=${org2_} runCLI "peer lifecycle chaincode querycommitted -C '${channel}'")
+    #result=$(ORG=${org2_} runCLI "peer lifecycle chaincode querycommitted -C '${channel}'")
+    result=$(COMPOSE_PROJECT_NAME=${ORG} docker-compose exec cli.peer lifecycle chaincode querycommitted -C ${channel})
+
     exitCode=$?
     
     popd > /dev/null
@@ -50,6 +53,7 @@ function ListPeerChaincodesInstantiated() {
 function getChaincodeListFromPeer() {
     local channel=${1}
     local org=${2}
+    local chaincode_name=${3}
 
     echo $(ListPeerChaincodes ${channel} ${org}| grep Label | cut -d':' -f 2 | sed -e 's/\s//g' | grep -E "^${chaincode_name}_" | rev | cut -d '_' -f 2- | rev)
 }

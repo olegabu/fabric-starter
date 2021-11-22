@@ -9,7 +9,9 @@ org=${2}
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in [${org}]"
 
+pushd ${FABRIC_DIR} >/dev/null
 setCurrentActiveOrg ${org}
 verifyChiancodeInstalled "${channelName}" "${org}"
+popd >/dev/null
 
 printResultAndSetExitCode "The test chaincode installed in [${org}]"

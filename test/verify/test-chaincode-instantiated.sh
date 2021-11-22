@@ -8,7 +8,9 @@ org=${2}
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channelName}] channel by [${org}]"
 
+pushd ${FABRIC_DIR} >/dev/null
 setCurrentActiveOrg ${org}
 verifyChiancodeInstantiated "${channelName}" "${org}"
+popd >/dev/null
 
 printResultAndSetExitCode "The test chaincode instantiated in [${channelName}] channel by [${org}] org"

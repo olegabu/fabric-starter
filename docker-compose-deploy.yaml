@@ -5,7 +5,7 @@
 version: '3.7'
 
 volumes:
-  peer0:
+  peer:
 #  peer1:
   webapps:
   routes:

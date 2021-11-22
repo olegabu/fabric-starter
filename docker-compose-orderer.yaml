@@ -134,7 +134,7 @@ services:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 #      - ./crypto-config/ordererOrganizations/${DOMAIN:-example.com}/orderers:/etc/hyperledger/crypto/orderers
 #      - ./templates:/etc/hyperledger/templates # for local debug
-      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
+#      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   # fabric-rest api server
