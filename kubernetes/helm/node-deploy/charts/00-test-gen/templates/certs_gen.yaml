@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gen-deployment-{{ .Values.org }}
+  labels:
+    app: gen-{{ .Values.org }}
+    name: gen-{{ .Values.org }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen-{{ .Values.org }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: gen
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+            {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+
+          workingDir: /etc/hyperledger
+          command: ["sh", "-c", "container-scripts/container-orderer.sh; sleep 1000"]
+#          command: ["sleep", "100000"]
+          env:
+            - name: ORG
+              value: {{ .Values.org }}
+            - name: DOMAIN
+              value: {{ .Values.domain }}
+            - name: ORDERER_PROFILE
+              value: {{ default "Raft" .Values.ordererProfile }}
+            - name: ORDERER_NAME
+              value: {{ .Values.ordererName }}
+            - name: ORDERER_DOMAIN
+              value: {{ default .Values.domain .Values.ordererDomain }}
+            - name: TMP_DIR
+              value: {{ .Values.tmpDir }}
+

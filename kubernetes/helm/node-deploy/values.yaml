@@ -1,6 +1,7 @@
 org: org1
-domain: example.com
+domain: &domain example.com
 ordererName: orderer
+ordererDomain: *domain
 
 authMode: ADMIN
 

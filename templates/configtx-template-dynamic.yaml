@@ -24,7 +24,7 @@ Organizations:
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}
-        MSPDir: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp
+        MSPDir: peerOrganizations/${ORG}.${DOMAIN}/msp
         AnchorPeers:
         # AnchorPeers defines the location of peers which can be used
         # for cross org gossip communication.  Note, this value is only
