@@ -23,7 +23,7 @@ main() {
       #  export WGET_CMD="wget -P"
       #  export BASE64_UNWRAP_CODE="| tr -d '\n'"
     fi
-echo "-------------------- $VERSIONED_CHAINCODE_PATH ---------------------------"
+#echo "-------------------- $VERSIONED_CHAINCODE_PATH ---------------------------"
     #source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics-test.sh
 
     pushd ${FABRIC_DIR} > /dev/null
@@ -764,9 +764,9 @@ function copyTestChiancodeCLI() {
     pushd ${FABRIC_DIR} > /dev/null
 
     result=$(ORG=${org} runCLI \
-        "mkdir -p /opt/chaincode/${TEST_CHAINCODE_DIR}/node/${chaincode_init_name}_${channel} ;\
-    cp -R /opt/chaincode/node/reference/* \
-    /opt/chaincode/${TEST_CHAINCODE_DIR}/node/${chaincode_init_name}_${channel}")
+        "mkdir -p ${VERSIONED_CHAINCODE_PATH}/node/${chaincode_init_name}_${channel} ;\
+    cp -R ${VERSIONED_CHAINCODE_PATH}/node/reference/* \
+    ${VERSIONED_CHAINCODE_PATH}/node/${chaincode_init_name}_${channel}")
     exitCode=$?
     printDbg "${result}"
 
@@ -784,7 +784,7 @@ function installTestChiancodeCLI() {
     pushd ${FABRIC_DIR} > /dev/null
 
 
-    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 /opt/chaincode/${TEST_CHAINCODE_DIR}/node/${chaincode_name}" node 2>&1 | printDbg
+    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/node/${chaincode_name}" node 2>&1 | printDbg
     local exitCode=$?
 
     popd > /dev/null
