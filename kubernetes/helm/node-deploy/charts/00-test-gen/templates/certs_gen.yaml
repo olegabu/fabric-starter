@@ -25,6 +25,8 @@ spec:
           command: ["sh", "-c", "container-scripts/container-orderer.sh; sleep 1000"]
 #          command: ["sleep", "100000"]
           env:
+            - name: PEER_NAME
+              value: {{ .Values.peerName | default "peer0" }}
             - name: ORG
               value: {{ .Values.org }}
             - name: DOMAIN
