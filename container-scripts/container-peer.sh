@@ -16,7 +16,7 @@ source $(dirname "$0")/lib/container-lib.sh
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 
-export ORDERER_DOMAIN ORDERER_NAME
+export ORDERER_DOMAIN ORDERER_NAME PEER_NAME
 
 
 function main() {

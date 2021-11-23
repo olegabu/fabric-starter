@@ -62,7 +62,6 @@ spec:
               mountPath: /etc/hyperledger/container-scripts/k-scripts
             - name: certs
               mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
-
           envFrom:
             - configMapRef:
                 name: common-{{ .Values.org }}
@@ -70,7 +69,8 @@ spec:
             - name: CHAINCODE_ENV_FILE
               value: "{{ $dnsEnvFile }}"
 
-          {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode) }}
+          {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode) | nindent 4 }}
+
       containers:
         - name: dns
           imagePullPolicy: IfNotPresent
