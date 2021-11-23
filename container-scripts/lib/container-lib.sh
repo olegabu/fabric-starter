@@ -269,6 +269,7 @@ function joinChannel() {
 
     echo "Join $ORG to channel $channel"
     fetchChannelConfigBlock $channel "0"
+    sleep 1
     CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
 }
 
