@@ -11,6 +11,7 @@ FABRIC_VERSION: 2.3.3
 
 genesisBlock: crypto-config/configtx/{{ .Values.domain }}/genesis.pb
 
+ordererPort: 7050
 peer0Port: 7051
 dnsChaincodePort: 9999
 
@@ -25,23 +26,23 @@ ordererGenerate:
   enabled: false
 
 resources:
-  CPULIMIT: 500m
-  MEMORYLIMIT: 512Mi
+  CPULIMIT: 200m
+  MEMORYLIMIT: 256Mi
   peer:
-    CPULIMIT: 1000m
-    MEMORYLIMIT: 8192Mi
+    CPULIMIT: 200m
+    MEMORYLIMIT: 256Mi
   orderer:
-    CPULIMIT: 1000m
-    MEMORYLIMIT: 4096Mi
+    CPULIMIT: 200m
+    MEMORYLIMIT: 256Mi
   sdk:
     CPULIMIT: 200m
-    MEMORYLIMIT: 512Mi
+    MEMORYLIMIT: 256Mi
   rest:
     CPULIMIT: 200m
-    MEMORYLIMIT: 512Mi
+    MEMORYLIMIT: 256Mi
   dnsChaincode:
-    CPULIMIT: 500m
-    MEMORYLIMIT: 512Mi
+    CPULIMIT: 200m
+    MEMORYLIMIT: 256Mi
 
 
 orderer:

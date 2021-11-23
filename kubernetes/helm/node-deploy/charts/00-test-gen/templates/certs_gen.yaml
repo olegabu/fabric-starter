@@ -37,6 +37,8 @@ spec:
               value: {{ .Values.ordererName }}
             - name: ORDERER_DOMAIN
               value: {{ default .Values.domain .Values.ordererDomain }}
+            - name: ORDERER_GENERAL_LISTENPORT
+              value: "{{ default 7050 .Values.ordererPort }}"
             - name: TMP_DIR
               value: {{ .Values.tmpDir }}
 
