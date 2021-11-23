@@ -160,10 +160,10 @@ function createConfigUpdateEnvelope() {
         exit 0
     fi
     echo " >> Prepare config update from $org for channel $channel"
-    configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
-    && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
-    && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
-    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=${GENERATE_DIR}/configtx/update.json && chown $UID ${GENERATE_DIR}/configtx/update.json
+    configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=${GENERATE_DIR}/config.pb \
+    && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=${GENERATE_DIR}/updated_config.pb \
+    && configtxlator compute_update --channel_id=$channel --original=${GENERATE_DIR}/config.pb  --updated=${GENERATE_DIR}/updated_config.pb --output=${GENERATE_DIR}/update.pb \
+    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=${GENERATE_DIR}/update.pb --output=${GENERATE_DIR}/configtx/update.json && chown $UID ${GENERATE_DIR}/configtx/update.json
 
     echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat ${GENERATE_DIR}/configtx/update.json`}}}" | jq . > ${GENERATE_DIR}/configtx/update_in_envelope.json
     configtxlator proto_encode --type 'common.Envelope' --input=${GENERATE_DIR}/configtx/update_in_envelope.json --output=${GENERATE_DIR}/update_in_envelope.pb
