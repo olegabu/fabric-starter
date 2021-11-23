@@ -36,7 +36,7 @@ function ListPeerChaincodesInstantiated() {
     pushd ${FABRIC_DIR} > /dev/null
     
     result=$(ORG=${org2_} runCLI "peer chaincode list --instantiated -C '${channel}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
-    exitCode=$?
+      exitCode=$?
     
     popd > /dev/null
     

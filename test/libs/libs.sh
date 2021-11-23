@@ -12,11 +12,18 @@ main() {
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
-    export FABRIC_VERSION=${FABRIC_VERSION:-2.3.3}
+    #export FABRIC_VERSION=${FABRIC_VERSION:-1.4.9}
     export TEST_CHAINCODE_DIR='test'
     FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
     FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
 
+    export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
+    if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
+        export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+      #  export WGET_CMD="wget -P"
+      #  export BASE64_UNWRAP_CODE="| tr -d '\n'"
+    fi
+echo "-------------------- $VERSIONED_CHAINCODE_PATH ---------------------------"
     #source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics-test.sh
 
     pushd ${FABRIC_DIR} > /dev/null
@@ -868,20 +875,19 @@ function installTestChiancodeCLI() {
 function verifyChiancodeInstalled() {
     local channel=${1}
     local org=${2}
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    local chaincode_name=${3:-${chaincode_init_name}_${channel}}
 
-    local chaincode_init_name
     local chaincode_name
     local result
 
-    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    chaincode_name=${chaincode_init_name}_${channel}
-
     set -f
     IFS=
-
-    result=$(COMPOSE_PROJECT_NAME=${org} ORG=$org docker-compose exec cli.peer ./container-scripts/network/chaincode-list-installed.sh  $channel $org 2>/dev/null)
+    pushd ${FABRIC_DIR} >/dev/null
+      result=$(./chaincode-list-installed.sh $org $channel 2>/dev/null)
+      printDbg "Result: ${result}"
+    popd >/dev/null
     result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name$")
-    printDbg "Result: ${result}"
 
     set +f
     setExitCode [ "${result}" = "${chaincode_name}" ]
@@ -890,24 +896,19 @@ function verifyChiancodeInstalled() {
 function verifyChiancodeInstantiated() {
     local channel=${1}
     local org=${2}
-
-    local chaincode_init_name
-    local chaincode_name
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    local chaincode_name=${3:-${chaincode_init_name}_${channel}}
     local result
-
-    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    chaincode_name=${chaincode_init_name}_${channel}
 
     set -f
     IFS=
-#    result=$(ListPeerChaincodesInstantiated ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
-    result=$(COMPOSE_PROJECT_NAME=${org} ORG=$org docker-compose exec cli.peer ./container-scripts/network/chaincode-list-instantiated.sh  $channel $org 2>/dev/null)
+    pushd "${FABRIC_DIR}" >/dev/null
+    result=$(./chaincode-list-instantiated.sh $org $channel 2>/dev/null)
+    printDbg "Result: ${result}"
+    popd >/dev/null
     result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name")
 
     set +f
-
-    printDbg "Result: ${result}"
-    
     setExitCode [ "${result}" = "${chaincode_name}" ]
 }
 

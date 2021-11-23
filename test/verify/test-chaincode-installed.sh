@@ -5,13 +5,11 @@ source "${BASEDIR}"/../libs/libs.sh
 
 channelName=${1}
 org=${2}
-
+chaincode=${3} #optional
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in [${org}]"
 
-pushd ${FABRIC_DIR} >/dev/null
 setCurrentActiveOrg ${org}
-verifyChiancodeInstalled "${channelName}" "${org}"
-popd >/dev/null
+verifyChiancodeInstalled "${channelName}" "${org}" "${chaincode}"
 
 printResultAndSetExitCode "The test chaincode installed in [${org}]"

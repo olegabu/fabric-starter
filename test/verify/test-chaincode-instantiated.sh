@@ -5,12 +5,11 @@ source "${BASEDIR}"/../libs/libs.sh
 
 channelName=${1}
 org=${2}
+chaincode=${3} #optional
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channelName}] channel by [${org}]"
 
-pushd ${FABRIC_DIR} >/dev/null
 setCurrentActiveOrg ${org}
-verifyChiancodeInstantiated "${channelName}" "${org}"
-popd >/dev/null
+verifyChiancodeInstantiated "${channelName}" "${org}" "${chaincode}"
 
 printResultAndSetExitCode "The test chaincode instantiated in [${channelName}] channel by [${org}] org"
