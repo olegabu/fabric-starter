@@ -348,16 +348,17 @@ function printResultAndSetExitCode() {
 #__________________________________ API-related functions ___________________________________________
 
 function queryContainerNetworkSettings() {
-    local parameter="${1}" # [HostPort|HostIp]
+    local parameter="${1}"
     local container="${2}"
     local organization="${3}"
     local domain="${4}"
-    
     local TMP_LOG_FILE
     local query
     local result
+
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     query='.[0].NetworkSettings.Ports[] | select(. != null)[0].'"${parameter}"''
+
     result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE});
     echo  "queryContainerNetworkSettings returns:" ${result} | printLog
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -646,10 +647,8 @@ function ListPeerChannels() {
     local TMP_LOG_FILE
     
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(docker exec cli.peer0.${org}.${domain} /bin/bash -c \
-        'source container-scripts/lib/container-lib.sh; \
-    peer channel list -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS' 2>"${TMP_LOG_FILE}")
-    cat "${TMP_LOG_FILE}" | printDbg
+    result=$(${BASEDIR}/../run-cli-peer.sh ${org} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
+    #cat "${TMP_LOG_FILE}" | printDbg
     set -f
     IFS=
     printDbg "Channels ${org} has joined to: ${result}"
@@ -678,8 +677,10 @@ function verifyOrgJoinedChannel() {
     local org=${2}
     local domain=${3}
     local result
-    
-    result=$(ListPeerChannels ${org} ${domain}|  grep -E "^${channel}$")
+    set -f
+    IFS=
+    result=$(ListPeerChannels ${org} ${domain}| tr -d "\r"| grep -E "^${channel}$")
+    set +f
     printDbg "Result: ${result}"
     
     setExitCode [ "${result}" = "${channel}" ]
@@ -698,14 +699,13 @@ function queryPeer() {
 
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
 
-    result=$(docker exec cli.peer0.${org}.${domain} /bin/bash -c \
-        'source container-scripts/lib/container-lib.sh; \
-        peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
-        configtxlator  proto_decode --type "common.Block"  | \
-    jq '${query}' | tee /dev/stderr | jq -r '${subquery}' ' 2>"${TMP_LOG_FILE}")
-    cat "${TMP_LOG_FILE}" | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    result=$(${BASEDIR}/../run-cli-peer.sh ${org} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
+    printDbg "Query: ${query}"
+    printDbg "Subquery: ${subquery}"
+
+    result=$(echo "${result}" | jq ${query} |  jq -r ${subquery}   2>"${TMP_LOG_FILE}")
+    printDbg "Parse result: $result"
     echo $result
-    echo cat "${TMP_LOG_FILE} _${result}_" | printDbg > ${SCREEN_OUTPUT_DEVICE}
 }
 
 
@@ -724,14 +724,16 @@ function verifyChannelExists() {
 
 function verifyOrgIsInChannel() {
     local channel=${1}
-    local org2_=${2}
+    local org=${2}
+    local org2=${3}
+    local domain=${4}
 
     local result
 
-    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.\"'${org2_}'\".values.MSP.value' '.config.name')
+    result=$(queryPeer ${channel} ${org} ${domain} ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
     printDbg "${result}"
     
-    setExitCode [ "${result}" = "${org2_}" ]
+    setExitCode [ "${result}" = "${org2}" ]
 }
 
 
@@ -758,36 +760,38 @@ function copyTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    local chaincode_name=${3:-"${chaincode_init_name}_${channel}"}
+    local lang=${4:-"node"}
+    local chaincode_dir=${5:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
 
     local result
     local exitCode
-    pushd ${FABRIC_DIR} > /dev/null
 
-    result=$(ORG=${org} runCLI \
-        "mkdir -p ${VERSIONED_CHAINCODE_PATH}/node/${chaincode_init_name}_${channel} ;\
-    cp -R ${VERSIONED_CHAINCODE_PATH}/node/reference/* \
-    ${VERSIONED_CHAINCODE_PATH}/node/${chaincode_init_name}_${channel}")
+    result=$(${BASEDIR}/../run-cli-peer.sh ${org} \
+        "mkdir -p ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name};  \
+          cp -R ${chaincode_dir}/* \
+          ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}")
     exitCode=$?
-    printDbg "${result}"
+    printDbg "Result: ${result}"
 
-    popd > /dev/null
     setExitCode [ "${exitCode}" = "0" ]
 }
 
 function installTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
-    local chaincode_name=$(getTestChaincodeName "${channel}")
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    local chaincode_name=${3:-"${chaincode_init_name}_${channel}"}
+    local lang=${4:-"node"}
 
+    local result
     local exitCode
 
-    pushd ${FABRIC_DIR} > /dev/null
-
-
-    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/node/${chaincode_name}" node 2>&1 | printDbg
+    result=$(${BASEDIR}/../run-cli-peer.sh ${org} \
+    "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}" ${lang} 2>&1)
     local exitCode=$?
+    printDbg "Result: ${result}"
 
-    popd > /dev/null
     setExitCode [ "${exitCode}" = "0" ]
 }
 
@@ -885,7 +889,7 @@ function verifyChiancodeInstalled() {
     IFS=
     result=$(${BASEDIR}/../run-cli-peer.sh ${org} listChaincodesInstalled ${channel} ${org} 2>/dev/null)
     printDbg "Result: ${result}"
-    result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name$")
+    result=$(echo $result | tr -d "\r" | grep -E "^$chaincode_name$")
 
     set +f
     setExitCode [ "${result}" = "${chaincode_name}" ]
@@ -937,17 +941,15 @@ function createChaincodeArchiveAndReturnPath() {
 function instantiateTestChaincodeCLI() {
     local channel=${1}
     local org=${2}
-    local chaincode_name=$(getTestChaincodeName ${channel})
+    local chaincode_name=${3:-$(getTestChaincodeName ${channel})}
     
+    local result
     local exitCode
     
-    pushd ${FABRIC_DIR} > /dev/null
-    
-    result=$(ORG=${org} runCLI "./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name}")
+    reuslt=$(${BASEDIR}/../run-cli-peer.sh ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name})
     exitCode=$?
-    
     printDbg "${result}"
-    popd > /dev/null
+
     setExitCode [ "${exitCode}" = "0" ]
 }
 
