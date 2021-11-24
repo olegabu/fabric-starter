@@ -883,10 +883,8 @@ function verifyChiancodeInstalled() {
 
     set -f
     IFS=
-    pushd ${FABRIC_DIR} >/dev/null
-      result=$(./chaincode-list-installed.sh $org $channel 2>/dev/null)
-      printDbg "Result: ${result}"
-    popd >/dev/null
+    result=$(${BASEDIR}/../run-cli-peer.sh ${org} listChaincodesInstalled ${channel} ${org} 2>/dev/null)
+    printDbg "Result: ${result}"
     result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name$")
 
     set +f
@@ -902,10 +900,8 @@ function verifyChiancodeInstantiated() {
 
     set -f
     IFS=
-    pushd "${FABRIC_DIR}" >/dev/null
-    result=$(./chaincode-list-instantiated.sh $org $channel 2>/dev/null)
+    result=$(${BASEDIR}/../run-cli-peer.sh ${org} listChaincodesInstantiated ${channel} ${org} 2>/dev/null)
     printDbg "Result: ${result}"
-    popd >/dev/null
     result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name")
 
     set +f
