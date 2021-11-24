@@ -14,7 +14,7 @@ main () {
   echo -e "\n\n"
   cat "$CHAINCODE_METADATA_DIR/metadata.json" >> "${logFile}"
 
-  #  metadata.json sample: {"path":"/opt/chaincode/2x/node/dns/","type":"node","label":"test"}
+  # sample metadata.json: {"path":"/opt/chaincode/2x/node/dns/","type":"node","label":"test"}
   local type=`cat $CHAINCODE_METADATA_DIR/metadata.json | tr -d '\n' | grep -o  '"type"\s*:\s*"\w*"' | sed -E 's/.*:\s*"(\w*)"/\1/'`
   echo -e "\nChaincode Type: ${type}" >> "${logFile}"
 

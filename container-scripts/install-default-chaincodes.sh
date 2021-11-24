@@ -9,6 +9,9 @@ tree /etc/hyperledger/crypto-config/peerOrganizations/
 
 echo -e "\n\nInstall DNS chaincode\n\n"
 
-installChaincode dns ${VERSIONED_CHAINCODE_PATH}/node/dns node 1.0
+#installChaincode dns ${VERSIONED_CHAINCODE_PATH}/node/dns node 1.0
+installChaincodePackage "${VERSIONED_CHAINCODE_PATH}/node/dns-chaincode.tgz"
+
+
 
 ${BASEDIR}/init-in-open-net.sh
