@@ -4,12 +4,12 @@ export DOMAIN=${DOMAIN:-example.com}
 export MY_IP=${MY_IP}
 #--------------------------------------------
 export BOOTSTRAP_IP=${BOOTSTRAP_IP}
-export BOOTSTRAP_API_PORT=4000
+export BOOTSTRAP_EXTERNAL_PORT=${BOOTSTRAP_EXTERNAL_PORT:-4000}
 export BOOTSTRAP_ORG_DOMAIN=
 #--------------------------------------------
 export ORDERER_TYPE=${ORDERER_TYPE:-RAFT1}
 export ORDERER_PORT=${ORDERER_PORT:-7050}
-#export ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
+export ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 #export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN}
 #export ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
 export ORDERER_NAME=${ORDERER_NAME:-orderer}

@@ -17,7 +17,7 @@ main() {
 
     pushd ../../ >/dev/null
     createOrgEnvFiles ${@}
-
+#if [ -z NO_DEPLOY ]; then
       for org in ${orgs[@]}; do
            eval $(connectOrgMachine "${org}")
            env | grep DOCKER
@@ -38,7 +38,7 @@ main() {
 
       done
     unsetActiveOrg
-
+#fi
     popd >/dev/null
 }
 
@@ -54,7 +54,7 @@ function createOrgEnvFiles() {
 
   local first_org=${1}
   local bootstrap_ip_val=$(getOrgIp "${first_org}")
-  local bootstrap_api_port_val=4000
+  local bootstrap_remote_port_val=4000
   local bootstrap_service_url='http'
   local orderer_type='SOLO'
   local orderer_port=7050
@@ -75,13 +75,13 @@ function createOrgEnvFiles() {
     local result
     local fabric_starter_home
     local bootstrap_ip="${bootstrap_ip_val}"
-    local bootstrap_api_port="${bootstrap_api_port_val}"
+    local bootstrap_remote_port="${bootstrap_remote_port_val}"
 
     fabric_starter_home=$(getFabricStarterHome "${org}")
 
     if [[ "${org}" == "${first_org}" ]]; then
         bootstrap_ip=''
-        bootstrap_api_port=''
+        bootstrap_remote_port=''
     fi
 
     result=$(ORG=${org} \
@@ -90,7 +90,7 @@ function createOrgEnvFiles() {
     API_PORT=${api_port} \
     WWW_PORT=${www_port} \
     BOOTSTRAP_IP=${bootstrap_ip} \
-    BOOTSTRAP_API_PORT=${bootstrap_api_port} \
+    BOOTSTRAP_REMOTE_PORT=${bootstrap_remote_port} \
     BOOTSTRAP_SERVICE_URL=${bootstrap_service_url} \
     ORDERER_TYPE=${orderer_type} \
     ORDERER_PORT=${orderer_port} \
@@ -105,7 +105,7 @@ function createOrgEnvFiles() {
     LDAP_PORT_HTTPS=${ldap_port_https} \
     FABRIC_STARTER_HOME=${fabric_starter_home} \
     ORDERER_GENERAL_LISTENPORT=${orderer_general_listenport} \
-    envSubstWithDefualts "org_env_sample"  > "${org}"_enva)
+    envSubstWithDefualts "org_env_sample"  > "${org}"_env)
 
     if [ -n ${DONT_INCREASE_PORTS} ]; then
         api_port=$((api_port + 1))
