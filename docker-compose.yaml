@@ -361,6 +361,7 @@ services:
       - DOCKER_COMPOSE_EXTRA_ARGS
       - SDK_API_URL
       - TMP_DIR
+      - SKIP_CHECK_PORTS_TIMEOUT_SECONDS
       - PEER_ADDRESS_TEMPLATE=$${PEER_NAME}-$${ORG}.$${DOMAIN}
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG

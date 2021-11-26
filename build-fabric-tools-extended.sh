@@ -3,21 +3,22 @@ FABRIC_STARTER_VERSION=${2:-${FABRIC_STARTER_VERSION:-latest}}
 
 FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
 FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
-VERSION_DIR="${FABRIC_MAJOR_VERSION}x"
+
+[ ${FABRIC_MAJOR_VERSION} -eq 1 ] && CHAINCODE_VERSION_DIR='chaincode' || CHAINCODE_VERSION_DIR="chaincode/${FABRIC_MAJOR_VERSION}x"
 
 set -x
 cached=${3-"--no-cache"}
 
-rm chaincode/${VERSION_DIR}/node/dns-chaincode.tgz 2>/dev/null
-pushd chaincode/${VERSION_DIR}/node/dns
+rm ${CHAINCODE_VERSION_DIR}/node/dns-chaincode.tgz 2>/dev/null
+pushd ${CHAINCODE_VERSION_DIR}/node/dns
     npm install
     npm pack
-    mv dns-2.0.0.tgz ..
+    mv dns-*.tgz ../dns-chaincode.tgz
     rm -rf node_modules
     rm package-lock.json
     cd ../
-    tar xzf dns-2.0.0.tgz
-    rm dns-2.0.0.tgz
+    tar xzf dns-chaincode.tgz
+    rm dns-chaincode.tgz
     mv package src
     tar czf code.tar.gz src
     rm -rf src
