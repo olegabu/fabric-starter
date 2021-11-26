@@ -7,14 +7,13 @@ source ../libs/libs.sh
 export orgs=("$@")
 main() {
     checkArgsPassed
-
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
 
     echo "Deploing network for [${DEPLOYMENT_TARGET}] target. Domain: $DOMAIN, Orgs: ${orgs[@]}"
     echo "\${DOCKER_REGISTRY} is set to: [${DOCKER_REGISTRY}]"
     echo "\${MULTIHOST} is set to: [${MULTIHOST}]"
 
-    export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "
+#    export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "
 
     pushd ../../ >/dev/null
     createOrgEnvFiles ${@}
@@ -29,11 +28,14 @@ main() {
       for org in ${orgs[@]}; do
           eval $(connectOrgMachine "${org}")
           env | grep DOCKER
+          echo "Deploy Fabric version: ${FABRIC_MAJOR_VERSION}"
 	  if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then
-            NO_CLEAN=true ./deploy-2x.sh ${org}
+	    NO_CLEAN=true ./deploy-2x.sh ${org}
 	  else
 	    NO_CLEAN=true ./deploy.sh ${org}
 	  fi
+	  copyDirToContainer cli.peer0 $org $DOMAIN ./chaincode /opt
+
       done
     unsetActiveOrg
 

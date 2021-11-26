@@ -25,7 +25,9 @@ main() {
     export -f connectOrgMachine
     export -f getApiPortDelta
     export -f getWwwPortDelta
-
+    export -f copyDirToContainer
+    export -f containerNameString
+    export -f makeDirInContainer
 }
 
 function getApiPortDelta() {
@@ -39,19 +41,23 @@ function getWwwPortDelta() {
 function setCurrentActiveOrg() {
 
     local org="${1:?Org name is required}"
+    local domain=${2:-${DOMAIN}}
     connectMachine ${org} 1>&2 2>/dev/null 1>/dev/null
 
     export ORG=${org}
-    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${domain})
 }
 
 function connectOrgMachine() {
-  local org=${1}
-  echo $(docker-machine env ${org}.${DOMAIN})
+    local org=${1}
+    local domain=${2:-${DOMAIN}}
+    echo $(docker-machine env ${org}.${domain})
 }
 
 function getFabricStarterHome {
-  echo $(docker-machine ssh ${org}.${DOMAIN} pwd)
+    local org=${1}
+    local domain=${2:-${DOMAIN}}
+    echo $(docker-machine ssh ${org}.${domain} pwd)
 }
 
 
@@ -71,6 +77,41 @@ function getOrgContainerPort () {
     setCurrentActiveOrg "${org}"
     getContainerPort $@
     unsetActiveOrg
+}
+
+function makeDirInContainer () {
+    local container="${1:?Container name is required}"
+    local path="${2:?Directory path is required}"
+    docker container exec -it ${container} mkdir -p "${path}"
+}
+
+function containerNameString() {
+    local service=${1}
+    local org=${2}
+    local domain=${3}
+
+    echo ${service}.${org}.${domain}
+}
+
+function copyDirToContainer () {
+    local service="${1}"
+    local org=${2}
+    local domain=${3}
+    local sourcePath="${4:?Source path is required}"
+    local destinationPath="${5:?Destination path is required}"
+    local container=$(containerNameString ${service} ${org} ${domain})
+    local container_home_dir
+    local parent_dir
+    local container
+
+    eval $(connectOrgMachine "${org}")
+    makeDirInContainer ${container} "${destinationPath}"
+    container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
+    parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)
+    echo "docker cp ${sourcePath} ${container}:${parent_dir}${destinationPath}"
+    docker cp ${sourcePath} ${container}:"${parent_dir}${destinationPath}"
+    docker container exec -it ${container} ls -la "${parent_dir}${destinationPath}" >/dev/null
+    setExitCode [[ $? == 0 ]]
 }
 
 main $@
