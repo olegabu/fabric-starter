@@ -29,7 +29,11 @@ main() {
       for org in ${orgs[@]}; do
           eval $(connectOrgMachine "${org}")
           env | grep DOCKER
-          NO_CLEAN=true ./deploy.sh ${org}
+	  if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then
+            NO_CLEAN=true ./deploy-2x.sh ${org}
+	  else
+	    NO_CLEAN=true ./deploy.sh ${org}
+	  fi
       done
     unsetActiveOrg
 
@@ -99,7 +103,7 @@ function createOrgEnvFiles() {
     LDAP_PORT_HTTPS=${ldap_port_https} \
     FABRIC_STARTER_HOME=${fabric_starter_home} \
     ORDERER_GENERAL_LISTENPORT=${orderer_general_listenport} \
-    envSubstWithDefualts "org_env_sample"  > "${org}"_env)
+    envSubstWithDefualts "org_env_sample"  > "${org}"_enva)
 
     if [ -n ${DONT_INCREASE_PORTS} ]; then
         api_port=$((api_port + 1))

@@ -56,6 +56,7 @@ function downloadOrdererMSP() {
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" "${serverDNSName}" "${remoteOrdererDOMAIN}" "${remoteOrdererName}.${remoteOrdererDOMAIN}"
 #    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    mkdir -p crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls
     ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
@@ -75,6 +76,9 @@ function downloadMSP() {
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
     local DIRECTORY=crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
     set -x
+    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
+    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts
+    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts
     ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
     ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
     ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem

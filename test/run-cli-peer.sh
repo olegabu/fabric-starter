@@ -12,4 +12,4 @@ FABRIC_DIR=${FABRIC_DIR:-$BASEDIR/..}
 source ${FABRIC_DIR}/org_env 2>/dev/null
 [ $? -ne 0 ] && source ${FABRIC_DIR}/${org}_env;
 
-ENROLL_ID=${ENROLL_ID} COMPOSE_PROJECT_NAME=${ORG} docker-compose -f ${FABRIC_DIR}/docker-compose.yaml exec cli.peer bash -c "${libcommand}; ${command}"
+ENROLL_ID=${ENROLL_ID} COMPOSE_PROJECT_NAME=${org} docker-compose -f ${FABRIC_DIR}/docker-compose.yaml exec cli.peer bash -c "${libcommand}; ${command}" 

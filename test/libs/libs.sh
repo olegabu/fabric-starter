@@ -14,8 +14,8 @@ main() {
 
     #export FABRIC_VERSION=${FABRIC_VERSION:-1.4.9}
     export TEST_CHAINCODE_DIR='test'
-    FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
-    FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
+    export FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
+    export FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
 
     export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
     if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
@@ -702,7 +702,6 @@ function queryPeer() {
     result=$(${BASEDIR}/../run-cli-peer.sh ${org} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
     printDbg "Query: ${query}"
     printDbg "Subquery: ${subquery}"
-
     result=$(echo "${result}" | jq ${query} |  jq -r ${subquery}   2>"${TMP_LOG_FILE}")
     printDbg "Parse result: $result"
     echo $result
@@ -726,10 +725,10 @@ function verifyOrgIsInChannel() {
     local channel=${1}
     local org=${2}
     local org2=${3}
-    local domain=${4}
+    local domain=${4:-$DOMAIN}
 
     local result
-
+    printDbg "Channel: ${channel} Org: ${org} Org2: ${org2} Domain: ${domain}"
     result=$(queryPeer ${channel} ${org} ${domain} ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
     printDbg "${result}"
     
@@ -990,6 +989,7 @@ function checkContainersExist() {
     
     local presence
     local container
+    local exitCode=true
     
     setCurrentActiveOrg ${org}
     for container in ${containersList[@]}; do
@@ -997,9 +997,10 @@ function checkContainersExist() {
         presence=$(docker ps -q -f "name=${container}.${orgDomain}")
         if [ -z "${presence}" ]; then
             printDbg "${BRIGHT}${RED}Container not running: ${container}${NORMAL}"
-            setExitCode false
+            exitCode=false
         fi
     done
+    setExitCode ${exitCode}
 }
 
 

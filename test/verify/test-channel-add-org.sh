@@ -10,7 +10,7 @@ domain=${4:-${DOMAIN:-"example.com"}}
 
 printToLogAndToScreenBlue "\nVerifing if the [${orgAdd}] added to [${channelName}]"
 
-setCurrentActiveOrg ${orgAdd}
+setCurrentActiveOrg ${org}
 verifyOrgIsInChannel "${channelName}" "${org}" "${orgAdd}" "${domain}"
 
 printResultAndSetExitCode "Organization [${orgAdd}] is in the channel [$channelName]"
