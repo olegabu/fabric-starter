@@ -34,8 +34,9 @@ services:
       - RAFT_NODES_COUNT=${RAFT_NODES_COUNT:-1}
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - USER_ID
     working_dir: /etc/hyperledger
-    command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; "
+    command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; set -x; chown -R \${USER_ID} crypto-config; set +x"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
 #      - ./templates:/etc/hyperledger/templates # for local debug

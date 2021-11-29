@@ -3,8 +3,9 @@
 ORG=${1:-${ORG:-org1}}
 DOMAIN=${2:-${DOMAIN:-example.com}}
 ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN}
-REMOTE_ORDERER_DOMAIN=${REMOTE_ORDERER_DOMAIN:-${DOMAIN}}
+REMOTE_ORDERER_DOMAIN=${BOOTSTRAP_ORDERER_DOMAIN:-${BOOTSTRAP_DOMAIN:-$DOMAIN}}
 ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
+
 ORDERER_NAMES=${3:-${ORDERER_NAMES:-orderer:${ORDERER_GENERAL_LISTENPORT:-7050},raft1:7150,raft2:7250}}
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 : ${CHANNEL_AUTO_JOIN:=${CHANNEL_AUTO_JOIN-${DNS_CHANNEL:-common}}}
@@ -35,11 +36,21 @@ function main() {
             export ORDERER_DOMAIN=${ORDERER_DOMAIN:-"osn-${ORG}.${DOMAIN}"}
             info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
             set -x
-            if [ ${CHANNEL_AUTO_JOIN} ]; then
-                BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh ${REMOTE_ORDERER_DOMAIN}
-            else
-                BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-prepare-new-consenter.sh ${REMOTE_ORDERER_DOMAIN}
-            fi
+#            if [ ${CHANNEL_AUTO_JOIN} ]; then
+                BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT}  DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-start-and-join-new-consenter.sh ${REMOTE_ORDERER_DOMAIN}
+#            else
+#                progressFile="crypto-config/orderer-prepared-with-${REMOTE_ORDERER_DOMAIN}.prepared"
+#                if [ ! -f "${progressFile}" ]; then
+#                    BOOTSTRAP_IP=${BOOTSTRAP_IP} WWW_PORT=${ORDERER_WWW_PORT} DOCKER_COMPOSE_ORDERER_ARGS=${DOCKER_COMPOSE_ORDERER_ARGS} raft/2_raft-prepare-new-consenter.sh ${REMOTE_ORDERER_DOMAIN}
+#                    [ "$?" -eq 0 ] && touch "${progressFile}" # set mark that prepare stage has processed
+#                else
+#                    # set hosts dns info
+#                    COMPOSE_PROJECT_NAME=${ORDERER_NAME}.${ORDERER_DOMAIN} docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --rm --no-deps cli.orderer \
+#                        bash -c "echo -e '\n${BOOTSTRAP_ORDERER_IP:-$BOOTSTRAP_IP} ${BOOTSTRAP_ORDERER_NAME:-orderer}.${REMOTE_ORDERER_DOMAIN} www.${REMOTE_ORDERER_DOMAIN}\n' >> /etc/hosts ; \
+#                                 echo -e '${BOOTSTRAP_RAFT1_IP:-$BOOTSTRAP_IP} ${BOOTSTRAP_RAFT1_NAME:-raft1}.${REMOTE_ORDERER_DOMAIN}\n' >> /etc/hosts ; \
+#                                 echo -e '${BOOTSTRAP_RAFT2_IP:-$BOOTSTRAP_IP} ${BOOTSTRAP_RAFT2_NAME:-raft2}.${REMOTE_ORDERER_DOMAIN}\n' >> /etc/hosts"
+#                fi
+#            fi
             returnCode=$?
             set +x
         fi
@@ -67,13 +78,11 @@ function parseOrdererNames() {
 function parseOrdererName_Port() {
     local index=${1:?Index of orderer name is required}
     local ordererName_Port=${2:?ordererName_Port(name:port) is required}
-
     local ordererConf
     IFS=':' read -r -a ordererConf <<< ${ordererName_Port};
-    ordererConf=($ordererConf)
+    #ordererConf=($ordererConf)
     local ordererName=${ordererConf[0]}
     local ordererPort=${ordererConf[1]}
-
     export ORDERER_NAME_${index}=${ordererName}
     export RAFT${index}_PORT=${ordererPort}
     [ $index -eq 0 ] && export ORDERER_GENERAL_LISTENPORT=${ordererPort}
