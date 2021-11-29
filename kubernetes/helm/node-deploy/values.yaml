@@ -15,7 +15,8 @@ ordererPort: 7050
 peer0Port: 7051
 dnsChaincodePort: 9999
 
-
+#ordererNames: orderer
+ordererNames: orderer,raft1,raft2
 
 tmpDir: /tmp
 
@@ -27,13 +28,13 @@ ordererGenerate:
 
 resources:
   CPULIMIT: 200m
-  MEMORYLIMIT: 256Mi
+  MEMORYLIMIT: 128Mi
   peer:
     CPULIMIT: 200m
-    MEMORYLIMIT: 256Mi
+    MEMORYLIMIT: 128Mi
   orderer:
     CPULIMIT: 200m
-    MEMORYLIMIT: 256Mi
+    MEMORYLIMIT: 128Mi
   sdk:
     CPULIMIT: 200m
     MEMORYLIMIT: 256Mi
@@ -42,7 +43,7 @@ resources:
     MEMORYLIMIT: 256Mi
   dnsChaincode:
     CPULIMIT: 200m
-    MEMORYLIMIT: 256Mi
+    MEMORYLIMIT: 128Mi
 
 
 orderer:

@@ -41,4 +41,6 @@ spec:
               value: "{{ default 7050 .Values.ordererPort }}"
             - name: TMP_DIR
               value: {{ .Values.tmpDir }}
+            - name: RAFT_NODES_COUNT
+              value: "{{ len (split "," .Values.ordererNames) }}"
 

@@ -1,13 +1,18 @@
+{{ range $ordererName := split "," .Values.ordererNames }}
+  {{- $ordererValues := dict "ordererName" $ordererName "domain" $.Values.domain "ordererDomain" $.Values.ordererDomain "certificatePathes" $.Values.orderer.certificatePathes "Values" (dict "ordererName" $ordererName) -}}
+
+---
 kind: Service
 apiVersion: v1
 metadata:
-  name: orderer
-  namespace: {{ .Values.NAMESPACE }}
+  name: {{ $ordererName }}
 spec:
   ports:
     - protocol: TCP
-      name: http
-      port: 7050
-      targetPort: 7050
+      name: ordererport
+      port: {{ $.Values.ordererPort }}
+      targetPort: {{ $.Values.ordererPort }}
   selector:
-    app: orderer-{{ .Values.org }}
+    app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+
+{{ end }}

@@ -9,7 +9,7 @@ data:
   PEER_ORG_NAME: {{ tpl .Values.peerOrgName . }}
   PEER0_PORT: "{{ .Values.peer0Port | default 7051 }}"
 
-  ORDERER_NAME: {{ .Values.ORDERER_NAME | default "orderer"  }}
+  ORDERER_NAME: {{ .Values.ordererName | default "orderer"  }}
   ORDERER_DOMAIN: {{ default .Values.domain .Values.ordererDomain }}
 
   FABRIC_VERSION: {{ .Values.FABRIC_VERSION }}
@@ -31,9 +31,9 @@ data:
 
 
 
-  ORDERER_GENERAL_LOCALMSPID: 'orderer.{{ .Values.domain }}'
-  ORDERER_GENERAL_LOCALMSPDIR: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/msp
-  ORDERER_GENERAL_LISTENPORT: '7050'
+  ORDERER_GENERAL_LOCALMSPID: {{ include "orderer.nameDomain" .Values }}
+  ORDERER_GENERAL_LOCALMSPDIR: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/{{ include "orderer.nameDomain" .Values}}/msp
+  ORDERER_GENERAL_LISTENPORT: "7050"
   ORDERER_BATCH_TIMEOUT: "5"
 
   ORDERER_GENERAL_TLS_ENABLED: 'true'

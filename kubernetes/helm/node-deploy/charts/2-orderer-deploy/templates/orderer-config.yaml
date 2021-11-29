@@ -1,9 +1,12 @@
+{{ range $ordererName := split "," .Values.ordererNames }}
+  {{- $ordererValues := dict "ordererName" $ordererName "domain" $.Values.domain "ordererDomain" $.Values.ordererDomain "certificatePathes" $.Values.orderer.certificatePathes "Values" (dict "ordererName" $ordererName) -}}
+
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: orderer-{{ .Values.org }}
+  name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 data:
-  DOMAIN: {{ .Values.domain }}
   processor.timeout: '1'
   cnft.wallet.address: 'http://egress-nginx.${NAMESPACE}.svc:8088/cnft-gate'
   dfa.integration.service.port: '9185'
@@ -11,11 +14,17 @@ data:
   DFA_INTEGRATION_JAVA_TOOL_OPTIONS: '-XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=95.0  -Dfile.encoding=UTF-8'
 
   ORDERER_GENERAL_LISTENADDRESS: '0.0.0.0'
-  # ORDERER_GENERAL_LISTENPORT: '7050' # from common-cm
   ORDERER_GENERAL_GENESISMETHOD: 'file'
-#  ORDERER_GENERAL_GENESISFILE: '/etc/hyperledger/channel-artifacts/genesis.block'
   ORDERER_GENERAL_BOOTSTRAPFILE: '/etc/hyperledger/channel-artifacts/genesis.block'
 
-#      fabric.cfg.path: '$BASE_DIR/hlf/config'
-#      orderer.consensus.snapdir: '$BASE_DIR/persistence/orderer/etcdraft/snapshot'
-#      orderer.consensus.waldir: '$BASE_DIR/persistence/orderer/etcdraft/wal'
+  ORDERER_GENERAL_LOCALMSPID: {{ include "orderer.nameDomain" $ordererValues }}
+  ORDERER_GENERAL_LOCALMSPDIR: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/msp
+  ORDERER_GENERAL_LISTENPORT: "{{ $.Values.ordererPort }}"
+
+  ORDERER_GENERAL_TLS_PRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
+  ORDERER_GENERAL_TLS_CERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
+  ORDERER_GENERAL_TLS_ROOTCAS: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/ca.crt
+  ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
+  ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
+
+{{ end }}

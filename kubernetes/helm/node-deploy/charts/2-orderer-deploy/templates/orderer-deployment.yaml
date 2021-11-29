@@ -1,14 +1,17 @@
+{{ range $ordererName := split "," .Values.ordererNames }}
+  {{- $ordererValues := dict "ordererName" $ordererName "domain" $.Values.domain "ordererDomain" $.Values.ordererDomain "certificatePathes" $.Values.orderer.certificatePathes "Values" (dict "ordererName" $ordererName) -}}
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orderer-deployment-{{ .Values.org }}
+  name: orderer-deployment-{{ include "orderer.nameDomain" $ordererValues }}
   labels:
-    app: orderer-{{ .Values.org }}
-    name: orderer-{{ .Values.org }}
+    app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 spec:
   selector:
     matchLabels:
-      app: orderer-{{ .Values.org }}
+      app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,26 +19,26 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: orderer-{{ .Values.org }}
+        app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
     spec:
       volumes:
         - name: genesis-block
           secret:
-            secretName: genesis-block-{{ .Values.org }}
+            secretName: genesis-block-{{ $.Values.org }}
 
         - name: certs
           projected:
             sources:
               - secret:
-                  name: certs-{{ .Values.org }}
+                  name: orderer-certs-{{ include "orderer.nameDomain" $ordererValues }}
                   items:
-                    {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                    {{- include "certificates.decode" (mergeOverwrite (deepCopy $) $ordererValues) | nindent 12 }}
 
       containers:
         - name: orderer
           ports:
             - name: orderer-port
-              containerPort: 7050
+              containerPort: {{ $.Values.ordererPort }}
               protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
@@ -46,49 +49,27 @@ spec:
               mountPath: /etc/hyperledger/channel-artifacts
 
           image: >-
-            {{ tpl .Values.images.orderer . }}
+            {{ tpl $.Values.images.orderer $ }}
 {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
-                name: common-{{ .Values.org }}
+                name: common-{{ $.Values.org }}
             - configMapRef:
-                name: orderer-{{ .Values.org }}
+                name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           env:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ default "db-password" .Values.dbPasswordSecret }}
+                  name: {{ default "db-password" $.Values.dbPasswordSecret }}
                   optional: true
                   key: password
 
             - name: ORDERER_POSTGRESLEDGER_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
 
-            - name: ORDERER_GENERAL_LOCALMSPDIR
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/msp
-            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.key
-            - name: ORDERER_GENERAL_TLS_CERTIFICATE
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.crt
-            - name: ORDERER_GENERAL_TLS_ROOTCAS
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/ca.crt
-            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.crt
-            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.key
-            - name: ORDERER_CA
-              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/tlsca/tlsca.{{ .Values.domain }}-cert.pem
+            {{- include "resources" (merge (deepCopy $) $.Values.resources.orderer)  | nindent 4 }}
 
-            {{- include "resources" (merge (deepCopy .) .Values.resources.orderer)  | nindent 4 }}
-
-#          resources:
-#            limits:
-#              cpu: ${CPULIMIT}
-#              memory: ${MEMORYLIMIT}
-#            requests:
-#              cpu: ${CPUREQUEST}
-#              memory: ${MEMORYREQUEST}
           #              readinessProbe:
           #                httpGet:
           #                  path: /health/check
@@ -99,3 +80,4 @@ spec:
           #                  path: /health/check
           #                  port: 8080
           #                initialDelaySeconds: 10
+{{ end }}

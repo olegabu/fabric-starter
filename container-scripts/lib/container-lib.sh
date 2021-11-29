@@ -88,10 +88,11 @@ function downloadMSP() {
 function certificationsToEnv() {
     local org=${1:?Org is required}
     local domain=${2:-${DOMAIN}}
+    local certsSourceDir=${3:-crypto-config}
     echo "Put certs to env for $org.$domain"
-    local mspDir="crypto-config/peerOrganizations/${org}.${domain}/msp"
+    local mspDir="${certsSourceDir}/peerOrganizations/${org}.${domain}/msp"
     if [ "${org}" == "orderer" ]; then
-        mspDir="crypto-config/ordererOrganizations/${domain}/msp";
+        mspDir="${certsSourceDir}/ordererOrganizations/${domain}/msp";
         org=""
     fi
     export ORG_ADMIN_CERT=`eval "cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
