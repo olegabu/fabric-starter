@@ -12,7 +12,6 @@ main() {
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
-    #export FABRIC_VERSION=${FABRIC_VERSION:-1.4.9}
     export TEST_CHAINCODE_DIR='test'
     export FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
     export FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
@@ -20,11 +19,7 @@ main() {
     export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
     if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
         export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
-      #  export WGET_CMD="wget -P"
-      #  export BASE64_UNWRAP_CODE="| tr -d '\n'"
     fi
-#echo "-------------------- $VERSIONED_CHAINCODE_PATH ---------------------------"
-    #source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics-test.sh
 
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
@@ -348,7 +343,7 @@ function printResultAndSetExitCode() {
 #__________________________________ API-related functions ___________________________________________
 
 function queryContainerNetworkSettings() {
-    local parameter="${1}"
+    local parameter="${1}" # [HostPort|HostIp]
     local container="${2}"
     local organization="${3}"
     local domain="${4}"
@@ -415,10 +410,6 @@ function curlRequest() {
     local exitCode
     local body
     local httpStatusCode
-
-    #echo "curl --max-time ${curlTimeout} --compressed -sw \"%{http_code}\" \"${url}\" -X POST  -d \"${cdata}\" -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H \"Content-Type: application/json\" -H \"Authorization: Bearer ${wtoken}\"" > /dev/tty
-    #set -x
-    #res=$(curl --max-time ${curlTimeout} --compressed -sw "%{http_code}" "${url}" -X POST -d "${cdata}" -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     res=$(curl --max-time ${curlTimeout} -sw "%{http_code}" "${url}" -X POST -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     exitCode=$?
 

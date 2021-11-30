@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source container-scripts/lib/container-lib.sh 2>/dev/null
+source container-scripts/lib/container-lib.sh 2>/dev/null #prevent source stdout to be passed as a part of functions return value
 source ../lib/container-lib.sh 2>/dev/null # for IDE code completion
 
 usageMsg="$0 channelName chaincodeName [init args='[]'] [version=1.0] [privateCollectionPath] [endorsementPolicy]"

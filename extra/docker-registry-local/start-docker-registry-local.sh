@@ -23,7 +23,6 @@ docker-compose -f ${BASEDIR}/docker-compose-local-docker.yaml up -d
 
 dockerImages=(\
     "hyperledger/fabric-ccenv:${FABRIC_VERSION}" \
-    "hyperledger/fabric-nodeenv:${FABRIC_VERSION}" \
     "hyperledger/fabric-orderer:${FABRIC_VERSION}" \
     "hyperledger/fabric-peer:${FABRIC_VERSION}" \
     "hyperledger/fabric-ca:${FABRIC_CA_VERSION}" \
@@ -32,6 +31,7 @@ dockerImages=(\
     "olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}" \
     "olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}"
 #    "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
+# "hyperledger/fabric-nodeenv:${FABRIC_VERSION}" \
     )
 
 function checkError() {

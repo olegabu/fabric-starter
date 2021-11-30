@@ -13,7 +13,7 @@ function installChaincode {
     local lang=${3:-golang}
     local chaincodeVersion=${4:-1.0}
 
-    echo "Install chaincode $chaincodeName  $chaincodePath $lang $chaincodeVersion"
+    echo "Install chaincode 1.x $chaincodeName  $chaincodePath $lang $chaincodeVersion"
     CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode install -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $lang
 }
 
