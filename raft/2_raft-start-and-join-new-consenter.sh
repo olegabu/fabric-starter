@@ -40,14 +40,18 @@ if [[ ${CHANNEL_AUTO_JOIN} ]]; then
     echo curl completed
     sleep 2
     touch "${progressFile}" # set mark that prepare stage has processed
+else
+    echo -e "\nCHANNEL_AUTO_JOIN is set to false. Skipping auto-connect to Raft service"
 fi
 
 #docker-compose ${DOCKER_COMPOSE_ORDERER_ARGS} run --no-deps cli.orderer \
 #  bash -c "echo -e '${REMOTE_IP}\t www.${REMOTE_DOMAIN} orderer.${REMOTE_DOMAIN} ${ORDERER_NAME_2:-raft1}.${REMOTE_DOMAIN} ${ORDERER_NAME_3:-raft2}.${REMOTE_DOMAIN}' >> /etc/hosts"
 
 if [[ -f "${progressFile}" ]]; then
+    echo -e "\nFound stage file ${progressFile}. Continue starting orderer\n"
     raft/4_raft-start-consenter.sh ${REMOTE_ORDERER_DOMAIN} www.${REMOTE_ORDERER_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
 else
+  echo -e "\nSkip starting orderer. Waiting for manual integration to raft service. Creation stage file ${progressFile}.\n"
   touch "${progressFile}" # set mark that prepare stage has processed
 fi
 

@@ -53,11 +53,11 @@ function constructConfigTxAndCryptogenConfigs() {
     else
         echo -e "\n\nUsing RAFT_NODES_COUNT: ${RAFT_NODES_COUNT}, ORDERER_NAME:$ORDERER_NAME\n\n"
         writeCryptogenOrgConfig "$ORDERER_NAME" true
-        writeConfigtxOrgConfig "OrdererOrg" $ORDERER_NAME $ORDERER_DOMAIN ${RAFT0_PORT:-${ORDERER_GENERAL_LISTENPORT}} ${CONSENTER_ID} true
+        writeConfigtxOrgConfig "OrdererOrg" $ORDERER_NAME $ORDERER_DOMAIN ${RAFT0_CONSENTER_PORT:-${ORDERER_GENERAL_LISTENPORT}} ${CONSENTER_ID} true
         local ind;
         for ((ind=1; ind<${RAFT_NODES_COUNT}; ind++)) do
             writeCryptogenOrgConfig "${ORDERER_NAME_PREFIX}${ind}"
-            local ordererPortVar="RAFT${ind}_PORT"
+            local ordererPortVar="RAFT${ind}_CONSENTER_PORT"
             local consenterId=$((CONSENTER_ID + ind))
             writeConfigtxOrgConfig "${ORDERER_NAME_PREFIX}${ind}Org" "${ORDERER_NAME_PREFIX}${ind}" $ORDERER_DOMAIN ${!ordererPortVar:-${ORDERER_GENERAL_LISTENPORT}} ${consenterId}
         done

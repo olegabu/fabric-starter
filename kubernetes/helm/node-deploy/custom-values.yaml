@@ -6,7 +6,7 @@ peerName: peer0
 domain: &domain default
 ordererDomain: *domain
 #bootstrapIp: ''
-#myIp: ""
+#myIp: ""cta
 
 enroll_secret: adminpw
 

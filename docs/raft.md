@@ -29,9 +29,9 @@ export ORG2_IP=<IP2>
 
 #export FABRIC_STARTER_HOME=/home/docker # for docker-machine deployment
 
-export RAFT0_PORT=7050 \
-       RAFT1_PORT=7150 \
-       RAFT2_PORT=7250
+export RAFT0_CONSENTER_PORT=7050 \
+       RAFT1_CONSENTER_PORT=7150 \
+       RAFT2_CONSENTER_PORT=7250
 ```
 
 ### Start the ordering service
@@ -53,7 +53,7 @@ DOMAIN=$ORDERER_DOMAIN2 raft/2_raft-prepare-new-consenter.sh
 
 * **Org1** node: add new orderer node config to system channel
 ```bash
-DOMAIN=$ORDERER_DOMAIN1 raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN2:-${DOMAIN}} ${ORG2_IP} ${RAFT0_PORT} 79 
+DOMAIN=$ORDERER_DOMAIN1 raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN2:-${DOMAIN}} ${ORG2_IP} ${RAFT0_CONSENTER_PORT} 79 
 ```
 * Wait for new config is replicated between nodes 
 

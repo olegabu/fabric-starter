@@ -26,5 +26,6 @@ data:
   ORDERER_GENERAL_TLS_ROOTCAS: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/ca.crt
   ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
   ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
+  FABRIC_LOGGING_SPEC: DEBUG
 
 {{ end }}

@@ -15,8 +15,8 @@ ordererPort: 7050
 peer0Port: 7051
 dnsChaincodePort: 9999
 
-#ordererNames: orderer
-ordererNames: orderer,raft1,raft2
+ordererNames: orderer
+#ordererNames: orderer,raft1,raft2
 
 tmpDir: /tmp
 

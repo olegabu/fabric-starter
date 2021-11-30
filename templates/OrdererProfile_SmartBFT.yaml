@@ -14,7 +14,7 @@
           # replicated under the Orderer.Addresses key above.
           Consenters:
             #        - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
-            #          Port: ${RAFT0_PORT}
+            #          Port: ${RAFT0_CONSENTER_PORT}
             #          ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
             #          ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
             %RAFT_CONSENTERS%
