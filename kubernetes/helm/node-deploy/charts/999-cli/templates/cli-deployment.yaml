@@ -3,8 +3,8 @@ kind: Deployment
 metadata:
   name: cli-deployment-{{ .Values.org }}
   labels:
-    app: dns
-    name: dns
+    app: cli-{{ .Values.org }}
+    name: cli-{{ .Values.org }}
 spec:
   selector:
     matchLabels:
