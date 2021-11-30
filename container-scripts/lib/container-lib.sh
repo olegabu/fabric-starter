@@ -195,7 +195,7 @@ function updateChannelConfig() {
     local anchorPort=${4}
     local domain=${5:-$DOMAIN}
     certificationsToEnv $org $domain
-    insertObjectIntoChannelConfig ${channel} ${org} ${templateFile} ${anchorPort} ${domain}
+    insertObjectIntoChannelConfig $@
     createConfigUpdateEnvelope $channel
 }
 
