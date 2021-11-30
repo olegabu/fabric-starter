@@ -26,7 +26,6 @@ main() {
     export -f getApiPortDelta
     export -f getWwwPortDelta
     export -f copyDirToContainer
-    export -f containerNameString
     export -f makeDirInContainer
 }
 
@@ -82,15 +81,8 @@ function getOrgContainerPort () {
 function makeDirInContainer () {
     local container="${1:?Container name is required}"
     local path="${2:?Directory path is required}"
-    docker container exec -it ${container} mkdir -p "${path}"
-}
 
-function containerNameString() {
-    local service=${1}
-    local org=${2}
-    local domain=${3}
-
-    echo ${service}.${org}.${domain}
+    dockerMakeDirInContainer ${container} "${path}"
 }
 
 function copyDirToContainer () {
@@ -99,19 +91,8 @@ function copyDirToContainer () {
     local domain=${3}
     local sourcePath="${4:?Source path is required}"
     local destinationPath="${5:?Destination path is required}"
-    local container=$(containerNameString ${service} ${org} ${domain})
-    local container_home_dir
-    local parent_dir
-    local container
 
-    eval $(connectOrgMachine "${org}")
-    makeDirInContainer ${container} "${destinationPath}"
-    container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
-    parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)
-    echo "docker cp ${sourcePath} ${container}:${parent_dir}${destinationPath}"
-    docker cp ${sourcePath} ${container}:"${parent_dir}${destinationPath}"
-    docker container exec -it ${container} ls -la "${parent_dir}${destinationPath}" >/dev/null
-    setExitCode [[ $? == 0 ]]
+    dockerCopyDirToContainer ${service} ${org} ${domain} "${sourcePath}" "${destinationPath}"
 }
 
 main $@

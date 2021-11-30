@@ -22,6 +22,8 @@ main() {
     export -f connectOrgMachine
     export -f getApiPortDelta
     export -f getWwwPortDelta
+    export -f copyDirToContainer
+    export -f makeDirInContainer
 
     source ${LIBDIR}/common-test-env.sh $@
 }
@@ -62,13 +64,37 @@ function unsetActiveOrg {
     :
 }
 
-
 function getFabricContainersList() {
     local result=$(docker container ls -a -q | xargs -I {} docker container inspect -f "{{index .NetworkSettings.Networks}} {{.Name}} {{.State.Running}}" {} | grep fabric-starter | cut -d ' ' -f 2,3 | sed -e 's/\///')
     set -f
     IFS=
     echo ${result}
     set +f
+}
+
+function getOrgContainerPort () {
+    local org="${1:?Org name is required}"
+
+    setCurrentActiveOrg "${org}"
+    getContainerPort $@
+    unsetActiveOrg
+}
+
+function makeDirInContainer () {
+    local container="${1:?Container name is required}"
+    local path="${2:?Directory path is required}"
+
+    dockerMakeDirInContainer ${container} "${path}"
+}
+
+function copyDirToContainer () {
+    local service="${1}"
+    local org=${2}
+    local domain=${3}
+    local sourcePath="${4:?Source path is required}"
+    local destinationPath="${5:?Destination path is required}"
+
+    dockerCopyDirToContainer ${service} ${org} ${domain} "${sourcePath}" "${destinationPath}"
 }
 
 main $@

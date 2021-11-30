@@ -5,6 +5,7 @@
 export ARGS_PASSED=("$@")
 source ../libs/libs.sh
 export orgs=("$@")
+export RENEW_IMAGES=${RENEW_IMAGES:-true}
 main() {
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
