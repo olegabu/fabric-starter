@@ -123,9 +123,10 @@ function listChaincodesInstalled() {
     local org=${2}
     local result
 
+
+    result=$(peer lifecycle chaincode queryinstalled --output json)
     set -f
     IFS=
-    result=$(peer lifecycle chaincode queryinstalled --output json)
     echo "${result}" | jq -r '.[][].package_id' | cut -d ':' -f 1 | rev | cut -d '_' -f 2- | rev
     set +f
 }
@@ -136,10 +137,12 @@ function listChaincodesInstantiated() {
     local org=${2}
     local result
 
-    set -f
-    IFS=
+
     #result=$(peer lifecycle chaincode querycommitted -C ${channel} -O json)
     result=$(peer lifecycle chaincode querycommitted -C ${channel} -O json)
+
+    set -f
+    IFS=
     echo "${result}"  | jq -r '.[][] | .name'
     set +f
 }
