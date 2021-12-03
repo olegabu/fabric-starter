@@ -1,9 +1,8 @@
 #!/usr/bin/env /bin/bash
 
 ORG=${1:-${ORG:-org1}}
-DOMAIN=${2:-${DOMAIN:-example.com}}
+REMOTE_ORDERER_DOMAIN=${2:-${DOMAIN:-example.com}}
 ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN}
-REMOTE_ORDERER_DOMAIN=${BOOTSTRAP_ORDERER_DOMAIN:-${BOOTSTRAP_DOMAIN:-$DOMAIN}}
 ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 
 ORDERER_NAMES=${3:-${ORDERER_NAMES:-orderer:${ORDERER_GENERAL_LISTENPORT:-7050},raft1:7150,raft2:7250}}
@@ -33,6 +32,12 @@ function main() {
         fi
     else
         if [ "${ORDERER_TYPE}" == "RAFT" ]; then
+            if [[ "${REMOTE_ORDERER_DOMAIN}" == "${ORDERER_DOMAIN}" ]]; then
+                info "BOOTSTRAP_ORDERER_DOMAIN($BOOTSTRAP_ORDERER_DOMAIN) (or BOOTSTRAP_DOMAIN($BOOTSTRAP_DOMAIN)) shoud be different than ORDERER_DOMAIN($ORDERER_DOMAIN) for RAFT service"
+                echo "Exiting"
+                exit 1;
+            fi
+
             export ORDERER_DOMAIN=${ORDERER_DOMAIN:-"osn-${ORG}.${DOMAIN}"}
             info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
             set -x

@@ -10,8 +10,11 @@ import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.ContractRouter;
 import org.hyperledger.fabric.contract.annotation.*;
 import org.hyperledger.fabric.shim.*;
+import org.hyperledger.fabric.shim.ledger.KeyValue;
+import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.io.IOException;
+import java.util.*;
 
 @Contract(
         name = "DnsChaincode",
@@ -34,19 +37,157 @@ public final class DnsChaincode implements ContractInterface {
     private final Genson genson = new Genson();
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public Object put(final Context ctx, final String key, final Object value) {
-        if (key == null || value == null) {
-            throw new ChaincodeException("Key and Value should not be empty");
+    public void registerOrg(final Context ctx, final String orgSerialized) {
+        System.out.println("registerOrg: " + orgSerialized);
+
+        Org orgObj = genson.deserialize(orgSerialized, Org.class);
+        System.out.println("org : " + orgObj);
+
+        String peerName = orgObj.peerName != null ? orgObj.peerName : "peer0";
+        String peerPort = orgObj.peerPort;
+
+        if (orgObj.getOrgId() == null || orgObj.getDomain() == null || (orgObj.peerPort == null && orgObj.getPeers() == null)) {
+            throw new ChaincodeException("orgId, domain and (peerPort or peers) properties are required");
         }
+        String orgNameDomain = orgObj.getOrgId() + "." + orgObj.getDomain();
+//        String[] dnsNames = [{ip: orgObj.orgIp, dns: peerName === 'peer0' ? `www.${orgNameDomain}` : ''}]
+
+        List<DnsRecord> dnsNames = new ArrayList<>();
+        if (orgObj.peerPort != null) {
+//            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}-${orgNameDomain}`})
+            dnsNames.add(new DnsRecord(orgObj.getOrgIp(), peerName + "-" + orgObj.getOrgId() + "." + orgObj.getDomain()));
+        }
+
+        else if (orgObj.getPeers()!=null) {
+/* TODO             Arrays.stream(orgObj.getPeers()).map(peer->{
+
+            })
+            const peersDns = _.map(_.keys(peers), peersPeerName = > new Object({
+                    ip:peers[peersPeerName].ip,
+                    dns: `$ {
+                peersPeerName
+            } -$ {
+                orgNameDomain
+            }`
+            }))
+            dnsNames.push(...peersDns)
+            logger.debug('Pushed peers dns:', dnsNames)*/
+        }
+
+        String dnsSerialized = get(ctx, "dns");
+        Map<String, String> storedDnsRecords;
+        if (dnsSerialized == null || "".equals(dnsSerialized)) {
+            storedDnsRecords = new LinkedHashMap<>();
+        } else {
+            storedDnsRecords = genson.deserialize(dnsSerialized, LinkedHashMap.class);
+        }
+
+        dnsNames.stream().forEach(dnsRecord -> {
+            String dnsLine = storedDnsRecords.containsKey(dnsRecord.getIp()) ? storedDnsRecords.get(dnsRecord.getIp()) : "";
+            if (!dnsLine.contains(" " + dnsRecord.getRecord())) {
+                dnsLine = dnsLine + " " + dnsRecord.getRecord();
+                storedDnsRecords.put(dnsRecord.getIp(), dnsLine);
+            }
+        });
+
+        this.put(ctx, "dns", genson.serialize(storedDnsRecords));
+
+
+        String orgsSerialized = get(ctx, "orgs");
+        Map<String, Org> orgs = genson.deserialize(orgsSerialized, LinkedHashMap.class);
+        if (orgs == null) {
+            orgs = new LinkedHashMap<>();
+        }
+        Map<String, Peer> peersMap= new LinkedHashMap<>(){{
+            put(peerName, new Peer(orgObj.getOrgIp(), orgObj.getPeerPort()));
+        }};
+        Org normalizedOrg = new Org(orgObj.getOrgId(), orgObj.getDomain(), orgObj.getOrgIp(), orgObj.getPeerPort(), orgObj.getWwwPort(), null,
+               orgObj.getWwwIp(), peersMap);
+
+        orgs.put(orgObj.getOrgId()+"."+orgObj.getDomain(), normalizedOrg);
+        this.put(ctx, "orgs", genson.serialize(orgs));
+
+    }
+
+
+
+
+ /*   async registerOrderer(args) {
+        if (args.length < 1) {
+            throw new Error('incorrect number of arguments, Orderer object is required');
+        }
+        const ordererObj = JSON.parse(_.get(args, "[0]"));
+
+        const ordererName = _.get(ordererObj, "ordererName");
+        const ordererDomain = _.get(ordererObj, "domain");
+        const ordererPort = _.get(ordererObj, "ordererPort");
+
+        if (!(ordererName && ordererDomain && ordererDomain)) {
+            throw new Error('ordererName, domain and ordererPort properties are required');
+        }
+
+        if (ordererObj.ordererIp) {
+            await this.updateRegistryObject("dns", this.dnsUpdater({
+                    ip:ordererObj.ordererIp,
+                    dns: `$ {
+                ordererName
+            }.$ {
+                ordererDomain
+            } www.$ {
+                ordererDomain
+            } www.$ {
+                ordererName
+            }.$ {
+                ordererDomain
+            }`
+            }));
+        }
+
+        return this.updateRegistryObject("osn", {[`$ {
+            ordererName
+        }.$ {
+            ordererDomain
+        }:$ {
+            ordererPort
+        }`]:ordererObj});
+    }
+*/
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public void put(final Context ctx, final String key, final String value) {
+//        if (key == null || value == null) {
+//            throw new ChaincodeException("Key and Value should not be empty");
+//        }
         ChaincodeStub stub = ctx.getStub();
-        stub.putStringState(key, genson.serialize(value));
-        return genson.serialize(new Object());
+        System.out.println("put Value:" + value);
+        stub.putStringState(key, value);
     }
 
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String get(final Context ctx) {
-        return "test555";
+    public String get(final Context ctx, final String key) {
+        ChaincodeStub stub = ctx.getStub();
+
+        String stringState = stub.getStringState(key);
+        System.out.println("get stringState:" + stringState);
+        return stringState;
+    }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String range(final Context ctx) {
+        ChaincodeStub stub = ctx.getStub();
+        QueryResultsIterator<KeyValue> stateByRange = stub.getStateByRange("", "");
+        List<KeyVal> range = new ArrayList<>();
+
+        if (stateByRange != null) {
+            stateByRange.forEach(keyValue -> {
+                System.out.println("range key:" + keyValue.getKey());
+                System.out.println("range Value:" + keyValue.getStringValue());
+                KeyVal keyVal = new KeyVal(keyValue.getKey(), keyValue.getStringValue());
+                range.add(keyVal);
+            });
+        }
+        return genson.serialize(range.toArray(new KeyVal[]{}));
     }
 
     public static void main(String[] args) throws Exception {
@@ -54,7 +195,7 @@ public final class DnsChaincode implements ContractInterface {
 
         final String chaincodeServerPort = System.getenv("CHAINCODE_BIND_ADDRESS");
         if (chaincodeServerPort == null || chaincodeServerPort.isEmpty()) {
-            System.out.println("For external mode set CHAINCODE_BIND_ADDRESS=0.0.0.0:9999. Starting in docker mode");
+            System.out.println("Starting in docker mode. For external mode set CHAINCODE_BIND_ADDRESS (e.g 0.0.0.0:9999).");
             ContractRouter.main(args);
             return;
 //            throw new IOException("chaincode server port not defined in system env. for example 'CHAINCODE_BIND_ADDRESS=0.0.0.0:9999'");
@@ -80,7 +221,7 @@ public final class DnsChaincode implements ContractInterface {
             chaincodeServerProperties.setKeyCertChainFile(tlsClientCertFile);
         }
 
-        ContractRouter contractRouter = new ContractRouter(new String[] {"-i", coreChaincodeIdName});
+        ContractRouter contractRouter = new ContractRouter(new String[]{"-i", coreChaincodeIdName});
         ChaincodeServer chaincodeServer = new NettyChaincodeServer(contractRouter, chaincodeServerProperties);
 
         contractRouter.startRouterWithChaincodeServer(chaincodeServer);

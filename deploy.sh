@@ -78,6 +78,9 @@ export COMPOSE_PROJECT_NAME=${ORG:-org1}
 
 if [[ -z "$AGENT_MODE" && -z "$NO_ORDERER" ]]; then
     ORDERER_WWW_PORT=${ORDERER_WWW_PORT} ./ordering-start.sh $ORG ${BOOTSTRAP_ORDERER_DOMAIN:-${BOOTSTRAP_DOMAIN:-$DOMAIN}}
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
     sleep 5
 fi
 
