@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "dotenv": "^10.0.0",
-    "fabric-shim": "file:./fabric-shim",
+    "fabric-shim": "^2.2.2",
     "lodash": "^4.17.13"
   },
   "bundledDependencies": [
