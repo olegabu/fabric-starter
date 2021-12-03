@@ -54,6 +54,7 @@ public final class DnsChaincode implements ContractInterface {
 
         final String chaincodeServerPort = System.getenv("CHAINCODE_BIND_ADDRESS");
         if (chaincodeServerPort == null || chaincodeServerPort.isEmpty()) {
+            System.out.println("For external mode set CHAINCODE_BIND_ADDRESS=0.0.0.0:9999. Starting in docker mode");
             ContractRouter.main(args);
             return;
 //            throw new IOException("chaincode server port not defined in system env. for example 'CHAINCODE_BIND_ADDRESS=0.0.0.0:9999'");
