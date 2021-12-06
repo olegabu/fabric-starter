@@ -630,6 +630,25 @@ invokeTestChaincodeAPI() {
 
 # --------------------------------------------------------------CLI-----------------------------------------------------
 
+function runInFabricDir() {
+    local TMP_LOG_FILE
+    local exitCode
+
+    pushd ${FABRIC_DIR} >/dev/null
+
+    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
+
+    printDbg eval "$@"
+    eval "$@" > "${TMP_LOG_FILE}";
+    exitCode=$?
+
+    cat "${TMP_LOG_FILE}" | printDbg
+    popd >/dev/null
+
+    setExitCode [ "${exitCode}" = "0" ]
+}
+
+
 function runCLIPeer() {
     local org=${1}
     local domain=${2}
@@ -639,7 +658,7 @@ function runCLIPeer() {
     local script_name="run-cli-peer.sh"
     local exit_code
 
-    printDbg "Run '${command}' in cli.peer.${org}.${domain}"
+    printDbg "Run '${command}' in cli.peer0.${org}.${domain}"
 
     result=$("${script_dir}/${script_name}" ${org} ${domain} "${command}")
     exit_code=${?}
@@ -703,7 +722,7 @@ function verifyOrgJoinedChannel() {
 }
 
 
-function queryPeer() {
+function peerChannelFetchConfig() {
     local channel=${1}
     local org=${2}
     local domain=${3}
@@ -731,7 +750,7 @@ function verifyChannelExists() {
 
     local result
     
-    result=$(queryPeer ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
+    result=$(peerChannelFetchConfig ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
     printDbg "Expect: ${channel}, got: ${result}"
     
     setExitCode [ "${result}" = "${channel}" ]
@@ -746,29 +765,10 @@ function verifyOrgIsInChannel() {
 
     local result
     printDbg "Channel: ${channel} Org: ${org} Org2: ${org2} Domain: ${domain}"
-    result=$(queryPeer ${channel} ${org} ${domain} ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
+    result=$(peerChannelFetchConfig ${channel} ${org} ${domain} ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
     printDbg "${result}"
     
     setExitCode [ "${result}" = "${org2}" ]
-}
-
-
-function runInFabricDir() {
-    local TMP_LOG_FILE
-    local exitCode
-    
-    pushd ${FABRIC_DIR} >/dev/null
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    
-    printDbg eval "$@"
-    eval "$@" > "${TMP_LOG_FILE}";
-    exitCode=$?
-    
-    cat "${TMP_LOG_FILE}" | printDbg
-    popd >/dev/null
-    
-    setExitCode [ "${exitCode}" = "0" ]
 }
 
 
@@ -905,7 +905,7 @@ function verifyChiancodeInstalled() {
     local result
 
 
-    result=$(runCLIPeer ${org} ${domain} listChaincodesInstalled ${channel} ${org} ${domain} 2>/dev/null)
+    result=$(runCLIPeer ${org} ${domain} listChaincodesInstalled ${channel} ${org} ${domain})
     #result=$(runCLIPeer ${org} ${domain} peer lifecycle chaincode queryinstalled --output json)
     #peer lifecycle chaincode queryinstalled --output json
     set -f

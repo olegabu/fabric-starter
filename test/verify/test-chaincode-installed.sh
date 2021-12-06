@@ -6,7 +6,7 @@ source "${BASEDIR}"/../libs/libs.sh
 channelName=${1}
 org=${2}
 domain=${3:-${DOMAIN}}
-chaincode=${3} #optional
+chaincode=${4} #optional
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in [${org}]"
 
