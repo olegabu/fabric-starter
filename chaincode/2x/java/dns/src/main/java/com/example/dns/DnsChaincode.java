@@ -5,6 +5,7 @@ package com.example.dns;
 
 
 import com.owlike.genson.Genson;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.ContractRouter;
@@ -13,8 +14,12 @@ import org.hyperledger.fabric.shim.*;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Contract(
         name = "DnsChaincode",
@@ -56,9 +61,7 @@ public final class DnsChaincode implements ContractInterface {
         if (orgObj.peerPort != null) {
 //            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}-${orgNameDomain}`})
             dnsNames.add(new DnsRecord(orgObj.getOrgIp(), peerName + "-" + orgObj.getOrgId() + "." + orgObj.getDomain()));
-        }
-
-        else if (orgObj.getPeers()!=null) {
+        } else if (orgObj.getPeers() != null) {
 /* TODO             Arrays.stream(orgObj.getPeers()).map(peer->{
 
             })
@@ -98,13 +101,13 @@ public final class DnsChaincode implements ContractInterface {
         if (orgs == null) {
             orgs = new LinkedHashMap<>();
         }
-        Map<String, Peer> peersMap= new LinkedHashMap<>(){{
+        Map<String, Peer> peersMap = new LinkedHashMap<>() {{
             put(peerName, new Peer(orgObj.getOrgIp(), orgObj.getPeerPort()));
         }};
         Org normalizedOrg = new Org(orgObj.getOrgId(), orgObj.getDomain(), orgObj.getOrgIp(), orgObj.getPeerPort(), orgObj.getWwwPort(), null,
-               orgObj.getWwwIp(), peersMap);
+                orgObj.getWwwIp(), peersMap);
 
-        orgs.put(orgObj.getOrgId()+"."+orgObj.getDomain(), normalizedOrg);
+        orgs.put(orgObj.getOrgId() + "." + orgObj.getDomain(), normalizedOrg);
         this.put(ctx, "orgs", genson.serialize(orgs));
 
     }
@@ -191,9 +194,19 @@ public final class DnsChaincode implements ContractInterface {
     }
 
     public static void main(String[] args) throws Exception {
+
+        Dotenv dotenv= Dotenv.configure().ignoreIfMissing().load();
+        if (System.getenv("CHAINCODE_ENV_FILE") != null) {
+            File chaincodeEnvFile = new File(System.getenv("CHAINCODE_ENV_FILE"));
+            dotenv = Dotenv.configure()
+                    .directory(chaincodeEnvFile.getParent())
+                    .filename(chaincodeEnvFile.getName())
+                    .load();
+        }
+
         ChaincodeServerProperties chaincodeServerProperties = new ChaincodeServerProperties();
 
-        final String chaincodeServerPort = System.getenv("CHAINCODE_BIND_ADDRESS");
+        final String chaincodeServerPort = dotenv.get("CHAINCODE_BIND_ADDRESS");
         if (chaincodeServerPort == null || chaincodeServerPort.isEmpty()) {
             System.out.println("Starting in docker mode. For external mode set CHAINCODE_BIND_ADDRESS (e.g 0.0.0.0:9999).");
             ContractRouter.main(args);
@@ -204,12 +217,12 @@ public final class DnsChaincode implements ContractInterface {
         final int port = Integer.parseInt(chaincodeServerPort.split(":")[1]);
         chaincodeServerProperties.setPortChaincodeServer(port);
 
-        final String coreChaincodeIdName = System.getenv("PACKAGE_ID");
+        final String coreChaincodeIdName = dotenv.get("PACKAGE_ID");
         if (coreChaincodeIdName == null || coreChaincodeIdName.isEmpty()) {
             throw new IOException("Chaincode package id is not defined in system env. for example 'PACKAGE_ID=externalcc:06d1d324e858751d6eb4211885e9fd9ff74b62cb4ffda2242277fac95d467033'");
         }
 
-        boolean tlsEnabled = Boolean.parseBoolean(System.getenv("CORE_PEER_TLS_ENABLED"));
+        boolean tlsEnabled = Boolean.parseBoolean(dotenv.get("CORE_PEER_TLS_ENABLED"));
         if (tlsEnabled) {
             // String tlsClientRootCertPath = System.getenv(CORE_PEER_TLS_ROOTCERT_FILE);
             String tlsClientKeyFile = System.getenv("ENV_TLS_CLIENT_KEY_FILE");
