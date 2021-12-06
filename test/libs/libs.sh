@@ -650,17 +650,17 @@ function runInFabricDir() {
 
 
 function runCLIPeer() {
-    local org=${1}
-    local domain=${2}
-    local command=${@:3}
+    local compose_org=${1}
+    local command=${@:2}
+    local domain=${DOMAIN:-example.com}
 
     local script_dir="${BASEDIR}/.."
     local script_name="run-cli-peer.sh"
     local exit_code
 
-    printDbg "Run '${command}' in cli.peer0.${org}.${domain}"
+    printDbg "Run '${command}' in cli.peer0.${compose_org}.${domain}"
 
-    result=$("${script_dir}/${script_name}" ${org} ${domain} "${command}")
+    result=$("${script_dir}/${script_name}" ${compose_org} "${command}")
     exit_code=${?}
 
     set -f
@@ -675,13 +675,13 @@ function ListPeerChannels() {
     
 
     local org=${1}
-    local domain=${2}
+    #local domain=${2:-${DOMAIN}}
     local result
     local TMP_LOG_FILE
 
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
     #result=$(${BASEDIR}/../run-cli-peer.sh ${org} ${domain} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
-    result=$(runCLIPeer ${org} ${domain} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
+    result=$(runCLIPeer ${org} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
     #cat "${TMP_LOG_FILE}" | printDbg
     set -f
     IFS=
@@ -709,10 +709,10 @@ function getTestChaincodeName() {
 function verifyOrgJoinedChannel() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
+    #local domain=${3}
     local result
 
-    result=$(ListPeerChannels ${org} ${domain} | tr -d "\r"| grep -E "^${channel}$")
+    result=$(ListPeerChannels ${org} | tr -d "\r"| grep -E "^${channel}$")
     set -f
     IFS=
       printDbg "Result: ${result}"
@@ -728,14 +728,15 @@ function peerChannelFetchConfig() {
     local domain=${3}
     local query=${4}
     local subquery=${5:-.}
-    
+
+
     local TMP_LOG_FILE
     local result
 
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
 
     #result=$(${BASEDIR}/../run-cli-peer.sh ${org} ${domain} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
-    result=$(runCLIPeer ${org} ${domain} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
+    result=$(runCLIPeer ${org} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
     printDbg "Query: ${query}"
     printDbg "Subquery: ${subquery}"
     result=$(echo "${result}" | jq ${query} |  jq -r ${subquery}   2>"${TMP_LOG_FILE}")
@@ -761,7 +762,7 @@ function verifyOrgIsInChannel() {
     local channel=${1}
     local org=${2}
     local org2=${3}
-    local domain=${4:-$DOMAIN}
+    #local domain=${4:-$DOMAIN}
 
     local result
     printDbg "Channel: ${channel} Org: ${org} Org2: ${org2} Domain: ${domain}"
@@ -775,16 +776,16 @@ function verifyOrgIsInChannel() {
 function copyTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
+    #local domain=${3}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${4:-"${chaincode_init_name}_${channel}"}
-    local lang=${5:-"node"}
-    local chaincode_dir=${6:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
+    local chaincode_name=${3:-"${chaincode_init_name}_${channel}"}
+    local lang=${4:-"node"}
+    local chaincode_dir=${5:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
 
     local result
     local exitCode
 
-    result=$(runCLIPeer ${org} ${domain} \
+    result=$(runCLIPeer ${org} \
         "mkdir -p ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name};  \
           cp -R ${chaincode_dir}/* \
           ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}")
@@ -805,7 +806,7 @@ function installTestChiancodeCLI() {
     local result
     local exitCode
 
-    result=$(runCLIPeer ${org} ${domain} \
+    result=$(runCLIPeer ${org} \
     "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}" ${lang} 2>&1)
     local exitCode=$?
     printDbg "Result: ${result}"
@@ -897,17 +898,15 @@ function installTestChiancodeCLI() {
 function verifyChiancodeInstalled() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
+    #local domain=${3}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${4:-${chaincode_init_name}_${channel}}
+    local chaincode_name=${3:-${chaincode_init_name}_${channel}}
 
     local chaincode_name
     local result
 
 
-    result=$(runCLIPeer ${org} ${domain} listChaincodesInstalled ${channel} ${org} ${domain})
-    #result=$(runCLIPeer ${org} ${domain} peer lifecycle chaincode queryinstalled --output json)
-    #peer lifecycle chaincode queryinstalled --output json
+    result=$(runCLIPeer ${org}  listChaincodesInstalled ${channel} ${org} ${domain})
     set -f
     IFS=
     printDbg "Result: ${result}"
@@ -919,13 +918,13 @@ function verifyChiancodeInstalled() {
 function verifyChiancodeInstantiated() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
+    #local domain=${3}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${4:-${chaincode_init_name}_${channel}}
+    local chaincode_name=${3:-${chaincode_init_name}_${channel}}
     local result
 
 
-    result=$(runCLIPeer ${org} ${domain} listChaincodesInstantiated ${channel} ${org} 2>/dev/null)
+    result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} 2>/dev/null)
     set -f
     IFS=
     printDbg "Result: ${result}"
@@ -964,13 +963,13 @@ function createChaincodeArchiveAndReturnPath() {
 function instantiateTestChaincodeCLI() {
     local channel=${1}
     local org=${2}
-    local domain=${DOMAIN}
+    #local domain=${DOMAIN}
     local chaincode_name=${3:-$(getTestChaincodeName ${channel})}
     
     local result
     local exitCode
     
-    reuslt=$(runCLIPeer ${org} ${domain} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name} 2>&1 | printDbg)
+    reuslt=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name} 2>&1 | printDbg)
     exitCode=$?
     printDbg "${result}"
 

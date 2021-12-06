@@ -3,8 +3,8 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
 compose_org=${1}
-domain=${2}
-command=${@:3}
+#domain=${2}
+command=${@:2}
 
 libcommand='source container-scripts/lib/container-lib.sh 2>/dev/null'
 
