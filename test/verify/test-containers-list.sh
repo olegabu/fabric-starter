@@ -5,7 +5,7 @@ source "${BASEDIR}"/../libs/libs.sh
 
 activeOrg=${1}
 orgDomain=${2}
-containersList=${@:2}
+containersList=${@:3}
 
 printToLogAndToScreenBlue "\nCheck containers running: [${containersList}] on [${orgDomain}]"
 
