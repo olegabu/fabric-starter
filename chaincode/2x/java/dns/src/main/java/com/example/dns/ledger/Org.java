@@ -34,23 +34,24 @@ public class Org implements LedgerMapObject {
     }
 
     public Org(@JsonProperty("orgId") String orgId, @JsonProperty("domain") String domain,
-               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort) {
+               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort, @JsonProperty("peer0Port") String peer0Port) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort;
+        this.peerPort = peerPort != null ? peerPort : peer0Port;
     }
 
     public Org(@JsonProperty("orgId") String orgId, @JsonProperty("domain") String domain,
-               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort,
+               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort, @JsonProperty("peer0Port") String peer0Port,
                @JsonProperty("peerName") String peerName, @JsonProperty("wwwPort") String wwwPort) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort;
+        this.peerPort = peerPort != null ? peerPort : peer0Port;
         this.peerName = peerName;
         this.wwwPort = wwwPort;
     }
+
     @Override
     public String getMapKey() {
         return orgId + "." + domain;
