@@ -3,15 +3,19 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source "${BASEDIR}"/../libs/libs.sh
 
-
-channelName=${1}
+channel=${1}
 org=${2}
-domain=${3:-${DOMAIN}}
 
-
-printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [${channelName}] channel..."
+printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [${channel}] channel..."
 
 setCurrentActiveOrg ${org}
-verifyOrgJoinedChannel "${channelName}" "${org}" "${domain}"
+result=$(runCLIPeer ${org} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
 
-printResultAndSetExitCode "The [${org}.${domain}] org has joined the [${channelName}] channel"
+set -f
+IFS=
+    printDbg "Channel List: ${result}"
+    result=$(echo ${result} | tr -d "\r"| grep -E "^${channel}$")
+set +f
+
+setExitCode [ "${result}" = "${channel}" ]
+printResultAndSetExitCode "The [${org}] org has joined the [${channel}] channel"

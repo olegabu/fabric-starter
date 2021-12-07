@@ -180,6 +180,11 @@ function printDbg() {
 }
 
 
+function printArgs() {
+    for argNo in $(seq 0 $#); do echo "Parameter ${argNo}: ${!argNo}"; done
+}
+
+
 function printLog() {
     
     local line
@@ -722,12 +727,11 @@ function verifyOrgJoinedChannel() {
 }
 
 
-function peerChannelFetchConfig() {
+function peerParseChannelConfig() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
-    local query=${4}
-    local subquery=${5:-.}
+    local query=${3}
+    local subquery=${4:-.}
 
 
     local TMP_LOG_FILE
@@ -751,7 +755,7 @@ function verifyChannelExists() {
 
     local result
     
-    result=$(peerChannelFetchConfig ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
+    result=$(peerParseChannelConfig ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
     printDbg "Expect: ${channel}, got: ${result}"
     
     setExitCode [ "${result}" = "${channel}" ]
@@ -766,7 +770,7 @@ function verifyOrgIsInChannel() {
 
     local result
     printDbg "Channel: ${channel} Org: ${org} Org2: ${org2} Domain: ${domain}"
-    result=$(peerChannelFetchConfig ${channel} ${org} ${domain} ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
+    result=$(peerParseChannelConfig ${channel} ${org}  ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
     printDbg "${result}"
     
     setExitCode [ "${result}" = "${org2}" ]
@@ -807,7 +811,7 @@ function installTestChiancodeCLI() {
     local exitCode
 
     result=$(runCLIPeer ${org} \
-    "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}" ${lang} 2>&1)
+    "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name} ${lang}" 2>&1)
     local exitCode=$?
     printDbg "Result: ${result}"
 

@@ -3,14 +3,15 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source "${BASEDIR}"/../libs/libs.sh
 
-channelName=${1}
+channel=${1}
 org=${2}
 orgAdd=${3:-${org}}
-domain=${4:-${DOMAIN:-"example.com"}}
 
-printToLogAndToScreenBlue "\nVerifing if the [${orgAdd}] added to [${channelName}]"
+printToLogAndToScreenBlue "\nVerifing if the [${orgAdd}] added to [${channel}]"
 
 setCurrentActiveOrg ${org}
-verifyOrgIsInChannel "${channelName}" "${org}" "${orgAdd}"
-
-printResultAndSetExitCode "Organization [${orgAdd}] is in the channel [$channelName]"
+result=$(peerParseChannelConfig ${channel} ${org}  ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${orgAdd}.values.MSP.value" '.config.name')
+printDbg "${result}"
+    
+setExitCode [ "${result}" = "${orgAdd}" ]
+printResultAndSetExitCode "Organization [${orgAdd}] is in the channel [$channel]"
