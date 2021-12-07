@@ -4,6 +4,7 @@
 package com.example.dns;
 
 
+import com.example.dns.ledger.*;
 import com.owlike.genson.Genson;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hyperledger.fabric.contract.Context;
@@ -16,24 +17,17 @@ import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Contract(
         name = "DnsChaincode",
         info = @Info(
                 title = "DnsChaincode contract",
-                description = "The hyperlegendary car contract",
-                version = "0.0.1-SNAPSHOT",
+                description = "Store ip resolving information of orgs in a newtwork",
+                version = "1.0",
                 license = @License(
-                        name = "Apache 2.0 License",
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.html"),
-                contact = @Contact(
-                        email = "f.carr@example.com",
-                        name = "F Carr",
-                        url = "https://hyperledger.example.com"))
+                        name = "MIT")
+        )
 )
 
 @Default
@@ -48,23 +42,19 @@ public final class DnsChaincode implements ContractInterface {
         Org orgObj = genson.deserialize(orgSerialized, Org.class);
         System.out.println("org : " + orgObj);
 
-        String peerName = orgObj.peerName != null ? orgObj.peerName : "peer0";
-        String peerPort = orgObj.peerPort;
 
-        if (orgObj.getOrgId() == null || orgObj.getDomain() == null || (orgObj.peerPort == null && orgObj.getPeers() == null)) {
+        if (orgObj.getOrgId() == null || orgObj.getDomain() == null || (orgObj.getPeerPort() == null && orgObj.getPeers() == null)) {
             throw new ChaincodeException("orgId, domain and (peerPort or peers) properties are required");
         }
-        String orgNameDomain = orgObj.getOrgId() + "." + orgObj.getDomain();
-//        String[] dnsNames = [{ip: orgObj.orgIp, dns: peerName === 'peer0' ? `www.${orgNameDomain}` : ''}]
+
+        String peerName = orgObj.getPeerName() != null ? orgObj.getPeerName() : "peer0";
 
         List<DnsRecord> dnsNames = new ArrayList<>();
-        if (orgObj.peerPort != null) {
-//            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}-${orgNameDomain}`})
-            dnsNames.add(new DnsRecord(orgObj.getOrgIp(), peerName + "-" + orgObj.getOrgId() + "." + orgObj.getDomain()));
+        if (orgObj.getPeerPort() != null) {
+            String peerDNS = peerName + "-" + orgObj.getOrgId() + "." + orgObj.getDomain(); //TODO: remove dns from chaincode
+            dnsNames.add(new DnsRecord(orgObj.getOrgIp(), peerDNS));
         } else if (orgObj.getPeers() != null) {
-/* TODO             Arrays.stream(orgObj.getPeers()).map(peer->{
-
-            })
+            /* TODO             Arrays.stream(orgObj.getPeers()).map(peer->{
             const peersDns = _.map(_.keys(peers), peersPeerName = > new Object({
                     ip:peers[peersPeerName].ip,
                     dns: `$ {
@@ -77,13 +67,42 @@ public final class DnsChaincode implements ContractInterface {
             logger.debug('Pushed peers dns:', dnsNames)*/
         }
 
-        String dnsSerialized = get(ctx, "dns");
-        Map<String, String> storedDnsRecords;
-        if (dnsSerialized == null || "".equals(dnsSerialized)) {
-            storedDnsRecords = new LinkedHashMap<>();
-        } else {
-            storedDnsRecords = genson.deserialize(dnsSerialized, LinkedHashMap.class);
+        storeDnsInfo(ctx, dnsNames);
+
+        SortedMap<String, Peer> peersMap = new TreeMap<>() {{
+            put(peerName, new Peer(orgObj.getOrgIp(), orgObj.getPeerPort()));
+        }};
+        Org normalizedOrg = new Org(orgObj.getOrgId(), orgObj.getDomain(), orgObj.getOrgIp(), orgObj.getPeerPort(), orgObj.getWwwPort(), null,
+                orgObj.getWwwIp(), peersMap);
+
+        storeObjInLedgerMap(ctx, normalizedOrg, "orgs");
+    }
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+
+    public void registerOrderer(final Context ctx, final String ordererSerialized) {
+        Orderer ordererObj = genson.deserialize(ordererSerialized, Orderer.class);
+
+
+        if (ordererObj.getOrdererName() == null || ordererObj.getDomain() == null || ordererObj.getOrdererPort() == null) {
+            throw new ChaincodeException("ordererName, domain and ordererPort properties are required");
         }
+
+        if (ordererObj.getOrdererIp() != null) {
+            List<DnsRecord> dnsNames = new ArrayList<>();
+            String ordererDNS = ordererObj.getOrdererName() + "." + ordererObj.getDomain(); //TODO: remove dns from chaincode
+            dnsNames.add(new DnsRecord(ordererObj.getOrdererIp(), ordererDNS));
+            storeDnsInfo(ctx, dnsNames);
+        }
+
+        storeObjInLedgerMap(ctx, ordererObj, "osn");
+
+    }
+
+
+    private void storeDnsInfo(Context ctx, List<DnsRecord> dnsNames) {
+
+        SortedMap<String, String> storedDnsRecords = getMapFromLedger(ctx, "dns");
 
         dnsNames.stream().forEach(dnsRecord -> {
             String dnsLine = storedDnsRecords.containsKey(dnsRecord.getIp()) ? storedDnsRecords.get(dnsRecord.getIp()) : "";
@@ -94,67 +113,15 @@ public final class DnsChaincode implements ContractInterface {
         });
 
         this.put(ctx, "dns", genson.serialize(storedDnsRecords));
-
-
-        String orgsSerialized = get(ctx, "orgs");
-        Map<String, Org> orgs = genson.deserialize(orgsSerialized, LinkedHashMap.class);
-        if (orgs == null) {
-            orgs = new LinkedHashMap<>();
-        }
-        Map<String, Peer> peersMap = new LinkedHashMap<>() {{
-            put(peerName, new Peer(orgObj.getOrgIp(), orgObj.getPeerPort()));
-        }};
-        Org normalizedOrg = new Org(orgObj.getOrgId(), orgObj.getDomain(), orgObj.getOrgIp(), orgObj.getPeerPort(), orgObj.getWwwPort(), null,
-                orgObj.getWwwIp(), peersMap);
-
-        orgs.put(orgObj.getOrgId() + "." + orgObj.getDomain(), normalizedOrg);
-        this.put(ctx, "orgs", genson.serialize(orgs));
-
     }
 
+    private <T extends LedgerMapObject> void storeObjInLedgerMap(Context ctx, T obj, String ledgerKey) {
+        SortedMap<String, T> orgs = getMapFromLedger(ctx, ledgerKey);
 
-
-
- /*   async registerOrderer(args) {
-        if (args.length < 1) {
-            throw new Error('incorrect number of arguments, Orderer object is required');
-        }
-        const ordererObj = JSON.parse(_.get(args, "[0]"));
-
-        const ordererName = _.get(ordererObj, "ordererName");
-        const ordererDomain = _.get(ordererObj, "domain");
-        const ordererPort = _.get(ordererObj, "ordererPort");
-
-        if (!(ordererName && ordererDomain && ordererDomain)) {
-            throw new Error('ordererName, domain and ordererPort properties are required');
-        }
-
-        if (ordererObj.ordererIp) {
-            await this.updateRegistryObject("dns", this.dnsUpdater({
-                    ip:ordererObj.ordererIp,
-                    dns: `$ {
-                ordererName
-            }.$ {
-                ordererDomain
-            } www.$ {
-                ordererDomain
-            } www.$ {
-                ordererName
-            }.$ {
-                ordererDomain
-            }`
-            }));
-        }
-
-        return this.updateRegistryObject("osn", {[`$ {
-            ordererName
-        }.$ {
-            ordererDomain
-        }:$ {
-            ordererPort
-        }`]:ordererObj});
+        orgs.put(obj.getMapKey(), obj);
+        this.put(ctx, ledgerKey, genson.serialize(orgs));
     }
-*/
+
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void put(final Context ctx, final String key, final String value) {
@@ -193,9 +160,19 @@ public final class DnsChaincode implements ContractInterface {
         return genson.serialize(range.toArray(new KeyVal[]{}));
     }
 
+    private <T> SortedMap<String, T> getMapFromLedger(final Context ctx, String key) {
+        String serialized = get(ctx, key);
+        SortedMap<String, T> map = genson.deserialize(serialized, TreeMap.class);
+        if (map == null) {
+            map = new TreeMap<>();
+        }
+        return map;
+    }
+
+
     public static void main(String[] args) throws Exception {
 
-        Dotenv dotenv= Dotenv.configure().ignoreIfMissing().load();
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         if (System.getenv("CHAINCODE_ENV_FILE") != null) {
             File chaincodeEnvFile = new File(System.getenv("CHAINCODE_ENV_FILE"));
             dotenv = Dotenv.configure()

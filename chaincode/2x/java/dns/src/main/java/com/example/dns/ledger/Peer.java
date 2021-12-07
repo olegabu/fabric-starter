@@ -1,4 +1,4 @@
-package com.example.dns;
+package com.example.dns.ledger;
 
 public class Peer {
 

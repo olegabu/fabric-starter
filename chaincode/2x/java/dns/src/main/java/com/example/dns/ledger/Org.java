@@ -1,15 +1,14 @@
-package com.example.dns;
+package com.example.dns.ledger;
 
 import com.owlike.genson.annotation.JsonProperty;
 import org.hyperledger.fabric.contract.annotation.DataType;
-import org.hyperledger.fabric.contract.annotation.Property;
 
 import java.util.Map;
 import java.util.Objects;
 
 
 @DataType()
-public class Org {
+public class Org implements LedgerMapObject {
     private final String orgId;
     String domain;
     String orgIp;
@@ -51,6 +50,10 @@ public class Org {
         this.peerPort = peerPort;
         this.peerName = peerName;
         this.wwwPort = wwwPort;
+    }
+    @Override
+    public String getMapKey() {
+        return orgId + "." + domain;
     }
 
     public String getOrgId() {

@@ -1,18 +1,24 @@
-package com.example.dns;
+package com.example.dns.ledger;
 
 import java.util.Objects;
 
-public class KeyVal {
+public class StringState {
     private String key;
+    private String stringValue;
     private String value;
 
-    public KeyVal(String key, String value) {
+    public StringState(String key, String stringValue, String value) {
         this.key = key;
+        this.stringValue = stringValue;
         this.value = value;
     }
 
     public String getKey() {
         return key;
+    }
+
+    public String getStringValue() {
+        return stringValue;
     }
 
     public String getValue() {
@@ -29,7 +35,7 @@ public class KeyVal {
             return false;
         }
 
-        KeyVal other = (KeyVal) obj;
+        StringState other = (StringState) obj;
 
         return Objects.deepEquals(new String[] {getKey(), getValue()},
                 new String[] {other.getKey(), other.getValue()});
@@ -43,7 +49,7 @@ public class KeyVal {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [key=" + key + ", value="
-                + value + "]";
+                + stringValue + "]";
     }
 
 }
