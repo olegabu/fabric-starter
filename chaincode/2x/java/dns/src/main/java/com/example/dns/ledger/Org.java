@@ -13,16 +13,17 @@ public class Org implements LedgerMapObject {
     String domain;
     String orgIp;
     String peerPort;
+    String peer0Port;
     String wwwPort;
     String peerName;
     String wwwIp;
     Map<String, Peer> peers;
 
-    public Org(String orgId, String domain, String orgIp, String peerPort, String peer0Port, String wwwPort, String peerName, String wwwIp, Map<String, Peer> peers) {
+    public Org(String orgId, String domain, String orgIp, String peerPort, String wwwPort, String peerName, String wwwIp, Map<String, Peer> peers) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort != null ? peerPort : peer0Port;
+        this.peerPort = peerPort;
         this.wwwPort = wwwPort;
         this.peerName = peerName;
         this.wwwIp = wwwIp;
@@ -34,20 +35,20 @@ public class Org implements LedgerMapObject {
     }
 
     public Org(@JsonProperty("orgId") String orgId, @JsonProperty("domain") String domain,
-               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort, @JsonProperty("peer0Port") String peer0Port) {
+               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort != null ? peerPort : peer0Port;
+        this.peerPort = peerPort;
     }
 
     public Org(@JsonProperty("orgId") String orgId, @JsonProperty("domain") String domain,
-               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort, @JsonProperty("peer0Port") String peer0Port,
+               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort,
                @JsonProperty("peerName") String peerName, @JsonProperty("wwwPort") String wwwPort) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort != null ? peerPort : peer0Port;
+        this.peerPort = peerPort;
         this.peerName = peerName;
         this.wwwPort = wwwPort;
     }
@@ -70,7 +71,7 @@ public class Org implements LedgerMapObject {
     }
 
     public String getPeerPort() {
-        return peerPort;
+        return peerPort != null ? peerPort : peer0Port;
     }
 
     public String getWwwPort() {
@@ -114,7 +115,7 @@ public class Org implements LedgerMapObject {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [name=" + orgId + ", domain="
-                + domain + ", orgIp=" + orgIp + ", peerName=" + peerName+ ", peerPort=" + peerPort + ", wwwIp=" + wwwIp + ", wwwPort=" + wwwPort + "]";
+                + domain + ", orgIp=" + orgIp + ", peerName=" + peerName + ", peerPort=" + peerPort + ", wwwIp=" + wwwIp + ", wwwPort=" + wwwPort + "]";
     }
 
 }
