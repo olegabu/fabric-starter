@@ -147,17 +147,22 @@ public final class DnsChaincode implements ContractInterface {
     public String range(final Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         QueryResultsIterator<KeyValue> stateByRange = stub.getStateByRange("", "");
-        List<KeyVal> range = new ArrayList<>();
 
+        Map<String, Object> result = new LinkedHashMap<>();
         if (stateByRange != null) {
             stateByRange.forEach(keyValue -> {
                 System.out.println("range key:" + keyValue.getKey());
-                System.out.println("range Value:" + keyValue.getStringValue());
-                KeyVal keyVal = new KeyVal(keyValue.getKey(), keyValue.getStringValue());
-                range.add(keyVal);
+//                System.out.println("range Value:" + keyValue.getStringValue());
+                Object value = keyValue.getStringValue();
+                try {
+                    value = genson.deserialize(keyValue.getStringValue(), Object.class);
+                } catch (Exception e) {
+                    System.out.println("Error deserialising nested map:" + keyValue.getStringValue() + ":" + e.getMessage());
+                }
+                result.put(keyValue.getKey(), value);
             });
         }
-        return genson.serialize(range.toArray(new KeyVal[]{}));
+        return genson.serialize(result);
     }
 
     private <T> SortedMap<String, T> getMapFromLedger(final Context ctx, String key) {
