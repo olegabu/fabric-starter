@@ -18,11 +18,11 @@ public class Org implements LedgerMapObject {
     String wwwIp;
     Map<String, Peer> peers;
 
-    public Org(String orgId, String domain, String orgIp, String peerPort, String wwwPort, String peerName, String wwwIp, Map<String, Peer> peers) {
+    public Org(String orgId, String domain, String orgIp, String peerPort, String peer0Port, String wwwPort, String peerName, String wwwIp, Map<String, Peer> peers) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort;
+        this.peerPort = peerPort != null ? peerPort : peer0Port;
         this.wwwPort = wwwPort;
         this.peerName = peerName;
         this.wwwIp = wwwIp;
@@ -114,7 +114,7 @@ public class Org implements LedgerMapObject {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [name=" + orgId + ", domain="
-                + domain + ", ip=" + orgIp + ", peerName=" + peerName + ", wwwIp=" + wwwIp + ", wwwPort=" + wwwPort + "]";
+                + domain + ", orgIp=" + orgIp + ", peerName=" + peerName+ ", peerPort=" + peerPort + ", wwwIp=" + wwwIp + ", wwwPort=" + wwwPort + "]";
     }
 
 }
