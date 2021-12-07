@@ -1,15 +1,14 @@
-package com.example.dns;
+package com.example.dns.ledger;
 
 import com.owlike.genson.annotation.JsonProperty;
 import org.hyperledger.fabric.contract.annotation.DataType;
-import org.hyperledger.fabric.contract.annotation.Property;
 
 import java.util.Map;
 import java.util.Objects;
 
 
 @DataType()
-public class Org {
+public class Org implements LedgerMapObject {
     private final String orgId;
     String domain;
     String orgIp;
@@ -35,22 +34,27 @@ public class Org {
     }
 
     public Org(@JsonProperty("orgId") String orgId, @JsonProperty("domain") String domain,
-               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort) {
+               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort, @JsonProperty("peer0Port") String peer0Port) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort;
+        this.peerPort = peerPort != null ? peerPort : peer0Port;
     }
 
     public Org(@JsonProperty("orgId") String orgId, @JsonProperty("domain") String domain,
-               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort,
+               @JsonProperty("orgIp") String orgIp, @JsonProperty("peerPort") String peerPort, @JsonProperty("peer0Port") String peer0Port,
                @JsonProperty("peerName") String peerName, @JsonProperty("wwwPort") String wwwPort) {
         this.orgId = orgId;
         this.domain = domain;
         this.orgIp = orgIp;
-        this.peerPort = peerPort;
+        this.peerPort = peerPort != null ? peerPort : peer0Port;
         this.peerName = peerName;
         this.wwwPort = wwwPort;
+    }
+
+    @Override
+    public String getMapKey() {
+        return orgId + "." + domain;
     }
 
     public String getOrgId() {
