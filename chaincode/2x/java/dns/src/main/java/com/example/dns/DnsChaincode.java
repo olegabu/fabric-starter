@@ -72,7 +72,7 @@ public final class DnsChaincode implements ContractInterface {
         SortedMap<String, Peer> peersMap = new TreeMap<>() {{
             put(peerName, new Peer(orgObj.getOrgIp(), orgObj.getPeerPort()));
         }};
-        Org normalizedOrg = new Org(orgObj.getOrgId(), orgObj.getDomain(), orgObj.getOrgIp(), orgObj.getPeerPort(), orgObj.getPeerPort(), orgObj.getWwwPort(), null,
+        Org normalizedOrg = new Org(orgObj.getOrgId(), orgObj.getDomain(), orgObj.getOrgIp(), orgObj.getPeerPort(), orgObj.getWwwPort(), null,
                 orgObj.getWwwIp(), peersMap);
 
         storeObjInLedgerMap(ctx, normalizedOrg, "orgs");
