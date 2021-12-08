@@ -47,7 +47,7 @@ public class Orderer implements LedgerMapObject {
     }
 
     @Override
-    public String getMapKey() {
+    public String objectNameInMap() {
         return ordererName + "." + domain;
     }
 

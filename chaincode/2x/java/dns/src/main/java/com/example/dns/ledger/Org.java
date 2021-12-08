@@ -54,7 +54,7 @@ public class Org implements LedgerMapObject {
     }
 
     @Override
-    public String getMapKey() {
+    public String objectNameInMap() {
         return orgId + "." + domain;
     }
 

@@ -36,6 +36,14 @@ public final class DnsChaincode implements ContractInterface {
     private final Genson genson = new Genson();
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public void registerOrgByParams(final Context ctx, String orgId, String domain, String orgIp, String peerPort, String wwwPort, String peerName) {
+        Org org = new Org(orgId, domain, orgIp, peerPort, wwwPort, peerName);
+        String serialized = genson.serialize(org);
+        System.out.println("Org object got by params:" + serialized);
+        this.registerOrg(ctx, serialized);
+    }
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void registerOrg(final Context ctx, final String orgSerialized) {
         System.out.println("registerOrg: " + orgSerialized);
 
@@ -78,8 +86,17 @@ public final class DnsChaincode implements ContractInterface {
         storeObjInLedgerMap(ctx, normalizedOrg, "orgs");
     }
 
-    @Transaction(intent = Transaction.TYPE.SUBMIT)
 
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
+    public void registerOrdererByParams(final Context ctx, String ordererName, String domain, String ordererPort, String ordererIp, String wwwPort) {
+        Orderer orderer = new Orderer(ordererName, domain, ordererIp, ordererPort, wwwPort, ordererIp);
+        String serialized = genson.serialize(orderer);
+        System.out.println("Orderer object got by params:" + serialized);
+        this.registerOrderer(ctx, serialized);
+    }
+
+
+    @Transaction(intent = Transaction.TYPE.SUBMIT)
     public void registerOrderer(final Context ctx, final String ordererSerialized) {
         Orderer ordererObj = genson.deserialize(ordererSerialized, Orderer.class);
 
@@ -118,7 +135,7 @@ public final class DnsChaincode implements ContractInterface {
     private <T extends LedgerMapObject> void storeObjInLedgerMap(Context ctx, T obj, String ledgerKey) {
         SortedMap<String, T> orgs = getMapFromLedger(ctx, ledgerKey);
 
-        orgs.put(obj.getMapKey(), obj);
+        orgs.put(obj.objectNameInMap(), obj);
         this.put(ctx, ledgerKey, genson.serialize(orgs));
     }
 
