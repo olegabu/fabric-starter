@@ -9,6 +9,7 @@ chaincode_init_name=${CHAINCODE_PREFIX:-reference}
 chaincode_name=${3:-${chaincode_init_name}_${channel}}
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channel}] channel by [${org}]"
+
 setCurrentActiveOrg ${org}
 result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} \| grep -E "^$chaincode_name")
 

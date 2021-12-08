@@ -10,7 +10,6 @@ printToLogAndToScreenBlue "\nVerifing if the [${channel}] channel exists in [${o
 
 setCurrentActiveOrg ${org}
 result=$(peerParseChannelConfig ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
-printDbg "Expect: ${channel}, got: ${result}"
 
 setExitCode [ "${result}" = "${channel}" ]
 printResultAndSetExitCode "The channel [${channel}] exists and visible to [${org}]"

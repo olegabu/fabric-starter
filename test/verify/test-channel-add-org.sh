@@ -11,7 +11,6 @@ printToLogAndToScreenBlue "\nVerifing if the [${orgAdd}] added to [${channel}]"
 
 setCurrentActiveOrg ${org}
 result=$(peerParseChannelConfig ${channel} ${org}  ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${orgAdd}.values.MSP.value" '.config.name')
-printDbg "${result}"
-    
+
 setExitCode [ "${result}" = "${orgAdd}" ]
 printResultAndSetExitCode "Organization [${orgAdd}] is in the channel [$channel]"

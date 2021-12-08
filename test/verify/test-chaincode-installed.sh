@@ -10,7 +10,6 @@ chaincodeName=${3:-$(getTestChaincodeName ${channelName})}
 printToLogAndToScreenBlue "\nVerifing if the chaincode [${chaincodeName}] installed in [${org}]"
 
 setCurrentActiveOrg ${org}
-
 result=$(runCLIPeer ${org} listChaincodesInstalled ${channelName} ${org} \| grep -E "^${chaincodeName}$")
 
 setExitCode [ "${result}" = "${chaincodeName}" ]
