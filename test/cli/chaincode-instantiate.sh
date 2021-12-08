@@ -10,13 +10,6 @@ chaincodeName=${3:-$(getTestChaincodeName ${channelName})}
 printToLogAndToScreenCyan "\nInstantiate test chaincode in [${channelName}] by [${org}]"
 
 setCurrentActiveOrg ${org}
-result=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channelName} ${chaincodeName} 2>&1)
-exit_code=$?
+result=$(runCLIPeer ${org} "./container-scripts/network/chaincode-instantiate.sh ${channelName} ${chaincodeName}" )
 
-set +f
-IFS=
-printDbg ${result}
-set -f
-
-setExitCode [ "${exit_code}" = "0" ]
 printResultAndSetExitCode "[${chaincodeName}] chaincode instantiated in [${channelName}] by [${org}]"

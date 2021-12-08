@@ -9,15 +9,8 @@ chaincode_init_name=${CHAINCODE_PREFIX:-reference}
 chaincode_name=${3:-${chaincode_init_name}_${channel}}
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channel}] channel by [${org}]"
-
 setCurrentActiveOrg ${org}
+result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} \| grep -E "^$chaincode_name")
 
-result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} 2>/dev/null)
-set -f
-IFS=
-  printDbg "Result: ${result}"
-  result=$(echo $result | tr -d "\r" | grep -E "^$chaincode_name")
-set +f
 setExitCode [ "${result}" = "${chaincode_name}" ]
-
 printResultAndSetExitCode "The test chaincode instantiated in [${channel}] channel by [${org}] org"

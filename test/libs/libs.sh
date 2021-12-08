@@ -669,7 +669,8 @@ function runCLIPeer() {
     exit_code=${?}
 
     set -f
-    IFS=''
+    IFS=
+      printDbg  "runCLIPeer result: ${result}"
       echo ${result}
     set +f
     setExitCode [ ${exit_code} = 0 ]
@@ -1060,7 +1061,7 @@ function dockerCopyDirToContainer() {
     dockerMakeDirInContainer ${container} "${destinationPath}"
     container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
     parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)
-    echo "docker cp ${sourcePath} ${container}:${parent_dir}${destinationPath}"
+    printDbg "docker cp ${sourcePath} ${container}:${parent_dir}${destinationPath}"
     docker cp ${sourcePath} ${container}:"${parent_dir}${destinationPath}"
     docker container exec -it ${container} ls -la "${parent_dir}${destinationPath}" >/dev/null
     setExitCode [[ $? == 0 ]]
