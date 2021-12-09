@@ -28,10 +28,12 @@ fi
 : ${RAFT0_PORT:=7050}
 : ${RAFT1_PORT:=7150}
 : ${RAFT2_PORT:=7250}
+: ${ORDERER_BATCH_TIMEOUT:=5}
 
 : ${WGET_OPTS:=}
 set -x
 : ${WGET_CMD:= wget --verbose -N --directory-prefix}
+export GENERATE_DIR=${TMP_DIR:-crypto-config}
 set +x
 : ${BASE64_UNWRAP_CODE:=-w 0} # "-b 0" for MacOs
 
