@@ -76,14 +76,14 @@ function downloadMSP() {
     local urlSubPath=${4:-$mspSubPath}
 
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
-    local DIRECTORY=crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
+
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/admincerts
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/cacerts
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/tlscacerts
     set -x
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
     set +x
 }
 
@@ -111,20 +111,20 @@ function ordererCertificationsToEnv() {
 function fetchChannelConfigBlock() {
     local channel=${1:?"Channel name must be specified"}
     local blockNum=${2:-config}
-    local outputFile=${3:-crypto-config/configtx/${channel}.pb}
+    local outputFile=${3:-${GENERATE_DIR}/configtx/${channel}.pb}
 
-    mkdir -p crypto-config/configtx
+    mkdir -p ${GENERATE_DIR}/configtx
     echo "Execute: channel fetch $blockNum ${outputFile} -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}"
     peer channel fetch $blockNum ${outputFile} -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function txTranslateChannelConfigBlock() {
     local channel=$1
-    local outputFile=${2:-crypto-config/configtx/config.json}
-    rm -f crypto-config/configtx/${channel}.pb crypto-config/configtx/${channel}.json ${outputFile}
+    local outputFile=${2:-${GENERATE_DIR}/configtx/config.json}
+    rm -f ${GENERATE_DIR}/configtx/${channel}.pb ${GENERATE_DIR}/configtx/${channel}.json ${outputFile}
     fetchChannelConfigBlock $channel
-    configtxlator proto_decode --type 'common.Block' --input=crypto-config/configtx/${channel}.pb --output=crypto-config/configtx/${channel}.json
-    jq .data.data[0].payload.data.config crypto-config/configtx/${channel}.json > ${outputFile}
+    configtxlator proto_decode --type 'common.Block' --input=${GENERATE_DIR}/configtx/${channel}.pb --output=${GENERATE_DIR}/configtx/${channel}.json
+    jq .data.data[0].payload.data.config ${GENERATE_DIR}/configtx/${channel}.json > ${outputFile}
 }
 
 function updateChannelGroupConfigForOrg() {
@@ -132,12 +132,12 @@ function updateChannelGroupConfigForOrg() {
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
     local domain=${4:-$DOMAIN}
-    local outputFile=${5:-crypto-config/configtx/updated_config.json}
+    local outputFile=${5:-${GENERATE_DIR}/configtx/updated_config.json}
 
     export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
-    echo "Prepare updated config crypto-config/configtx/new_config_${org}.json"
-    envsubst < "${templateFileOfUpdate}" > "crypto-config/configtx/new_config_${org}.json"
-    jq -s '.[0] * {"channel_group":{"groups":.[1]}}' crypto-config/configtx/config.json crypto-config/configtx/new_config_${org}.json > "${outputFile}"
+    echo "Prepare updated config ${GENERATE_DIR}/configtx/new_config_${org}.json"
+    envsubst < "${templateFileOfUpdate}" > "${GENERATE_DIR}/configtx/new_config_${org}.json"
+    jq -s '.[0] * {"channel_group":{"groups":.[1]}}' ${GENERATE_DIR}/configtx/config.json ${GENERATE_DIR}/configtx/new_config_${org}.json > "${outputFile}"
 }
 
 function mergeListsInJsons() {
@@ -153,8 +153,8 @@ function mergeListsInJsons() {
 
 function createConfigUpdateEnvelope() {
     local channel=$1
-    local configJson=${2:-'crypto-config/configtx/config.json'}
-    local updatedConfigJson=${3:-'crypto-config/configtx/updated_config.json'}
+    local configJson=${2:-"${GENERATE_DIR}/configtx/config.json"}
+    local updatedConfigJson=${3:-"${GENERATE_DIR}/configtx/updated_config.json"}
 
     difference=`diff ${configJson} ${updatedConfigJson}`
     if [ -z "$difference" ]; then
@@ -165,13 +165,13 @@ function createConfigUpdateEnvelope() {
     configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
     && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
     && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
-    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=crypto-config/configtx/update.json && chown $UID crypto-config/configtx/update.json
+    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=${GENERATE_DIR}/configtx/update.json && chown $UID ${GENERATE_DIR}/configtx/update.json
 
-    echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat crypto-config/configtx/update.json`}}}" | jq . > crypto-config/configtx/update_in_envelope.json
-    configtxlator proto_encode --type 'common.Envelope' --input=crypto-config/configtx/update_in_envelope.json --output=update_in_envelope.pb
+    echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat ${GENERATE_DIR}/configtx/update.json`}}}" | jq . > ${GENERATE_DIR}/configtx/update_in_envelope.json
+    configtxlator proto_encode --type 'common.Envelope' --input=${GENERATE_DIR}/configtx/update_in_envelope.json --output=${GENERATE_DIR}/update_in_envelope.pb
     echo " >> $org is sending channel update update_in_envelope.pb with $d by $command"
     echo "Execute: peer channel update -f update_in_envelope.pb -c ${channel} -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
-    peer channel update -f update_in_envelope.pb -c ${channel} -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
+    peer channel update -f ${GENERATE_DIR}/update_in_envelope.pb -c ${channel} -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 
@@ -182,7 +182,7 @@ function insertObjectIntoChannelConfig() {
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
     local domain=${5:-$DOMAIN}
-    local outputFile=${6:-crypto-config/configtx/updated_config.json}
+    local outputFile=${6:-${GENERATE_DIR}/configtx/updated_config.json}
 
     echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile"
     txTranslateChannelConfigBlock "$channel"
@@ -208,7 +208,7 @@ function mergeListIntoChannelConfig() {
     local configJsonPath=$3
     local mergedFile=$4
     local mergedFileJsonPath=$5
-    local outputFile=${6:-crypto-config/configtx/updated_config.json}
+    local outputFile=${6:-${GENERATE_DIR}/configtx/updated_config.json}
     mergeListsInJsons ${configInputFile} ${configJsonPath} ${mergedFile} ${mergedFileJsonPath} ${outputFile}
 }
 
@@ -216,7 +216,7 @@ function removeObjectFromChannelConfig() {
     local channel=${1:?Channel is requried}
     local configInputFile=${2:?Config input file is requried}
     local configJsonPath=$3
-    local outputFile=${4:-crypto-config/configtx/updated_config.json}
+    local outputFile=${4:-${GENERATE_DIR}/configtx/updated_config.json}
     sh -c "jq 'del (.${configJsonPath})' $configInputFile > ${outputFile}.temp "
     mv ${outputFile}.temp ${outputFile}
 }
@@ -242,13 +242,13 @@ function updateAnchorPeers() {
 function createChannel() {
     local channelName=${1:?Channel name must be specified}
     echo -e "\nCreate channel $ORG $channelName"
-    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
-    mkdir -p crypto-config/configtx
-    envsubst < "templates/configtx-template.yaml" > "crypto-config/configtx.yaml"
-
-    configtxgen -configPath crypto-config/ -outputCreateChannelTx crypto-config/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+#    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
     set -x
-    peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f crypto-config/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
+    mkdir -p ${GENERATE_DIR}/configtx
+    envsubst < "templates/configtx-template.yaml" > "${GENERATE_DIR}/configtx.yaml"
+    cat ${GENERATE_DIR}/configtx.yaml
+    configtxgen -configPath ${GENERATE_DIR}/ -outputCreateChannelTx ${GENERATE_DIR}/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+    peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f ${GENERATE_DIR}/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
     set +x
     updateAnchorPeers "$ORG" "$channelName"
 
@@ -270,7 +270,7 @@ function joinChannel() {
 
     echo "Join $ORG to channel $channel"
     fetchChannelConfigBlock $channel "0"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b crypto-config/configtx/$channel.pb
+    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
 }
 
 function createChaincodePackage() {
