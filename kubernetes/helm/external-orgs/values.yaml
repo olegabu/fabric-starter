@@ -1,0 +1,17 @@
+REST_API_URL:
+
+orderer:
+  integrateOrderer: true
+  newOrdererName:
+  newOrdererDomain:
+  newOrdererIp:
+  newOrdererPort: 7050
+  newOrdererWwwPort:
+
+peer:
+  newOrgPeerName: peer0
+  newOrg:
+  newOrgDomain:
+  newOrgIp:
+  newPeerPort: 7051
+

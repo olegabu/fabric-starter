@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: integrate-{{ .Values.peernewOrgPeerName }}-job
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      containers:
+        - name: integrate-job
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+          env:
+            - name: REST_API_URL
+              value: "{{ default "http:/rest-api:4000" .Values.REST_API_URL }}"
+
+            - name: INTEGRATE_ORDERER
+              value: "{{ .Values.orderer.integrateOrderer }}"
+            - name: NEW_ORDERER_NAME
+              value: {{ default "orderer" .Values.orderer.newOrdererName }}
+            - name: NEW_ORDERER_DOMAIN
+              value: {{ default "" .Values.orderer.newOrdererDomain }}
+            - name: NEW_ORDERER_IP
+              value: "{{ .Values.orderer.newOrdererIp }}"
+            - name: NEW_ORDERER_PORT
+              value: "{{ default 7050 .Values.orderer.newOrdererPort }}"
+            - name: NEW_ORDERER_WWWPORT
+              value: "{{ default 80 .Values.orderer.newOrdererWwwPort }}"
+            - name: NEW_ORDERER_MSP
+              value: {{ .Values.OrdererMsp }}
+
+            - name: NEW_ORG_PEER_NAME
+              value: {{ .Values.peer.newOrgPeerName }}
+            - name: NEW_ORG
+              value: {{ .Values.peer.newOrg }}
+            - name: NEW_ORG_IP
+              value: "{{ .Values.peer.newOrgIp }}"
+            - name: NEW_PEER_PORT
+              value: "{{ .Values.peer.newPeerPort }}"
+          workingDir: /tmp
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -x; \
+              curl -k -0 --connect-timeout 30 --max-time 240 --retry 0 \
+              ${REST_API_URL}/integration/service/raft  \
+              -F ordererName=${NEW_ORDERER_NAME} -F domain=${NEW_ORDERER_DOMAIN} -F ordererPort=${NEW_ORDERER_PORT} -F wwwPort=${NEW_ORDERER_WWWPORT} -F ordererIp=${NEW_ORDERER_IP} \
+              -F orgId=${NEW_ORG} \
+              --output genesis.pb; \
+              set +x; \
+              sleep 20000
+
+      restartPolicy: Never

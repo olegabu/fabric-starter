@@ -7,7 +7,7 @@ kind: ConfigMap
 metadata:
   name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 data:
-  FABRIC_LOGGING_SPEC: {{ default "INFO" .Values.logLevel }}
+  FABRIC_LOGGING_SPEC: {{ default "INFO" $.Values.logLevel }}
 
   ORDERER_GENERAL_LISTENADDRESS: '0.0.0.0'
   ORDERER_GENERAL_GENESISMETHOD: 'file'
