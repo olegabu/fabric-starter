@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderer-deployment
+  labels:
+    app: orderer
+    name: orderer
+spec:
+  selector:
+    matchLabels:
+      app: orderer
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      #          annotations:
+      #            sidecar.istio.io/inject: "true"
+      creationTimestamp: null
+      labels:
+        app: orderer
+    spec:
+      volumes:
+        - name: genesis-block
+          secret:
+            secretName: genesis-block-{{ .Values.org }}
+
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+
+      containers:
+        - name: orderer
+          ports:
+            - name: orderer-port
+              containerPort: 7050
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+            - name: genesis-block
+              mountPath: /etc/hyperledger/channel-artifacts
+
+          image: >-
+            {{ tpl .Values.images.orderer . }}
+{{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
+          envFrom:
+            - configMapRef:
+                name: orderer
+{{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
+          env:
+{{/*            - name: DB_PASSWORD*/}}
+{{/*              valueFrom:*/}}
+{{/*                secretKeyRef:*/}}
+{{/*                  name: db-password*/}}
+{{/*                  key: password*/}}
+            - name: ORDERER_POSTGRESLEDGER_DATASOURCENAME
+              value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
+
+            - name: ORDERER_GENERAL_LOCALMSPDIR
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/msp
+            - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.key
+            - name: ORDERER_GENERAL_TLS_CERTIFICATE
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.crt
+            - name: ORDERER_GENERAL_TLS_ROOTCAS
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/ca.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.crt
+            - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.key
+            - name: ORDERER_CA
+              value: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/tlsca/tlsca.{{ .Values.domain }}-cert.pem
+
+#          resources:
+#            limits:
+#              cpu: ${CPULIMIT}
+#              memory: ${MEMORYLIMIT}
+#            requests:
+#              cpu: ${CPUREQUEST}
+#              memory: ${MEMORYREQUEST}
+          #              readinessProbe:
+          #                httpGet:
+          #                  path: /health/check
+          #                  port: 8080
+          #                initialDelaySeconds: 10
+          #              livenessProbe:
+          #                httpGet:
+          #                  path: /health/check
+          #                  port: 8080
+          #                initialDelaySeconds: 10

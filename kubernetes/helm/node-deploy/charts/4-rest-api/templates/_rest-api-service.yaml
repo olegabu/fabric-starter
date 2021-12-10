@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rest-api
+  namespace:  {{ .Values.NAMESPACE }}
+spec:
+  ports:
+    - name: rest-api-port
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+  selector:
+    app: rest-api

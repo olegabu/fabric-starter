@@ -15,7 +15,6 @@ if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chainc
     export BASE64_UNWRAP_CODE="| tr -d '\n'"
 fi
 
-
 : ${DOMAIN:="example.com"}
 : ${ORG:="org1"}
 : ${PEER_NAME:="peer0"}
@@ -35,6 +34,7 @@ set -x
 : ${WGET_CMD:= wget --verbose -N --directory-prefix}
 export GENERATE_DIR=${TMP_DIR:-crypto-config}
 set +x
+
 : ${BASE64_UNWRAP_CODE:=-w 0} # "-b 0" for MacOs
 
 if [ `uname` == 'Darwin' ]; then

@@ -41,7 +41,7 @@ function checkError() {
 
 for image in "${dockerImages[@]}"
 do
-    docker pull ${DOCKER_REGISTRY}/${image}
+#    docker pull ${DOCKER_REGISTRY}/${image}
     #checkError
     docker tag ${DOCKER_REGISTRY}/${image} "${DOCKER_REGISTRY_LOCAL}/${image}"
     checkError

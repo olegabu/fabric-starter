@@ -1,0 +1,10 @@
+org: org1
+domain: example.com
+orderer_name: orderer
+
+
+genesisBlock: crypto-config/configtx/example.com/genesis.pb
+
+images:
+  fabric_tools_extended: olegabu/fabric-tools-extended:2x
+

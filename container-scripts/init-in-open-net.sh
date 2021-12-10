@@ -28,8 +28,8 @@ env|sort
 
 function main() {
     env|sort
-    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} ${ORDERER_WWW_PORT}
-    addMeToConsortiumIfOrdererExists
+    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} #${ORDERER_WWW_PORT}
+#    addMeToConsortiumIfOrdererExists
     if [[ ! ${DNS_CHANNEL} ]]; then
         printYellow "\nDNS_CHANNEL is set to empty. Skipping joining."
         exit
@@ -76,12 +76,14 @@ function addMeToConsortiumIfOrdererExists() {
 
 function createServiceChannel() {
     local serviceChannel=${1:?Service channel name is required}
-    printYellow "\nTrying to create channel ${serviceChannel}\n"
-    [[ -z "$BOOTSTRAP_IP" ]] && createChannel ${serviceChannel}
-    createResult=$?
-    sleep 3
-    [[ $createResult -eq 0 ]] && printGreen "\nChannel 'common' has been created\n" || printYellow "\nChannel '${serviceChannel}' cannot be created or already exists\n"
-    return ${createResult}
+    if [ -z "$BOOTSTRAP_IP" ]; then
+        printYellow "\nTrying to create channel ${serviceChannel}\n"
+        createChannel ${serviceChannel}
+        createResult=$?
+        sleep 3
+        [[ $createResult -eq 0 ]] && printGreen "\nChannel 'common' has been created\n" || printYellow "\nChannel '${serviceChannel}' cannot be created or already exists\n"
+        return ${createResult}
+    fi
 }
 
 function requestInviteToServiceChannel() {
@@ -90,10 +92,10 @@ function requestInviteToServiceChannel() {
 
     ${BASEDIR}/wait-port.sh ${ORDERER_NAME}.${DOMAIN} ${ORDERER_GENERAL_LISTENPORT}
     set -x
-    sleep ${ORDERER_STARTING_PERIOD:-20} # TODO: orderer may have open port but not be operating yet
+    sleep ${ORDERER_STARTING_PERIOD:-30} # TODO: orderer may have open port but not be operating yet
     set +x
 
-    if [[ $creationResult -ne 0 && ${CHANNEL_AUTO_JOIN} ]]; then
+    if [[ -n "$BOOTSTRAP_IP" && ${CHANNEL_AUTO_JOIN} ]]; then
        printYellow "\nRequesting invitation to channel ${serviceChannel}, $BOOTSTRAP_SERVICE_URL \n"
        set -x
        curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${MASTER_IP:-${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/service/orgs \

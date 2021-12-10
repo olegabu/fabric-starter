@@ -1,7 +1,7 @@
 .docker
 .idea
 backup
-crypto-config
+**/crypto-config
 docs
 extra
 data

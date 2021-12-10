@@ -31,7 +31,7 @@ function main() {
                 export ORDERER_NAMES=${ORDERER_NAMES}
         fi
     else
-        if [ "${ORDERER_TYPE}" != "SOLO" ]; then
+        if [ "${ORDERER_TYPE}" == "RAFT" ]; then
             export ORDERER_DOMAIN=${ORDERER_DOMAIN:-"osn-${ORG}.${DOMAIN}"}
             info "Creating orderer service for ${ORDERER_DOMAIN}, of type ${ORDERER_TYPE}"
             set -x
