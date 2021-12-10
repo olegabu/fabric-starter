@@ -67,6 +67,8 @@ spec:
 
             - name: ORDERER_POSTGRESLEDGER_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
+            - name: ORDERER_CONSENSUS_POSTGRES_DATASOURCENAME
+              value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
 
             {{- include "resources" (merge (deepCopy $) $.Values.resources.orderer)  | nindent 4 }}
 

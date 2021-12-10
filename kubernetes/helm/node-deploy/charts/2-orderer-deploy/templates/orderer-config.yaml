@@ -7,11 +7,7 @@ kind: ConfigMap
 metadata:
   name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 data:
-  processor.timeout: '1'
-  cnft.wallet.address: 'http://egress-nginx.${NAMESPACE}.svc:8088/cnft-gate'
-  dfa.integration.service.port: '9185'
-
-  DFA_INTEGRATION_JAVA_TOOL_OPTIONS: '-XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=95.0  -Dfile.encoding=UTF-8'
+  FABRIC_LOGGING_SPEC: {{ default "INFO" .Values.logLevel }}
 
   ORDERER_GENERAL_LISTENADDRESS: '0.0.0.0'
   ORDERER_GENERAL_GENESISMETHOD: 'file'
@@ -26,6 +22,5 @@ data:
   ORDERER_GENERAL_TLS_ROOTCAS: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/ca.crt
   ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
   ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
-  FABRIC_LOGGING_SPEC: DEBUG
 
 {{ end }}

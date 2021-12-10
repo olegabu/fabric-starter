@@ -44,33 +44,21 @@ data:
   ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ .Values.domain }}/orderers/orderer.{{ .Values.domain }}/tls/server.key
 
 
-
-
   ENROLL_ID: admin
   ENROLL_SECRET: {{ .Values.enroll_secret }}
   {{/*  BOOTSTRAP_EXTERNAL_PORT: */}}
 
 
-  CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.CORE_LEDGER_STATE_STATEDATABASE }}
   DB_HOST: {{ .Values.DB_HOST }}
   DB_PORT: "{{ .Values.DB_PORT }}"
-  CORE_PEER_POSTGRES_SCHEMANAME: {{ .Values.CORE_PEER_POSTGRES_SCHEMANAME }}
   DB_NAME: {{ .Values.DB_NAME }}
   DB_USERNAME: {{ .Values.DB_USERNAME }}
 
+  CORE_PEER_POSTGRES_SCHEMANAME: {{ .Values.CORE_PEER_POSTGRES_SCHEMANAME }}
+  CORE_LEDGER_STATE_STATEDATABASE: {{ .Values.CORE_LEDGER_STATE_STATEDATABASE }}
   CORE_PEER_POSTGRES_TABLEPREFIX: {{ .Values.CORE_PEER_POSTGRES_TABLEPREFIX }}
   ORDERER_POSTGRES_TABLEPREFIX: {{ .Values.ORDERER_POSTGRES_TABLEPREFIX }}
 
-
-  CHANNEL_NAME: 'cnft'
-  ORDERER_CA: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/orderer/tlsca/tlsca.${DOMAIN}-cert.pem
-  OSN_PORT: '7150'
-# ORDERER_ADDRESS: orderer.${DOMAIN}:7150
-  CHAINCODE_NAME: 'cnft'
-
-  FABRIC_LOGGING_SPEC: {{ .Values.logLevel }}
-  GODEBUG: 'netdns'
-  #      fabric.cfg.path: '$BASE_DIR/hlf/config'
 
   CRYPTO_ALGORITHM: {{ "SW" | default .Values.cryptoAlgorithm }}
 
