@@ -248,6 +248,7 @@ function createChannel() {
     mkdir -p ${GENERATE_DIR}/configtx
     envsubst < "templates/configtx-template.yaml" > "${GENERATE_DIR}/configtx.yaml"
     cat ${GENERATE_DIR}/configtx.yaml
+    
     configtxgen -configPath ${GENERATE_DIR}/ -outputCreateChannelTx ${GENERATE_DIR}/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f ${GENERATE_DIR}/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
     set +x
