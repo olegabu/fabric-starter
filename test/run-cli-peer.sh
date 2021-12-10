@@ -5,8 +5,6 @@
 compose_org=${1}
 command=${@:2}
 
-echo $command >> ttttt
-
 libcommand='source container-scripts/lib/container-lib.sh 2>/dev/null'
 FABRIC_DIR=${FABRIC_DIR:-$BASEDIR/..}
 

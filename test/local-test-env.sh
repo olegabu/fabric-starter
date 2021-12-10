@@ -25,7 +25,7 @@ main() {
     export -f copyDirToContainer
     export -f makeDirInContainer
 
-    source ${BASEDIR}/common-test-env.sh $@
+    source ${BASEDIR}/libs/common-test-env.sh $@
 }
 
 function getApiPortDelta() {
