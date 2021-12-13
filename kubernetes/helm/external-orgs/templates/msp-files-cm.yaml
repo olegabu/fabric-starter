@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: msp-files-cm-{{ .Values.peer.newOrg }}
+binaryData:
+{{- range $path, $_ := .Files.Glob "msp/*" }}
+  {{ base $path }}: {{ $.Files.Get $path | b64enc }}
+{{- end }}

@@ -10,8 +10,9 @@ orderer:
 
 peer:
   newOrgPeerName: peer0
-  newOrg:
-  newOrgDomain:
-  newOrgIp:
+  newOrg: null
+  newOrgDomain: null
+  newOrgIp: null
   newPeerPort: 7051
+  newOrgWwwPort: 80
 
