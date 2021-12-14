@@ -2,6 +2,7 @@
 
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${DOMAIN:=example.com}
+: ${INTERNAL_DOMAIN:=${DOMAIN}}
 : ${RAFT_NODES_COUNT:=1}
 : ${RAFT_NODES_NUMBERING_START:=1}
 : ${CONSENTER_ID:=1}
@@ -20,7 +21,7 @@ touch ${TMP_DIR}/hosts
 
 function main() {
     echo "DOMAIN=$DOMAIN, ORDERER_NAME=$ORDERER_NAME, ORDERER_DOMAIN=$ORDERER_DOMAIN, ORDERER_PROFILE=$ORDERER_PROFILE, RAFT_NODES_COUNT=${RAFT_NODES_COUNT}, RAFT_NODES_NUMBERING_START=$RAFT_NODES_NUMBERING_START, ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX}"
-    echo "ORDERER_NAMES:$ORDERER_NAMES"
+    echo "ORDERER_NAMES:$ORDERER_NAMES, INTERNAL_DOMAIN: $INTERNAL_DOMAIN"
     env|sort
 
     constructConfigTxAndCryptogenConfigs
@@ -98,6 +99,13 @@ function writeCryptogenOrgConfig() {
     ordererName=$ordererName   envsubst >> ${cryptogenFile} <<  "    END"
         - Hostname: ${ordererName}
     END
+    if [[ -n "${INTERNAL_DOMAIN}" ]]; then
+    ordererName=$ordererName   envsubst >> ${cryptogenFile} <<  "    END"
+          SANS:
+            - ${ordererName}.${INTERNAL_DOMAIN}
+    END
+
+    fi
 #    stdbuf -oL
 }
 
