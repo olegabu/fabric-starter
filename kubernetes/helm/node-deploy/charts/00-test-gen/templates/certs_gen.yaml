@@ -31,6 +31,8 @@ spec:
               value: {{ .Values.org }}
             - name: DOMAIN
               value: {{ .Values.domain }}
+            - name: INTERNAL_DOMAIN
+              value: {{ default .Values.domain .Values.NAMESPACE }}
             - name: ORDERER_PROFILE
               value: {{ default "Raft" .Values.ordererProfile }}
             - name: ORDERER_NAME
