@@ -16,3 +16,5 @@ peer:
   newPeerPort: 7051
   newOrgWwwPort: 80
 
+channel:
+    name:

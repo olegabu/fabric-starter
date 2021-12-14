@@ -2,7 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ tpl .Values.peerOrgName . }}
-  namespace:  {{ .Values.NAMESPACE }}
 spec:
   ports:
     - name: peerport

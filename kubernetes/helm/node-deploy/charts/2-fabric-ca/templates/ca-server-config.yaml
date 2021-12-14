@@ -4,4 +4,4 @@ metadata:
   name: ca-server-configuration-cm
 data:
   LDAP_ENABLED: {{ "false" | default .Values.ldapEnabled }}
-  LDAP_BASE_DN: {{ default (.Values.ldapEnabled)  (print "dc=.%s" .Values.NAMESPACE) }}
+  LDAP_BASE_DN: {{ default (.Values.ldapEnabled)  (print "dc=.%s" .Values.domain) }}

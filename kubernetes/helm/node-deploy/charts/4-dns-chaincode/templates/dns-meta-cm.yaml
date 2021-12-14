@@ -6,4 +6,4 @@ data:
   metadata.json: >
     {"path":"","type":"external","label":"dns_1.0"}
   connection.json: >
-    {"address":"dns.{{ .Values.domain }}:{{ .Values.dnsChaincodePort }}","tls_required":false}
+    {"address":"dns:{{ .Values.dnsChaincodePort }}","tls_required":false}

@@ -52,6 +52,12 @@ spec:
                 name: common-{{ .Values.org }}
             - configMapRef:
                 name: rest-cm
+          env:
+            - name: ENROLL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: enroll-password-secret
+                  key: password
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
 

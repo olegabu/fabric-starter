@@ -2,7 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: dns
-  namespace:  {{ .Values.NAMESPACE }}
 spec:
   ports:
     - name: chaincodeport

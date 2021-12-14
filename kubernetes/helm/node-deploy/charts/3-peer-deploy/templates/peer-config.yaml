@@ -11,11 +11,11 @@ data:
   CORE_PEER_TLS_ENABLED: 'true'
   CORE_PEER_GOSSIP_USELEADERELECTION: 'true'
   CORE_PEER_GOSSIP_ORGLEADER: 'false'
-  CORE_PEER_GOSSIP_BOOTSTRAP: "peer0-{{ .Values.org }}.{{ .Values.NAMESPACE }}:{{ .Values.peer0Port }}"
-  CORE_PEER_GOSSIP_ENDPOINT: {{ tpl .Values.peerOrgName . }}.{{ .Values.NAMESPACE }}:7051
-  CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ tpl .Values.peerOrgName . }}.{{ .Values.NAMESPACE }}:{{ .Values.peer0Port }}"
+  CORE_PEER_GOSSIP_BOOTSTRAP: "peer0-{{ .Values.org }}:{{ .Values.peer0Port }}"
+  CORE_PEER_GOSSIP_ENDPOINT: {{ tpl .Values.peerOrgName . }}:{{ .Values.peer0Port }}
+  CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ tpl .Values.peerOrgName . }}.{{ .Values.domain }}:{{ .Values.peer0Port }}"
   CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:7052
-  CORE_PEER_CHAINCODEADDRESS: {{ tpl .Values.peerOrgName . }}.{{ .Values.NAMESPACE }}:7052
+  CORE_PEER_CHAINCODEADDRESS: {{ tpl .Values.peerOrgName . }}:7052
   CORE_PEER_LISTENADDRESS: "0.0.0.0:{{ .Values.peer0Port }}"
 
 

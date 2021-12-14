@@ -2,7 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: fabric-sdk
-  namespace:  {{ .Values.NAMESPACE }}
 spec:
   ports:
     - name: sdk-port

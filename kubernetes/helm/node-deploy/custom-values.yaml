@@ -1,4 +1,3 @@
-NAMESPACE: &namespace default
 logLevel: INFO # DEBUG
 
 org: &org org1
