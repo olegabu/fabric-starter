@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: rest-cm
 data:
+  DOMAIN: {{ default .Values.domain .Values.NAMESPACE }} # override; use internal domain if specified
   AUTH_MODE: {{ .Values.authMode }}
   PEER_ADDRESS_TEMPLATE: "${PEER_NAME}-${ORG}.${DOMAIN}"
   SDK_API_URL: "http://fabric-sdk:8080"
