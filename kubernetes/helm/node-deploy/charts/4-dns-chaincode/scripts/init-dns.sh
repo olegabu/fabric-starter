@@ -8,8 +8,8 @@ CC_LABEL="dns_1.0"
 
 function main () {
 
-    ./container-scripts/wait-port.sh ${ORDERER_NAME}.${DOMAIN} ${ORDERER_GENERAL_LISTENPORT}
-    ./container-scripts/wait-port.sh ${PEER_ORG_NAME}.${DOMAIN} ${PEER0_PORT}
+    ./container-scripts/wait-port.sh ${ORDERER_NAME}.${INTERNAL_DOMAIN} ${ORDERER_GENERAL_LISTENPORT}
+    ./container-scripts/wait-port.sh ${PEER_ORG_NAME}.${INTERNAL_DOMAIN} ${PEER0_PORT}
 
     createChannel common
     sleep 3

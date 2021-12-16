@@ -20,6 +20,7 @@ fi
 : ${ORDERER_NAME:="orderer"}
 : ${ORDERER_NAME_PREFIX:="raft"}
 : ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
+: ${INTERNAL_DOMAIN:=${DOMAIN:-example.com}}
 : ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${PEER0_PORT:=7051}
@@ -46,7 +47,7 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID ORDERER_DOMAIN ORDERER_BATCH_TIMEOUT
 #: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
 : ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile ${ORDERER_GENERAL_TLS_ROOTCERT_FILE}"}
-: ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
+: ${ORDERER_ADDRESS="${ORDERER_NAME}.${INTERNAL_DOMAIN:-$ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1:?-Orderer name is required}

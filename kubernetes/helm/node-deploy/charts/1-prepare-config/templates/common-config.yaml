@@ -5,6 +5,7 @@ metadata:
 data:
   ORG: {{ .Values.org }}
   DOMAIN: {{ .Values.domain }}
+  INTERNAL_DOMAIN: {{ default .Values.domain .Values.NAMESPACE }}
   PEER_NAME: {{ .Values.peerName | default "peer0" }}
   PEER_ORG_NAME: {{ tpl .Values.peerOrgName . }}
   PEER0_PORT: "{{ .Values.peer0Port | default 7051 }}"
@@ -16,7 +17,7 @@ data:
   {{/*  MY_IP: {{ .Values.myIp | default "" }}*/}}
   {{/*  BOOTSTRAP_IP: {{ .Values.bootstrapIp | default "" }}*/}}
 
-  CORE_PEER_ADDRESS: "{{ tpl .Values.peerOrgName . }}.{{ .Values.domain }}:{{ .Values.peerPort | default 7051 }}"
+  CORE_PEER_ADDRESS: "{{ tpl .Values.peerOrgName . }}.{{ default .Values.domain .Values.NAMESPACE }}:{{ .Values.peerPort | default 7051 }}"
 
   CRYPTO_CONFIG_DIR: /etc/hyperledger/crypto-config
   CORE_PEER_LOCALMSPID: {{ .Values.org }}
