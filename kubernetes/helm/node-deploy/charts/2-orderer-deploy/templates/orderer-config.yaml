@@ -15,7 +15,7 @@ data:
 
   ORDERER_GENERAL_LOCALMSPID: {{ include "orderer.nameDomain" $ordererValues }}
   ORDERER_GENERAL_LOCALMSPDIR: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/msp
-  ORDERER_GENERAL_LISTENPORT: "{{ $.Values.ordererPort }}"
+  ORDERER_GENERAL_LISTENPORT: "7050" # start lways on internal port
 
   ORDERER_GENERAL_TLS_PRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
   ORDERER_GENERAL_TLS_CERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt

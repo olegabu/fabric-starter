@@ -37,8 +37,8 @@ spec:
       containers:
         - name: orderer
           ports:
-            - name: orderer-port
-              containerPort: {{ $.Values.ordererPort }}
+            - name: orderer-internal-port
+              containerPort: 7050
               protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File

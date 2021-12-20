@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: peer-deployment-{{ .Values.org }}
+  name: peer-deployment-{{ .Values.peerOrgName }}
   labels:
-    app: peer-{{ .Values.org }}
-    name: peer-{{ .Values.org }}
+    app: peer-{{ .Values.peerOrgName }}
+    name: peer-{{ .Values.peerOrgName }}
 spec:
   selector:
     matchLabels:
-      app: peer-{{ .Values.org }}
+      app: peer-{{ .Values.peerOrgName }}
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: peer-{{ .Values.org }}
+        app: peer-{{ .Values.peerOrgName }}
     spec:
       volumes:
         - name: certs
@@ -39,7 +39,7 @@ spec:
       containers:
         - name: peer
           ports:
-            - name: peer-port
+            - name: peer-internal-port
               containerPort: 7051
               protocol: TCP
           imagePullPolicy: IfNotPresent
@@ -73,13 +73,6 @@ spec:
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
 
-          #          resources:
-          #            limits:
-          #              cpu: ${CPULIMIT}
-          #              memory: ${MEMORYLIMIT}
-          #            requests:
-          #              cpu: ${CPUREQUEST}
-          #              memory: ${MEMORYREQUEST}
           #              readinessProbe:
           #                httpGet:
           #                  path: /health/check

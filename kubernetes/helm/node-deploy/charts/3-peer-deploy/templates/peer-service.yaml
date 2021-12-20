@@ -6,11 +6,11 @@ spec:
   ports:
     - name: peerport
       protocol: TCP
-      port: 7051
-      targetPort: 7051
+      port: {{ .Values.peerPort }}
+      targetPort: "peer-internal-port"
     - name: chaincodeserverport
       protocol: TCP
       port: 7052
       targetPort: 7052
   selector:
-    app: peer-{{ .Values.org }}
+    app: peer-{{ .Values.peerOrgName }}

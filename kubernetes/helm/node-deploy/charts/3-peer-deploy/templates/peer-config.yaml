@@ -16,7 +16,7 @@ data:
   CORE_PEER_GOSSIP_EXTERNALENDPOINT: "{{ tpl .Values.peerOrgName . }}.{{ .Values.domain }}:{{ .Values.peerPort }}"
   CORE_PEER_CHAINCODELISTENADDRESS: 0.0.0.0:7052
   CORE_PEER_CHAINCODEADDRESS: {{ tpl .Values.peerOrgName . }}.{{ default .Values.domain .Values.NAMESPACE }}:7052
-  CORE_PEER_LISTENADDRESS: "0.0.0.0:{{ .Values.peerPort }}"
+  CORE_PEER_LISTENADDRESS: "0.0.0.0:7051" #start always on internal port
 
 
   CORE_PEER_MSPCONFIGPATH: /etc/hyperledger/crypto-config/peerOrganizations/{{ .Values.org }}.{{ .Values.domain }}/peers/peer0.{{ .Values.org }}.{{ .Values.domain }}/msp
