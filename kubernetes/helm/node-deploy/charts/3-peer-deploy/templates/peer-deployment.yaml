@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: peer-deployment-{{ .Values.peerOrgName }}
+  name: "peer-deployment-{{ .Values.peerName }}-{{ .Values.org }}"
   labels:
-    app: peer-{{ .Values.peerOrgName }}
-    name: peer-{{ .Values.peerOrgName }}
+    app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+    name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
 spec:
   selector:
     matchLabels:
-      app: peer-{{ .Values.peerOrgName }}
+      app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: peer-{{ .Values.peerOrgName }}
+        app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
     spec:
       volumes:
         - name: certs
@@ -39,7 +39,7 @@ spec:
       containers:
         - name: peer
           ports:
-            - name: peer-internal-port
+            - name: peer-start-port
               containerPort: 7051
               protocol: TCP
           imagePullPolicy: IfNotPresent
@@ -59,7 +59,7 @@ spec:
             - configMapRef:
                 name: common-{{ .Values.org }}
             - configMapRef:
-                name: peer-{{ .Values.org }}
+                name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
           env:
             - name: DB_PASSWORD
               valueFrom:

@@ -4,9 +4,10 @@ ordererName: orderer
 ordererDomain: *domain
 NAMESPACE: *domain
 
-authMode: ADMIN
-
+peerName: peer0
 peerOrgName: "{{ .Values.peerName }}-{{ .Values.org }}"
+
+authMode: ADMIN
 
 FABRIC_VERSION: 2.3.3
 

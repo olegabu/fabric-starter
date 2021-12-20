@@ -1,7 +1,6 @@
 logLevel: INFO # DEBUG
 
 org: &org org1
-peerName: peer0
 domain: &domain default
 ordererDomain: *domain
 NAMESPACE: *domain

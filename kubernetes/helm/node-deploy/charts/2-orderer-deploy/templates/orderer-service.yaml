@@ -11,7 +11,7 @@ spec:
     - protocol: TCP
       name: ordererport
       port: {{ $.Values.ordererPort }}
-      targetPort: "orderer-internal-port"
+      targetPort: "ord-start-port"
   selector:
     app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 

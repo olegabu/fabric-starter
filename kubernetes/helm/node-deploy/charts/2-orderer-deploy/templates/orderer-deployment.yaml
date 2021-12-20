@@ -37,7 +37,7 @@ spec:
       containers:
         - name: orderer
           ports:
-            - name: orderer-internal-port
+            - name: ord-start-port
               containerPort: 7050
               protocol: TCP
           imagePullPolicy: IfNotPresent
