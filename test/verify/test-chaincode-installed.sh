@@ -12,5 +12,5 @@ printToLogAndToScreenBlue "\nVerifing if the chaincode [${chaincodeName}] instal
 setCurrentActiveOrg ${org}
 result=$(runCLIPeer ${org} listChaincodesInstalled ${channelName} ${org} \| grep -E "^${chaincodeName}$")
 
-setExitCode [ "${result}" = "${chaincodeName}" ]
+setExitCode [ ! -z "${result}" ]
 printResultAndSetExitCode "The test chaincode installed in [${org}]"

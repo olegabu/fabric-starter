@@ -13,5 +13,5 @@ printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in chan
 setCurrentActiveOrg ${org}
 result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} \| grep -E "^$chaincode_name")
 
-setExitCode [ "${result}" = "${chaincode_name}" ]
+setExitCode [ ! -z "${result}" ]
 printResultAndSetExitCode "The test chaincode instantiated in [${channel}] channel by [${org}] org"

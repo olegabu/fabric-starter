@@ -9,7 +9,6 @@ org=${2}
 printToLogAndToScreenBlue "\nVerifing if the [${channel}] channel exists in [${org}]"
 
 setCurrentActiveOrg ${org}
-result=$(peerParseChannelConfig ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
+result=$(runCLIPeer ${org} findChannelNameInConfig ${channel})
 
-setExitCode [ "${result}" = "${channel}" ]
 printResultAndSetExitCode "The channel [${channel}] exists and visible to [${org}]"

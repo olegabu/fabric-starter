@@ -43,6 +43,10 @@ ldap_https=${LDAP_PORT_HTTPS:-6443}
 
 custom_port=${CUSTOM_PORT}
 
+sdk_port=${SDK_PORT:-8080}
+tls_ca_port=${TLS_CA_PORT:-7155}
+external_communication_port=${EXTERNAL_COMMUNICATION_PORT:-443}
+
 
 for org in ${orgs}
 do

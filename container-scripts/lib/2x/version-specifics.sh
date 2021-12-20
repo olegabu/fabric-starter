@@ -146,3 +146,29 @@ function listChaincodesInstantiated() {
     echo "${result}"  | jq -r '.[][] | .name'
     set +f
 }
+
+function getChannelConfigJSON() {
+    local channel=${1}
+    local result
+    result=$(peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c ${channel} $ORDERER_TLSCA_CERT_OPTS | configtxlator proto_decode --type "common.Block")
+    echo "${result}"
+}
+
+function findChannelNameInConfig() {
+    local channel=${1}
+    local result
+    result=$(getChannelConfigJSON $channel | jq -e -r '.data.data[0].payload.header.channel_header.channel_id // empty')
+    exitCode=$?
+    [[ ! -z "${result}" ]] && echo "${result}"
+    return $exitCode
+}
+
+function findOrgNameInChannelConfig() {
+    local channel=${1}
+    local org=${2}
+    local result
+    result=$(getChannelConfigJSON $channel | jq -e -r ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org}.values.MSP.value.config.name // empty")
+    exitCode=$?
+    [[ ! -z "${result}" ]] && echo "${result}"
+    return $exitCode
+}

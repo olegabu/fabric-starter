@@ -11,5 +11,5 @@ printToLogAndToScreenBlue "\nVerifing if the [${org}] has joined the [${channel}
 setCurrentActiveOrg ${org}
 result=$(runCLIPeer ${org} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS \| grep -E "^${channel}$")
 
-setExitCode [ "${result}" = "${channel}" ]
+setExitCode [ ! -z "${result}" ]
 printResultAndSetExitCode "The [${org}] org has joined the [${channel}] channel"

@@ -19,6 +19,8 @@ main() {
     export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
     if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
         export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+        export WGET_CMD="wget -P"
+        export BASE64_UNWRAP_CODE="| tr -d '\n'"
     fi
 
     pushd ${FABRIC_DIR} > /dev/null
@@ -114,6 +116,18 @@ function exportColors() {
     export  UNDERLINE=$(tput smul)
 }
 
+ function printYellowRed() {
+     printInColor "1;33" "$1" "1;31" "$2"
+ }
+ function printCyan() {
+     printInColor "1;36" "$1"
+ }
+ function printBlue() {
+     printInColor "1;34" "$1"
+ }
+ function printWhite() {
+     printInColor "1;37" "$1"
+ }
 
 function printNoColors() {   #filter out set color terminal commands
     local line
@@ -157,6 +171,27 @@ function getFabricStarterPath() {
         fi
     fi
 }
+
+function absDirPath() {
+    #set -f
+    #IFS=''
+    local dir="${@}"
+    local result
+    #if [ -f "${dir}" ]; then
+        #echo "DIR: dirname ${dir}"
+        result="$(bash -c  "cd ${dir} && pwd")"
+        echo "${result}"
+    #set +f
+    #fi
+}
+
+function getVarFromEnvFile() {
+    local varname=${1}
+    local filepath="${2}"
+
+    bash -c "source \"${filepath}\"; echo \${${varname}}"
+}
+
 
 
 function printDbg() {
@@ -728,56 +763,6 @@ function verifyOrgJoinedChannel() {
 }
 
 
-function peerParseChannelConfig() {
-    local channel=${1}
-    local org=${2}
-    local query=${3}
-    local subquery=${4:-.}
-
-
-    local TMP_LOG_FILE
-    local result
-
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-
-    #result=$(${BASEDIR}/../run-cli-peer.sh ${org} ${domain} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
-    result=$(runCLIPeer ${org} peer channel fetch config /dev/stdout -o \$ORDERER_ADDRESS -c ${channel} \$ORDERER_TLSCA_CERT_OPTS 2\>/dev/null \| configtxlator proto_decode --type \"common.Block\" 2\>/dev/null)
-    printDbg "Query: ${query}"
-    printDbg "Subquery: ${subquery}"
-    result=$(echo "${result}" | jq ${query} |  jq -r ${subquery}   2>"${TMP_LOG_FILE}")
-    printDbg "Parse result: $result"
-    echo $result
-}
-
-
-function verifyChannelExists() {
-    local channel=${1}
-    local org=${2}
-
-    local result
-    
-    result=$(peerParseChannelConfig ${channel} ${org} '.data.data[0].payload.header.channel_header' '.channel_id')
-    printDbg "Expect: ${channel}, got: ${result}"
-    
-    setExitCode [ "${result}" = "${channel}" ]
-}
-
-
-function verifyOrgIsInChannel() {
-    local channel=${1}
-    local org=${2}
-    local org2=${3}
-    #local domain=${4:-$DOMAIN}
-
-    local result
-    printDbg "Channel: ${channel} Org: ${org} Org2: ${org2} Domain: ${domain}"
-    result=$(peerParseChannelConfig ${channel} ${org}  ".data.data[0].payload.data.config.channel_group.groups.Application.groups.${org2}.values.MSP.value" '.config.name')
-    printDbg "${result}"
-    
-    setExitCode [ "${result}" = "${org2}" ]
-}
-
-
 function copyTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
@@ -817,126 +802,6 @@ function installTestChiancodeCLI() {
     printDbg "Result: ${result}"
 
     setExitCode [ "${exitCode}" = "0" ]
-}
-
-
-
-#function ListPeerChaincodes() {
-#    local channel=${1}
-#    local org2_=${2}
-#    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-#
-#    local result
-#    local exitCode
-#
-#    pushd ${FABRIC_DIR} > /dev/null
-#
-#    result=$(runCLI "peer lifecycle chaincode queryinstalled")
-#    exitCode=$?
-#
-#    popd > /dev/null
-#    printDbg "${result}"
-#    set -f
-#    IFS=
-#    echo "${result}" | grep Label
-#    set +f
-#
-#    setExitCode [ "${exitCode}" = "0" ]
-#}
-
-
-#function ListPeerChaincodesInstantiated() {
-#    local channel=${1}
-#    local org2_=${2}
-#    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-#
-#    local result
-#    local exitCode
-#
-#    pushd ${FABRIC_DIR} > /dev/null
-#
-#    result=$(ORG=${org2_} runCLI "peer lifecycle chaincode querycommitted -C '${channel}'")
-#    exitCode=$?
-#
-#    popd > /dev/null
-#
-#    printDbg "${result}"
-#
-#    set -f
-#    IFS=
-#    echo ${result}
-#    set +f
-#
-#    setExitCode [ "${exitCode}" = "0" ]
-#}
-
-#function getChaincodeListFromPeer2x() {
-#    local channel=${1}
-#    local org=${2}
-#
-#    echo $(ListPeerChaincodes ${channel} ${org}| grep Label | cut -d':' -f 2 | sed -e 's/\s//g' | grep -E "^${chaincode_name}_")
-#}
-#
-#function cutChaincodeNameFromPeer2x() {
-#    local chaincode_string=${1}
-#    echo $chaincode_string | rev | cut -d '_' -f 2- | rev
-#}
-
-#function verifyChiancodeInstalled() {
-#    local channel=${1}
-#    local org=${2}
-#
-#    local chaincode_init_name
-#    local chaincode_name
-#    local chaincode_list
-#    local result
-#
-#    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-#    chaincode_name=${chaincode_init_name}_${channel}
-#    chaincode_list=$(getChaincodeListFromPeer2x $channel $org)
-#    result=$(cutChaincodeNameFromPeer2x $chaincode_list)
-#    printDbg "Result: ${result}"
-#
-#    setExitCode [ "${result}" = "${chaincode_name}" ]
-#}
-
-function verifyChiancodeInstalled() {
-    local channel=${1}
-    local org=${2}
-    #local domain=${3}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${3:-${chaincode_init_name}_${channel}}
-
-    local chaincode_name
-    local result
-
-
-    result=$(runCLIPeer ${org}  listChaincodesInstalled ${channel} ${org} ${domain})
-    set -f
-    IFS=
-    printDbg "Result: ${result}"
-    result=$(echo $result | tr -d "\r" | grep -E "^$chaincode_name$")
-    set +f
-    setExitCode [ "${result}" = "${chaincode_name}" ]
-}
-
-function verifyChiancodeInstantiated() {
-    local channel=${1}
-    local org=${2}
-    #local domain=${3}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${3:-${chaincode_init_name}_${channel}}
-    local result
-
-
-    result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} 2>/dev/null)
-    set -f
-    IFS=
-    printDbg "Result: ${result}"
-    result=$(echo $result  | tr -d "\r" | grep -E "^$chaincode_name")
-    set +f
-
-    setExitCode [ "${result}" = "${chaincode_name}" ]
 }
 
 

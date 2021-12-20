@@ -6,8 +6,8 @@ export TEST_LAUNCH_DIR=$(pwd)
 
 pushd ${BASEDIR}/../../ >/dev/null
 BASEDIR=.
-source libs/libs.sh 
-echo > ${FSTEST_LOG_FILE}    
+source libs/libs.sh
+echo > ${FSTEST_LOG_FILE}
 
 ARGS_REQUIRED="[Fabric test interface (cli|api|...), First organization, Second organization]"
 

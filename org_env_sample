@@ -26,6 +26,4 @@ export EXTERNAL_COMMUNICATION_PORT=${EXTERNAL_COMMUNICATION_PORT:-443}
 export LDAP_PORT_HTTP=${LDAP_PORT_HTTP:-6080}
 export LDAP_PORT_HTTPS=${LDAP_PORT_HTTPS:-6443}
 #--------------------------------------------
-export FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME}
-#--------------------------------------------
 #export CORE_CHAINCODE_JAVA_RUNTIME=skilpio/fabric-javaenv

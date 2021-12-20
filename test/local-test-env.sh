@@ -10,7 +10,6 @@ main() {
     fi
     
     unset MULTIHOST
-    unset DOCKER_REGISTRY
     
     export DEPLOYMENT_TARGET='local'
     
@@ -24,18 +23,10 @@ main() {
     export -f getWwwPortDelta
     export -f copyDirToContainer
     export -f makeDirInContainer
+    export -f getFabricStarterHome
 
     source ${BASEDIR}/libs/common-test-env.sh $@
 }
-
-function getApiPortDelta() {
-  echo 1
-}
-
-function getWwwPortDelta() {
-  echo 1
-}
-
 
 function getOrgIp() {
     echo $(getDockerGatewayAddress)
@@ -95,6 +86,10 @@ function copyDirToContainer () {
     local destinationPath="${5:?Destination path is required}"
 
     dockerCopyDirToContainer ${service} ${org} ${domain} "${sourcePath}" "${destinationPath}"
+}
+
+function getFabricStarterHome() {
+    echo '.'
 }
 
 main $@

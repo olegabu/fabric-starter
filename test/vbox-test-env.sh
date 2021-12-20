@@ -22,18 +22,9 @@ main() {
     export -f getOrgContainerPort
     export -f getFabricStarterHome
     export -f connectOrgMachine
-    export -f getApiPortDelta
-    export -f getWwwPortDelta
     export -f copyDirToContainer
     export -f makeDirInContainer
-}
-
-function getApiPortDelta() {
-  echo 0
-}
-
-function getWwwPortDelta() {
-  echo 0
+    export -f getFabricStarterHome
 }
 
 function setCurrentActiveOrg() {
@@ -93,5 +84,11 @@ function copyDirToContainer () {
 
     dockerCopyDirToContainer ${service} ${org} ${domain} "${sourcePath}" "${destinationPath}"
 }
+
+
+function getFabricStarterHome() {
+    echo '/home/docker'
+}
+
 
 main $@

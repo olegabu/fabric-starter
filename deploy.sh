@@ -4,8 +4,7 @@ function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
 
-orgs=$@
-first_org=${1:-org1}
+org_name_path=${1:-org1}
 
 DEV_MODE=${DEV_MODE}
 AGENT_MODE=${AGENT_MODE}
@@ -18,10 +17,14 @@ fi
 
 export ORG=''
 if [ -z "${AGENT_MODE}" ]; then
-   source org_env 2>/dev/null
-   [ $? -ne 0 ] && source ${first_org}_env;
-   export ORG=${ORG:-${first_org:-org1}}
-   export DOMAIN=${DOMAIN:-example.com}
+    if [ -f "${org_name_path}" ]; then
+    source "${org_name_path}" 2>/dev/null
+    else
+        source "org_env" 2>/dev/null
+        [ $? -ne 0 ] && source "${org_name_path}_env";
+        export ORG=${ORG:-${org_name_path:-org1}}
+        export DOMAIN=${DOMAIN:-example.com}
+   fi
 fi
 
 echo -e "\n\n\n\n\n\n BOOTSTRAP_IP: $BOOTSTRAP_IP \n\n\n\n\n\n"
