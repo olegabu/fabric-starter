@@ -8,7 +8,7 @@ data:
   INTERNAL_DOMAIN: {{ default .Values.domain .Values.NAMESPACE }}
   PEER_NAME: {{ .Values.peerName | default "peer0" }}
   PEER_ORG_NAME: {{ tpl .Values.peerOrgName . }}
-  PEER0_PORT: "{{ .Values.peer0Port | default 7051 }}"
+  PEER0_PORT: "{{ .Values.peerPort | default 7051 }}"
 
   ORDERER_NAME: {{ .Values.ordererName | default "orderer"  }}
   ORDERER_DOMAIN: {{ default .Values.domain .Values.ordererDomain }}
