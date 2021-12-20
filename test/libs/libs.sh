@@ -712,26 +712,6 @@ function runCLIPeer() {
 }
 
 
-function ListPeerChannels() {
-    
-
-    local org=${1}
-    #local domain=${2:-${DOMAIN}}
-    local result
-    local TMP_LOG_FILE
-
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    #result=$(${BASEDIR}/../run-cli-peer.sh ${org} ${domain} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
-    result=$(runCLIPeer ${org} peer channel list -o \$ORDERER_ADDRESS \$ORDERER_TLSCA_CERT_OPTS)
-    #cat "${TMP_LOG_FILE}" | printDbg
-    set -f
-    IFS=
-    printDbg "Channels ${org} has joined to: ${result}" >/dev/tty
-    echo ${result}
-    set +f
-}
-
-
 function getCurrentChaincodeName() {
     echo ${CHAINCODE_PREFIX:-reference}
 }
