@@ -3,15 +3,15 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source "${BASEDIR}"/../libs/libs.sh
 
-channel=${1}
+channelName=${1}
 org=${2}
 chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-chaincode_name=${3:-${chaincode_init_name}_${channel}}
+chaincodeName=${3:-${chaincode_init_name}_${channelName}}
 
-printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channel}] channel by [${org}]"
+printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channelName}] channel by [${org}]"
 
 setCurrentActiveOrg ${org}
-result=$(runCLIPeer ${org} listChaincodesInstantiated ${channel} ${org} \| grep -E "^$chaincode_name")
+result=$(runCLIPeer ${org} listChaincodesInstantiated ${channelName} ${org} \| grep -E "^$chaincodeName")
 
 setExitCode [ ! -z "${result}" ]
-printResultAndSetExitCode "The test chaincode instantiated in [${channel}] channel by [${org}] org"
+printResultAndSetExitCode "The test chaincode instantiated in [${channelName}] channel by [${org}] org"
