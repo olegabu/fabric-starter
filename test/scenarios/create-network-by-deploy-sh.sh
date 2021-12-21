@@ -17,7 +17,7 @@ main() {
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
 
     if [ -f "${dir}/start.sh" ]; then
-    "${dir}/start.sh"
+        "${dir}/start.sh"
         if [ $? != 0 ]; then
             printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${dir}/start.sh${NORMAL} script returned non-zero exit code."
             exit
@@ -52,7 +52,7 @@ main() {
       info "Orgs deployed"
 
 
-    unsetActiveOrg
+      unsetActiveOrg
     popd >/dev/null
 }
 
