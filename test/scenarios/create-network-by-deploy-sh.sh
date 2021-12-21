@@ -8,29 +8,23 @@ source "${BASEDIR}/../libs/libs.sh"
 export RENEW_IMAGES=${RENEW_IMAGES:-true}
 main() {
 
-    local dir="$(absDirPath "${ARGS_PASSED}")"
+    local config_dir_path="$(absDirPath "${ARGS_PASSED}")"
     local org
     local domain
     local path
 
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
-
-    if [ -f "${dir}/start.sh" ]; then
-        "${dir}/start.sh"
-        if [ $? != 0 ]; then
-            printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${dir}/start.sh${NORMAL} script returned non-zero exit code."
-            exit
-        fi
-    fi
+    # run networkcustom script
+    tryNetworkCustomScript "${config_dir_path}" "start.sh"
 
     echo "Deploing network for [${DEPLOYMENT_TARGET}] target. Domain: $DOMAIN, Orgs: ${orgs[@]}"
     echo "\${DOCKER_REGISTRY} is set to: [${DOCKER_REGISTRY}]"
     echo "\${MULTIHOST} is set to: [${MULTIHOST}]"
 
-    local bootstrap_org_config_file=$(ls -1 "${dir}" | grep -E "^bootstrap_.*_env")
-    local bootstrap_org_config_path="${dir}/${bootstrap_org_config_file}"
-    local org_conf_pathes=$(ls -1 "${dir}"| grep -E "_env$" | grep -v "${bootstrap_org_config_file}"| xargs -I {} echo "${dir}/{}")
+    local bootstrap_org_config_file=$(ls -1 "${config_dir_path}" | grep -E "^bootstrap_.*_env")
+    local bootstrap_org_config_path="${config_dir_path}/${bootstrap_org_config_file}"
+    local org_conf_pathes=$(ls -1 "${config_dir_path}"| grep -E "_env$" | grep -v "${bootstrap_org_config_file}"| xargs -I {} echo "${config_dir_path}/{}")
 
     pushd "$BASEDIR/../../" >/dev/null
 
@@ -81,6 +75,19 @@ function deployOrg() {
            info "FABRIC_STARTER_HOME: ${FABRIC_STARTER_HOME}"
 
            NO_CLEAN=true ./deploy.sh "${path}"
+}
+
+function tryNetworkCustomScript() {
+    local config_dir_path="${1}"
+    local script_name="${2}"
+
+    if [ -f "${config_dir_path}/${script_name}" ]; then
+        "${config_dir_path}/${script_name}"
+        if [ $? != 0 ]; then
+            printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${config_dir_path}/${script_name}${NORMAL} script returned non-zero exit code."
+            exit
+        fi
+    fi
 }
 
 main ${@}
