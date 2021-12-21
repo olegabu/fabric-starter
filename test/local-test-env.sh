@@ -19,11 +19,10 @@ main() {
     export -f getOrgContainerPort
     export -f getFabricStarterHome
     export -f connectOrgMachine
-    export -f getApiPortDelta
-    export -f getWwwPortDelta
     export -f copyDirToContainer
     export -f makeDirInContainer
     export -f getFabricStarterHome
+    export -f setSpecificEnvVars
 
     source ${BASEDIR}/libs/common-test-env.sh $@
 }
@@ -90,6 +89,14 @@ function copyDirToContainer () {
 
 function getFabricStarterHome() {
     echo '.'
+}
+
+function setSpecificEnvVars() {
+    local org=${1}
+    local domain=${2}
+
+    export FABRIC_STARTER_HOME=$(getFabricStarterHome)
+    export MY_IP=$(getOrgIp)
 }
 
 main $@

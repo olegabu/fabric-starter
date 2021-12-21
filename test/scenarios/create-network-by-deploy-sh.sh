@@ -8,7 +8,10 @@ source "${BASEDIR}/../libs/libs.sh"
 export RENEW_IMAGES=${RENEW_IMAGES:-true}
 main() {
 
-    local dir="$(absDirPath "${@}")"
+    local dir="$(absDirPath "${ARGS_PASSED}")"
+    local org
+    local domain
+    local path
 
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
@@ -25,42 +28,59 @@ main() {
     echo "\${DOCKER_REGISTRY} is set to: [${DOCKER_REGISTRY}]"
     echo "\${MULTIHOST} is set to: [${MULTIHOST}]"
 
-    local org_conf_pathes=$(ls -1 "${dir}"| grep -E "_env$" | xargs -I {} echo "$(absDirPath "${dir}")/{}")
+    local bootstrap_org_config_file=$(ls -1 "${dir}" | grep -E "^bootstrap_.*_env")
+    local bootstrap_org_config_path="${dir}/${bootstrap_org_config_file}"
+    local org_conf_pathes=$(ls -1 "${dir}"| grep -E "_env$" | grep -v "${bootstrap_org_config_file}"| xargs -I {} echo "${dir}/{}")
 
     pushd "$BASEDIR/../../" >/dev/null
 
-      local org_no=1
-      local ORG_IPS=''
+      cleanOrg "${bootstrap_org_config_path}"
 
       for path in ${org_conf_pathes[@]}; do
-           org=$(getVarFromEnvFile ORG "${path}")
-           #domain=$(getVarFromEnvFile DOMAIN "${path}")
-           eval $(connectOrgMachine ${org}) #$domain)
-           env | grep DOCKER
-          ./clean.sh all
-          eval "export $(genIP ${org_no} ${org})"
-          ((org_no+=1))
+           cleanOrg "${path}"
       done
-      echo "Cleaned up"
+      info "Cleaned up"
+
+      deployOrg "${bootstrap_org_config_path}"
+      export BOOTSTRAP_IP=${MY_IP} #TODO: refactor to common-test-env
+
+      echo "Network bootstrap address: ${BOOTSTRAP_IP}"
 
       for path in ${org_conf_pathes[@]}; do
-          org=$(getVarFromEnvFile ORG "$path")
-          eval $(connectOrgMachine "${org}")
-          env | grep DOCKER
-          echo "Deploy Fabric version: ${FABRIC_MAJOR_VERSION}"
-          
-          NO_CLEAN=true FABRIC_STARTER_HOME=$(getFabricStarterHome) ./deploy.sh "${path}"
+          deployOrg "${path}"
       done
+      info "Orgs deployed"
+
+
     unsetActiveOrg
     popd >/dev/null
 }
 
+function cleanOrg() {
+           local path="${@}"
+           local org=$(getVarFromEnvFile ORG "${path}")
+           local domain=$(getVarFromEnvFile DOMAIN "${path}")
 
-function genIP() {
-    local no=$1
-    local org=$2
-    
-    echo "ORG${no}_IP=$(getOrgIp $org)"
+           eval $(connectOrgMachine ${org} ${domain})
+          ./clean.sh all
+}
+
+function deployOrg() {
+           local path="${@}"
+           local org=$(getVarFromEnvFile ORG "${path}")
+           local domain=$(getVarFromEnvFile DOMAIN "${path}")
+
+           eval $(connectOrgMachine ${org})
+           echo "Deploy Fabric version: ${FABRIC_MAJOR_VERSION}"
+           echo "Using config file: $path"
+
+           setSpecificEnvVars $org $domain
+
+           info "MY_IP: ${MY_IP}"
+           info "NETWORK_BOOTSTRAP_IP: ${NETWORK_BOOTSTRAP_IP}"
+           info "FABRIC_STARTER_HOME: ${FABRIC_STARTER_HOME}"
+
+           NO_CLEAN=true ./deploy.sh "${path}"
 }
 
 main ${@}

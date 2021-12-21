@@ -1,9 +1,9 @@
 export ORG=org2
 export DOMAIN=example.com
 #--------------------------------------------
-export MY_IP=${ORG2_IP}
+export MY_IP=${MY_IP}
 #--------------------------------------------
-export BOOTSTRAP_IP=${ORG1_IP:-'172.17.0.1'}
+export BOOTSTRAP_IP=${BOOTSTRAP_IP}
 export BOOTSTRAP_EXTERNAL_PORT=4000
 export BOOTSTRAP_ORG_DOMAIN=
 #--------------------------------------------

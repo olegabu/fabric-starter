@@ -25,6 +25,7 @@ main() {
     export -f copyDirToContainer
     export -f makeDirInContainer
     export -f getFabricStarterHome
+    export -f setSpecificEnvVars
 }
 
 function setCurrentActiveOrg() {
@@ -90,5 +91,12 @@ function getFabricStarterHome() {
     echo '/home/docker'
 }
 
+function setSpecificEnvVars() {
+    local org=${1}
+    local domain=${2}
+
+    export FABRIC_STARTER_HOME=$(getFabricStarterHome)
+    export MY_IP=$(getOrgIp $org)
+}
 
 main $@
