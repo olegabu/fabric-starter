@@ -13,17 +13,28 @@ main() {
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
     tryNetworkCustomScript "${configDirPath}" "start.sh"
 
+    local bootstrapOrgConfigFile=$(ls -1 "${configDirPath}" | grep -E "^bootstrap_.*_env|^org1_env")
+    local bootstrapOrgConfigPath="${configDirPath}/${bootstrapOrgConfigFile}"
+
+    if [ -z "${bootstrapOrgConfigFile}" ] && [ -z "${MAIN_ORG_FILE}" ]; then
+        printInfo "${RED}No bootstrap_org_env or org1_env file found. Exiting...${NORMAL}" \
+                  "Or set MAIN_ORG_FILE=/path/to/the/main/org/config/file"
+        exit
+    fi
+    if [ -n "${MAIN_ORG_FILE}" ]; then
+        bootstrapOrgConfigPath="${MAIN_ORG_FILE}"
+        bootstrapOrgConfigFile=$(basename "${bootstrapOrgConfigPath}")
+    fi
+
+    local orgConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
+
     printInfo   "Deploing network for [${DEPLOYMENT_TARGET}] target." \
                 "\${DOCKER_REGISTRY}: [${DOCKER_REGISTRY}]" \
-                "\${MULTIHOST}: [${MULTIHOST}]"
+                "\${MULTIHOST}: [${MULTIHOST}]" \
+                "Main org config: ${bootstrapOrgConfigPath}"
+
     sleep 2
 
-    local bootstrapOrgConfigFile=$(ls -1 "${configDirPath}" | grep -E "^bootstrap_.*_env")
-
-
-
-    local bootstrapOrgConfigPath="${configDirPath}/${bootstrapOrgConfigFile}"
-    local orgConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
 
     pushd "$BASEDIR/../../" >/dev/null
         cleanOrg "${bootstrapOrgConfigPath}"
