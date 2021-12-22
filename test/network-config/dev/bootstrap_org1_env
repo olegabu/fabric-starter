@@ -11,7 +11,7 @@ export ORDERER_TYPE=SOLO
 export ORDERER_PORT=7050
 export ORDERER_WWW_PORT=79
 #export ORDERER_DOMAIN=osn-org1.example.com
-#export ORDERER_GENERAL_LISTENPORT=7050
+export ORDERER_GENERAL_LISTENPORT=7050
 export ORDERER_NAME=orderer
 #--------------------------------------------
 export ENROLL_SECRET=adminpw
