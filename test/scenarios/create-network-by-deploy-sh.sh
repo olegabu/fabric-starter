@@ -7,28 +7,28 @@ source "${BASEDIR}/../libs/libs.sh"
 export RENEW_IMAGES=${RENEW_IMAGES:-true}
 main() {
 
-    local config_dir_path="$(absDirPath "${ARGS_PASSED}")"
+    local configDirPath="$(absDirPath "${ARGS_PASSED}")"
 
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
-    tryNetworkCustomScript "${config_dir_path}" "start.sh"
+    tryNetworkCustomScript "${configDirPath}" "start.sh"
 
     printInfo   "Deploing network for [${DEPLOYMENT_TARGET}] target." \
                 "\${DOCKER_REGISTRY}: [${DOCKER_REGISTRY}]" \
                 "\${MULTIHOST}: [${MULTIHOST}]"
     sleep 2
 
-    local bootstrap_org_config_file=$(ls -1 "${config_dir_path}" | grep -E "^bootstrap_.*_env")
-    local bootstrap_org_config_path="${config_dir_path}/${bootstrap_org_config_file}"
-    local org_conf_pathes=$(ls -1 "${config_dir_path}"| grep -E "_env$" | grep -v "${bootstrap_org_config_file}"| xargs -I {} echo "${config_dir_path}/{}")
+    local bootstrapOrgConfigFile=$(ls -1 "${configDirPath}" | grep -E "^bootstrap_.*_env")
+    local bootstrapOrgConfigPath="${configDirPath}/${bootstrapOrgConfigFile}"
+    local orgConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
 
     pushd "$BASEDIR/../../" >/dev/null
-        cleanOrg "${bootstrap_org_config_path}"
-        cleanNetwork "${org_conf_pathes}"
+        cleanOrg "${bootstrapOrgConfigPath}"
+        cleanNetwork "${orgConfPathes}"
 
-        deployOrg "${bootstrap_org_config_path}"
+        deployOrg "${bootstrapOrgConfigPath}"
         export BOOTSTRAP_IP=${MY_IP} #TODO: refactor to common-test-env
-        deployNetwork "${org_conf_pathes}"
+        deployNetwork "${orgConfPathes}"
 
         unsetActiveOrg
     popd >/dev/null
@@ -36,61 +36,61 @@ main() {
 
 
 function cleanOrg() {
-    local conf_path="${@}"
-    local org=$(getVarFromEnvFile ORG "${conf_path}")
-    local domain=$(getVarFromEnvFile DOMAIN "${conf_path}")
+    local confPath="${@}"
+    local org=$(getVarFromEnvFile ORG "${confPath}")
+    local domain=$(getVarFromEnvFile DOMAIN "${confPath}")
 
     connectOrgMachine ${org} ${domain}
-    printInfo "Cleaning org ${conf_path}"
+    printInfo "Cleaning org ${confPath}"
     ./clean.sh all
 }
 
 function deployOrg() {
-    local conf_path="${@}"
-    local org=$(getVarFromEnvFile ORG "${conf_path}")
-    local domain=$(getVarFromEnvFile DOMAIN "${conf_path}")
+    local confPath="${@}"
+    local org=$(getVarFromEnvFile ORG "${confPath}")
+    local domain=$(getVarFromEnvFile DOMAIN "${confPath}")
 
     connectOrgMachine ${org} ${domain}
     setSpecificEnvVars ${org} ${domain}
 
     printInfo "Deploy Fabric version: ${FABRIC_MAJOR_VERSION}" \
-                  "Using config file: ${conf_path}" \
+                  "Using config file: ${confPath}" \
                   "\${MY_IP}: ${MY_IP}" \
                   "\${BOOTSTRAP_IP}: ${BOOTSTRAP_IP}" \
                   "\${FABRIC_STARTER_HOME}: ${FABRIC_STARTER_HOME}"
 
-    printInfo "Deploing org ${conf_path}"
-    NO_CLEAN=true ./deploy.sh "${conf_path}"
+    printInfo "Deploing org ${confPath}"
+    NO_CLEAN=true ./deploy.sh "${confPath}"
 }
 
 function cleanNetwork() {
-    local org_conf_pathes=${@}
-    local conf_path
+    local orgConfPathes=${@}
+    local confPath
 
-    for conf_path in ${org_conf_pathes[@]}; do
-         cleanOrg "${conf_path}"
+    for confPath in ${orgConfPathes[@]}; do
+         cleanOrg "${confPath}"
     done
     printInfo "Cleaned up"
 }
 
 function deployNetwork() {
-    local org_conf_pathes=${@}
-    local conf_path
+    local orgConfPathes=${@}
+    local confPath
 
-    for conf_path in ${org_conf_pathes[@]}; do
-        deployOrg "${conf_path}"
+    for confPath in ${orgConfPathes[@]}; do
+        deployOrg "${confPath}"
     done
     printInfo "Orgs deployed"
 }
 
 function tryNetworkCustomScript() {
-    local config_dir_path="${1}"
-    local script_name="${2}"
+    local configDirPath="${1}"
+    local scriptName="${2}"
 
-    if [ -f "${config_dir_path}/${script_name}" ]; then
-        "${config_dir_path}/${script_name}"
+    if [ -f "${configDirPath}/${scriptName}" ]; then
+        "${configDirPath}/${scriptName}"
         if [ $? != 0 ]; then
-            printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${config_dir_path}/${script_name}${NORMAL} script returned non-zero exit code."
+            printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${configDirPath}/${scriptName}${NORMAL} script returned non-zero exit code."
             exit
         fi
     fi
