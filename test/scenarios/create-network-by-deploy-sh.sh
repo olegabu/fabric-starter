@@ -35,10 +35,8 @@ main() {
 
     sleep 2
 
-
+    local restOrgsConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
     pushd "$BASEDIR/../../" >/dev/null
-        local restOrgsConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
-
         cleanOrg "${bootstrapOrgConfigPath}"
         cleanNetwork "${restOrgsConfPathes}"
 
