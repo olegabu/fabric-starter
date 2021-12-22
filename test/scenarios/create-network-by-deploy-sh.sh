@@ -8,9 +8,6 @@ export RENEW_IMAGES=${RENEW_IMAGES:-true}
 main() {
 
     local config_dir_path="$(absDirPath "${ARGS_PASSED}")"
-    local org
-    local domain
-    local path
 
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
