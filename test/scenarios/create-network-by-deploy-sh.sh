@@ -11,6 +11,7 @@ main() {
 
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
+
     tryNetworkCustomScript "${configDirPath}" "start.sh"
 
     local bootstrapOrgConfigFile=$(ls -1 "${configDirPath}" | grep -E "^bootstrap_.*_env|^org1_env")
