@@ -19,6 +19,9 @@ main() {
     sleep 2
 
     local bootstrapOrgConfigFile=$(ls -1 "${configDirPath}" | grep -E "^bootstrap_.*_env")
+
+
+
     local bootstrapOrgConfigPath="${configDirPath}/${bootstrapOrgConfigFile}"
     local orgConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
 
