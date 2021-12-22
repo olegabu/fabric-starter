@@ -153,6 +153,16 @@ function setColorOnError() {
     esac
 }
 
+function printInfo() {
+local border=$(printf -- '*%.0s' {1..80})
+
+echo "${border}"
+for arg in "${@}"; do
+    echo -e "${BRIGHT}${YELLOW}${arg}${NORMAL}"
+done
+echo "${border}"
+}
+
 function getFabricStarterPath() {
     local dirname=${1}
     local libpath
@@ -902,7 +912,7 @@ function dockerCopyDirToContainer() {
     local parent_dir
     local container
 
-    eval $(connectOrgMachine "${org}")
+    connectOrgMachine "${org}" "${domain}"
     dockerMakeDirInContainer ${container} "${destinationPath}"
     container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
     parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)

@@ -41,7 +41,7 @@ function setCurrentActiveOrg() {
 function connectOrgMachine() {
     local org=${1}
     local domain=${2:-${DOMAIN}}
-    echo $(docker-machine env ${org}.${domain})
+    eval $(docker-machine env ${org}.${domain})
 }
 
 function getFabricStarterHome {
