@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
+[ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0)
 
 main() {
     export FABRIC_DIR=${FABRIC_DIR:-$(getFabricStarterPath $(pwd))}
@@ -11,6 +11,17 @@ main() {
     export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
+
+    export TEST_CHAINCODE_DIR='test'
+    export FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
+    export FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
+
+    export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
+    if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
+        export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+        export WGET_CMD="wget -P"
+        export BASE64_UNWRAP_CODE="| tr -d '\n'"
+    fi
 
     pushd ${FABRIC_DIR} > /dev/null
     source ./lib/util/util.sh
@@ -105,6 +116,18 @@ function exportColors() {
     export  UNDERLINE=$(tput smul)
 }
 
+ function printYellowRed() {
+     printInColor "1;33" "$1" "1;31" "$2"
+ }
+ function printCyan() {
+     printInColor "1;36" "$1"
+ }
+ function printBlue() {
+     printInColor "1;34" "$1"
+ }
+ function printWhite() {
+     printInColor "1;37" "$1"
+ }
 
 function printNoColors() {   #filter out set color terminal commands
     local line
@@ -130,6 +153,16 @@ function setColorOnError() {
     esac
 }
 
+function printInfo() {
+local border=$(printf -- '*%.0s' {1..80})
+
+echo "${border}"
+for arg in "${@}"; do
+    echo -e "${BRIGHT}${YELLOW}${arg}${NORMAL}"
+done
+echo "${border}"
+}
+
 function getFabricStarterPath() {
     local dirname=${1}
     local libpath
@@ -148,6 +181,27 @@ function getFabricStarterPath() {
         fi
     fi
 }
+
+function absDirPath() {
+    #set -f
+    #IFS=''
+    local dir="${@}"
+    local result
+    #if [ -f "${dir}" ]; then
+        #echo "DIR: dirname ${dir}"
+        result="$(bash -c  "cd ${dir} && pwd")"
+        echo "${result}"
+    #set +f
+    #fi
+}
+
+function getVarFromEnvFile() {
+    local varname=${1}
+    local filepath="${2}"
+
+    bash -c "source \"${filepath}\"; echo \${${varname}}"
+}
+
 
 
 function printDbg() {
@@ -168,6 +222,11 @@ function printDbg() {
         echo "$@" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
     fi
     return ${exitCode}
+}
+
+
+function printArgs() {
+    for argNo in $(seq 0 $#); do echo "Parameter ${argNo}: ${!argNo}"; done
 }
 
 
@@ -338,13 +397,13 @@ function queryContainerNetworkSettings() {
     local container="${2}"
     local organization="${3}"
     local domain="${4}"
-    
     local TMP_LOG_FILE
     local query
     local result
-    
+
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    query='.[0].NetworkSettings.Ports | keys[] as $k | "\(.[$k]|.[0].'"${parameter}"')"'
+    query='.[0].NetworkSettings.Ports[] | select(. != null)[0].'"${parameter}"''
+
     result=$(docker inspect ${container}.${organization}.${domain} | jq -r "${query}" 2>${TMP_LOG_FILE});
     echo  "queryContainerNetworkSettings returns:" ${result} | printLog
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -396,12 +455,12 @@ function curlRequest() {
     local cdata=$2
     local wtoken=$3
     local curlTimeout=${4:-15}
-    
+
     local res
     local exitCode
     local body
     local httpStatusCode
-    res=$(curl --max-time "${curlTimeout}" -sw "%{http_code}" "${url}" -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
+    res=$(curl --max-time ${curlTimeout} -sw "%{http_code}" "${url}" -X POST -d "${cdata}" -H "Content-Type: application/json" -H "Authorization: Bearer ${wtoken}")
     exitCode=$?
 
     echo "${RED}curlRequest: (curl exit code: $exitCode) ${NORMAL}" | printDbg
@@ -425,13 +484,13 @@ function restQuery() {
     local query=${3}
     local jwt=${4}
     local curlTimeout=${5}
-    
+
     local api_ip
     local api_port
-    
+
     api_ip=$(getOrgIp "${org}")
     api_port=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-    
+
     echo  restQuery:  curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
     curlRequest "http://${api_ip}:${api_port}/${path}" "${query}" "${jwt}" "${curlTimeout}"
 }
@@ -471,11 +530,11 @@ function getJWT() {
 
 function APIAuthorize() {
     local org=${1}
-    
+
     local result
     local jwt
     local httpStatusCode
-    
+
     result=$(getJWT ${org})
 
     jwt=${result[$(arrayStartIndex)]//\"/} #remove quotation marks
@@ -499,22 +558,41 @@ function createChannelAPI() {
 }
 
 
+function getConsortiumMembers() {
+    #TODO: now returns noting
+    local org=${1}
+    local jwt=${2}
+
+    restQuery ${org} "consortium/members" "{\"waitForTransactionEvent\":true}" "${jwt}"
+}
+
+function inviteOrgToDefaultConsortiumAPI() {
+    local org=${1}
+    local orgToInvite=${2}
+    local jwt=${3}
+
+    restAPIWrapper ${org} "consortium/members" "{\"orgId\":\"${orgToInvite}\",\"orgIp\":\"\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
+}
+
 function addOrgToChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     local orgToAdd=${4}
 
-    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"
+    local orgIP=$(getOrgIp "${orgToAdd}")
+    setCurrentActiveOrg ${orgToAdd}
+        local peerPort=$(getContainerPort ${orgToAdd} ${PEER_NAME} ${DOMAIN})
+    unsetActiveOrg
+    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"\",\"peerPort\":\"${peerPort}\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
-
 
 function joinChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     
-    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}"
+    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}" 300
 }
 
 
@@ -587,7 +665,7 @@ function instantiateTestChaincodeAPI() {
 
     chaincode_name=$(getTestChaincodeName ${channel})
 
-    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true}" "${jwt}" ${curlTimeout}
+    restAPIWrapper ${org} "channels/${channel}/chaincodes" "{\"channelId\":\"${channel}\",\"chaincodeId\":\"${chaincode_name}\",\"waitForTransactionEvent\":true,\"chaincodeType\":\"node\",\"chaincodeVersion\":\"1.0\"}" "${jwt}" ${curlTimeout}
 }
 
 
@@ -600,30 +678,56 @@ invokeTestChaincodeAPI() {
     restAPIWrapper ${org} "channels/${channel}/chaincodes/${chaincode_name}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
+# --------------------------------------------------------------CLI-----------------------------------------------------
 
-function ListPeerChannels() {
-    
-
-    local org=${1}
-    local domain=${2}
-    local result
+function runInFabricDir() {
     local TMP_LOG_FILE
-    
+    local exitCode
+
+    pushd ${FABRIC_DIR} >/dev/null
+
     TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    result=$(docker exec cli.${org}.${domain} /bin/bash -c \
-        'source container-scripts/lib/container-lib.sh; \
-    peer channel list -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS' 2>"${TMP_LOG_FILE}")
+
+    printDbg eval "$@"
+    eval "$@" > "${TMP_LOG_FILE}";
+    exitCode=$?
+
     cat "${TMP_LOG_FILE}" | printDbg
+    popd >/dev/null
+
+    setExitCode [ "${exitCode}" = "0" ]
+}
+
+
+function runCLIPeer() {
+    local compose_org=${1}
+    local command=${@:2}
+    local domain=${DOMAIN:-example.com}
+
+    local script_dir="${BASEDIR}/.."
+    local script_name="run-cli-peer.sh"
+    local exit_code
+
+    printDbg "Run '${command}' in cli.peer0.${compose_org}.${domain}"
+
+    result=$("${script_dir}/${script_name}" ${compose_org} "${command}")
+    exit_code=${?}
+
     set -f
     IFS=
-    printDbg "Channels ${org} has joined to: ${result}"
-    echo ${result}
+      printDbg  "runCLIPeer result: ${result}"
+      echo ${result}
     set +f
+    setExitCode [ ${exit_code} = 0 ]
 }
 
 
 function getCurrentChaincodeName() {
     echo ${CHAINCODE_PREFIX:-reference}
+}
+
+function getDockerGatewayAddress() {
+    echo $(docker network inspect bridge | jq -r '.[].IPAM.Config | .[].Gateway')
 }
 
 
@@ -636,207 +740,58 @@ function getTestChaincodeName() {
 function verifyOrgJoinedChannel() {
     local channel=${1}
     local org=${2}
-    local domain=${3}
+    #local domain=${3}
     local result
-    
-    result=$(ListPeerChannels ${org} ${domain}|  grep -E "^${channel}$")
-    printDbg "Result: ${result}"
-    
+
+    result=$(ListPeerChannels ${org} | tr -d "\r"| grep -E "^${channel}$")
+    set -f
+    IFS=
+      printDbg "Result: ${result}"
+    set +f
+
     setExitCode [ "${result}" = "${channel}" ]
-}
-
-
-function queryPeer() {
-    local channel=${1}
-    local org=${2}
-    local domain=${3}
-    local query=${4}
-    local subquery=${5:-.}
-    
-    local TMP_LOG_FILE
-    local result
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    
-    result=$(docker exec cli.${org}.${domain} /bin/bash -c \
-        'source container-scripts/lib/container-lib.sh; \
-        peer channel fetch config /dev/stdout -o $ORDERER_ADDRESS -c '${channel}' $ORDERER_TLSCA_CERT_OPTS | \
-        configtxlator  proto_decode --type "common.Block"  | \
-    jq '${query}' | tee /dev/stderr | jq -r '${subquery}' ' 2>"${TMP_LOG_FILE}")
-    cat "${TMP_LOG_FILE}" | printDbg > ${SCREEN_OUTPUT_DEVICE}
-    echo $result
-    echo cat "${TMP_LOG_FILE} _${result}_" | printDbg > ${SCREEN_OUTPUT_DEVICE}
-}
-
-
-function verifyChannelExists() {
-    local channel=${1}
-    local org=${2}
-
-    local result
-    
-    result=$(queryPeer ${channel} ${org} ${DOMAIN} '.data.data[0].payload.header.channel_header' '.channel_id')
-    printDbg "Expect: ${channel}, got: ${result}"
-    
-    setExitCode [ "${result}" = "${channel}" ]
-}
-
-
-function verifyOrgIsInChannel() {
-    local channel=${1}
-    local org2_=${2}
-
-    local result
-    
-    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
-    printDbg "${result}"
-    
-    setExitCode [ "${result}" = "${org2_}" ]
-}
-
-
-function runInFabricDir() {
-    local TMP_LOG_FILE
-    local exitCode
-    
-    pushd ${FABRIC_DIR} >/dev/null
-    
-    TMP_LOG_FILE=$(tempfile); trap "rm -f ${TMP_LOG_FILE}" EXIT;
-    
-    printDbg eval "$@"
-    eval "$@" > "${TMP_LOG_FILE}";
-    exitCode=$?
-    
-    cat "${TMP_LOG_FILE}" | printDbg
-    popd >/dev/null
-    
-    setExitCode [ "${exitCode}" = "0" ]
 }
 
 
 function copyTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
+    #local domain=${3}
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    
+    local chaincode_name=${3:-"${chaincode_init_name}_${channel}"}
+    local lang=${4:-"node"}
+    local chaincode_dir=${5:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
+
     local result
     local exitCode
-    pushd ${FABRIC_DIR} > /dev/null
-    
-    result=$(ORG=${org} runCLI \
-        "mkdir -p /opt/chaincode/node/${chaincode_init_name}_${channel} ;\
-    cp -R /opt/chaincode/node/reference/* \
-    /opt/chaincode/node/${chaincode_init_name}_${channel}")
+
+    result=$(runCLIPeer ${org} \
+        "mkdir -p ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name};  \
+          cp -R ${chaincode_dir}/* \
+          ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}")
     exitCode=$?
-    printDbg "${result}"
-    
-    popd > /dev/null
+    printDbg "Result: ${result}"
+
     setExitCode [ "${exitCode}" = "0" ]
 }
-
 
 function installTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
-    local chaincode_name=$(getTestChaincodeName "${channel}")
-    
+    local domain=${3}
+    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+    local chaincode_name=${4:-"${chaincode_init_name}_${channel}"}
+    local lang=${5:-"node"}
+
+    local result
     local exitCode
-    
-    pushd ${FABRIC_DIR} > /dev/null
-    
-    ORG=${org} runCLI "./container-scripts/network/chaincode-install.sh '${chaincode_name}'" 2>&1 | printDbg
+
+    result=$(runCLIPeer ${org} \
+    "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name} ${lang}" 2>&1)
     local exitCode=$?
-    
-    popd > /dev/null
+    printDbg "Result: ${result}"
+
     setExitCode [ "${exitCode}" = "0" ]
-}
-
-
-function ListPeerChaincodes() {
-    local channel=${1}
-    local org2_=${2}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    
-    local result
-    local exitCode
-    
-    pushd ${FABRIC_DIR} > /dev/null
-    
-    result=$(runCLI "/opt/chaincode/node; peer chaincode list --installed -C '${channel}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
-    exitCode=$?
-    
-    popd > /dev/null
-    
-    printDbg "${result}"
-    
-    set -f
-    IFS=
-    echo ${result}
-    set +f
-    
-    setExitCode [ "${exitCode}" = "0" ]
-}
-
-
-function ListPeerChaincodesInstantiated() {
-    local channel=${1}
-    local org2_=${2}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    
-    local result
-    local exitCode
-    
-    pushd ${FABRIC_DIR} > /dev/null
-    
-    result=$(ORG=${org2_} runCLI "peer chaincode list --instantiated -C '${channel}' -o $ORDERER_ADDRESS $ORDERER_TLSCA_CERT_OPTS")
-    exitCode=$?
-    
-    popd > /dev/null
-    
-    printDbg "${result}"
-    
-    set -f
-    IFS=
-    echo ${result}
-    set +f
-    
-    setExitCode [ "${exitCode}" = "0" ]
-}
-
-
-function verifyChiancodeInstalled() {
-    local channel=${1}
-    local org=${2}
-
-    local chaincode_init_name
-    local chaincode_name
-    local result
-
-    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    chaincode_name=${chaincode_init_name}_${channel}
-    result=$(ListPeerChaincodes ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
-
-    printDbg "${result}"
-    
-    setExitCode [ "${result}" = "${chaincode_name}" ]
-}
-
-
-function verifyChiancodeInstantiated() {
-    local channel=${1}
-    local org=${2}
-
-    local chaincode_init_name
-    local chaincode_name
-    local result
-
-    chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    chaincode_name=${chaincode_init_name}_${channel}
-    result=$(ListPeerChaincodesInstantiated ${channel} ${org} | grep Name | cut -d':' -f 2 | cut -d',' -f 1 | cut -d' ' -f 2 | grep -E "^${chaincode_name}$" )
-    
-    printDbg "${result}"
-    
-    setExitCode [ "${result}" = "${chaincode_name}" ]
 }
 
 
@@ -868,17 +823,16 @@ function createChaincodeArchiveAndReturnPath() {
 function instantiateTestChaincodeCLI() {
     local channel=${1}
     local org=${2}
-    local chaincode_name=$(getTestChaincodeName ${channel})
+    #local domain=${DOMAIN}
+    local chaincode_name=${3:-$(getTestChaincodeName ${channel})}
     
+    local result
     local exitCode
     
-    pushd ${FABRIC_DIR} > /dev/null
-    
-    result=$(ORG=${org} runCLI "./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name}")
+    reuslt=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name} 2>&1 | printDbg)
     exitCode=$?
-    
     printDbg "${result}"
-    popd > /dev/null
+
     setExitCode [ "${exitCode}" = "0" ]
 }
 
@@ -919,18 +873,53 @@ function checkContainersExist() {
     
     local presence
     local container
+    local exitCode=true
     
     setCurrentActiveOrg ${org}
-    
     for container in ${containersList[@]}; do
         printDbg "docker ps -q -f \"name=${container}.${orgDomain}\""
         presence=$(docker ps -q -f "name=${container}.${orgDomain}")
         if [ -z "${presence}" ]; then
             printDbg "${BRIGHT}${RED}Container not running: ${container}${NORMAL}"
-            setExitCode false
+            exitCode=false
         fi
     done
+    setExitCode ${exitCode}
 }
 
+function containerNameString() {
+    local service=${1}
+    local org=${2}
+    local domain=${3}
+
+    echo ${service}.${org}.${domain}
+}
+
+function dockerMakeDirInContainer() {
+    local container="${1:?Container name is required}"
+    local path="${2:?Directory path is required}"
+    docker container exec -it ${container} mkdir -p "${path}"
+}
+
+function dockerCopyDirToContainer() {
+    local service="${1}"
+    local org=${2}
+    local domain=${3}
+    local sourcePath="${4:?Source path is required}"
+    local destinationPath="${5:?Destination path is required}"
+    local container=$(containerNameString ${service} ${org} ${domain})
+    local container_home_dir
+    local parent_dir
+    local container
+
+    connectOrgMachine "${org}" "${domain}"
+    dockerMakeDirInContainer ${container} "${destinationPath}"
+    container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
+    parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)
+    printDbg "docker cp ${sourcePath} ${container}:${parent_dir}${destinationPath}"
+    docker cp ${sourcePath} ${container}:"${parent_dir}${destinationPath}"
+    docker container exec -it ${container} ls -la "${parent_dir}${destinationPath}" >/dev/null
+    setExitCode [[ $? == 0 ]]
+}
 
 main $@

@@ -15,24 +15,43 @@ main() {
         return 1
     fi
     
-    source ${BASEDIR}/common-test-env.sh $@
+    source ${BASEDIR}/libs/common-test-env.sh $@
     export -f setCurrentActiveOrg
-    export -f resetCurrentActiveOrg
+    export -f unsetActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
+    export -f getFabricStarterHome
+    export -f connectOrgMachine
+    export -f copyDirToContainer
+    export -f makeDirInContainer
+    export -f getFabricStarterHome
+    export -f setSpecificEnvVars
 }
-
 
 function setCurrentActiveOrg() {
+
     local org="${1:?Org name is required}"
+    local domain=${2:-${DOMAIN}}
     connectMachine ${org} 1>&2 2>/dev/null 1>/dev/null
-    
-    export $ORG=$org
-    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+
+    export ORG=${org}
+    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${domain})
+}
+
+function connectOrgMachine() {
+    local org=${1}
+    local domain=${2:-${DOMAIN}}
+    eval $(docker-machine env ${org}.${domain})
+}
+
+function getFabricStarterHome {
+    local org=${1}
+    local domain=${2:-${DOMAIN}}
+    echo $(docker-machine ssh ${org}.${domain} pwd)
 }
 
 
-function resetCurrentActiveOrg {
+function unsetActiveOrg {
     eval $(docker-machine env -u) >/dev/null
 }
 
@@ -44,10 +63,40 @@ function getOrgIp() {
 
 function getOrgContainerPort () {
     local org="${1:?Org name is required}"
-    
+
     setCurrentActiveOrg "${org}"
     getContainerPort $@
-    resetCurrentActiveOrg
+    unsetActiveOrg
+}
+
+function makeDirInContainer () {
+    local container="${1:?Container name is required}"
+    local path="${2:?Directory path is required}"
+
+    dockerMakeDirInContainer ${container} "${path}"
+}
+
+function copyDirToContainer () {
+    local service="${1}"
+    local org=${2}
+    local domain=${3}
+    local sourcePath="${4:?Source path is required}"
+    local destinationPath="${5:?Destination path is required}"
+
+    dockerCopyDirToContainer ${service} ${org} ${domain} "${sourcePath}" "${destinationPath}"
+}
+
+
+function getFabricStarterHome() {
+    echo '/home/docker'
+}
+
+function setSpecificEnvVars() {
+    local org=${1}
+    local domain=${2}
+
+    export FABRIC_STARTER_HOME=$(getFabricStarterHome)
+    export MY_IP=$(getOrgIp $org)
 }
 
 main $@

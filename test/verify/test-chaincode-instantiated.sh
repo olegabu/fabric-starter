@@ -5,10 +5,13 @@ source "${BASEDIR}"/../libs/libs.sh
 
 channelName=${1}
 org=${2}
+chaincode_init_name=${CHAINCODE_PREFIX:-reference}
+chaincodeName=${3:-${chaincode_init_name}_${channelName}}
 
 printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channelName}] channel by [${org}]"
 
 setCurrentActiveOrg ${org}
-verifyChiancodeInstantiated "${channelName}" "${org}"
+result=$(runCLIPeer ${org} listChaincodesInstantiated ${channelName} ${org} \| grep -E "^$chaincodeName")
 
+setExitCode [ ! -z "${result}" ]
 printResultAndSetExitCode "The test chaincode instantiated in [${channelName}] channel by [${org}] org"

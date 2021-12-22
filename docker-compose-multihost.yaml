@@ -22,7 +22,7 @@ services:
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
       - ${WORK_DIR-/home/docker}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
 
-  peer0:
+  peer:
     volumes:
       - ${WORK_DIR-/home/docker}/crypto-config/hosts:/etc/hosts
       - ${WORK_DIR-/home/docker}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer

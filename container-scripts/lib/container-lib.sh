@@ -11,6 +11,8 @@ source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics.sh
 export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
 if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
     export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+    export WGET_CMD="wget -P"
+    export BASE64_UNWRAP_CODE="| tr -d '\n'"
 fi
 
 : ${DOMAIN:="example.com"}
@@ -57,7 +59,8 @@ function downloadOrdererMSP() {
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" "${serverDNSName}" "${remoteOrdererDOMAIN}" "${remoteOrdererName}.${remoteOrdererDOMAIN}"
 #    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
-    ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${rdemoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    mkdir -p crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls
+    ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
 function downloadOrgMSP() {
@@ -74,13 +77,14 @@ function downloadMSP() {
     local urlSubPath=${4:-$mspSubPath}
 
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts
+
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/admincerts
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/cacerts
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/tlscacerts
     set -x
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
     set +x
 }
 
@@ -128,7 +132,8 @@ function updateChannelGroupConfigForOrg() {
     local org=${1:?Org is required}
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
-    local outputFile=${4:-${GENERATE_DIR}/configtx/updated_config.json}
+    local domain=${4:-$DOMAIN}
+    local outputFile=${5:-${GENERATE_DIR}/configtx/updated_config.json}
 
     export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
     echo "Prepare updated config ${GENERATE_DIR}/configtx/new_config_${org}.json"
@@ -177,11 +182,12 @@ function insertObjectIntoChannelConfig() {
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
-    local outputFile=${5:-${GENERATE_DIR}/configtx/updated_config.json}
+    local domain=${5:-$DOMAIN}
+    local outputFile=${6:-${GENERATE_DIR}/configtx/updated_config.json}
 
     echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile"
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $outputFile
+    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $domain $outputFile
 }
 
 
