@@ -26,7 +26,6 @@ main() {
         bootstrapOrgConfigFile=$(basename "${bootstrapOrgConfigPath}")
     fi
 
-    local orgConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
 
     printInfo   "Deploing network for [${DEPLOYMENT_TARGET}] target." \
                 "\${DOCKER_REGISTRY}: [${DOCKER_REGISTRY}]" \
@@ -37,12 +36,14 @@ main() {
 
 
     pushd "$BASEDIR/../../" >/dev/null
+        local restOrgsConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
+
         cleanOrg "${bootstrapOrgConfigPath}"
-        cleanNetwork "${orgConfPathes}"
+        cleanNetwork "${restOrgsConfPathes}"
 
         deployOrg "${bootstrapOrgConfigPath}"
         export BOOTSTRAP_IP=${MY_IP} #TODO: refactor to common-test-env
-        deployNetwork "${orgConfPathes}"
+        deployNetwork "${restOrgsConfPathes}"
 
         unsetActiveOrg
     popd >/dev/null
@@ -78,20 +79,20 @@ function deployOrg() {
 }
 
 function cleanNetwork() {
-    local orgConfPathes=${@}
+    local restOrgsConfPathes=${@}
     local confPath
 
-    for confPath in ${orgConfPathes[@]}; do
+    for confPath in ${restOrgsConfPathes[@]}; do
          cleanOrg "${confPath}"
     done
     printInfo "Cleaned up"
 }
 
 function deployNetwork() {
-    local orgConfPathes=${@}
+    local restOrgsConfPathes=${@}
     local confPath
 
-    for confPath in ${orgConfPathes[@]}; do
+    for confPath in ${restOrgsConfPathes[@]}; do
         deployOrg "${confPath}"
     done
     printInfo "Orgs deployed"
