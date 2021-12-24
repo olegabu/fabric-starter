@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "peer-deployment-{{ .Values.peerName }}-{{ .Values.org }}"
+  name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
   labels:
     app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
     name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"

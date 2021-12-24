@@ -5,7 +5,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orderer-deployment-{{ include "orderer.nameDomain" $ordererValues }}
+  name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
   labels:
     app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
 spec:

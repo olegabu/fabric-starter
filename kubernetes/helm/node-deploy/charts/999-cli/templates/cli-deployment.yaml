@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cli-deployment-{{ .Values.org }}
+  name: cli-{{ .Values.org }}
   labels:
     app: cli-{{ .Values.org }}
     name: cli-{{ .Values.org }}
