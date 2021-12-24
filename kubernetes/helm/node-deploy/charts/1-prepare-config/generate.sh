@@ -14,11 +14,11 @@ pushd $FABRIC_STARTER_HOME
     ./clean.sh
     ./raft/0_raft-start-1-node.sh '' pre-install
     #docker-compose up pre-install
-    docker-compose -f docker-compose-orderer.yaml run --rm -e USER_ID=${UID} --no-deps cli.orderer bash -c "set -x; chown -R \${USER_ID} /etc/hyperledger/crypto-config; set +x"
+    USER_ID=${UID}  docker-compose -f docker-compose-orderer.yaml run --rm -e USER_ID=${UID} --no-deps cli.orderer bash -c "set -x; chown -R \${USER_ID} /etc/hyperledger/crypto-config; set +x"
 popd
 
 set -x
     rm -rf ./crypto-config/*
-    sleep 1
+    sleep 5
     cp -r ${FABRIC_STARTER_HOME}/crypto-config/* ./crypto-config
 set +x

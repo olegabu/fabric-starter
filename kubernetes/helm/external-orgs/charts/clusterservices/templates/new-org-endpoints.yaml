@@ -1,7 +1,7 @@
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name:   {{ default "peer0" .Values.peer.newOrgPeerName }}-{{ .Values.peer.newOrg }}
+  name: "{{ .Values.peer.newOrgPeerName }}-{{ .Values.peer.newOrg }}"
 subsets:
   - addresses:
     - ip: {{ .Values.peer.newOrgIp }}
@@ -10,5 +10,5 @@ subsets:
         port: {{ .Values.peer.newPeerPort }}
         protocol: TCP
       - name: wwwport
-        port: {{ default "80" .Values.peer.newWwwPort }}
+        port: {{ .Values.peer.newOrgWwwPort }}
         protocol: TCP

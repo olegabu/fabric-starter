@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: dns
+  name: dns-chaincode
 spec:
   ports:
     - name: chaincodeport
@@ -9,4 +9,4 @@ spec:
       port: {{ .Values.dnsChaincodePort }}
       targetPort: {{ .Values.dnsChaincodePort }}
   selector:
-    app: dns
+    app: dns-chaincode

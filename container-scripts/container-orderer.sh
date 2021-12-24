@@ -2,13 +2,14 @@
 
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${DOMAIN:=example.com}
-: ${INTERNAL_DOMAIN:=${DOMAIN}}
 : ${RAFT_NODES_COUNT:=1}
 : ${RAFT_NODES_NUMBERING_START:=1}
 : ${CONSENTER_ID:=1}
 : ${ORDERER_PROFILE:=Solo}
 : ${ORDERER_NAME_PREFIX:=raft}
 : ${ORDERER_BATCH_TIMEOUT:=2}
+
+export INTERNAL_DOMAIN=${INTERNAL_DOMAIN:-${DOMAIN}}
 
 export TMP_DIR=${TMP_DIR:-/etc/hyperledger}/crypto-config
 mkdir -p ${TMP_DIR}
@@ -81,8 +82,14 @@ function generateCryptoMaterialIfNotExists() {
     if [ ! -f "${TMP_DIR}/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
         echo "Crypto-config not exists. File does not exists: ${TMP_DIR}/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
         echo "Generating orderer MSP."
+        set -x
         rm -rf ${TMP_DIR}/ordererOrganizations/$ORDERER_DOMAIN
-        cryptogen generate --config=${TMP_DIR}/cryptogen-orderer.yaml --output="${TMP_DIR}"
+        mkdir ${TMP_DIR}/temp
+        cryptogen generate --config=${TMP_DIR}/cryptogen-orderer.yaml --output="${TMP_DIR}/temp"
+        sleep 1
+        cp -r ${TMP_DIR}/temp/* "${TMP_DIR}"
+        rm -rf "${TMP_DIR}/temp"
+        set +x
     else
         echo "Orderer MSP exists. Generation skipped".
     fi

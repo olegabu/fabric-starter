@@ -1,0 +1,21 @@
+{{ if .Values.deploy.routes }}
+  {{ range $ordererName := split "," .Values.ordererNames }}
+
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name:   "$ordererName"
+spec:
+  host: "{{ $ordererName }}.{{ .Values.domain }}"
+  to:
+    kind: Service
+    name: {{ $ordererName }}
+    weight: 100
+  port:
+    targetPort: ordererport
+  tls:
+    termination: passthrough
+  wildcardPolicy: None
+
+  {{ end }}
+{{ end }}

@@ -1,8 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name:   {{ default "peer0" .Values.peer.newOrgPeerName }}-{{ .Values.peer.newOrg }}
-#  namespace:  {{ .Values.peer.newOrgDomain }}
+  name: "{{ .Values.peer.newOrgPeerName }}-{{ .Values.peer.newOrg }}"
 spec:
   clusterIP: None
   ports:

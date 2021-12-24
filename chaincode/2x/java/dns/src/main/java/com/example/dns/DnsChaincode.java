@@ -17,6 +17,7 @@ import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.*;
 
 @Contract(
@@ -213,8 +214,13 @@ public final class DnsChaincode implements ContractInterface {
 //            throw new IOException("chaincode server port not defined in system env. for example 'CHAINCODE_BIND_ADDRESS=0.0.0.0:9999'");
         }
 
-        final int port = Integer.parseInt(chaincodeServerPort.split(":")[1]);
-        chaincodeServerProperties.setPortChaincodeServer(port);
+        String[] bindAddressParts = chaincodeServerPort.split(":");
+        final String host=bindAddressParts[0];
+        final int port = Integer.parseInt(bindAddressParts[1]);
+//        chaincodeServerProperties.setPortChaincodeServer(port);
+        InetSocketAddress unresolved = new InetSocketAddress(host ,port);
+
+        chaincodeServerProperties.setServerAddress(unresolved);
 
         final String coreChaincodeIdName = dotenv.get("PACKAGE_ID");
         if (coreChaincodeIdName == null || coreChaincodeIdName.isEmpty()) {

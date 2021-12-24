@@ -20,6 +20,9 @@ dnsChaincodePort: 9999
 ordererNames: orderer
 #ordererNames: orderer,raft1,raft2
 
+deploy:
+  routes: false
+
 tmpDir: /tmp
 
 serviceAccount:

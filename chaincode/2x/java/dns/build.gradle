@@ -6,13 +6,7 @@
  * User Manual available at https://docs.gradle.org/7.3.1/userguide/building_java_projects.html
  */
 
-buildscript {
-    dependencies {
-        classpath files('libs/shadow-7.1.0.jar')
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
+
 
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
@@ -28,9 +22,6 @@ repositories {
         url 'https://jitpack.io'
     }
     mavenCentral()
-    flatDir {
-        dirs 'libs'
-    }
 }
 
 dependencies {

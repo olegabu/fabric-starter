@@ -3,12 +3,12 @@ kind: Deployment
 metadata:
   name: dns-deployment
   labels:
-    app: dns
-    name: dns
+    app: dns-chaincode
+    name: dns-chaincode
 spec:
   selector:
     matchLabels:
-      app: dns
+      app: dns-chaincode
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
@@ -16,7 +16,7 @@ spec:
       #            sidecar.istio.io/inject: "true"
       creationTimestamp: null
       labels:
-        app: dns
+        app: dns-chaincode
     spec:
       volumes:
         - name: shared-vol
@@ -83,7 +83,6 @@ spec:
             {{ tpl .Values.images.dns_chaincode . }}
           #  ${IMAGE_PATH}@sha256:${IMAGE_TAG}
 
-          command: ["npm", "start"]
           volumeMounts:
             - name: shared-vol
               mountPath: {{ $sharedDir }}
@@ -94,7 +93,7 @@ spec:
             - name: CHAINCODE_ENV_FILE
               value: "{{ $dnsEnvFile }}"
             - name: CHAINCODE_BIND_ADDRESS
-              value: 0.0.0.0:9999
+              value: "0.0.0.0:{{ .Values.dnsChaincodePort }}"
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode)  | nindent 4 }}
 
