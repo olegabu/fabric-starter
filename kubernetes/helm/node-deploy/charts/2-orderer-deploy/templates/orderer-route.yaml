@@ -4,7 +4,7 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name:   "$ordererName"
+  name:   "{{ $ordererName }}"
 spec:
   host: "{{ $ordererName }}.{{ .Values.domain }}"
   to:
