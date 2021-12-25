@@ -6,7 +6,7 @@ apiVersion: route.openshift.io/v1
 metadata:
   name:   "{{ $ordererName }}"
 spec:
-  host: "{{ $ordererName }}.{{ .Values.domain }}"
+  host: "{{ $ordererName }}.{{ $.Values.domain }}"
   to:
     kind: Service
     name: {{ $ordererName }}
