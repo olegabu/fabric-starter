@@ -40,6 +40,9 @@ spec:
             - name: ord-start-port
               containerPort: 7050
               protocol: TCP
+            - name: health-port
+              containerPort: 9090
+              protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
           volumeMounts:
@@ -72,14 +75,11 @@ spec:
 
             {{- include "resources" (merge (deepCopy $) $.Values.resources.orderer)  | nindent 4 }}
 
-          #              readinessProbe:
-          #                httpGet:
-          #                  path: /health/check
-          #                  port: 8080
-          #                initialDelaySeconds: 10
-          #              livenessProbe:
-          #                httpGet:
-          #                  path: /health/check
-          #                  port: 8080
-          #                initialDelaySeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
 {{ end }}

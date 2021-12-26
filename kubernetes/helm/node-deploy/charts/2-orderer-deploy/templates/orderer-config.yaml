@@ -23,4 +23,8 @@ data:
   ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
   ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
 
+  ORDERER_OPERATIONS_LISTENADDRESS: "0.0.0.0:9090"
+{{/*  ORDERER_METRICS_PROVIDER: prometheus*/}}
+{{/*  ORDERER_OPERATIONS_TLS_ENABLED: "false"*/}}
+
 {{ end }}

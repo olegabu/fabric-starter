@@ -42,6 +42,9 @@ spec:
             - name: peer-start-port
               containerPort: 7051
               protocol: TCP
+            - name: health-port
+              containerPort: 9443
+              protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
           volumeMounts:
@@ -73,13 +76,9 @@ spec:
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
 
-          #              readinessProbe:
-          #                httpGet:
-          #                  path: /health/check
-          #                  port: 8080
-          #                initialDelaySeconds: 10
-          #              livenessProbe:
-          #                httpGet:
-          #                  path: /health/check
-          #                  port: 8080
-          #                initialDelaySeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9443
+            initialDelaySeconds: 10
+            periodSeconds: 10

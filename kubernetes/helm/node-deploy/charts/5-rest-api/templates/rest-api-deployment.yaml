@@ -62,20 +62,17 @@ spec:
           {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
 
 
-#          resources:
-#            limits:
-#              cpu: ${CPULIMIT}
-#              memory: ${MEMORYLIMIT}
-#            requests:
-#              cpu: ${CPUREQUEST}
-#              memory: ${MEMORYREQUEST}
-          #              readinessProbe:
-          #                httpGet:
-          #                  path: /health/check
-          #                  port: 8080
-          #                initialDelaySeconds: 10
-          #              livenessProbe:
-          #                httpGet:
-          #                  path: /health/check
-          #                  port: 8080
-          #                initialDelaySeconds: 10
+          startupProbe:
+            httpGet:
+              path: /mspid
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            failureThreshold: 10
+
+          livenessProbe:
+            httpGet:
+              path: /mspid
+              port: 3000
+            periodSeconds: 10
+

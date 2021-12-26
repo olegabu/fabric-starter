@@ -97,3 +97,8 @@ spec:
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode)  | nindent 4 }}
 
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.dnsChaincodePort }}
+            initialDelaySeconds: 40
+            periodSeconds: 10
