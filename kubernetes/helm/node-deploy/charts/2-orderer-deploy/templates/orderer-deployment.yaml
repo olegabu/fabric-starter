@@ -79,7 +79,10 @@ spec:
             httpGet:
               path: /healthz
               port: 9090
+            tcpSocket:
+              port: 7050
             initialDelaySeconds: 20
             periodSeconds: 10
+
 
 {{ end }}
