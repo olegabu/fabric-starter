@@ -79,6 +79,8 @@ spec:
             httpGet:
               path: /healthz
               port: 9090
+            initialDelaySeconds: 20
+            periodSeconds: 10
 
 
 {{ end }}
