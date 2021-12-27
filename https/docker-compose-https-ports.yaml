@@ -44,4 +44,7 @@ services:
       - ${SSL_CERTS_ROOT_PATH:-./https/certs/}:/certs
     depends_on:
       - pre-install
-
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-20m}"
+        max-file: "1"
