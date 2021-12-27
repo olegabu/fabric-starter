@@ -12,9 +12,6 @@ spec:
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
-      #          annotations:
-      #            sidecar.istio.io/inject: "true"
-      creationTimestamp: null
       labels:
         app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
     spec:
@@ -57,7 +54,6 @@ spec:
 
           image: >-
             {{ tpl .Values.images.peer . }}
-          {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
                 name: common-{{ .Values.org }}
@@ -72,9 +68,6 @@ spec:
                   key: password
             - name: CORE_PEER_POSTGRES_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
-          {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
-
-          {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
 
           livenessProbe:
             httpGet:
@@ -82,3 +75,6 @@ spec:
               port: 9443
             initialDelaySeconds: 10
             periodSeconds: 10
+
+          {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
+      {{- include "external-hosts" (merge (deepCopy .) .Values.resources.rest) | nindent 0 }}

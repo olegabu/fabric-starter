@@ -15,9 +15,6 @@ spec:
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
-      #          annotations:
-      #            sidecar.istio.io/inject: "true"
-      creationTimestamp: null
       labels:
         app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
     spec:
@@ -53,13 +50,11 @@ spec:
 
           image: >-
             {{ tpl $.Values.images.orderer $ }}
-{{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
           envFrom:
             - configMapRef:
                 name: common-{{ $.Values.org }}
             - configMapRef:
                 name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
-{{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           env:
             - name: DB_PASSWORD
               valueFrom:
@@ -73,7 +68,6 @@ spec:
             - name: ORDERER_CONSENSUS_POSTGRES_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
 
-            {{- include "resources" (merge (deepCopy $) $.Values.resources.orderer)  | nindent 4 }}
 
           livenessProbe:
             httpGet:
@@ -81,6 +75,9 @@ spec:
               port: 9090
             initialDelaySeconds: 20
             periodSeconds: 10
+
+          {{- include "resources" (merge (deepCopy $) $.Values.resources.orderer)  | nindent 4 }}
+      {{- include "external-hosts" $ | nindent 0 }}
 
 
 {{ end }}

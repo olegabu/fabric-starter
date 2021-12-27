@@ -12,9 +12,6 @@ spec:
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
-      #          annotations:
-      #            sidecar.istio.io/inject: "true"
-      creationTimestamp: null
       labels:
         app: cli-{{ .Values.org }}
     spec:
@@ -44,4 +41,5 @@ spec:
                 name: common-{{ .Values.org }}
 
           {{- include "resources" . | nindent 4 }}
+      {{- include "external-hosts" (merge (deepCopy .) .Values.resources.rest) | nindent 0 }}
 

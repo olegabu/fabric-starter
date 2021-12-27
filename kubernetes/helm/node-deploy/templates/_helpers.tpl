@@ -39,4 +39,17 @@ Common labels
     {{ end }}
 {{- end }}
 
-
+{{- define "external-hosts" }}
+    {{ if .Values.externalHosts }}
+      hostAliases:
+        {{ range $externalOrg := .Values.externalHosts }}
+        - ip: {{ $externalOrg.ip }}
+          hostnames:
+          - "{{ $externalOrg.peer }}"
+          - "{{ $externalOrg.orderer }}"
+          {{ if  $externalOrg.www }}
+          - "{{ $externalOrg.www }}"
+          {{ end }}
+        {{ end }}
+    {{ end}}
+{{ end }}

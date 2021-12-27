@@ -12,9 +12,6 @@ spec:
   replicas: 1 {{/* ${{REPLICAS}} */}}
   template:
     metadata:
-      #          annotations:
-      #            sidecar.istio.io/inject: "true"
-      creationTimestamp: null
       labels:
         app: rest-api
     spec:
@@ -42,9 +39,7 @@ spec:
 
           image: >-
             {{ tpl .Values.images.fabric_starter_rest . }}
-{{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
 
-          {{/*          command: ["ls", "-l", "/etc/hyperledger/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com"]*/}}
           command: ["npm", "start"]
 
           envFrom:
@@ -58,9 +53,6 @@ spec:
                 secretKeyRef:
                   name: enroll-password-secret
                   key: password
-
-          {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
-
 
           startupProbe:
             httpGet:
@@ -76,3 +68,5 @@ spec:
               port: 3000
             periodSeconds: 10
 
+          {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
+      {{- include "external-hosts" (merge (deepCopy .) .Values.resources.rest) | nindent 0 }}
