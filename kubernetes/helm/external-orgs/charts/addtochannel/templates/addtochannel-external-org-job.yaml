@@ -5,8 +5,10 @@ metadata:
 spec:
   parallelism: 1
   completions: 1
+  backoffLimit: 0
   template:
     spec:
+      restartPolicy: Never
       containers:
         - name: add-to-channel-job
           image: >-
@@ -46,13 +48,10 @@ spec:
 
               JWT=`(curl -k -d "{\"username\":\"admin\",\"password\":\"${ENROLL_PASSWORD}\"}" \
               ${REST_API_URL}/users | tr -d '"')` \
-              -H "Content-Type: application/json"
-
-              &&
-
+              -H "Content-Type: application/json" \
+              \
+              && \
+              \
               curl -i --connect-timeout 30 --max-time 120 --retry 0 -k ${REST_API_URL}/channels/${CHANNEL}/orgs \
               -H "Authorization: Bearer $JWT" \
               -F peerName="${NEW_ORG_PEER_NAME}"  -F orgId="${NEW_ORG}" -F domain="${NEW_ORG_DOMAIN}" -F orgIp="${NEW_ORG_IP}" -F peerPort="${NEW_PEER_PORT}" -F wwwPort="${NEW_ORG_WWWPORT}"
-
-
-      restartPolicy: Never
