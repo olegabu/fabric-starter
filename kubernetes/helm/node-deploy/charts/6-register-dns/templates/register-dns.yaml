@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: registerdns-{{ .Values.peer.newOrg }}-{{ .Values.peer.newOrgPeerName }}-job
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: register-dns
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+
+          envFrom:
+            - configMapRef:
+                name: common-{{ .Values.org }}
+          env:
+            - name: REST_API_URL
+              value: "{{ required "REST_API_URL is required" .Values.REST_API_URL }}"
+            - name: MY_IP
+              value: {{ .Values.MY_IP }}
+            - name: ORDERER_NAMES
+              value: "{{ .Values.ordererNames }}"
+            - name: ENROLL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: enroll-password-secret
+                  key: password
+
+          workingDir: /tmp
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -x;
+
+              JWT=`(curl -k -d "{\"username\":\"admin\",\"password\":\"${ENROLL_PASSWORD}\"}" \
+              ${REST_API_URL}/users | tr -d '"')` \
+              -H "Content-Type: application/json" \
+              \
+              && [[ -n ${MY_IP} ]] && \
+              curl http://${REST_API_URL}/channels/common/chaincodes/dns -d '{"fcn":"registerOrg","args":[{"orgId":"${ORG}","domain":"${DOMAIN}","orgIp":"${MY_IP}","peerPort":"${PEER0_PORT}]"}' \
+              \
+              {{- range $ordererName := split "," .Values.ordererNames }}
+              && curl http://${REST_API_URL}/channels/common/chaincodes/dns -d '{"fcn":"registerOrderer","args":[{"ordererName":"{{ $ordererName }}","domain":"${ORDERER_DOMAIN}","ordererPort":"${ORDERER_GENERAL_LISTENPORT}", "ordererIp":"${MY_IP}","orgId":"${ORG}"}]}'
+              {{- end }}
+
+
+
+

@@ -343,8 +343,9 @@ function callChaincode() {
     local arguments="{\"Args\":$arguments}"
     local action=${4:-query}
     local peerPort=${5:-7051}
-    echo "CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
-    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
+    local domain=${6:-${INTERNAL_DOMAIN:-$DOMAIN}}
+    echo "CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

@@ -10,6 +10,8 @@ data:
   PEER_ORG_NAME: {{ tpl .Values.peerOrgName . }}
   PEER0_PORT: "{{ .Values.peerPort | default 7051 }}"
 
+  MY_IP: {{ .Values.MY_IP }}
+
   ORDERER_NAME: {{ .Values.ordererName | default "orderer"  }}
   ORDERER_DOMAIN: {{ default .Values.domain .Values.ordererDomain }}
 

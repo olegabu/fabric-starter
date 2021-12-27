@@ -4,6 +4,9 @@ ordererName: orderer
 ordererDomain: *domain
 NAMESPACE: *domain
 
+MY_IP:
+REST_API_URL: "http://rest-api:4000"
+
 peerName: peer0
 peerOrgName: "{{ .Values.peerName }}-{{ .Values.org }}"
 

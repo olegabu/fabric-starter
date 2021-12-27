@@ -1,4 +1,3 @@
-REST_API_URL: "http://rest-api:4000"
 
 
 integrateOrderer: true
