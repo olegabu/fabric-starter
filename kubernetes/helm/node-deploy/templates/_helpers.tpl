@@ -40,16 +40,31 @@ Common labels
 {{- end }}
 
 {{- define "external-hosts" }}
-    {{ if .Values.externalHosts }}
+    {{ if or (.Values.externalHosts) (.Values.newExternalHost) }}
       hostAliases:
-        {{ range $externalOrg := .Values.externalHosts }}
-        - ip: {{ $externalOrg.ip }}
-          hostnames:
-          - "{{ $externalOrg.peer }}"
-          - "{{ $externalOrg.orderer }}"
-          {{ if  $externalOrg.www }}
-          - "{{ $externalOrg.www }}"
-          {{ end }}
-        {{ end }}
+        {{- if .Values.externalHosts }}
+            {{- range $externalOrg := .Values.externalHosts }}
+            - ip: {{ $externalOrg.ip }}
+              hostnames:
+              - "{{ $externalOrg.peer }}"
+              {{- if  $externalOrg.orderer }}
+              - "{{ $externalOrg.orderer }}"
+              {{- end }}
+              {{- if  $externalOrg.www }}
+              - "{{ $externalOrg.www }}"
+              {{- end }}
+            {{- end }}
+        {{- end }}
+        {{- if .Values.newExternalHost }}
+            - ip: {{ .Values.newExternalHost.ip }}
+              hostnames:
+              - "{{ .Values.newExternalHost.peer }}"
+              {{- if  .Values.newExternalHost.orderer }}
+              - "{{ .Values.newExternalHost.orderer }}"
+              {{- end }}
+              {{- if .Values.newExternalHost.www }}
+              - "{{ .Values.newExternalHost.www }}"
+              {{- end }}
+        {{- end -}}
     {{ end}}
 {{ end }}
