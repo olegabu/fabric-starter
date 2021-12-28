@@ -66,7 +66,8 @@ spec:
             httpGet:
               path: /mspid
               port: 3000
-            periodSeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 60
             failureThreshold: 5
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
