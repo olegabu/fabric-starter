@@ -407,6 +407,10 @@ services:
       - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}-${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     depends_on:
       - pre-install
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-20m}"
+        max-file: "1"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
