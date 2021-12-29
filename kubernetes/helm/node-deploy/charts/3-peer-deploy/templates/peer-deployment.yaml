@@ -69,12 +69,18 @@ spec:
             - name: CORE_PEER_POSTGRES_DATASOURCENAME
               value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
 
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 9443
+            initialDelaySeconds: 3
+            failureThreshold: 10
+            periodSeconds: 2
           livenessProbe:
             httpGet:
               path: /healthz
               port: 9443
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 20
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
       {{- include "external-hosts" (merge (deepCopy .) .Values.resources.rest) | nindent 0 }}
