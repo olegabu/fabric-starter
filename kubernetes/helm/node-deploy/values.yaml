@@ -4,7 +4,7 @@ ordererName: orderer
 ordererDomain: *domain
 NAMESPACE: *domain
 
-MY_IP:
+MY_IP: x.x.x.x
 REST_API_URL: "http://rest-api:4000"
 
 peerName: peer0
