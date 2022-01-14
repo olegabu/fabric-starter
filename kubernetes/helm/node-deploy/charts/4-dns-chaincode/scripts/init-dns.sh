@@ -28,7 +28,7 @@ function main () {
 
     popd 1>/dev/null
 
-    printYellow  "Result env file:"
+    printYellow  "Result env file: ${CHAINCODE_ENV_FILE}"
     cat ${CHAINCODE_ENV_FILE}
 }
 
