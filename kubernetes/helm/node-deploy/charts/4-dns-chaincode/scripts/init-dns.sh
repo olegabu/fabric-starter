@@ -5,7 +5,7 @@ source ././../../../../../../container-scripts/lib/container-lib.sh 2>/dev/null 
 
 CHAINCODE_PATH=${1:?Path to chaincode is requried}
 CC_LABEL="dns_1.0"
-CHAINCODE_ENV_FILE=${CHAINCODE_ENV_FILE:-/tmp/dns.env}}
+CHAINCODE_ENV_FILE=${CHAINCODE_ENV_FILE:-/tmp/dns.env}
 
 function main () {
 
