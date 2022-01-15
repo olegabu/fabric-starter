@@ -12,7 +12,12 @@ function main () {
     ./container-scripts/wait-port.sh ${ORDERER_NAME} ${ORDERER_GENERAL_LISTENPORT}
     ./container-scripts/wait-port.sh ${PEER_ORG_NAME} ${PEER0_PORT}
 
-    createChannel common
+    local res=1
+    while [ $res -ne 0 ]; do
+      createChannel common
+      res=$?
+    done
+
     sleep 3
     joinChannel common
     sleep 2

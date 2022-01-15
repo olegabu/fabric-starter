@@ -43,6 +43,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: common-{{ .Values.org }}
+          env:
+            - name: TRACE
+              value: "false"
+            - name: DEBUG
+              value: "false"
 
           {{- include "resources" (merge (deepCopy .) .Values.resources.sdk) | nindent 4 }}
 
@@ -52,7 +57,7 @@ spec:
               path: /actuator/health
               port: 8080
             initialDelaySeconds: 15
-            periodSeconds: 5
+            periodSeconds: 10
             failureThreshold: 20
             timeoutSeconds: 10
 
