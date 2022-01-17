@@ -86,13 +86,15 @@ function downloadMSP() {
     set +x
 }
 
-function certificationsToEnv() {
+function certificationsToEnv() { # TODO: consider sourcedir and orderer name in all calls
     local org=${1:?Org is required}
     local domain=${2:-${DOMAIN}}
     local certsSourceDir=${3:-crypto-config}
-    echo "Put certs to env for $org.$domain"
+    local ordererName=${4}
+
+    echo "Put certs to env for ${ordererName:-$org}.$domain"
     local mspDir="${certsSourceDir}/peerOrganizations/${org}.${domain}/msp"
-    if [ "${org}" == "orderer" ]; then
+    if [ -n "${ordererName}" ]; then
         mspDir="${certsSourceDir}/ordererOrganizations/${domain}/msp";
         org=""
     fi
@@ -146,10 +148,22 @@ function mergeListsInJsons() {
     local secondFile=${3:?Second file is required}
     local secondFileJsonPath=${4:?Json path in second file is required}
     local outputFile=${5:?Output file is requried}
-    sh -c "jq -s '.[1][\"${secondFileJsonPath}\"] as \$addr | .[0].${firstFileJsonPath} |= .+\$addr | .[0]' $firstFile $secondFile  > ${outputFile}.temp"
+    sh -c "jq -s '.[1][\"${secondFileJsonPath}\"] as \$newItems | .[0].${firstFileJsonPath} |= .+\$newItems | .[0]' $firstFile $secondFile  > ${outputFile}.temp"
+    local res=$?
+    [ $res -ne 0 ] && return $res
     mv ${outputFile}.temp ${outputFile}
 }
 
+function removeFromListInJson() {
+    local file=${1:?File is required}
+    local pathToArray=${2:?Json path to array is required}
+    local filter=${3:?Filter is required}
+    local outputFile=${4:?Output file is requried}
+    sh -c "jq -s '.[0].${pathToArray} |= map(${filter}) | .[0]' $file > ${outputFile}.temp"
+    local res=$?
+    [ $res -ne 0 ] && return $res
+    mv ${outputFile}.temp ${outputFile}
+}
 
 function createConfigUpdateEnvelope() {
     local channel=$1
