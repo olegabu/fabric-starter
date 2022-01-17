@@ -399,6 +399,7 @@ services:
     environment:
       - ORG=${ORG-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME
       - ORDERER_DOMAIN
       - PEER0_PORT=${PEER0_PORT:-7051}
       - ORDERER_GENERAL_LISTENPORT
