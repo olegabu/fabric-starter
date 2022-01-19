@@ -40,6 +40,7 @@ services:
     command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; set -x; chown -R \${USER_ID} crypto-config; set +x"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN}/msp/.well-known:/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/.well-known
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -201,7 +202,7 @@ services:
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/node-certs:/usr/share/nginx/html/node-certs:ro
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/.well-known:/usr/share/nginx/html/.well-known
     depends_on:
     - pre-install
 

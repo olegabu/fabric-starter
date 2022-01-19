@@ -51,7 +51,7 @@ if [[ -f "${progressFile}" ]]; then
     echo -e "\nFound stage file ${progressFile}. Continue starting orderer\n"
     raft/4_raft-start-consenter.sh ${REMOTE_ORDERER_DOMAIN} www.${REMOTE_ORDERER_DOMAIN}:${WWW_PORT} ${BOOTSTRAP_IP}
 else
-  echo -e "\nSkip starting orderer. Waiting for manual integration to raft service. Creation stage file ${progressFile}.\n"
+  echo -e "\nSkip starting orderer. Waiting for manual integration to raft service. Creating stage file ${progressFile}.\n"
   touch "${progressFile}" # set mark that prepare stage has processed
 fi
 

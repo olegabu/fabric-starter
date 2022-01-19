@@ -135,8 +135,9 @@ function updateChannelGroupConfigForOrg() {
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
     local outputFile=${4:-${GENERATE_DIR}/configtx/updated_config.json}
+    local adminOrg=${5}
 
-    export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
+    export NEWORG=${org} ADMIN_ORG=${adminOrg:-$org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
     echo "Prepare updated config ${GENERATE_DIR}/configtx/new_config_${org}.json"
     envsubst < "${templateFileOfUpdate}" > "${GENERATE_DIR}/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' ${GENERATE_DIR}/configtx/config.json ${GENERATE_DIR}/configtx/new_config_${org}.json > "${outputFile}"
@@ -196,10 +197,11 @@ function insertObjectIntoChannelConfig() {
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
     local outputFile=${5:-${GENERATE_DIR}/configtx/updated_config.json}
+    local adminOrg=${6}
 
-    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile"
+    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile adminOrg: $adminOrg"
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $outputFile
+    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $outputFile $adminOrg
 }
 
 

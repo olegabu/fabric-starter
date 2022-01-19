@@ -7,7 +7,7 @@ ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 
 ORDERER_NAMES=${3:-${ORDERER_NAMES:-orderer:${ORDERER_GENERAL_LISTENPORT:-7050},raft1:7150,raft2:7250}}
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
-: ${CHANNEL_AUTO_JOIN:=${CHANNEL_AUTO_JOIN-${DNS_CHANNEL:-common}}}
+export CHANNEL_AUTO_JOIN=${CHANNEL_AUTO_JOIN-${DNS_CHANNEL:-common}}
 
 function main() {
     echo "ORDERER_NAMES=${ORDERER_NAMES}"

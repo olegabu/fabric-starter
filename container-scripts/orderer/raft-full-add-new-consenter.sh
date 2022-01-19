@@ -12,12 +12,13 @@ CHANNEL=${5:-${SYSTEM_CHANNEL_ID}}
 
 
 NAME_DOMAIN=${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}
+ADMIN_ORDERER=${ORDERER_NAME}.${ORDERER_DOMAIN}
 
 echo -e "\n\nAdd Consenter's MSP: ${NEWCONSENTER_NAME}, ${NEWCONSENTER_DOMAIN}\n\n"
 set -x
 [ "${NEWCONSENTER_WWW_PORT}" != "0" ] && downloadOrdererMSP ${NEWCONSENTER_NAME} ${NEWCONSENTER_DOMAIN} ${NEWCONSENTER_WWW_PORT}
 certificationsToEnv orderer ${NEWCONSENTER_DOMAIN} ${GENERATE_DIR} ${NEWCONSENTER_NAME}
-insertObjectIntoChannelConfig ${CHANNEL} ${NAME_DOMAIN} 'templates/raft/Orderer.json' 'xxxx' "${GENERATE_DIR}/configtx/updated_config_msp.json"
+insertObjectIntoChannelConfig ${CHANNEL} ${NAME_DOMAIN} 'templates/raft/Orderer.json' 'xxxx' "${GENERATE_DIR}/configtx/updated_config_msp.json" ${ADMIN_ORDERER}
 
 
 echo -e "\n\nAdd Concenter: ${NEWCONSENTER_NAME}, ${NEWCONSENTER_DOMAIN}\n\n"
