@@ -46,3 +46,10 @@ spec:
             - name: RAFT_NODES_COUNT
               value: "{{ len (split "," .Values.ordererNames) }}"
 
+          startupProbe:
+            exec:
+              command:
+                - ls
+                - ${TMP_DIR:-/etc/hyperledger}/crypto-config/ordererOrganizations
+              failureTreshold: 40
+              initialDelaySeconds:
