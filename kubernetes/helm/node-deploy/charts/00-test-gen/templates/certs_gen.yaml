@@ -51,5 +51,5 @@ spec:
               command:
                 - ls
                 - ${TMP_DIR:-/etc/hyperledger}/crypto-config/ordererOrganizations
-              failureTreshold: 40
-              initialDelaySeconds:
+            failureThreshold: 40
+            initialDelaySeconds: 5
