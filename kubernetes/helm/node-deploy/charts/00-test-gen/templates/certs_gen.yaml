@@ -53,3 +53,4 @@ spec:
                 - ${TMP_DIR:-/etc/hyperledger}/crypto-config/ordererOrganizations
             failureThreshold: 40
             initialDelaySeconds: 5
+            periodSeconds: 3
