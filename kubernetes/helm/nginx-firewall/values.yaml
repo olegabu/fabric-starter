@@ -1,0 +1,18 @@
+# from root values.yaml:
+#peerOrgName:
+#peerPort:
+#ordererPort:
+
+cluster:
+  domain: default
+
+edge:
+  domain: edge
+  ordererPort: 443
+  peerPort: 443
+
+externalOrgs:
+  peerPort: 7051
+  ordererPort: 7050
+
+
