@@ -83,24 +83,29 @@ fi
 
 export COMPOSE_PROJECT_NAME=${ORG:-org1}
 
-if [ -z "$AGENT_MODE" ]; then
-    ORDERER_WWW_PORT=${ORDERER_WWW_PORT} ./ordering-start.sh $ORG $DOMAIN
+if [[ -z "$AGENT_MODE" && -z "$NO_ORDERER" ]]; then
+    ORDERER_WWW_PORT=${ORDERER_WWW_PORT} ./ordering-start.sh $ORG ${BOOTSTRAP_ORDERER_DOMAIN:-${BOOTSTRAP_DOMAIN:-$DOMAIN}}
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
     sleep 5
 fi
 
-info "Create first organization ${ORG}"
-if [ "ORDERER_TYPE" != "RAFT" ]; then
-   export ORDERER_DOMAIN=${DOMAIN}
-fi
-set -x
-docker-compose -f docker-compose-preload-images.yaml up -d
-BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
-    up -d --force-recreate ${AGENT_MODE:+ api www.peer }
-set +x
+if [ -z "$NO_PEER" ]; then
+    info "Create first organization ${ORG}"
+    if [ "ORDERER_TYPE" != "RAFT" ]; then
+       export ORDERER_DOMAIN=${ORDERER_DOMAIN:-${DOMAIN}}
+    fi
+    set -x
+    docker-compose -f docker-compose-preload-images.yaml up -d
+    ORDERER_NAME=${ORDERER_NAME:-orderer} BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
+        up -d --force-recreate ${AGENT_MODE:+ api www.peer }
+    set +x
 
-if [ -z "${AGENT_MODE}" ]; then
-    docker logs -f post-install.${PEER_NAME:-peer0}.${ORG}.${DOMAIN}
+    if [ -z "${AGENT_MODE}" ]; then
+        docker logs -f post-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN}
 
+    fi
 fi
 
 sleep 2

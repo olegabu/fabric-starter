@@ -42,12 +42,12 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let dnsNames = [{ip: orgObj.orgIp, dns: peerName === 'peer0' ? `www.${orgNameDomain}` : ''}]
 
         if (peerPort) {
-            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}.${orgNameDomain}`})
+            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}-${orgNameDomain}`})
         }
         if (peers) {
             const peersDns = _.map(_.keys(peers), peersPeerName => new Object({
                 ip: peers[peersPeerName].ip,
-                dns: `${peersPeerName}.${orgNameDomain}`
+                dns: `${peersPeerName}-${orgNameDomain}`
             }))
             dnsNames.push(...peersDns)
             logger.debug('Pushed peers dns:', dnsNames)
@@ -149,6 +149,7 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let req = stub.getFunctionAndParameters();
         this.channel = stub.getChannelID();
 
+        console.log("Invocation: Channel:", this.channel, ", Request:", req)
         // const cid = new ClientIdentity(stub);
         // logger.debug("cid.mspId=%s cid.id=%s cid.cert=%j", cid.mspId, cid.id, cid.cert);
         // // alternative method to get transaction creator org and identity

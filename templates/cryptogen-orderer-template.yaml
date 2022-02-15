@@ -11,8 +11,8 @@ PeerOrgs:
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
       SANS:
-        - "peer0.${DOMAIN}"
-        - ${DOMAIN}
+        - "${PEEER_ORG_NAME}.${DOMAIN}"
+        - "${PEEER_ORG_NAME}.${INTERNAL_DOMAIN}"
 
     # ---------------------------------------------------------------------------
     # "Users"

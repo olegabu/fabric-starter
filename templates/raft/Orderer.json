@@ -12,7 +12,7 @@
                 "identities": [
                   {
                     "principal": {
-                      "msp_identifier": "${NEWORG}",
+                      "msp_identifier": "${ADMIN_ORG}",
                       "role": "ADMIN"
                     },
                     "principal_classification": "ROLE"

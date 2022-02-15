@@ -2,6 +2,7 @@
 [ "${0#*-}" = "bash" ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || [ -n $BASH_SOURCE ] && LIBDIR=$(dirname ${BASH_SOURCE[0]}) || LIBDIR=$(dirname $0) #extract script's dir
 
 source ${LIBDIR}/container-util.sh
+source ./container-util.sh 2>/dev/null # IDE autocompletion
 
 FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
 FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
@@ -21,12 +22,13 @@ fi
 : ${ORDERER_NAME:="orderer"}
 : ${ORDERER_NAME_PREFIX:="raft"}
 : ${ORDERER_DOMAIN:=${DOMAIN:-example.com}}
+: ${INTERNAL_DOMAIN:=${DOMAIN:-example.com}}
 : ${ORDERER_GENERAL_LISTENPORT:="7050"}
 : ${SYSTEM_CHANNEL_ID:=orderer-system-channel}
 : ${PEER0_PORT:=7051}
-: ${RAFT0_PORT:=7050}
-: ${RAFT1_PORT:=7150}
-: ${RAFT2_PORT:=7250}
+: ${RAFT0_CONSENTER_PORT:=7050}
+: ${RAFT1_CONSENTER_PORT:=7150}
+: ${RAFT2_CONSENTER_PORT:=7250}
 : ${ORDERER_BATCH_TIMEOUT:=5}
 
 : ${WGET_OPTS:=}
@@ -47,7 +49,7 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID ORDERER_DOMAIN ORDERER_BATCH_TIMEOUT
 #: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
 : ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile ${ORDERER_GENERAL_TLS_ROOTCERT_FILE}"}
-: ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
+: ${ORDERER_ADDRESS="${ORDERER_NAME}.${INTERNAL_DOMAIN:-$ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1:?-Orderer name is required}
@@ -88,13 +90,16 @@ function downloadMSP() {
     set +x
 }
 
-function certificationsToEnv() {
+function certificationsToEnv() { # TODO: consider sourcedir and orderer name in all calls
     local org=${1:?Org is required}
     local domain=${2:-${DOMAIN}}
-    echo "Put certs to env for $org.$domain"
-    local mspDir="crypto-config/peerOrganizations/${org}.${domain}/msp"
-    if [ "${org}" == "orderer" ]; then
-        mspDir="crypto-config/ordererOrganizations/${domain}/msp";
+    local certsSourceDir=${3:-crypto-config}
+    local ordererName=${4}
+
+    echo "Put certs to env for ${ordererName:-$org}.$domain"
+    local mspDir="${certsSourceDir}/peerOrganizations/${org}.${domain}/msp"
+    if [ -n "${ordererName}" ]; then
+        mspDir="${certsSourceDir}/ordererOrganizations/${domain}/msp";
         org=""
     fi
     export ORG_ADMIN_CERT=`eval "cat ${mspDir}/admincerts/Admin@${org}${org:+.}${domain}-cert.pem | base64 ${BASE64_UNWRAP_CODE}"` \
@@ -117,6 +122,7 @@ function fetchChannelConfigBlock() {
     mkdir -p ${GENERATE_DIR}/configtx
     echo "Execute: channel fetch $blockNum ${outputFile} -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}"
     peer channel fetch $blockNum ${outputFile} -o ${ORDERER_ADDRESS} -c ${channel} ${ORDERER_TLSCA_CERT_OPTS}
+    sleep 1
 }
 
 function txTranslateChannelConfigBlock() {
@@ -132,10 +138,10 @@ function updateChannelGroupConfigForOrg() {
     local org=${1:?Org is required}
     local templateFileOfUpdate=${2:?Template file is required}
     local newOrgAnchorPeerPort=${3:-7051}
-    local domain=${4:-$DOMAIN}
-    local outputFile=${5:-${GENERATE_DIR}/configtx/updated_config.json}
+    local outputFile=${4:-${GENERATE_DIR}/configtx/updated_config.json}
+    local adminOrg=${5}
 
-    export NEWORG=${org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
+    export NEWORG=${org} ADMIN_ORG=${adminOrg:-$org} NEWORG_PEER0_PORT=${newOrgAnchorPeerPort}
     echo "Prepare updated config ${GENERATE_DIR}/configtx/new_config_${org}.json"
     envsubst < "${templateFileOfUpdate}" > "${GENERATE_DIR}/configtx/new_config_${org}.json"
     jq -s '.[0] * {"channel_group":{"groups":.[1]}}' ${GENERATE_DIR}/configtx/config.json ${GENERATE_DIR}/configtx/new_config_${org}.json > "${outputFile}"
@@ -147,10 +153,22 @@ function mergeListsInJsons() {
     local secondFile=${3:?Second file is required}
     local secondFileJsonPath=${4:?Json path in second file is required}
     local outputFile=${5:?Output file is requried}
-    sh -c "jq -s '.[1][\"${secondFileJsonPath}\"] as \$addr | .[0].${firstFileJsonPath} |= .+\$addr | .[0]' $firstFile $secondFile  > ${outputFile}.temp"
+    sh -c "jq -s '.[1][\"${secondFileJsonPath}\"] as \$newItems | .[0].${firstFileJsonPath} |= .+\$newItems | .[0]' $firstFile $secondFile  > ${outputFile}.temp"
+    local res=$?
+    [ $res -ne 0 ] && return $res
     mv ${outputFile}.temp ${outputFile}
 }
 
+function removeFromListInJson() {
+    local file=${1:?File is required}
+    local pathToArray=${2:?Json path to array is required}
+    local filter=${3:?Filter is required}
+    local outputFile=${4:?Output file is requried}
+    sh -c "jq -s '.[0].${pathToArray} |= map(${filter}) | .[0]' $file > ${outputFile}.temp"
+    local res=$?
+    [ $res -ne 0 ] && return $res
+    mv ${outputFile}.temp ${outputFile}
+}
 
 function createConfigUpdateEnvelope() {
     local channel=$1
@@ -163,10 +181,10 @@ function createConfigUpdateEnvelope() {
         exit 0
     fi
     echo " >> Prepare config update from $org for channel $channel"
-    configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=config.pb \
-    && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=updated_config.pb \
-    && configtxlator compute_update --channel_id=$channel --original=config.pb  --updated=updated_config.pb --output=update.pb \
-    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=update.pb --output=${GENERATE_DIR}/configtx/update.json && chown $UID ${GENERATE_DIR}/configtx/update.json
+    configtxlator proto_encode --type 'common.Config' --input=${configJson} --output=${GENERATE_DIR}/config.pb \
+    && configtxlator proto_encode --type 'common.Config' --input=${updatedConfigJson} --output=${GENERATE_DIR}/updated_config.pb \
+    && configtxlator compute_update --channel_id=$channel --original=${GENERATE_DIR}/config.pb  --updated=${GENERATE_DIR}/updated_config.pb --output=${GENERATE_DIR}/update.pb \
+    && configtxlator proto_decode --type 'common.ConfigUpdate' --input=${GENERATE_DIR}/update.pb --output=${GENERATE_DIR}/configtx/update.json && chown $UID ${GENERATE_DIR}/configtx/update.json
 
     echo "{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"$channel\",\"type\":2}},\"data\":{\"config_update\":`cat ${GENERATE_DIR}/configtx/update.json`}}}" | jq . > ${GENERATE_DIR}/configtx/update_in_envelope.json
     configtxlator proto_encode --type 'common.Envelope' --input=${GENERATE_DIR}/configtx/update_in_envelope.json --output=${GENERATE_DIR}/update_in_envelope.pb
@@ -182,12 +200,12 @@ function insertObjectIntoChannelConfig() {
     local org=${2:?Org is required}
     local templateFile=${3:?Template is required}
     local peer0Port=${4}
-    local domain=${5:-$DOMAIN}
-    local outputFile=${6:-${GENERATE_DIR}/configtx/updated_config.json}
+    local outputFile=${5:-${GENERATE_DIR}/configtx/updated_config.json}
+    local adminOrg=${6}
 
-    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile"
+    echo "$org is updating channel $channel config with $templateFile, peer0Port: $peer0Port outputFile: $outputFile adminOrg: $adminOrg"
     txTranslateChannelConfigBlock "$channel"
-    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $domain $outputFile
+    updateChannelGroupConfigForOrg "$org" "$templateFile" $peer0Port $outputFile $adminOrg
 }
 
 
@@ -242,14 +260,16 @@ function updateAnchorPeers() {
 
 function createChannel() {
     local channelName=${1:?Channel name must be specified}
-    echo -e "\nCreate channel $ORG $channelName"
+    printYellow "\nCreate channel $ORG $channelName\n"
 #    downloadOrdererMSP ${ORDERER_NAME} ${ORDERER_DOMAIN} #${ORDERER_WWW_PORT}
     set -x
     mkdir -p ${GENERATE_DIR}/configtx
     envsubst < "templates/configtx-template.yaml" > "${GENERATE_DIR}/configtx.yaml"
     cat ${GENERATE_DIR}/configtx.yaml
 
+    printYellow "\n configtxgen \n"
     configtxgen -configPath ${GENERATE_DIR}/ -outputCreateChannelTx ${GENERATE_DIR}/configtx/channel_$channelName.tx -profile CHANNEL -channelID $channelName
+    printYellow "\n peer channel create \n"
     peer channel create -o ${ORDERER_ADDRESS} -c $channelName -f ${GENERATE_DIR}/configtx/channel_$channelName.tx ${ORDERER_TLSCA_CERT_OPTS}
     set +x
     updateAnchorPeers "$ORG" "$channelName"
@@ -272,7 +292,7 @@ function joinChannel() {
 
     echo "Join $ORG to channel $channel"
     fetchChannelConfigBlock $channel "0"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
+    CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
 }
 
 function createChaincodePackage() {
@@ -283,7 +303,7 @@ function createChaincodePackage() {
     local chaincodePackageName=${5:?Chaincode PackageName must be specified}
 
     echo "Packaging chaincode $chaincodePath to $chaincodeName"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
+    CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
 }
 
 #function installChaincodePackage() {
@@ -343,8 +363,9 @@ function callChaincode() {
     local arguments="{\"Args\":$arguments}"
     local action=${4:-query}
     local peerPort=${5:-7051}
-    echo "CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
-    CORE_PEER_ADDRESS=$PEER_NAME.$ORG.$DOMAIN:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
+    local domain=${6:-${INTERNAL_DOMAIN:-$DOMAIN}}
+    echo "CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

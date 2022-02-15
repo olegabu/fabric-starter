@@ -43,9 +43,12 @@ services:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - PEER_NAME=${PEER_NAME:-peer0}
+      - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
+      - BOOTSTRAP_DOMAIN
+      - BOOTSTRAP_ORDERER_DOMAIN
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-80}
       - PEER0_PORT=${PEER0_PORT:-7051}
@@ -59,9 +62,9 @@ services:
       - LDAP_BASE_DN
       - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - CRYPTO_ALGORITHM=${CRYPTO_ALGORITHM:-SW}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - AGENT_MODE
@@ -82,6 +85,7 @@ services:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - PEER_NAME=${PEER_NAME:-peer0}
+      - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
@@ -102,13 +106,14 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
-      - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      # TODO: use       - PEER_ADDRESS_TEMPLATE for peer address
+      - CORE_PEER_ADDRESS=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - CHANNEL_AUTO_JOIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - WGET_CMD
       - BASE64_UNWRAP_CODE
@@ -175,12 +180,12 @@ services:
 
   peer:
     << : *peer-defaults
-    container_name: ${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: ${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}
     restart: always
     environment:
     - CORE_PEER_ID=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     - CORE_PEER_LOCALMSPID=${ORG:-org1}
-    - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_ADDRESS=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     - CORE_PEER_LISTENADDRESS=0.0.0.0:${PEER0_PORT:-7051}
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     # the following setting starts chaincode containers on the same
@@ -196,8 +201,9 @@ services:
     - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
-    - CORE_PEER_GOSSIP_BOOTSTRAP=${BOOTSTRAP_PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${BOOTSTRAP_PEER_PORT:-7051}
+    - CORE_PEER_GOSSIP_ENDPOINT=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_BOOTSTRAP=${BOOTSTRAP_PEER_ORG_NAME:-peer0.org1}.${BOOTSTRAP_ORG_DOMAIN:-example.com}:${BOOTSTRAP_PEER_PORT:-7051}
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
@@ -277,7 +283,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
-      - CORE_PEER_ADDRESS=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - CORE_PEER_ADDRESS=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - PEER0_PORT=${PEER0_PORT:-7051}
       - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - CORE_PEER_TLS_ENABLED=true
@@ -286,9 +292,9 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - TMP_DIR
     working_dir: /etc/hyperledger
@@ -313,6 +319,8 @@ services:
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
       - ORG=${ORG-org1}
+      - PEER_NAME=${PEER_NAME:-peer0}
+      - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
@@ -356,6 +364,8 @@ services:
       - DOCKER_COMPOSE_EXTRA_ARGS
       - SDK_API_URL
       - TMP_DIR
+      - SKIP_CHECK_PORTS_TIMEOUT_SECONDS
+      - PEER_ADDRESS_TEMPLATE=${PEER_ADDRESS_TEMPLATE}
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
@@ -392,12 +402,22 @@ services:
     environment:
       - ORG=${ORG-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME
       - ORDERER_DOMAIN
       - PEER0_PORT=${PEER0_PORT:-7051}
+      - ORDERER_GENERAL_LISTENPORT
       - CRYPTO_CONFIG_DIR=${CRYPTO_CONFIG_DIR:-/etc/hyperledger/crypto-config}
       - TMP_DIR
+      - CORE_PEER_ADDRESS=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    depends_on:
+      - pre-install
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-20m}"
+        max-file: "1"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 
 
   # simple http server to disseminate certificates

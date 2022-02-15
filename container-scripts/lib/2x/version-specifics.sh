@@ -48,12 +48,14 @@ function approveChaincode() {
     local CC_PACKAGE_ID=`peer lifecycle chaincode queryinstalled | grep $CC_LABEL`
     CC_PACKAGE_ID=${CC_PACKAGE_ID#*: }
     CC_PACKAGE_ID=${CC_PACKAGE_ID%,*}
-    printYellow  "Approving chaincode: $CC_PACKAGE_ID"
+    printYellow  "\n Approving chaincode: $CC_PACKAGE_ID \n"
 
     set -x
-    local SEQUENCE=`peer lifecycle chaincode queryapproved --channelID ${channelName} --name ${chaincodeName} | grep "$CC_PACKAGE_ID"`
+    local SEQUENCE=`peer lifecycle chaincode queryapproved --channelID ${channelName} --name ${chaincodeName} 2>/dev/null | grep "$CC_PACKAGE_ID"`
     set +x
-    SEQUENCE=`substring "${SEQUENCE}" 'sequence: ' ',*'`
+    if [[ -n "${SEQUENCE}" ]]; then
+        SEQUENCE=`substring "${SEQUENCE}" 'sequence: ' ',*'`
+    fi
     SEQUENCE=$((SEQUENCE+1))
     local initParam=${initArguments:+--init-required}
     set -x
@@ -71,7 +73,7 @@ function commitChaincode() {
     local initArguments=${6:-[]}
     local arguments="{\"Args\":$initArguments}"
 
-    printYellow  "Committing chaincode: $chaincodeName_$chaincodeVersion on channel: $channelName"
+    printYellow  "\n Committing chaincode: $chaincodeName_$chaincodeVersion on channel: $channelName \n"
 
     if  [ "$privateCollectionPath" == "\"\"" ] || [ "$privateCollectionPath" == "''" ]; then privateCollectionPath="" ; fi
     [ -n "$privateCollectionPath" ] && privateCollectionParam=" --collections-config ${privateCollectionPath}"
@@ -79,9 +81,11 @@ function commitChaincode() {
     [ -n "$endorsementPolicy" ] && endorsementPolicyParam=" --signature-policy \"${endorsementPolicy}\""
 
     set -x
-    local SEQUENCE=`peer lifecycle chaincode querycommitted --channelID ${channelName} --name ${chaincodeName} | grep "Sequence:"`
+    local SEQUENCE=`peer lifecycle chaincode querycommitted --channelID ${channelName} --name ${chaincodeName} 2>/dev/null | grep "Sequence:"`
     set +x
-    SEQUENCE=`substring "${SEQUENCE}" '*Sequence: ' ',*'`
+    if [[ -n "${SEQUENCE}" ]]; then
+        SEQUENCE=`substring "${SEQUENCE}" '*Sequence: ' ',*'`
+    fi
     SEQUENCE=$((SEQUENCE+1))
 
     local commitReady="${ORG}: false" count=10

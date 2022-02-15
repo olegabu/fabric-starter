@@ -10,14 +10,14 @@ txTranslateChannelConfigBlock ${SYSTEM_CHANNEL_ID}
 
 sleep 1
 
-updatedConfigBlockDir=crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/genesis
+updatedConfigBlockDir=${GENERATE_DIR}/ordererOrganizations/${ORDERER_DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/genesis
 #updatedConfigBlockDirOnPeer=crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp/${NEWCONSENTER_NAME}.${NEWCONSENTER_DOMAIN}/genesis
 
 echo "Copy updated genesis block to ${updatedConfigBlockDir}"
 set -x
 mkdir -p ${updatedConfigBlockDir}
 #mkdir -p ${updatedConfigBlockDirOnPeer}
-cp crypto-config/configtx/${SYSTEM_CHANNEL_ID}.pb ${updatedConfigBlockDir}/${SYSTEM_CHANNEL_ID}_remote.pb
+cp ${GENERATE_DIR}/configtx/${SYSTEM_CHANNEL_ID}.pb ${updatedConfigBlockDir}/${SYSTEM_CHANNEL_ID}_remote.pb
 #cp crypto-config/configtx/${SYSTEM_CHANNEL_ID}.pb ${updatedConfigBlockDirOnPeer}/${SYSTEM_CHANNEL_ID}_remote.pb
 set +x
 

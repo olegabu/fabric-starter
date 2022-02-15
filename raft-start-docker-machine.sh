@@ -4,14 +4,14 @@ source lib.sh
 
 orig_orgs=$@
 
-: ${RAFT0_PORT:=7050}
-: ${RAFT1_PORT:=7150}
-: ${RAFT2_PORT:=7250}
+: ${RAFT0_CONSENTER_PORT:=7050}
+: ${RAFT1_CONSENTER_PORT:=7150}
+: ${RAFT2_CONSENTER_PORT:=7250}
 : ${RAFT_NODES_COUNT:=9}
 
 : ${DOMAIN:=DOMAIN}
 
-export DOMAIN RAFT0_PORT RAFT1_PORT RAFT2_PORT RAFT_NODES_COUNT
+export DOMAIN RAFT0_CONSENTER_PORT RAFT1_CONSENTER_PORT RAFT2_CONSENTER_PORT RAFT_NODES_COUNT
 
 function main() {
 
@@ -75,7 +75,7 @@ function main() {
 
     #    printYellow " 3_raft-add-consenter ${currOrg}: Add new consenter to config: "
     #    connectMachine ${first_org}
-    #    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_PORT} ${WWW_PORT}
+    #    ORDERER_DOMAIN=${ORDERER_DOMAIN_1} raft/3_2_raft-add-consenter.sh orderer ${ORDERER_DOMAIN_ORG} ${RAFT0_CONSENTER_PORT} ${WWW_PORT}
     #    sleep 5
 
     #    printYellow " 4_raft-start-consenter.sh ${currOrg}: Start Org2-raft0, wait for join: "
