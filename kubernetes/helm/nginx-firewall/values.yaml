@@ -15,4 +15,6 @@ externalOrgs:
   peerPort: 7051
   ordererPort: 7050
 
-
+nginx:
+  logPath: #"/opt/nginx/logs/error.log debug"
+  pidPath: #"/opt/nginx/logs/nginx.pid"
