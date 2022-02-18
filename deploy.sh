@@ -36,6 +36,7 @@ echo -e "\n\n\n\n\n\n BOOTSTRAP_IP: $BOOTSTRAP_IP \n\n\n\n\n\n"
 export ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
+FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
@@ -53,31 +54,15 @@ else # http mode
     export BOOTSTRAP_SERVICE_URL=http
 fi
 
-
-if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
-    set -x
-    export DOCKER_REGISTRY=45.12.73.98
-    export FABRIC_VERSION=gost
-    export FABRIC_STARTER_VERSION=gost
-    export AUTH_MODE=ADMIN
-    export CRYPTO_ALGORITHM=GOST
-    export SIGNATURE_HASH_FAMILY=SM3
-
-    sudo mkdir -p /etc/docker/certs.d/${DOCKER_REGISTRY}
-    openssl s_client -showcerts -connect ${DOCKER_REGISTRY}:443 </dev/null 2>/dev/null|openssl x509 -outform PEM \
-        | sudo tee /etc/docker/certs.d/${DOCKER_REGISTRY}/ca.crt
-    set +x
-fi
-
 if [ -z "${NO_CLEAN}" ]; then
     info "Cleaning up"
     ./clean.sh all
  fi
 
 if [[ -n "${RENEW_IMAGES}" ]]; then
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-sdk-api:${FABRIC_STARTER_VERSION:-latest}
+	docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+	docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-latest}
 fi
 
 

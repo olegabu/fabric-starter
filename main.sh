@@ -19,18 +19,6 @@ export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 
-if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
-    set -x
-    export DOCKER_REGISTRY=registry.labdlt.ru
-    export FABRIC_VERSION=latest
-    export FABRIC_STARTER_VERSION=baas-test
-    export AUTH_MODE=ADMIN
-    export CRYPTO_ALGORITHM=GOST
-    export SIGNATURE_HASH_FAMILY=SM3
-    export DNS_USERNAME=admin
-    export DNS_PASSWORD="${ENROLL_SECRET:-adminpw}"
-    set +x
-fi
 
 ./container-scripts/wait-port.sh docker.io 443
 

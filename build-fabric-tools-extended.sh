@@ -1,5 +1,6 @@
 FABRIC_VERSION=${1:-${FABRIC_VERSION:-latest}}
 FABRIC_STARTER_VERSION=${2:-${FABRIC_STARTER_VERSION:-latest}}
+FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 FABRIC_MAJOR_VERSION=${FABRIC_VERSION%%.*}
 FABRIC_MAJOR_VERSION=${FABRIC_MAJOR_VERSION:-1}
@@ -24,5 +25,5 @@ pushd ${CHAINCODE_VERSION_DIR}/node/dns
     tar czf dns-chaincode.tgz code.tar.gz metadata.json
     rm -rf code.tar.gz metadata.json
 popd
-docker build -t olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION} -f ./fabric-tools-extended/fabric_${FABRIC_MAJOR_VERSION}x.dockerfile ${cached} --build-arg FABRIC_VERSION=${FABRIC_VERSION} .
+docker build -t ${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION} -f ./fabric-tools-extended/fabric_${FABRIC_MAJOR_VERSION}x.dockerfile ${cached} --build-arg FABRIC_VERSION=${FABRIC_VERSION} .
 set +x
