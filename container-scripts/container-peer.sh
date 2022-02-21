@@ -13,10 +13,11 @@ source lib/container-lib.sh 2>/dev/null # for IDE code completion
 source $(dirname "$0")/lib/container-lib.sh
 
 : ${PEER_NAME:=peer0}
+: ${BOOTSTRAP_PEER_ORG_NAME:=peer0.org1}
 : ${ORDERER_DOMAIN:=${ORDERER_DOMAIN:-${DOMAIN}}}
 : ${ORDERER_NAME:=${ORDERER_NAME:-orderer}}
 
-export ORDERER_DOMAIN ORDERER_NAME PEER_NAME
+export ORDERER_DOMAIN ORDERER_NAME PEER_NAME BOOTSTRAP_PEER_ORG_NAME
 
 
 function main() {
@@ -109,7 +110,7 @@ function generateHostsFileIfNotExists() {
             echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${ORDERER_IP}\t${ORDERER_NAME}.${remoteOrdererDomain} www.${remoteOrdererDomain} " >> crypto-config/hosts
             if [ -n "$BOOTSTRAP_ORG" ]; then
                 set -x
-                echo " ${PEER_NAME:-peer0}-${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
+                echo " ${BOOTSTRAP_PEER_ORG_NAME:-peer0.org1}.${BOOTSTRAP_DOMAIN:-$DOMAIN} www.${BOOTSTRAP_ORG}.${BOOTSTRAP_DOMAIN:-$DOMAIN} " >> crypto-config/hosts
                 set +x
             else
                 echo " " >> crypto-config/hosts

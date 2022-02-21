@@ -20,6 +20,7 @@ services:
       - ORDERER_NAMES
       - CONSENTER_ID
       - PEER_NAME=${PEER_NAME:-peer0}
+      - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
@@ -126,6 +127,7 @@ services:
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - WGET_CMD
+      - FABRIC_VERSION
     working_dir: /etc/hyperledger
     depends_on:
       - pre-install

@@ -14,7 +14,7 @@ Organizations:
         # AnchorPeers defines the location of peers which can be used
         # for cross org gossip communication.  Note, this value is only
         # encoded in the genesis block in the Application section context
-        - Host: ${PEER_NAME}-${ORG}.${DOMAIN}
+        - Host: ${PEEER_ORG_NAME}.${DOMAIN}
           Port: ${PEER0_PORT}
         Policies: &OrgPolicies
           Readers:
