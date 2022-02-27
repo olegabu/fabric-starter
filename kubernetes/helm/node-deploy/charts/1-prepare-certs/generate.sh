@@ -7,7 +7,6 @@ export ORDERER_DOMAIN=${3:-$DOMAIN}
 
 echo -e "\n ---------------------- GENERATE CRYPTO, GENESIS FOR: $ORG.$DOMAIN ---------------------------------- \n"
 
-: ${RAFT_NODES_COUNT:=1}
 FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME:-../../../../..}
 
 pushd $FABRIC_STARTER_HOME
@@ -18,7 +17,9 @@ pushd $FABRIC_STARTER_HOME
 popd
 
 set -x
-    rm -rf ./crypto-config/*
     sleep 5
+    mkdir -p crypto-config ../1-prepare-config/crypto-config
+    rm -rf ./crypto-config/* ../1-prepare-config/crypto-config/*
     cp -r ${FABRIC_STARTER_HOME}/crypto-config/* ./crypto-config
+    cp -r ${FABRIC_STARTER_HOME}/crypto-config/* ../1-prepare-config/crypto-config # TODO: update when helm supports external dirs
 set +x
