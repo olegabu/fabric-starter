@@ -31,9 +31,11 @@ if [ -n "$DOCKER_HOST" ] ; then
     echo "FABRIC_STARTER_HOME: ${FABRIC_STARTER_HOME}"
 fi
 
-docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf crypto-config/*"
-if [ "$all" == "all" ]; then
-    docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf data/* /certs/* appstore/*"
+if [[ "$all" == "certs" || "$all" == "all" ]]; then
+    docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf crypto-config/* /certs/*"
+fi
+if [[ "$all" == "data" || "$all" == "all" ]]; then
+    docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf data/* appstore/*"
 fi
 
 #else
