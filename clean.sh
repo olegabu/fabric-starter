@@ -31,6 +31,8 @@ if [ -n "$DOCKER_HOST" ] ; then
     echo "FABRIC_STARTER_HOME: ${FABRIC_STARTER_HOME}"
 fi
 
+docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "truncate -s 0 crypto-config/hosts; rm -rf crypto-config/hfc-*; exit 0 "
+
 if [[ "$all" == "certs" || "$all" == "all" ]]; then
     docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf crypto-config/* /certs/*"
 fi
