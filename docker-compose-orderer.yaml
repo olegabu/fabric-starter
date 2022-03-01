@@ -37,6 +37,8 @@ services:
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - USER_ID
+      - TMP_DIR
+      - CERTS_DIR
     working_dir: /etc/hyperledger
     command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; set -x; chown -R \${USER_ID} crypto-config; set +x"
     volumes:

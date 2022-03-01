@@ -14,6 +14,7 @@ export INTERNAL_DOMAIN=${INTERNAL_DOMAIN:-${DOMAIN}}
 export TMP_DIR=${TMP_DIR:-/etc/hyperledger}/crypto-config
 mkdir -p ${TMP_DIR}
 
+export CERTS_DIR=${CERTS_DIR:-$TMP_DIR}
 export ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} RAFT_NODES_COUNT RAFT_NODES_NUMBERING_START ORDERER_NAME_PREFIX ORDERER_BATCH_TIMEOUT
 
 
@@ -79,8 +80,8 @@ function constructConfigTxAndCryptogenConfigs() {
 }
 
 function generateCryptoMaterialIfNotExists() {
-    if [ ! -f "${TMP_DIR}/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
-        echo "Crypto-config not exists. File does not exists: ${TMP_DIR}/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
+    if [ ! -f "${CERTS_DIR}/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem" ]; then
+        echo "Crypto-config not exists. File does not exists: ${CERTS_DIR}/ordererOrganizations/$ORDERER_DOMAIN/orderers/${ORDERER_NAME}.$ORDERER_DOMAIN/msp/admincerts/Admin@$ORDERER_DOMAIN-cert.pem"
         echo "Generating orderer MSP."
         set -x
         rm -rf ${TMP_DIR}/ordererOrganizations/$ORDERER_DOMAIN
@@ -143,7 +144,7 @@ function writeConfigtxOrgConfig() {
     - &${aliasName}
         Name: $ordererName
         ID: $ordererName.$ordererDomain
-        MSPDir: ${TMP_DIR}/ordererOrganizations/${ordererDomain}/msp
+        MSPDir: ${CERTS_DIR}/ordererOrganizations/${ordererDomain}/msp
         Policies:
             Readers:
                 Type: Signature
@@ -181,8 +182,8 @@ function writeConfigtxOrgConfig() {
     envsubst >> ${consentersListFile} <<  "    END"
                 - Host: ${ordererName}.${ordererDomain}
                   Port: ${ordererPort}
-                  ClientTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
+                  ClientTLSCert: ${CERTS_DIR}/ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
+                  ServerTLSCert: ${CERTS_DIR}/ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/tls/server.crt
 #                  MSPID: ${ordererName}.${ordererDomain}
 #                  Identity: ${TMP_DIR}/ordererOrganizations/${ordererDomain}/orderers/${ordererName}.${ordererDomain}/msp/signcerts/${ordererName}.${ordererDomain}-cert.pem
 #                  ConsenterId: $consenterId

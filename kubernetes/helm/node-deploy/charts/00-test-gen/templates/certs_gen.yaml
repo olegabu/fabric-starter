@@ -10,8 +10,28 @@ spec:
     metadata:
       labels:
         app: gen-{{ .Values.org }}
+
     spec:
       restartPolicy: Never
+
+      {{ if .Values.useExistingCerts }}
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  {{ range $ordererName := split "," .Values.ordererNames }}
+                    {{- $ordererValues := dict "ordererName" $ordererName "domain" $.Values.domain "ordererDomain" $.Values.ordererDomain "certificatePathes" $.Values.orderer.certificatePathes "Values" (dict "ordererName" $ordererName) -}}
+                  name: orderer-certs-{{ include "orderer.nameDomain" $ordererValues }}
+                  items:
+                    {{- include "certificates.decode" (mergeOverwrite (deepCopy $) $ordererValues) | nindent 12 }}
+                  {{ end }}
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.peer) | nindent 12 }}
+      {{ end }}
+
       containers:
         - name: gen
           imagePullPolicy: IfNotPresent
@@ -22,7 +42,7 @@ spec:
             {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
 
           workingDir: /etc/hyperledger
-          command: ["sh", "-c", "container-scripts/container-orderer.sh; sleep 1000"]
+          command: ["sh", "-c", "container-scripts/container-orderer.sh; sleep 5; set -x; ls -l /tmp/crypto-config/ordererOrganizations; sleep 1000"]
 #          command: ["sleep", "100000"]
           env:
             - name: PEER_NAME
@@ -45,12 +65,22 @@ spec:
               value: {{ .Values.tmpDir }}
             - name: RAFT_NODES_COUNT
               value: "{{ len (split "," .Values.ordererNames) }}"
+            {{ if .Values.useExistingCerts }}
+            - name: CERTS_DIR
+              value: "/etc/hyperledger/crypto-config"
+            {{ end }}
+
+          {{ if .Values.useExistingCerts }}
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config
+          {{ end }}
 
           startupProbe:
             exec:
               command:
                 - ls
-                - ${TMP_DIR:-/etc/hyperledger}/crypto-config/ordererOrganizations
+                - {{ default "/etc/hyperledger" .Values.tmpDir }}/crypto-config/configtx
             failureThreshold: 40
             initialDelaySeconds: 5
             periodSeconds: 3
