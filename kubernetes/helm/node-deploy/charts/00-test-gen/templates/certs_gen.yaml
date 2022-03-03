@@ -42,7 +42,7 @@ spec:
             {{/*            ${IMAGE_PATH}@sha256:${IMAGE_TAG}*/}}
 
           workingDir: /etc/hyperledger
-          command: ["sh", "-c", "container-scripts/container-orderer.sh; sleep 5; set -x; ls -l /tmp/crypto-config/ordererOrganizations; sleep 1000"]
+          command: ["sh", "-c", "container-scripts/container-orderer.sh; sleep 1000"]
 #          command: ["sleep", "100000"]
           env:
             - name: PEER_NAME
@@ -80,7 +80,7 @@ spec:
             exec:
               command:
                 - ls
-                - {{ default "/etc/hyperledger" .Values.tmpDir }}/crypto-config/configtx
+                - {{ default "/etc/hyperledger" .Values.tmpDir }}/crypto-config/configtx/{{ default .Values.domain .Values.ordererDomain }}/genesis.pb
             failureThreshold: 40
             initialDelaySeconds: 5
             periodSeconds: 3
