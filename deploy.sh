@@ -64,7 +64,7 @@ fi
 
 if [ -z "${NO_CLEAN}" ]; then
     info "Cleaning up"
-    ./clean.sh data
+    ./clean.sh all
  fi
 
 if [[ -n "${RENEW_IMAGES}" ]]; then
