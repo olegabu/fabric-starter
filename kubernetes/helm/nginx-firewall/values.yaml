@@ -7,6 +7,7 @@ cluster:
   domain: default
 
 edge:
+  ip: x.x.x.x
   domain: edge
   ordererPort: 443
   peerPort: 443
