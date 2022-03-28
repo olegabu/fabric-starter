@@ -23,6 +23,9 @@ dnsChaincodePort: 9999
 ordererNames: orderer
 #ordererNames: orderer,raft1,raft2
 
+nginx:
+  ip:
+
 deploy:
   routes: false
 
