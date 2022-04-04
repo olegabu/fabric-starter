@@ -8,6 +8,7 @@ cluster:
 
 edge:
   ip:
+  resolver:
   domain: edge
   ordererPort: 443
   peerPort: 443
