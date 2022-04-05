@@ -44,7 +44,7 @@ Common labels
       hostAliases:
         {{- if .Values.externalHosts }}
             {{- range $externalOrg := .Values.externalHosts }}
-            - ip: {{ default $externalOrg.ip .Values.nginx.ip }}
+            - ip: {{ default $externalOrg.ip .Values.nginx_ip }}
               hostnames:
               - "{{ $externalOrg.peer }}"
               {{- if  $externalOrg.orderer }}
@@ -56,7 +56,7 @@ Common labels
             {{- end }}
         {{- end }}
         {{- if .Values.newExternalHost }}
-            - ip: {{ default .Values.newExternalHost.ip .Values.nginx.ip }}
+            - ip: {{ default .Values.newExternalHost.ip .Values.nginx_ip }}
               hostnames:
               - "{{ .Values.newExternalHost.peer }}"
               {{- if  .Values.newExternalHost.orderer }}
