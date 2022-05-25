@@ -285,6 +285,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_ADDRESS=${PEEER_ORG_NAME:-peer0.org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - PEER0_PORT=${PEER0_PORT:-7051}
+      - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
       - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.key

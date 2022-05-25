@@ -67,7 +67,7 @@ function downloadOrgMSP() {
     local org=${1:?Org is required}
     local wwwPort=${2:-80}
     local domain=${3:-$DOMAIN}
-    downloadMSP "peerOrganizations" "${org}.${domain}:${wwwPort}" "${org}.${domain}"
+    downloadMSP "peerOrganizations" "peer.${org}.${domain}:${wwwPort}" "${org}.${domain}"
 }
 
 function downloadMSP() {
