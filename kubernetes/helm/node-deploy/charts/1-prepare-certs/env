@@ -1,0 +1,7 @@
+export ORG=org1
+export DOMAIN=default
+export ORDERER_DOMAIN=${DOMAIN}
+
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-2x}
+
+export ORDERER_NAMES=orderer:7050,raft1:7050,raft2:7050

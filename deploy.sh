@@ -32,7 +32,7 @@ export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
 export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-baas-test}
-
+export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 
@@ -68,9 +68,9 @@ if [ -z "${NO_CLEAN}" ]; then
  fi
 
 if [[ -n "${RENEW_IMAGES}" ]]; then
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-sdk-api:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-latest}
 fi
 
 

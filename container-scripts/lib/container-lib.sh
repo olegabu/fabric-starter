@@ -47,7 +47,7 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID ORDERER_DOMAIN ORDERER_BATCH_TIMEOUT
 #: ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/ca.crt"}
 : ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile ${ORDERER_GENERAL_TLS_ROOTCERT_FILE}"}
-: ${ORDERER_ADDRESS="${ORDERER_NAME}.${INTERNAL_DOMAIN:-$ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
+: ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN:-$INTERNAL_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1:?-Orderer name is required}
@@ -59,14 +59,15 @@ function downloadOrdererMSP() {
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" "${serverDNSName}" "${remoteOrdererDOMAIN}" "${remoteOrdererName}.${remoteOrdererDOMAIN}"
 #    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
-    ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${rdemoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    mkdir -p crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls
+    ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
 function downloadOrgMSP() {
     local org=${1:?Org is required}
     local wwwPort=${2:-80}
     local domain=${3:-$DOMAIN}
-    downloadMSP "peerOrganizations" "${org}.${domain}:${wwwPort}" "${org}.${domain}"
+    downloadMSP "peerOrganizations" "peer.${org}.${domain}:${wwwPort}" "${org}.${domain}"
 }
 
 function downloadMSP() {
@@ -288,7 +289,7 @@ function joinChannel() {
 
     echo "Join $ORG to channel $channel"
     fetchChannelConfigBlock $channel "0"
-    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
+    CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$DOMAIN:$PEER0_PORT peer channel join -b ${GENERATE_DIR}/configtx/$channel.pb
 }
 
 function createChaincodePackage() {
@@ -299,7 +300,7 @@ function createChaincodePackage() {
     local chaincodePackageName=${5:?Chaincode PackageName must be specified}
 
     echo "Packaging chaincode $chaincodePath to $chaincodeName"
-    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
+    CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$DOMAIN:$PEER0_PORT peer chaincode package -n $chaincodeName -v $chaincodeVersion -p $chaincodePath -l $chaincodeLang $chaincodePackageName
 }
 
 #function installChaincodePackage() {
@@ -360,8 +361,8 @@ function callChaincode() {
     local action=${4:-query}
     local peerPort=${5:-7051}
     local domain=${6:-${INTERNAL_DOMAIN:-$DOMAIN}}
-    echo "CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
-    CORE_PEER_ADDRESS=$PEER_NAME-$ORG.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
+    echo "CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c '$arguments' -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}"
+    CORE_PEER_ADDRESS=$PEEER_ORG_NAME.$domain:$PEER0_PORT peer chaincode $action -n $chaincodeName -C $channelName -c "$arguments" -o ${ORDERER_ADDRESS} ${ORDERER_TLSCA_CERT_OPTS}
 }
 
 function queryChaincode() {

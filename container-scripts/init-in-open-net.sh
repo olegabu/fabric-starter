@@ -103,6 +103,14 @@ function requestInviteToServiceChannel() {
        local curlResult=$?
        set +x
        echo "Curl result: $curlResult"
+       set -x
+       curl -i --connect-timeout 30 --max-time 120 --retry 1 -k ${BOOTSTRAP_SERVICE_URL:-https}://${MASTER_IP:-${BOOTSTRAP_IP:-api.${BOOTSTRAP_ORG_DOMAIN}}:${BOOTSTRAP_EXTERNAL_PORT}}/integration/service/orgs \
+            -H 'Content-Type: application/json' -d "{\"orgId\":\"${ORG}\",\"domain\":\"${DOMAIN}\",\"orgIp\":\"${MY_IP}\",\"peerPort\":\"${PEER0_PORT}\",\"wwwPort\":\"${WWW_PORT}\",\"peerName\":\"${PEER_NAME}\"}"
+       local curlResult=$?
+       set +x
+       echo "Curl result: $curlResult"
+
+
 #    else #TODO: should'n go here if no AUTO_JOIN
 #        if [[ -n "$BOOTSTRAP_IP" ]]; then
 #            set -x
@@ -170,11 +178,26 @@ function registerOrgInServiceChaincode() {
     local serviceChannel=${1:?Service channel name is required}
     local serviceChaincode=${2:?Service chaincode is required}
 
-    sleep 5
-    if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
-        printYellow "\nRegister MY_IP: $MY_IP\n"
-        cat /etc/hosts
-        invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\", \"${PEER_NAME}\"]"
+    local channelStatus=1
+    local count=1
+    local wait=${WAIT_FOR_CHANNEL_READY:-12}
+    echo "Wait for $wait seconds (or set env var WAIT_FOR_CHANNEL_READY)"
+
+    while [[ ${channelStatus} -ne 0 && ${count} -le $wait ]]; do
+      peer channel getinfo -c ${serviceChannel}
+      channelStatus=$?
+      [[ ${channelStatus} -ne 0 ]] && sleep 1
+      count=$((count + 1))
+    done
+
+    if [[ channelStatus -eq 0 ]]; then
+        if [[ -n "$MY_IP" || -n "$ORG_IP" ]]; then # ORG_IP is deprecated
+            printYellow "\nRegister MY_IP: $MY_IP\n"
+            cat /etc/hosts
+            invokeChaincode ${serviceChannel} ${serviceChaincode} "[\"registerOrgByParams\",\"${ORG}\", \"${DOMAIN}\",\"$ORG_IP$MY_IP\", \"${PEER0_PORT}\", \"${WWW_PORT}\"]"
+        fi
+    else
+       printError "\n'channel ${serviceChannel}' is not ready\n"
     fi
 }
 

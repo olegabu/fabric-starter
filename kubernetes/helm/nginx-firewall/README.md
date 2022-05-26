@@ -1,7 +1,8 @@
 
 See [EnterpriseDeployment](../../tech/deployment/EnterpriseDeployment.pdf) for deployment structure.
 
-1. To set peers and orderers ports in cluster and on external orgs to 7051, 7050 respectively set values for 
+1. To set peers and orderers ports in cluster and on external orgs to 7051, 7050 respectively set values for
+   (modify values.yaml or use --set edge.peerPort=xxx --set ...)
 ```yaml
 peerPort: 7051
 ordererPort: 7050
@@ -28,7 +29,7 @@ externalHosts:
 
 1. Generate **nginx.conf**:
 ```bash
-helm template nginx . -f ../node-deploy/values.yaml -f values.yaml -f ../node-deploy/external-hosts.yaml --debug 
+helm template nginx . -f ../node-deploy/values.yaml -f values.yaml -f ../node-deploy/external-hosts.yaml --debug # use if needed: --set edge.peerPort=xxx --set ... 
 ```
 
 1. Exract generated config from output. Apply it to firewall nginx instance as **nginx.conf**. 

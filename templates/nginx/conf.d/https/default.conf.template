@@ -1,6 +1,6 @@
-upstream portainer_server {
-    server localhost:9000;
-}
+#upstream portainer_server {
+#    server localhost:9000;
+#}
 
 
 server {
@@ -46,14 +46,14 @@ if ($request_method = 'OPTIONS') {
      }
     }
 
-    location /portainer/  {
-        proxy_pass  'http://portainer:9000/';
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Real-IP $remote_addr;
-        client_max_body_size 2048m;
-        #       try_files $uri $uri/ = 404;
-    }
+#    location /portainer/  {
+#        proxy_pass  'http://portainer:9000/';
+#        proxy_set_header Host $host;
+#        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#        proxy_set_header X-Real-IP $remote_addr;
+#        client_max_body_size 2048m;
+#        #       try_files $uri $uri/ = 404;
+#    }
 
 
 #    ssl_certificate /etc/nginx/conf.d/public.crt;
