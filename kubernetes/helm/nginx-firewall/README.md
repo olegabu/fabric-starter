@@ -29,7 +29,9 @@ externalHosts:
 
 1. Generate **nginx.conf**:
 ```bash
-helm template nginx . -f ../node-deploy/values.yaml -f values.yaml -f ../node-deploy/external-hosts.yaml --debug # use if needed: --set edge.peerPort=xxx --set ... 
+helm template nginx . -f ../node-deploy/values.yaml -f values.yaml -f ../node-deploy/external-hosts.yaml --debug  
+# or
+helm template nginx . -f ../node-deploy/values.yaml -f values.yaml -f ../node-deploy/external-hosts.yaml --set edge.domain=xxx --set edge.ip=x.x.x.x --debug
 ```
 
-1. Exract generated config from output. Apply it to firewall nginx instance as **nginx.conf**. 
+1. Extract generated config from output. Apply it to firewall nginx instance as **nginx.conf**. 

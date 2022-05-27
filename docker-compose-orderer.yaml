@@ -22,6 +22,7 @@ services:
       - PEER_NAME=${PEER_NAME:-peer0}
       - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
       - ORG=${ORG:-org1}
+      - PEER0_PORT=${PEER0_PORT}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
       - INTERNAL_DOMAIN
@@ -85,6 +86,7 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
+      - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=${KEEPALIVE_INTERVAL:-7200s}
     working_dir: /etc/hyperledger
     command: sh -c "sleep 3 && orderer"
     depends_on:

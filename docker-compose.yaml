@@ -213,6 +213,7 @@ services:
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
     - CORE_PEER_FILESYSTEMPATH=/var/hyperledger/production/${PEER_NAME:-peer0}
+    - CORE_PEER_KEEPALIVE_INTERVAL=${KEEPALIVE_INTERVAL:-7200s}
     - ORG=${ORG:-org1}
     - DOMAIN=${DOMAIN:-example.com}
     - SDK_API_URL
