@@ -48,6 +48,7 @@ export ORG DOMAIN SYSTEM_CHANNEL_ID ORDERER_DOMAIN ORDERER_BATCH_TIMEOUT
 : ${ORDERER_GENERAL_TLS_ROOTCERT_FILE="/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/tlscacerts/tlsca.${ORDERER_DOMAIN}-cert.pem"}
 : ${ORDERER_TLSCA_CERT_OPTS="--tls --cafile ${ORDERER_GENERAL_TLS_ROOTCERT_FILE}"}
 : ${ORDERER_ADDRESS="${ORDERER_NAME}.${ORDERER_DOMAIN:-$INTERNAL_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}"}
+: ${PEEER_ORG_NAME=$PEER_NAME.$ORG}
 
 function downloadOrdererMSP() {
     local remoteOrdererName=${1:?-Orderer name is required}

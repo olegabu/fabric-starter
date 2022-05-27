@@ -392,7 +392,7 @@ services:
     #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
     #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
     #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-    command: sh -c '/etc/hyperledger/container-scripts/wait-port.sh ${MY_IP} ${PEER0_PORT:-7051} && npm start'
+    command: sh -c '/etc/hyperledger/container-scripts/wait-port.sh $${MY_IP} ${PEER0_PORT:-7051} && sleep 5 && npm start'
 
   sdk:
     container_name: sdk.${ORG:-org1}.${DOMAIN:-example.com}
