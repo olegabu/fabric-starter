@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+if [ -z "${ORG}" ]; then #TODO: use org_env as in deploy.sh
+    echo -e "\n\n\nWarning: Env vars ORG,DOMAIN are not set. Using org1.example.com\n\n\n"
+    sleep 5
+fi
+
 source lib/util/util.sh
 source lib.sh
 
@@ -27,8 +33,12 @@ docker volume prune -f
 docker rmi -f $(docker images -q -f "reference=dev-*")
 
 if [ -n "$DOCKER_HOST" ] ; then
-    export FABRIC_STARTER_HOME=`docker-machine ssh ${ORG}.${DOMAIN} pwd`
+    export FABRIC_STARTER_HOME=`docker-machine ssh ${ORG}.${DOMAIN:-example.com} pwd`
     echo "FABRIC_STARTER_HOME: ${FABRIC_STARTER_HOME}"
+    if [ -z "${FABRIC_STARTER_HOME}" ]; then
+        echo "Error: Home dir is not found in remote docker host"
+        exit 1
+    fi
 fi
 
 docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -f crypto-config/hosts; rm -rf crypto-config/hfc-*; exit 0"

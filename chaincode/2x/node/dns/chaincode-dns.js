@@ -42,7 +42,8 @@ module.exports = class DnsChaincode extends StorageChaincode {
         let dnsNames = [{ip: orgObj.orgIp, dns: peerName === 'peer0' ? `www.${orgNameDomain}` : ''}]
 
         if (peerPort) {
-            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}-${orgNameDomain}`})
+            //TODO: move dns record creation from chaincode to the dns event listener handler
+            dnsNames.push({ip: orgObj.orgIp, dns: `${peerName}.${orgNameDomain} ${peerName}-${orgNameDomain}`})
         }
         if (peers) {
             const peersDns = _.map(_.keys(peers), peersPeerName => new Object({

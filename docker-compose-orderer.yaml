@@ -20,7 +20,7 @@ services:
       - ORDERER_NAMES
       - CONSENTER_ID
       - PEER_NAME=${PEER_NAME:-peer0}
-      - PEEER_ORG_NAME=${PEEER_ORG_NAME:-peer0.org1}
+      - PEER_ADDRESS_PREFIX=${PEER_ADDRESS_PREFIX:-peer0.}
       - ORG=${ORG:-org1}
       - PEER0_PORT=${PEER0_PORT}
       - DOMAIN=${DOMAIN:-example.com}
