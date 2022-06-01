@@ -216,7 +216,7 @@ function updateChannelConfig() {
     local anchorPort=${4}
     local domain=${5:-$DOMAIN}
     certificationsToEnv $org $domain
-    insertObjectIntoChannelConfig $@
+    insertObjectIntoChannelConfig ${channel} ${org} "${templateFile}" ${anchorPort}
     createConfigUpdateEnvelope $channel
 }
 
@@ -247,9 +247,10 @@ function updateConsortium() {
     local domain=${3:-$DOMAIN}
     local updateTemplateFile=${4:-./templates/Consortium.json}
     local consortiumName=${5:-SampleConsortium}
+    local anchorPort=${6:-7051}
     export CONSORTIUM_NAME=${consortiumName}
     certificationsToEnv $org $domain
-    updateChannelConfig $channel $org "$updateTemplateFile"
+    updateChannelConfig $channel $org "$updateTemplateFile" $anchorPort $domain
 }
 
 function updateAnchorPeers() {
