@@ -12,6 +12,8 @@ source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics.sh
 export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
 if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
     export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+    export WGET_CMD="wget -P"
+    export BASE64_UNWRAP_CODE="| tr -d '\n'"
 fi
 
 : ${DOMAIN:="example.com"}
