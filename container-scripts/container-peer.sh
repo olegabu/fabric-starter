@@ -106,7 +106,7 @@ function generateHostsFileIfNotExists() {
         local ORDERER_IP=${MASTER_IP:-${BOOTSTRAP_IP}}
         if [[ -n "$ORDERER_IP" && "$ORDERER_IP" != "$MY_IP" ]]; then
             echo "Generating crypto-config/hosts"
-            local remoteOrdererDomain=${BOOTSTRAP_ORDERER_DOMAIN:-${BOOTSTRAP_DOMAIN:-$DOMAIN}}
+            local remoteOrdererDomain=${BOOTSTRAP_ORDERER_DOMAIN:-${BOOTSTRAP_DOMAIN:-${ORDERER_DOMAIN:-$DOMAIN}}}
             echo -en "#generated at bootstrap as part of crypto- and meta-information generation\n${ORDERER_IP}\t${ORDERER_NAME}.${remoteOrdererDomain} www.${remoteOrdererDomain} " >> crypto-config/hosts
             if [ -n "$BOOTSTRAP_ORG" ]; then
                 set -x

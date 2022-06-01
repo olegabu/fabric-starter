@@ -33,7 +33,7 @@ function main() {
     else
         if [ "${ORDERER_TYPE}" == "RAFT" ]; then
             if [[ "${REMOTE_ORDERER_DOMAIN}" == "${ORDERER_DOMAIN}" ]]; then
-                info "BOOTSTRAP_ORDERER_DOMAIN($BOOTSTRAP_ORDERER_DOMAIN) (or BOOTSTRAP_DOMAIN($BOOTSTRAP_DOMAIN)) shoud be different than ORDERER_DOMAIN($ORDERER_DOMAIN) for RAFT service"
+                info "BOOTSTRAP_ORDERER_DOMAIN($BOOTSTRAP_ORDERER_DOMAIN) (or BOOTSTRAP_DOMAIN($BOOTSTRAP_DOMAIN)) should be different than ORDERER_DOMAIN($ORDERER_DOMAIN) for RAFT service"
                 echo "Exiting"
                 exit 1;
             fi
