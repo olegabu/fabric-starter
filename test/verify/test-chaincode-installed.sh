@@ -5,11 +5,13 @@ source "${BASEDIR}"/../libs/libs.sh
 
 channelName=${1}
 org=${2}
+chaincodeName=${3:-$(getTestChaincodeName ${channelName})}
 
-
-printToLogAndToScreenBlue "\nVerifing if the test chaincode installed in [${org}]"
+printToLogAndToScreenBlue "\nVerifing if the chaincode [${chaincodeName}] installed in [${org}]"
 
 setCurrentActiveOrg ${org}
-verifyChiancodeInstalled "${channelName}" "${org}"
+sleep 10
+result=$(runCLIPeer ${org} listChaincodesInstalled ${channelName} ${org} \| grep -E "^${chaincodeName}$")
 
+setExitCode [ ! -z "${result}" ]
 printResultAndSetExitCode "The test chaincode installed in [${org}]"
