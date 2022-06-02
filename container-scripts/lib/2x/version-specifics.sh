@@ -120,7 +120,14 @@ function substring() {
     sourceString=${sourceString%%${rightPattern}}
     echo ${sourceString}
 }
+function listPackageIDsInstalled() {
 
+    local result=$(peer lifecycle chaincode queryinstalled --output json)
+    set -f
+    IFS=
+    echo "${result}"
+    set +f
+}
 
 function listChaincodesInstalled() {
     local channel=${1}
@@ -128,7 +135,7 @@ function listChaincodesInstalled() {
     local result
 
 
-    result=$(peer lifecycle chaincode queryinstalled --output json)
+    result=$(listPackageIDsInstalled)
     set -f
     IFS=
     echo "${result}" | jq -r '.[][].package_id' | cut -d ':' -f 1 | rev | cut -d '_' -f 2- | rev

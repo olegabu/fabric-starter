@@ -9,7 +9,6 @@ org=${2}
 printToLogAndToScreenCyan "\nJoining [${org}] to the [${channelName}] channel..."
 
 setCurrentActiveOrg ${org}
-
 runInFabricDir ./channel-join.sh ${channelName}
 
 printResultAndSetExitCode "Organization [${org}] joined to [${channelName}] channel"

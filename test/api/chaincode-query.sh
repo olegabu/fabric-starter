@@ -9,6 +9,7 @@ chaincodeName=${3}
 
 printToLogAndToScreenCyan "\nQuery test chaincode on the [${channelName}] channel'"
 
+sleep 5
 setCurrentActiveOrg ${org}
 runInFabricDir ./chaincode-query.sh ${channelName} ${chaincodeName} \'[\"range\",\"${channelName}\"]\'
 
