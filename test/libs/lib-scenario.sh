@@ -4,9 +4,6 @@ IFS='[]'
 
 main() {
     declare -a RESULTS
-    declare -a steps
-#    steps=(1 2 7 12 13 15 16 18 19 20)
-#    steps=(1 2 7 10 11 12 13 14 15 16 17 18 19 20 21 22 23)
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
 
