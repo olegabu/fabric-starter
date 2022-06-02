@@ -865,8 +865,8 @@ function runCLIPeer() {
 
     set -f
     IFS=
-      printDbg  "runCLIPeer result: ${result}"
-      echo ${result}
+    printDbg  "runCLIPeer result: ${result}"
+    echo ${result}
     set +f
     setExitCode [ ${exit_code} = 0 ]
 }
