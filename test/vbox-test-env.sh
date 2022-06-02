@@ -17,7 +17,7 @@ main() {
         return 1
     fi
     
-    source ${BASEDIR}/libs/common-test-env.sh $@
+    source ${BASEDIR}/libs/common-test-env.sh ${1}
     export -f setCurrentActiveOrg
     export -f unsetActiveOrg
     export -f getOrgIp

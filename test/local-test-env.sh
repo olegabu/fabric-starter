@@ -25,7 +25,7 @@ main() {
     export -f getFabricStarterHome
     export -f setSpecificEnvVars
 
-    source ${BASEDIR}/libs/common-test-env.sh $@
+    source ${BASEDIR}/libs/common-test-env.sh ${1}
 }
 
 function getOrgIp() {
