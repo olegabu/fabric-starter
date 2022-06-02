@@ -120,27 +120,32 @@ SCENARIO() {
 #18
         runStep "Test 'Install test chaincode by ORG1 to the first channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org1} \
+            RUN: sleep 10 \
             VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org1}
 
 #19
         runStep "Test 'Install test chaincode by ORG2 to the first channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org2} \
+            RUN: sleep 10 \
             VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org2}
 
 #20
         runStep "Test 'Install 2nd test chaincode by ORG2 to the second channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2} \
+            RUN: sleep 10 \
             VERIFY: test-chaincode-installed.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
 # Chaincode instantiate
 #21
         runStep "Test 'Instantiate test chaincode by ORG1 in the first channel by ORG1'" \
             RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org1} \
+            RUN: sleep 3 \
             VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org1}
 
 #22
         runStep "Test 'Instantiate test chaincode by ORG1 in the first channel by ORG2'" \
             RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org2} \
+            RUN: sleep 3 \
             VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org2}
 
 # Chaincode verify
