@@ -14,12 +14,12 @@ function findChaincodeInQueryInstalledList() {
   
   local result=$(runCLIPeer ${org} listChaincodesInstalled ${channelName} ${org} \| grep -E "^${chaincodeName}$")
   echo $result
+
+  setExitCode [ ! -z "${result}" ]
 }
   
 printToLogAndToScreenBlue "\nVerifing if the chaincode [${chaincodeName}] installed in [${org}]"
 
 setCurrentActiveOrg ${org}
 result=$(findChaincodeInQueryInstalledList ${channelName} ${org} ${chaincodeName})
-
-setExitCode [ ! -z "${result}" ]
 printResultAndSetExitCode "The test chaincode installed in [${org}]"
