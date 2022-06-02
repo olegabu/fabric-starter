@@ -9,7 +9,7 @@ main() {
     VBOX_HOST_IP=${VBOX_HOST_IP:-$(VBoxManage list hostonlyifs | grep 'IPAddress' | cut -d':' -f2 | sed -e 's/^[[:space:]]*//')}
     setDocker_LocalRegistryEnv
     export DEPLOYMENT_TARGET='vbox'
-    export NETCONFPATH="$(absDirPath "${@}")"
+    export NETCONFPATH="$(absDirPath "${1}")"
 
     
     if [ $# -lt 1 ]; then

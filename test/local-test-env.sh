@@ -12,7 +12,7 @@ main() {
     unset MULTIHOST
     
     export DEPLOYMENT_TARGET='local'
-    export NETCONFPATH="$(absDirPath "${@}")"
+    export NETCONFPATH="$(absDirPath "${1}")"
 
     export -f setCurrentActiveOrg
     export -f unsetActiveOrg
