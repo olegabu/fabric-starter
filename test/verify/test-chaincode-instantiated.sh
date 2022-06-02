@@ -14,7 +14,7 @@ function findChaincodeInQueryCommitedList() {
   local chaincodeName=${3}
 
   local result=$(runCLIPeer ${org} listChaincodesInstantiated ${channelName} ${org} \| grep -E "^$chaincodeName")
-  echo $result
+  printDbg "Result: $result"
 
   setExitCode [ ! -z "${result}" ]
 }
@@ -22,5 +22,5 @@ function findChaincodeInQueryCommitedList() {
 printToLogAndToScreenBlue "\nVerifing if the test chaincode instantiated in channel [${channelName}] channel by [${org}]"
 
 setCurrentActiveOrg ${org}
-result=$(findChaincodeInQueryCommitedList ${channelName} ${org} $chaincodeName)
+findChaincodeInQueryCommitedList ${channelName} ${org} $chaincodeName
 printResultAndSetExitCode "The test chaincode instantiated in [${channelName}] channel by [${org}] org"
