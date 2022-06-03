@@ -17,13 +17,13 @@ SCENARIO() {
     org2=${2}
     
     runStep "Test 'Orderer containers'" \
-        VERIFY:   ./test-containers-list.sh "orderer" ${org1} orderer www cli.orderer
+        VERIFY:   ./test-containers-list.sh ${org1} ${DOMAIN} orderer www cli.orderer
     
     runStep "Test '[${org1}] containers'" \
-        VERIFY:   ./test-containers-list.sh  "org" ${org1} peer0 api ca cli.peer0 couchdb.peer0 peer0 www
+        VERIFY:   ./test-containers-list.sh  ${org1} ${org1}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
     
     runStep "Test '[${org2}] containers'" \
-        VERIFY:   ./test-containers-list.sh "org" ${org2} peer0 api ca cli.peer0 couchdb.peer0 peer0 www
+        VERIFY:   ./test-containers-list.sh ${org2} ${org2}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
     
     runStep "Test 'Organization in channel [common]'" \
         VERIFY:     test-channel-accessible.sh 'common' ${org1}

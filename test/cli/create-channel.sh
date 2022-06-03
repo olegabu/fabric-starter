@@ -6,13 +6,7 @@ source "${BASEDIR}"/../libs/libs.sh
 channelName=${1}
 org=${2}
 
-confFilePath=$(getOrgConfigFilePath ${org} ${NETCONFPATH})
-domain=$(getVarFromEnvFile DOMAIN "${confFilePath}")
-
-printToLogAndToScreenCyan "\nCreating the [$channelName] channel for ${org}.${domain}"
-
-export DOMAIN=${domain}
-export ORDERER_DOMAIN=$(getOrgOrdererDomain $org)
+printToLogAndToScreenCyan "\nCreating the [$channelName] channel for ${org}.${DOMAIN}"
 
 setCurrentActiveOrg ${org}
 

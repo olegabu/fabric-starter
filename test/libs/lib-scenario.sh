@@ -4,9 +4,6 @@ IFS='[]'
 
 main() {
     declare -a RESULTS
-    declare -a steps
-#    steps=(1 2 7 12 13 15 16 18 19 20)
-#    steps=(1 2 7 10 11 12 13 14 15 16 17 18 19 20 21 22 23)
     rowSeparator='-|-|-|-'
     VERIFY_SCRIPT_FOLDER='verify'
 
@@ -102,12 +99,12 @@ function printTestResultTable() {
         local test_name="$(echo ${result} | cut -d '|' -f 2)"
         local exit_code="$(echo ${result} | cut -d '|' -f 3)"
         local elapsed_time="$(echo ${result} | cut -d '|' -f 4)"
-
+        
         if [ "${exit_code}" = "0" ]; then
             tests_run=$(($tests_run + 1))
             total_time=$(awk "BEGIN{print ${total_time} + ${elapsed_time}}")
             exit_code="${BRIGHT}${GREEN}OK:  (${exit_code})${NORMAL}"
-
+            
             elif [[ ! ${exit_code} =~ ^[0-9]+$ ]]; then
             :
         else
@@ -118,7 +115,7 @@ function printTestResultTable() {
         fi
         IFS='~'
         timing=$(printPaddingSpaces "${exit_code}" "${elapsed_time}" ${l3})
-
+        
         printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s %-'${l4}'s\n' "${test_step}" "${test_name}" "${exit_code}" "${timing}"
     done
     echo ${separator//|/ }

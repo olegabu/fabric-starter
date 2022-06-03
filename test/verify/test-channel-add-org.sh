@@ -4,12 +4,12 @@
 source "${BASEDIR}"/../libs/libs.sh
 
 channelName=${1}
-org=${2}
-orgAdd=${3:-${org}}
+org=$2
+orgAdd=$3
 
 printToLogAndToScreenBlue "\nVerifing if the [${orgAdd}] added to [${channelName}]"
 
-setCurrentActiveOrg ${org}
-result=$(runCLIPeer ${org} findOrgNameInChannelConfig ${channelName} ${orgAdd})
+setCurrentActiveOrg ${orgAdd}
+verifyOrgIsInChannel "${channelName}" "${orgAdd}" "${DOMAIN}"
 
 printResultAndSetExitCode "Organization [${orgAdd}] is in the channel [$channelName]"

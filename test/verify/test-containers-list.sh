@@ -3,11 +3,13 @@
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 source "${BASEDIR}"/../libs/libs.sh
 
-containersType=${1}
-activeOrg=${2}
-containersList=${@:3}
+activeOrg=${1}
+orgDomain=${2}
+shift; shift
+containersList=${@}
 
-printToLogAndToScreenBlue "\nCheck containers running: [${containersList}] on [${activeOrg}]"
-checkContainersExist ${containersType} ${activeOrg} ${containersList}
+printToLogAndToScreenBlue "\nCheck containers running: [${containersList}] on [${orgDomain}]"
+
+checkContainersExist ${activeOrg} ${orgDomain} ${containersList}
 
 printResultAndSetExitCode "OK: [${containersList}] containers are running"
