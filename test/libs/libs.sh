@@ -177,7 +177,7 @@ function getFabricStarterPath() {
             echo ${dirname}
         else
             echo "Run tests in fabric-starter directory!"
-            exit 1
+            setExitCode false
         fi
     fi
 }
@@ -227,7 +227,6 @@ function getVarFromTestEnvCfg() {
     local confFilePath=$(getOrgConfigFilePath ${org} "${confDirPath}")
     local varValue=$(getVarFromEnvFile ${var} "${confFilePath}")
     echo ${varValue}
-
 }
 
 
@@ -268,10 +267,10 @@ function getPeerOrgName() {
 }
 
 function getOrgName() {
-        local org=${1}
+    local org=${1}
 
-        local orgName="${org}.$(getOrgDomain ${org})"
-        echo ${orgName}
+    local orgName="${org}.$(getOrgDomain ${org})"
+    echo ${orgName}
 }
 
 getOrgIPAddress() {
@@ -436,35 +435,41 @@ function printErrToLogAndToScreen() {
 }
 
 
-function printAndCompareResults() {
-    local messageOK=${1}
-    local messageERR=${2}
-    local var=${3:-"$?"}
-    local value=${4:-0}
-    
-    if [ "$var" = "$value" ]; then
-        printGreen "${messageOK}"
-        exit 0
-    else
-        printError "${messageERR}"
-        exit 1
-    fi
-}
+#function printAndCompareResults() {
+#    local messageOK=${1}
+#    local messageERR=${2}
+#    local var=${3:-"$?"}
+#    local value=${4:-0}
+#
+#    if [ "$var" = "$value" ]; then
+#        printGreen "${messageOK}"
+#        exit 0
+#    else
+#        printError "${messageERR}"
+#        exit 1
+#    fi
+#}
 
 
 function printResultAndSetExitCode() {
-    local errorCode=${3:-$?}
-    if [ ${errorCode} -eq ${2:-0} ]
+
+    local currentExitCode=$?
+
+    local message=${1}
+    local exitCodeRequired=${2:-0}
+    local exitCode=${3:-${currentExitCode}}
+
+    if [ ${exitCode} -eq ${exitCodeRequired} ]
     then
-        printGreen "OK: ${1}" | printToLogAndToScreen
-        exit 0
+        printGreen "OK: ${message}" | printToLogAndToScreen
+        setExitCode true
     else
         if [ "${NO_RED_OUTPUT}" = true ]; then
-            printGreen "Exit code: ${errorCode}" | printErrToLogAndToScreen
+            printGreen "Exit code: ${exitCode}" | printErrToLogAndToScreen
         else
-            printError "ERROR! Exit code: ${errorCode}" | printErrToLogAndToScreen
+            printError "ERROR! Exit code: ${exitCode}" | printErrToLogAndToScreen
         fi
-        exit 1
+        setExitCode false
     fi
 }
 
@@ -476,10 +481,9 @@ function inspectDockerContainer() {
     setCurrentActiveOrg $org
 
     result=$(docker inspect ${fullContainerName})
-    set -f
-    IFS=
-       echo ${result}
-   set +f
+    #set -f
+    IFS= echo ${result}
+    #set +f
 }
 
 function queryContainerNetworkSettings() {
@@ -707,11 +711,10 @@ function getChaincodePackageId() {
     local chaincodeName=${2}
 
     local result=$(runCLIPeer ${org} listPackageIDsInstalled)
-    set -f
-    IFS=
-    printDbg "jq -r .[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
-    echo ${result} | jq -r ".[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
-    set -f
+    #set -f
+    IFS= printDbg "jq -r .[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
+    IFS= echo ${result} | jq -r ".[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
+    #set -f
 }
 
 
@@ -863,11 +866,10 @@ function runCLIPeer() {
     result=$("${script_dir}/${script_name}" ${compose_org} "${command}")
     exit_code=${?}
 
-    set -f
-    IFS=
-    printDbg  "runCLIPeer result: ${result}"
-    echo ${result}
-    set +f
+    #set -f
+    IFS= printDbg  "runCLIPeer result: ${result}"
+    IFS= echo ${result}
+    #set +f
     setExitCode [ ${exit_code} = 0 ]
 }
 
@@ -894,11 +896,9 @@ function verifyOrgJoinedChannel() {
     local result
 
     result=$(ListPeerChannels ${org} | tr -d "\r"| grep -E "^${channel}$")
-    set -f
-    IFS=
-      printDbg "Result: ${result}"
-    set +f
-
+    #set -f
+    IFS= printDbg "Result: ${result}"
+    #set +f
     setExitCode [ "${result}" = "${channel}" ]
 }
 
@@ -1001,11 +1001,11 @@ function createChaincodeArchiveAndReturnPath() {
     echo "Chaincode archive created:  $(ls -la ${chaincodePackageFilePath})" | printDbg
     rm -rf ${FABRIC_DIR}/chaincode/node/${chaincodeName}
 
-    echo "${chaincodePackageFilePath}" | printDbg
+    echo "Path to package file: ${chaincodePackageFilePath}" | printDbg
     echo "${chaincodePackageFilePath}"
     if [ ! -e "${chaincodePackageFilePath}" ];
     then
-        exit 1
+        setExitCode false
     fi
 }
 

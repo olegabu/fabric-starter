@@ -99,7 +99,7 @@ function printTestResultTable() {
         local test_name="$(echo ${result} | cut -d '|' -f 2)"
         local exit_code="$(echo ${result} | cut -d '|' -f 3)"
         local elapsed_time="$(echo ${result} | cut -d '|' -f 4)"
-        
+
         if [ "${exit_code}" = "0" ]; then
             tests_run=$(($tests_run + 1))
             total_time=$(awk "BEGIN{print ${total_time} + ${elapsed_time}}")
@@ -180,12 +180,11 @@ function runStep() {
     exec 1> >(paste /dev/null -)
     
     
-    local start_time=$(date +"%s.%3N")
-    
+    local start_time=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
     # Run command
     eval "${COMMAND}" 2>&1
     local exit_code=$?
-    local stop_time=$(date +"%s.%3N")
+    local stop_time=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
     
     local time_elapsed=$(awk "BEGIN{print ${stop_time} - ${start_time}}")
     printDbg "Step ${step}_${SCRIPT_FOLDER}: exit code $exit_code"
