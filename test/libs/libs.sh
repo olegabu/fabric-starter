@@ -164,17 +164,17 @@ echo "${border}"
 }
 
 function getFabricStarterPath() {
-    local dirname=${1}
-    local libpath
+    local dirName=${1}
+    local libPath
     
-    libpath=$(realpath "${dirname}"/lib.sh)
+    libPath=$(realpath "${dirName}"/lib.sh)
     
-    if [[ ! -f ${libpath} ]]; then
-        dirname=$(realpath "${dirname}"/../)
-        getFabricStarterPath ${dirname}
+    if [[ ! -f ${libPath} ]]; then
+        dirName=$(realpath "${dirName}"/../)
+        getFabricStarterPath ${dirName}
     else
-        if [[ $dirname != '/' ]]; then
-            echo ${dirname}
+        if [[ $dirName != '/' ]]; then
+            echo ${dirName}
         else
             echo "Run tests in fabric-starter directory!"
             setExitCode false
@@ -196,10 +196,10 @@ function absDirPath() {
 }
 
 function getVarFromEnvFile() {
-    local varname=${1}
-    local filepath="${2}"
+    local varName=${1}
+    local filePath="${2}"
 
-    bash -c "source \"${filepath}\"; echo \${${varname}}"
+    bash -c "source \"${filePath}\"; echo \${${varName}}"
 }
 
 function getOrgConfigFilePath() {
@@ -283,20 +283,20 @@ getOrgIPAddress() {
 
 function printDbg() {
     local exitCode=$?
-    local outputdev
+    local outputDev
     local line
     
     if [[ "$DEBUG" = "false" ]]; then
-        outputdev=/dev/null
+        outputDev=/dev/null
     else
-        outputdev=/dev/stderr
+        outputDev=/dev/stderr
     fi
     if (( $# == 0 )) ; then
         while read -r line ; do
-            echo "${line}" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
+            echo "${line}" | tee -a ${FSTEST_LOG_FILE} > ${outputDev}
         done
     else
-        echo "$@" | tee -a ${FSTEST_LOG_FILE} > ${outputdev}
+        echo "$@" | tee -a ${FSTEST_LOG_FILE} > ${outputDev}
     fi
     return ${exitCode}
 }
@@ -777,7 +777,7 @@ function installZippedChaincodeAPI() {
     local apiIP=$(getOrgIp "${org}")
     #apiPort=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     local apiPort=$(getAPIPort ${org})
-    trap "rm -f ${zip_chaincode_path}" EXIT;
+    #trap "rm -f ${zip_chaincode_path}" EXIT;
     
     # Composing single binary file to POST via API
     echo -n -e "${multipartHeader}" > "${tmpOutFile}"
@@ -825,10 +825,10 @@ function instantiateTestChaincodeAPI() {
 invokeTestChaincodeAPI() {
     local channel=${1}
     local org=${2}
-    local chaincode_name=${3}
+    local chaincodeName=${3}
     local jwt=${4}
 
-    restAPIWrapper ${org} "channels/${channel}/chaincodes/${chaincode_name}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"
+    restAPIWrapper ${org} "channels/${channel}/chaincodes/${chaincodeName}" "{\"fcn\":\"put\",\"args\":[\"${channel}\",\"${channel}\"],\"waitForTransactionEvent\":true}" "${jwt}"
 }
 
 # --------------------------------------------------------------CLI-----------------------------------------------------
@@ -907,8 +907,8 @@ function copyTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
     #local domain=${3}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${3:-"${chaincode_init_name}_${channel}"}
+    local chaincodeInitName=${CHAINCODE_PREFIX:-reference}
+    local chaincodeName=${3:-"${chaincodeInitName}_${channel}"}
     local lang=${4:-"node"}
     local chaincodeDir=${5:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
 
@@ -916,9 +916,9 @@ function copyTestChiancodeCLI() {
     local exitCode
 
     result=$(runCLIPeer ${org} \
-        "mkdir -p ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name};  \
+        "mkdir -p ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName};  \
           cp -R ${chaincodeDir}/* \
-          ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}")
+          ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}")
     exitCode=$?
     printDbg "Result: ${result}"
 
@@ -929,15 +929,15 @@ function installTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
     local domain=${3}
-    local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
-    local chaincode_name=${4:-"${chaincode_init_name}_${channel}"}
+    local chaincodeInitName=${CHAINCODE_PREFIX:-reference}
+    local chaincodeName=${4:-"${chaincodeInitName}_${channel}"}
     local lang=${5:-"node"}
 
     local result
     local exitCode
 
     result=$(runCLIPeer ${org} \
-    "./container-scripts/network/chaincode-install.sh '${chaincode_name}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name} ${lang}" 2>&1)
+    "./container-scripts/network/chaincode-install.sh '${chaincodeName}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName} ${lang}" 2>&1)
     local exitCode=$?
     printDbg "Result: ${result}"
 
@@ -1014,12 +1014,12 @@ function instantiateTestChaincodeCLI() {
     local channel=${1}
     local org=${2}
     #local domain=${DOMAIN}
-    local chaincode_name=${3:-$(getTestChaincodeName ${channel})}
+    local chaincodeName=${3:-$(getTestChaincodeName ${channel})}
     
     local result
     local exitCode
     
-    reuslt=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincode_name} 2>&1 | printDbg)
+    reuslt=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincodeName} 2>&1 | printDbg)
     exitCode=$?
     printDbg "${result}"
 
@@ -1116,17 +1116,18 @@ function dockerCopyDirToContainer() {
     local sourcePath="${4:?Source path is required}"
     local destinationPath="${5:?Destination path is required}"
     local container=$(containerNameString "org" ${service} ${org} ${domain})
-    local container_home_dir
-    local parent_dir
+    
+    local containerHomeDir
+    local parentDir
     local container
 
     connectOrgMachine "${org}" "${domain}"
     dockerMakeDirInContainer ${container} "${destinationPath}"
-    container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
-    parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)
-    printDbg "docker cp ${sourcePath} ${container}:${parent_dir}${destinationPath}"
-    docker cp ${sourcePath} ${container}:"${parent_dir}${destinationPath}"
-    docker container exec -it ${container} ls -la "${parent_dir}${destinationPath}" >/dev/null
+    containerHomeDir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
+    parentDir=$(if [[ ${destinationPath} != /* ]]; then echo ${containerHomeDir}; fi)
+    printDbg "docker cp ${sourcePath} ${container}:${parentDir}${destinationPath}"
+    docker cp ${sourcePath} ${container}:"${parentDir}${destinationPath}"
+    docker container exec -it ${container} ls -la "${parentDir}${destinationPath}" >/dev/null
     setExitCode [[ $? == 0 ]]
 }
 
@@ -1137,15 +1138,15 @@ function dockerCopyFileFromContainer() {
             local sourcePath="${4:?Source path is required}"
             local destinationPath="${5:?Destination path is required}"
             local container=$(containerNameString "org" ${service} ${org} ${domain})
-            local container_home_dir
-            local parent_dir
+            local containerHomeDir
+            local parentDir
             local container
 
             connectOrgMachine "${org}" "${domain}"
-            container_home_dir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
-            parent_dir=$(if [[ ${destinationPath} != /* ]]; then echo ${container_home_dir}; fi)
-            printDbg "docker cp ${container}:"${parent_dir}${sourcePath}" ${destinationPath}"
-            docker cp ${container}:"${parent_dir}${sourcePath}" ${destinationPath}
+            containerHomeDir=$(echo $(docker container exec -it ${container} pwd) | tr -d '\r')'/'
+            parentDir=$(if [[ ${destinationPath} != /* ]]; then echo ${containerHomeDir}; fi)
+            printDbg "docker cp ${container}:"${parentDir}${sourcePath}" ${destinationPath}"
+            docker cp ${container}:"${parentDir}${sourcePath}" ${destinationPath}
 
             ls -la ${destinationPath} >/dev/null
             setExitCode [[ $? == 0 ]]
