@@ -44,27 +44,27 @@ main() {
 
 function checkArgsPassed() {
     shift 
-    local args_req=${1}
+    local argsReq=${1}
     shift 2
-    local args_passed=( "$@" )
+    local argsPassed=( "$@" )
 
-    printDbg "${WHITE}${BRIGHT}checkArgsPassed: Args required: $args_req ${NORMAL}"
-    printDbg "Arguments passed: ${args_passed[@]}"
+    printDbg "${WHITE}${BRIGHT}checkArgsPassed: Args required: $argsReq ${NORMAL}"
+    printDbg "Arguments passed: ${argsPassed[@]}"
 
-    local num_args_passed="${#args_passed[@]}"
+    local numArgsPassed="${#argsPassed[@]}"
 
-    IFS=',' read -r -a args_required <<< "${args_req}"
+    IFS=',' read -r -a argsRequired <<< "${argsReq}"
 
-    printDbg "Arguments required: ${args_required[@]}"
+    printDbg "Arguments required: ${argsRequired[@]}"
 
-    local num_args_required="${#args_required[@]}"
+    local numArgsRequired="${#argsRequired[@]}"
 
 
-    printDbg "checkArgsPassed: args required: ${num_args_required} ${args_required[@]} args passed: ${num_args_passed} ${args_passed[@]}"
+    printDbg "checkArgsPassed: args required: ${numArgsRequired} ${argsRequired[@]} args passed: ${numArgsPassed} ${argsPassed[@]}"
     
-      if [ ${num_args_required} -gt ${num_args_passed} ];
+      if [ ${numArgsRequired} -gt ${numArgsPassed} ];
       then
-           printError "\nRequired arguments: ${WHITE}${BRIGHT}${args_req}"
+           printError "\nRequired arguments: ${WHITE}${BRIGHT}${argsReq}"
            exit 1
       fi
 }
@@ -857,20 +857,20 @@ function runCLIPeer() {
     local command=${@:2}
     local domain=${DOMAIN:-example.com}
 
-    local script_dir="${BASEDIR}/.."
-    local script_name="run-cli-peer.sh"
-    local exit_code
+    local scriptDir="${BASEDIR}/.."
+    local scriptName="run-cli-peer.sh"
+    local exitCode
 
     printDbg "Run '${command}' in cli.peer0.${compose_org}.${domain}"
 
-    result=$("${script_dir}/${script_name}" ${compose_org} "${command}")
-    exit_code=${?}
+    result=$("${scriptDir}/${scriptName}" ${compose_org} "${command}")
+    exitCode=${?}
 
     #set -f
     IFS= printDbg  "runCLIPeer result: ${result}"
     IFS= echo ${result}
     #set +f
-    setExitCode [ ${exit_code} = 0 ]
+    setExitCode [ ${exitCode} = 0 ]
 }
 
 
@@ -910,14 +910,14 @@ function copyTestChiancodeCLI() {
     local chaincode_init_name=${CHAINCODE_PREFIX:-reference}
     local chaincode_name=${3:-"${chaincode_init_name}_${channel}"}
     local lang=${4:-"node"}
-    local chaincode_dir=${5:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
+    local chaincodeDir=${5:-"${VERSIONED_CHAINCODE_PATH}/${lang}/reference"}
 
     local result
     local exitCode
 
     result=$(runCLIPeer ${org} \
         "mkdir -p ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name};  \
-          cp -R ${chaincode_dir}/* \
+          cp -R ${chaincodeDir}/* \
           ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincode_name}")
     exitCode=$?
     printDbg "Result: ${result}"

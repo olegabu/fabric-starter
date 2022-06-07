@@ -95,28 +95,28 @@ function printTestResultTable() {
     
     for result in "${RESULTS[@]}"; do
         if [ "${result}" = "-|-|-|-" ]; then result=${separator}; fi
-        local test_step="$(echo ${result} | cut -d '|' -f 1)"
-        local test_name="$(echo ${result} | cut -d '|' -f 2)"
-        local exit_code="$(echo ${result} | cut -d '|' -f 3)"
-        local elapsed_time="$(echo ${result} | cut -d '|' -f 4)"
+        local testStep="$(echo ${result} | cut -d '|' -f 1)"
+        local testName="$(echo ${result} | cut -d '|' -f 2)"
+        local exitCode="$(echo ${result} | cut -d '|' -f 3)"
+        local elapsedTime="$(echo ${result} | cut -d '|' -f 4)"
 
-        if [ "${exit_code}" = "0" ]; then
+        if [ "${exitCode}" = "0" ]; then
             tests_run=$(($tests_run + 1))
-            total_time=$(awk "BEGIN{print ${total_time} + ${elapsed_time}}")
-            exit_code="${BRIGHT}${GREEN}OK:  (${exit_code})${NORMAL}"
+            total_time=$(awk "BEGIN{print ${total_time} + ${elapsedTime}}")
+            exitCode="${BRIGHT}${GREEN}OK:  (${exitCode})${NORMAL}"
             
-            elif [[ ! ${exit_code} =~ ^[0-9]+$ ]]; then
+            elif [[ ! ${exitCode} =~ ^[0-9]+$ ]]; then
             :
         else
-            exit_code="${BRIGHT}${RED}ERR: (${exit_code})${NORMAL}"
+            exitCode="${BRIGHT}${RED}ERR: (${exitCode})${NORMAL}"
             total_errors=$(($total_errors + 1))
             tests_run=$(($tests_run + 1))
-            total_time=$(awk "BEGIN{print ${total_time} + ${elapsed_time}}")
+            total_time=$(awk "BEGIN{print ${total_time} + ${elapsedTime}}")
         fi
         IFS='~'
-        timing=$(printPaddingSpaces "${exit_code}" "${elapsed_time}" ${l3})
+        timing=$(printPaddingSpaces "${exitCode}" "${elapsedTime}" ${l3})
         
-        printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s %-'${l4}'s\n' "${test_step}" "${test_name}" "${exit_code}" "${timing}"
+        printf '%-'${l1}'s %-'${l2}'s %-'${l3}'s %-'${l4}'s\n' "${testStep}" "${testName}" "${exitCode}" "${timing}"
     done
     echo ${separator//|/ }
     
@@ -180,20 +180,20 @@ function runStep() {
     exec 1> >(paste /dev/null -)
     
     
-    local start_time=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
+    local startTime=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
     # Run command
     eval "${COMMAND}" 2>&1
-    local exit_code=$?
-    local stop_time=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
+    local exitCode=$?
+    local stopTime=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
     
-    local time_elapsed=$(awk "BEGIN{print ${stop_time} - ${start_time}}")
-    printDbg "Step ${step}_${SCRIPT_FOLDER}: exit code $exit_code"
+    local timeElapsed=$(awk "BEGIN{print ${stopTime} - ${startTime}}")
+    printDbg "Step ${step}_${SCRIPT_FOLDER}: exit code $exitCode"
     
     #RESET INDENTATION FOR /dev/stdout
     exec 1>&3 3>&-
     
-    printExitCode "${exit_code}" "Step ${step}_${SCRIPT_FOLDER} exit code:"
-    RESULTS+=("${step}_${SCRIPT_FOLDER}|${message}|${exit_code}|${time_elapsed}")
+    printExitCode "${exitCode}" "Step ${step}_${SCRIPT_FOLDER} exit code:"
+    RESULTS+=("${step}_${SCRIPT_FOLDER}|${message}|${exitCode}|${timeElapsed}")
 }
 
 main $@

@@ -13,10 +13,10 @@ FABRIC_DIR=${FABRIC_DIR:-$BASEDIR/..}
 pushd "${FABRIC_DIR}" >/dev/null
 
 COMPOSE_PROJECT_NAME=${compose_org} docker-compose -f ${FABRIC_DIR}/docker-compose.yaml exec -T cli.peer bash -c "${libcommand}; ${command}"
-local exit_code=$?
+local exitCode=$?
 popd > /dev/null
 
-[ "${exit_code}" = "0" ]
+[ "${exitCode}" = "0" ]
 }
 
 main ${@}
