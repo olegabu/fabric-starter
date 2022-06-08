@@ -67,7 +67,7 @@ function unsetActiveOrg {
 
 
 function getOrgIp() {
-    getMachineIp "${1}"
+    getOrgIPAddress "${1}"
 }
 
 
@@ -106,7 +106,7 @@ function setSpecificEnvVars() {
     local domain=${2}
 
     export FABRIC_STARTER_HOME=$(getFabricStarterHome)
-    export MY_IP=$(getOrgIp $org)
+    export MY_IP=$(getOrgIPAddress $org)
 }
 
 main $@

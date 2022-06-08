@@ -710,6 +710,7 @@ function getChaincodePackageId() {
     local org=${1}
     local chaincodeName=${2}
 
+    setCurrentActiveOrg ${org}
     local result=$(runCLIPeer ${org} listPackageIDsInstalled)
     #set -f
     IFS= printDbg "jq -r .[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
@@ -783,8 +784,7 @@ function installZippedChaincodeAPI() {
     echo -n -e "${multipartHeader}" > "${tmpOutFile}"
     cat   "${packageFilePath}" >> "${tmpOutFile}"
     echo -n -e "${multipartTail}" >> "${tmpOutFile}"
-    
-    
+
     local res=$(curl --insecure https://${apiIP}:${apiPort}/chaincodes \
         -sw ":%{http_code}" \
         -H "Authorization: Bearer ${jwt}" \
