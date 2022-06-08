@@ -855,7 +855,8 @@ function runInFabricDir() {
 function runCLIPeer() {
     local compose_org=${1}
     local command=${@:2}
-    local domain=${DOMAIN:-example.com}
+
+    local domain=${3:-$(getOrgDomain ${org})}
 
     local scriptDir="${BASEDIR}/.."
     local scriptName="run-cli-peer.sh"
