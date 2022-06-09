@@ -90,7 +90,7 @@ function getRandomChannelName() {
 
 function setExitCode() {
     local errorCode
-    
+
     eval "${@}" 2>/dev/null
     errorCode=$?
     printDbg "setExitCode: ${errorCode}"
@@ -273,7 +273,7 @@ function getOrgName() {
     echo ${orgName}
 }
 
-getOrgIPAddress() {
+function getOrgIPAddress() {
     local org=${1}
 
     local orgIPAddress=$(getVarFromTestEnvCfg MY_IP ${org})
@@ -308,7 +308,7 @@ function printArgs() {
 
 
 function printLog() {
-    
+
     local line
     
     if (( $# == 0 )) ; then
@@ -320,6 +320,18 @@ function printLog() {
     fi
 }
 
+
+function printToLogAndToScreen() {
+    local line
+
+    if (( $# == 0 )) ; then
+        while read -r line ; do
+            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
+        done
+    else
+        echo "$@" | tee -a ${FSTEST_LOG_FILE}
+    fi
+}
 
 function printToLogAndToScreenCyan() {
     local line=${@}
@@ -393,48 +405,6 @@ function printExitCode() {
     local message=${2:-"Exit code:"}
     if [ "$1" = "0" ]; then printColoredText "${BRIGHT}${GREEN}" "${message} $1"; else printError "${message} $1"; fi
 }
-
-
-function printToLogAndToScreen() {
-    local line
-    
-    if (( $# == 0 )) ; then
-        while read -r line ; do
-            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
-        done
-    else
-        echo "$@" | tee -a ${FSTEST_LOG_FILE}
-    fi
-}
-
-
-#function printErrToLogAndToScreen() {
-#    local line
-#
-#    if (( $# == 0 )) ; then
-#        while read -r line ; do
-#            echo "${line}" | tee -a ${FSTEST_LOG_FILE} >/dev/stderr
-#        done
-#    else
-#        echo "$@" | tee -a ${FSTEST_LOG_FILE} > /dev/stderr
-#    fi
-#}
-
-
-#function printAndCompareResults() {
-#    local messageOK=${1}
-#    local messageERR=${2}
-#    local var=${3:-"$?"}
-#    local value=${4:-0}
-#
-#    if [ "$var" = "$value" ]; then
-#        printGreen "${messageOK}"
-#        exit 0
-#    else
-#        printError "${messageERR}"
-#        exit 1
-#    fi
-#}
 
 
 function printResultAndSetExitCode() {
@@ -703,7 +673,7 @@ function addOrgToChannelAPI() {
     local org=${2}
     local jwt=${3}
     local orgToAdd=${4}
-    printDbg "${GREEN}Get org IP Address:${NORMAL}"
+
     local orgIP=$(getOrgIPAddress ${orgToAdd})
     local orgDomain=$(getOrgDomain ${orgToAdd})
     local wwwPort=$(getWwwPort ${orgToAdd})
