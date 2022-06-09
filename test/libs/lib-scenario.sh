@@ -68,14 +68,6 @@ function getMaxTextLength() {
 }
 
 
-function printLogStepHeader() {
-
-    printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
-    printLog "${BRIGHT}${WHITE}Step: $@${NORMAL}"
-    printLog "${BRIGHT}${WHITE}---------------------------${NORMAL}"
-}
-
-
 function printTestResultTable() {
     END_TIME=$(LC_TIME="en_US.UTF-8" date)
 
@@ -169,16 +161,14 @@ function runStep() {
 
     COMMAND=$(echo $COMMAND | sed -E -e 's/;([[:space:]]*)/;/g' -e 's/[;]+/;/g')
 
-    printColoredText "${BRIGHT}${WHITE}" "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
+    step=$((${step} + 1))
+    printColoredText "${BRIGHT}${WHITE}" "\n\nStep $((step))_${SCRIPT_FOLDER}: ${message}" | printToLogAndToScreen
 
     printDbg $COMMAND
-    printLogStepHeader ${step}_${SCRIPT_FOLDER}: ${message}
-    printLog "$@"
 
     #SET INDENTATION FOR /dev/stdout (1 tabulation symbol)
     exec 3>&1
     exec 1> >(paste /dev/null -)
-
 
     local startTime=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
     # Run command
@@ -187,7 +177,6 @@ function runStep() {
     local stopTime=$(LC_TIME="en_US.UTF-8" date +"%s.%3N")
 
     local timeElapsed=$(LC_NUMERIC='en_US.UTF-8' awk "BEGIN{print ${stopTime} - ${startTime}}")
-    printDbg "Step ${step}_${SCRIPT_FOLDER}: exit code $exitCode"
 
     #RESET INDENTATION FOR /dev/stdout
     exec 1>&3 3>&-

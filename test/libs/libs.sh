@@ -326,10 +326,10 @@ function printToLogAndToScreen() {
 
     if (( $# == 0 )) ; then
         while read -r line ; do
-            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
+            echo -e "${line}" | tee -a ${FSTEST_LOG_FILE}
         done
     else
-        echo "$@" | tee -a ${FSTEST_LOG_FILE}
+        echo -e "$@" | tee -a ${FSTEST_LOG_FILE}
     fi
 }
 
@@ -455,8 +455,8 @@ function queryContainerNetworkSettings() {
     connectOrgMachine ${org} ${domain}
     local result=$(docker inspect ${containerName} | jq -r "${query}" 2>${TMP_LOG_FILE});
 
-    echo  "queryContainerNetworkSettings returns:" ${result} | printLog
-    cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
+    echo  "queryContainerNetworkSettings returns:" ${result} | printDbg
+    #cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
 }
 
