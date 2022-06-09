@@ -123,9 +123,9 @@ function printTestResultTable() {
     printYellow "Start time: ${WHITE}${START_TIME}${YELLOW}, End time: ${WHITE}${END_TIME}${YELLOW}"
 
     if [ "${total_errors}" = 0 ]; then
-        printYellow "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds \nTotal errors: ${WHITE}${total_errors}${YELLOW}"
+        echo -e "${BRIGHT}${YELLOW}Total tests run: ${WHITE}${tests_run} ${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds \nTotal errors: ${WHITE}${total_errors}${NORMAL}"
     else
-        printYellowRed "Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds" "\nTotal errors: ${total_errors}"
+        echo -e "${BRIGHT}${YELLOW}Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds \n${BRIGHT}${RED}Total errors: ${total_errors}${NORMAL}"
     fi
 
     printYellow "See debug log ${WHITE}${BRIHT}${FSTEST_LOG_FILE}${NORMAL}"
@@ -169,7 +169,7 @@ function runStep() {
 
     COMMAND=$(echo $COMMAND | sed -E -e 's/;([[:space:]]*)/;/g' -e 's/[;]+/;/g')
 
-    printWhite "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
+    printColoredText "${BRIGHT}${WHITE}" "\nStep $((++step))_${SCRIPT_FOLDER}: ${message}"
 
     printDbg $COMMAND
     printLogStepHeader ${step}_${SCRIPT_FOLDER}: ${message}

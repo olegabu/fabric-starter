@@ -48,7 +48,6 @@ function setCurrentActiveOrg() {
     export DOMAIN=$(getOrgDomain ${org})
     export ORDERER_DOMAIN=$(getOrgOrdererDomain ${org})
     export PEER0_PORT=$(getContainerPort ${org} ${PEER_NAME} $(getOrgDomain ${org}))
-    export PEEER_ORG_NAME=$(getPeerOrgName ${org})
     printDbg "${BRIGHT}${MAGENTA}setCurrentActiveOrg: Org: ${ORG}, Domain: ${DOMAIN}, ORDERER_DOMAIN: ${ORDERER_DOMAIN}${NORMAL}"
 }
 

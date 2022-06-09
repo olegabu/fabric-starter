@@ -116,18 +116,22 @@ function exportColors() {
     export  UNDERLINE=$(tput smul)
 }
 
- function printYellowRed() {
-     printInColor "1;33" "$1" "1;31" "$2"
- }
- function printCyan() {
-     printInColor "1;36" "$1"
- }
- function printBlue() {
-     printInColor "1;34" "$1"
- }
- function printWhite() {
-     printInColor "1;37" "$1"
- }
+function printColoredText() {
+    local color=${1}
+    local text=${@:2}
+
+    echo -e "${color}${text}${NORMAL}"
+}
+
+function printOK() {
+    local line=${@}
+    printColoredText "${BRIGHT}${GREEN}" "${line}"
+}
+
+function printERR() {
+    local line=${@}
+    printColoredText "${BRIGHT}${RED}" "${line}"
+}
 
 function printNoColors() {   #filter out set color terminal commands
     local line
@@ -153,15 +157,15 @@ function setColorOnError() {
     esac
 }
 
-function printInfo() {
-local border=$(printf -- '*%.0s' {1..80})
-
-echo "${border}"
-for arg in "${@}"; do
-    echo -e "${BRIGHT}${YELLOW}${arg}${NORMAL}"
-done
-echo "${border}"
-}
+#function printInfo() {
+#local border=$(printf -- '*%.0s' {1..80})
+#
+#echo "${border}"
+#for arg in "${@}"; do
+#    printColoredText "${BRIGHT}${YELLOW}" "${arg}"
+#done
+#echo "${border}"
+#}
 
 function getFabricStarterPath() {
     local dirName=${1}
@@ -183,15 +187,11 @@ function getFabricStarterPath() {
 }
 
 function absDirPath() {
-    #set -f
-    #IFS=''
     local dir="${@}"
     local result
     if [ ! -z "${dir}" ]; then
-        #echo "DIR: dirname ${dir}"
         result="$(bash -c  "cd ${dir} && pwd")"
         echo "${result}"
-    #set +f
     fi
 }
 
@@ -322,28 +322,14 @@ function printLog() {
 
 
 function printToLogAndToScreenCyan() {
-    local line
-    
-    if (( $# == 0 )) ; then
-        while read -r line ; do
-            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
-        done
-    else
-        printInColor "1;36" "$@" | tee -a ${FSTEST_LOG_FILE}
-    fi
+    local line=${@}
+    printColoredText "${BRIGHT}${CYAN}" "${line}" | printToLogAndToScreen
 }
 
 
 function printToLogAndToScreenBlue() {
-    local line
-    
-    if (( $# == 0 )) ; then
-        while read -r line ; do
-            echo "${line}" | tee -a ${FSTEST_LOG_FILE}
-        done
-    else
-        printInColor "1;35" "$@" | tee -a ${FSTEST_LOG_FILE}
-    fi
+    local line=${@}
+    printColoredText "${BRIGHT}${BLUE}" "${line}" | printToLogAndToScreen
 }
 
 
@@ -399,13 +385,13 @@ function printYellowBox() {
     boundary=$(printNSymbols '=' $((length + $indent * 2)) )
     indentation=$(printNSymbols ' ' $indent )
     
-    printYellow "\n${boundary}\n${indentation}$@\n${boundary}\n"
+    printColoredText "${BRIGHT}${YELLOW}" "\n${boundary}\n${indentation}$@\n${boundary}\n"
 }
 
 
 function printExitCode() {
     local message=${2:-"Exit code:"}
-    if [ "$1" = "0" ]; then printGreen "${message} $1"; else printError "${message} $1"; fi
+    if [ "$1" = "0" ]; then printColoredText "${BRIGHT}${GREEN}" "${message} $1"; else printError "${message} $1"; fi
 }
 
 
@@ -422,17 +408,17 @@ function printToLogAndToScreen() {
 }
 
 
-function printErrToLogAndToScreen() {
-    local line
-    
-    if (( $# == 0 )) ; then
-        while read -r line ; do
-            echo "${line}" | tee -a ${FSTEST_LOG_FILE} >/dev/stderr
-        done
-    else
-        echo "$@" | tee -a ${FSTEST_LOG_FILE} > /dev/stderr
-    fi
-}
+#function printErrToLogAndToScreen() {
+#    local line
+#
+#    if (( $# == 0 )) ; then
+#        while read -r line ; do
+#            echo "${line}" | tee -a ${FSTEST_LOG_FILE} >/dev/stderr
+#        done
+#    else
+#        echo "$@" | tee -a ${FSTEST_LOG_FILE} > /dev/stderr
+#    fi
+#}
 
 
 #function printAndCompareResults() {
@@ -461,13 +447,13 @@ function printResultAndSetExitCode() {
 
     if [ ${exitCode} -eq ${exitCodeRequired} ]
     then
-        printGreen "OK: ${message}" | printToLogAndToScreen
+        printOK "OK: ${message}" | printToLogAndToScreen
         setExitCode true
     else
         if [ "${NO_RED_OUTPUT}" = true ]; then
-            printGreen "Exit code: ${exitCode}" | printErrToLogAndToScreen
+            printOK "Exit code: ${exitCode}" | printToLogAndToScreen
         else
-            printError "ERROR! Exit code: ${exitCode}" | printErrToLogAndToScreen
+            printError "ERROR! Exit code: ${exitCode}" | printToLogAndToScreen
         fi
         setExitCode false
     fi
@@ -481,9 +467,7 @@ function inspectDockerContainer() {
     setCurrentActiveOrg $org
 
     result=$(docker inspect ${fullContainerName})
-    #set -f
     IFS= echo ${result}
-    #set +f
 }
 
 function queryContainerNetworkSettings() {
@@ -500,7 +484,6 @@ function queryContainerNetworkSettings() {
     printDbg "${BRIGHT}${BLUE}Parameter: ${1}, Container: ${2}, Org: ${3}, Domain: ${4}, ContainerName: ${containerName}${NORMAL}"
     connectOrgMachine ${org} ${domain}
     local result=$(docker inspect ${containerName} | jq -r "${query}" 2>${TMP_LOG_FILE});
-#    local result=$(echo $(inspectDockerContainer ${org} ${containerName}) | jq -r "${query}" 2>${TMP_LOG_FILE});
 
     echo  "queryContainerNetworkSettings returns:" ${result} | printLog
     cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
@@ -615,11 +598,10 @@ function restQuery() {
 
     local apiIP
     local apiPort
-printDbg "${GREEN}GetOrgIP ${org}:${NORMAL}"
+
     apiIP=$(getOrgIPAddress "${org}")
-    #apiPort=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
-printDbg "${GREEN}getAPIPort ${org}:${NORMAL}"
     apiPort=$(getAPIPort ${org})
+
     echo  restQuery:  curlRequest "https://${apiIP}:${apiPort}/${path}" "${query}" "${jwt}" "${curlTimeout}" | printDbg
     curlRequest "https://${apiIP}:${apiPort}/${path}" "${query}" "${jwt}" "${curlTimeout}"
 }
@@ -630,8 +612,6 @@ function restAPIWrapper() {
     local TMP_LOG_FILE
     local result
     local exitCode
-    local apiStatusCode
-    local state
     local httpStatusCode
     
     TMP_LOG_FILE=$(mktemp); trap "rm -f ${TMP_LOG_FILE}" EXIT;
@@ -712,10 +692,9 @@ function getChaincodePackageId() {
 
     setCurrentActiveOrg ${org}
     local result=$(runCLIPeer ${org} listPackageIDsInstalled)
-    #set -f
+
     IFS= printDbg "jq -r .[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
     IFS= echo ${result} | jq -r ".[][] | {id: .package_id, name: .label} | select(.name==\"${chaincodeName}\") | .id"
-    #set -f
 }
 
 
@@ -728,12 +707,12 @@ function addOrgToChannelAPI() {
     local orgIP=$(getOrgIPAddress ${orgToAdd})
     local orgDomain=$(getOrgDomain ${orgToAdd})
     local wwwPort=$(getWwwPort ${orgToAdd})
-    #setCurrentActiveOrg ${orgToAdd}
+
     printDbg "${GREEN}Set current active ORG:${NORMAL}"
     setCurrentActiveOrg ${org}
     printDbg "${GREEN}Get org container port:${NORMAL}"
         local peerPort=$(getContainerPort ${orgToAdd} $PEER_NAME ${orgDomain})
-#    unsetActiveOrg
+
     printDbg "${GREEN}REST API wrapper:${NORMAL}"
     restAPIWrapper "${org}" \
     "channels/${channel}/orgs" \
@@ -776,10 +755,8 @@ function installZippedChaincodeAPI() {
     trap "rm -f ${tmpOutFile}" EXIT;
     
     local apiIP=$(getOrgIp "${org}")
-    #apiPort=$(getOrgContainerPort  "${org}" "${API_NAME}" "${DOMAIN}")
     local apiPort=$(getAPIPort ${org})
-    #trap "rm -f ${zip_chaincode_path}" EXIT;
-    
+
     # Composing single binary file to POST via API
     echo -n -e "${multipartHeader}" > "${tmpOutFile}"
     cat   "${packageFilePath}" >> "${tmpOutFile}"
@@ -867,10 +844,8 @@ function runCLIPeer() {
     result=$("${scriptDir}/${scriptName}" ${compose_org} "${command}")
     exitCode=${?}
 
-    #set -f
     IFS= printDbg  "runCLIPeer result: ${result}"
     IFS= echo ${result}
-    #set +f
     setExitCode [ ${exitCode} = 0 ]
 }
 
@@ -893,13 +868,11 @@ function getTestChaincodeName() {
 function verifyOrgJoinedChannel() {
     local channel=${1}
     local org=${2}
-    #local domain=${3}
+
     local result
 
     result=$(ListPeerChannels ${org} | tr -d "\r"| grep -E "^${channel}$")
-    #set -f
     IFS= printDbg "Result: ${result}"
-    #set +f
     setExitCode [ "${result}" = "${channel}" ]
 }
 
@@ -907,7 +880,6 @@ function verifyOrgJoinedChannel() {
 function copyTestChiancodeCLI() {
     local channel=${1}
     local org=${2}
-    #local domain=${3}
     local chaincodeInitName=${CHAINCODE_PREFIX:-reference}
     local chaincodeName=${3:-"${chaincodeInitName}_${channel}"}
     local lang=${4:-"node"}
@@ -972,7 +944,7 @@ function prepareChaincode() {
             dockerCopyFileFromContainer cli.peer0 ${org} $(getOrgDomain ${org}) ${chaincodeSourcePathInContainer}/../${chaincodeName}.tar.gz ${tmpDir}
             chaincodeArchiveFilePath=${tmpDir}/${chaincodeName}.tar.gz
     else
-       printDbg "${BIRHT}${CYAN}Create v.1 chaincode package...${NORMAL}"
+       printColoredText "${BIRHT}${CYAN}" "Create v.1 chaincode package..." | printDbg
        local chaincodePackageFilePath="${tmpDir}/${chaincodeName}"
             mkdir ${chaincodePackageFilePath}
             cp -r ${path}/* ${chaincodePackageFilePath}
@@ -989,13 +961,12 @@ function prepareChaincode() {
 function createChaincodeArchiveAndReturnPath() {
     local channel=${1}
     local org=${2}
-#createChaincodeArchiveAndReturnPath ${channel} ${org} ${chaincodeName} ${version} ${path} ${lang}
     local chaincodeName=${3:-$(getTestChaincodeName ${channel})}
     local chaincodeInitName=$(getCurrentChaincodeName)
     local chaincodePackageFileName=${chaincodeName}.zip
     local chaincodePackageFilePath="/tmp/${chaincodePackageFileName}"
     local lang='node'
-    local chaincodeSourcePathInContainer="${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}"
+ #   local chaincodeSourcePathInContainer="${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}"
 
     local chaincodePackageFilePath=$(prepareChaincode ${org} ${chaincodeInitName} ${chaincodeName} ${lang} '1.0' "${BASEDIR}/../resources/chaincode/${FABRIC_MAJOR_VERSION}x/${lang}/reference")
 
@@ -1014,46 +985,42 @@ function createChaincodeArchiveAndReturnPath() {
 function instantiateTestChaincodeCLI() {
     local channel=${1}
     local org=${2}
-    #local domain=${DOMAIN}
     local chaincodeName=${3:-$(getTestChaincodeName ${channel})}
     
-    local result
-    local exitCode
-    
-    reuslt=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincodeName} 2>&1 | printDbg)
-    exitCode=$?
-    printDbg "${result}"
+    local result=$(runCLIPeer ${org} ./container-scripts/network/chaincode-instantiate.sh ${channel} ${chaincodeName} 2>&1 | printDbg)
+    local exitCode=$?
 
+    printDbg "${result}"
     setExitCode [ "${exitCode}" = "0" ]
 }
 
-
-function guessDomain() {
-    echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
-}
-
-
-function vboxGuessDomain() {
-    echo $(docker-machine ls -q  | tail -n+1 | head -n+1 | cut -d '.' -f 2,3)
-}
-
-
-function guessOrgs() {
-    local domain=$(guessDomain)
-    
-    docker ps --format "table {{.Names}}" | \
-    tail -n+2 | sed -e 's/orderer\.//' | \
-    grep "${domain}" | sed -e "s/${domain}//" | \
-    grep -v peer0 | cut -d '.' -f 2 \
-    | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
-}
-
-
-function vboxGuessOrgs() {
-    local domain=$(vboxGuessDomain)
-    
-    docker-machine ls -q  | grep "${domain}" | cut -d '.' -f1  | xargs -I {} echo -n {}" "| sed -e 's/ $//'
-}
+#
+#function guessDomain() {
+#    echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
+#}
+#
+#
+#function vboxGuessDomain() {
+#    echo $(docker-machine ls -q  | tail -n+1 | head -n+1 | cut -d '.' -f 2,3)
+#}
+#
+#
+#function guessOrgs() {
+#    local domain=$(guessDomain)
+#
+#    docker ps --format "table {{.Names}}" | \
+#    tail -n+2 | sed -e 's/orderer\.//' | \
+#    grep "${domain}" | sed -e "s/${domain}//" | \
+#    grep -v peer0 | cut -d '.' -f 2 \
+#    | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+#}
+#
+#
+#function vboxGuessOrgs() {
+#    local domain=$(vboxGuessDomain)
+#
+#    docker-machine ls -q  | grep "${domain}" | cut -d '.' -f1  | xargs -I {} echo -n {}" "| sed -e 's/ $//'
+#}
 
 
 function checkContainersExist() {
