@@ -157,15 +157,6 @@ function setColorOnError() {
     esac
 }
 
-#function printInfo() {
-#local border=$(printf -- '*%.0s' {1..80})
-#
-#echo "${border}"
-#for arg in "${@}"; do
-#    printColoredText "${BRIGHT}${YELLOW}" "${arg}"
-#done
-#echo "${border}"
-#}
 
 function getFabricStarterPath() {
     local dirName=${1}
@@ -305,20 +296,6 @@ function printDbg() {
 function printArgs() {
     for argNo in $(seq 0 $#); do echo "Parameter ${argNo}: ${!argNo}"; done
 }
-#
-#
-#function printLog() {
-#
-#    local line
-#
-#    if (( $# == 0 )) ; then
-#        while read -t 1 -r line ; do
-#            echo "${line}" | cat >> ${FSTEST_LOG_FILE}
-#        done
-#    else
-#        echo "$@" | cat >> ${FSTEST_LOG_FILE}
-#    fi
-#}
 
 
 function printToLogAndToScreen() {
@@ -456,7 +433,6 @@ function queryContainerNetworkSettings() {
     local result=$(docker inspect ${containerName} | jq -r "${query}" 2>${TMP_LOG_FILE});
 
     echo  "queryContainerNetworkSettings returns:" ${result} | printDbg
-    #cat ${TMP_LOG_FILE} | printDbg > ${SCREEN_OUTPUT_DEVICE}
     echo $result
 }
 
@@ -502,32 +478,6 @@ function getContainerPort() {
 function generateMultipartBoudary() {
     echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
 }
-#
-#
-#function generateMultipartHeader() { # Compose header for curl to send archived chaincode
-#    local boundary=${1}
-#    local filename=${2}
-#
-#    local multipartHeader
-#
-#    multipartHeader='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
-#    multipartHeader+=${filename}'"\r\nContent-Type: "application/zip"\r\n\r\n'
-#    echo -n -e  ${multipartHeader}
-#}
-#
-#
-#function generateMultipartTail() { # Compose header for curl to send archived chaincode
-#    local boundary=${1}
-#
-#    local multipartTail
-#
-#    multipartTail='\r\n\r\n----'
-#    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
-#    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
-#    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
-#    multipartTail+=${boundary}'--\r\n'
-#    echo -n -e "${multipartTail}"
-#}
 
 
 function curlRequest() {
@@ -936,7 +886,6 @@ function createChaincodeArchiveAndReturnPath() {
     local chaincodePackageFileName=${chaincodeName}.zip
     local chaincodePackageFilePath="/tmp/${chaincodePackageFileName}"
     local lang='node'
- #   local chaincodeSourcePathInContainer="${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}"
 
     local chaincodePackageFilePath=$(prepareChaincode ${org} ${chaincodeInitName} ${chaincodeName} ${lang} '1.0' "${BASEDIR}/../resources/chaincode/${FABRIC_MAJOR_VERSION}x/${lang}/reference")
 
@@ -963,34 +912,6 @@ function instantiateTestChaincodeCLI() {
     printDbg "${result}"
     setExitCode [ "${exitCode}" = "0" ]
 }
-
-#
-#function guessDomain() {
-#    echo $(docker ps --filter 'ancestor=hyperledger/fabric-orderer' --format "table {{.Names}}" | tail -n+2 | sed -e 's/orderer\.//')
-#}
-#
-#
-#function vboxGuessDomain() {
-#    echo $(docker-machine ls -q  | tail -n+1 | head -n+1 | cut -d '.' -f 2,3)
-#}
-#
-#
-#function guessOrgs() {
-#    local domain=$(guessDomain)
-#
-#    docker ps --format "table {{.Names}}" | \
-#    tail -n+2 | sed -e 's/orderer\.//' | \
-#    grep "${domain}" | sed -e "s/${domain}//" | \
-#    grep -v peer0 | cut -d '.' -f 2 \
-#    | sort | uniq | egrep '[a-z]' | xargs -I {} echo -n {}" "| sed -e 's/ $//'
-#}
-#
-#
-#function vboxGuessOrgs() {
-#    local domain=$(vboxGuessDomain)
-#
-#    docker-machine ls -q  | grep "${domain}" | cut -d '.' -f1  | xargs -I {} echo -n {}" "| sed -e 's/ $//'
-#}
 
 
 function checkContainersExist() {
