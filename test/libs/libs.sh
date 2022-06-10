@@ -305,20 +305,20 @@ function printDbg() {
 function printArgs() {
     for argNo in $(seq 0 $#); do echo "Parameter ${argNo}: ${!argNo}"; done
 }
-
-
-function printLog() {
-
-    local line
-    
-    if (( $# == 0 )) ; then
-        while read -t 1 -r line ; do
-            echo "${line}" | cat >> ${FSTEST_LOG_FILE}
-        done
-    else
-        echo "$@" | cat >> ${FSTEST_LOG_FILE}
-    fi
-}
+#
+#
+#function printLog() {
+#
+#    local line
+#
+#    if (( $# == 0 )) ; then
+#        while read -t 1 -r line ; do
+#            echo "${line}" | cat >> ${FSTEST_LOG_FILE}
+#        done
+#    else
+#        echo "$@" | cat >> ${FSTEST_LOG_FILE}
+#    fi
+#}
 
 
 function printToLogAndToScreen() {
@@ -514,20 +514,20 @@ function generateMultipartHeader() { # Compose header for curl to send archived 
     multipartHeader+=${filename}'"\r\nContent-Type: "application/zip"\r\n\r\n'
     echo -n -e  ${multipartHeader}
 }
-
-
-function generateMultipartTail() { # Compose header for curl to send archived chaincode
-    local boundary=${1}
-    
-    local multipartTail
-    
-    multipartTail='\r\n\r\n----'
-    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
-    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
-    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
-    multipartTail+=${boundary}'--\r\n'
-    echo -n -e "${multipartTail}"
-}
+#
+#
+#function generateMultipartTail() { # Compose header for curl to send archived chaincode
+#    local boundary=${1}
+#
+#    local multipartTail
+#
+#    multipartTail='\r\n\r\n----'
+#    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="targets"\r\n\r\n\r\n----'
+#    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="version"\r\n\r\n1.0\r\n----'
+#    multipartTail+=${boundary}'\r\nContent-Disposition: form-data; name="language"\r\n\r\nnode\r\n----'
+#    multipartTail+=${boundary}'--\r\n'
+#    echo -n -e "${multipartTail}"
+#}
 
 
 function curlRequest() {
