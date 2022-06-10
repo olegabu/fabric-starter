@@ -502,18 +502,18 @@ function getContainerPort() {
 function generateMultipartBoudary() {
     echo -n -e "--FabricStarterTestBoundary"$(date | md5sum | head -c 10)
 }
-
-
-function generateMultipartHeader() { # Compose header for curl to send archived chaincode
-    local boundary=${1}
-    local filename=${2}
-    
-    local multipartHeader
-    
-    multipartHeader='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
-    multipartHeader+=${filename}'"\r\nContent-Type: "application/zip"\r\n\r\n'
-    echo -n -e  ${multipartHeader}
-}
+#
+#
+#function generateMultipartHeader() { # Compose header for curl to send archived chaincode
+#    local boundary=${1}
+#    local filename=${2}
+#
+#    local multipartHeader
+#
+#    multipartHeader='----'${boundary}'\r\nContent-Disposition: form-data; name="file"; filename="'
+#    multipartHeader+=${filename}'"\r\nContent-Type: "application/zip"\r\n\r\n'
+#    echo -n -e  ${multipartHeader}
+#}
 #
 #
 #function generateMultipartTail() { # Compose header for curl to send archived chaincode
