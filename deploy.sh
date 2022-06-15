@@ -24,8 +24,8 @@ if [ -z "${AGENT_MODE}" ]; then
           source "org_env"
         else
           source "${configPathOrOrgName}_env"
-          export ORG=${ORG:-${configPathOrOrgName}}
         fi
+        export ORG=${ORG:-${configPathOrOrgName}}
    fi
    export ORG=${ORG:-org1}
    export DOMAIN=${DOMAIN:-example.com}
