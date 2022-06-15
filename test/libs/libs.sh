@@ -158,6 +158,17 @@ function setColorOnError() {
 }
 
 
+function printInfo() {
+local border=$(printf -- '*%.0s' {1..80})
+
+echo "${border}"
+for arg in "${@}"; do
+    echo -e "${BRIGHT}${YELLOW}${arg}${NORMAL}"
+done
+echo "${border}"
+}
+
+
 function getFabricStarterPath() {
     local dirName=${1}
     local libPath
