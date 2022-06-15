@@ -21,8 +21,8 @@ module.exports = async (app, _fabricStarterClient, eventBus) => {
 
     const channel = process.env.DNS_CHANNEL || 'common';
     const chaincodeName = process.env.DNS_CHAINCODE || 'dns';
-    const username = process.env.DNS_USERNAME || 'serviceUser';
-    const password = process.env.DNS_PASSWORD || 'servicePass';
+    const username = process.env.DNS_USERNAME || process.env.ENROLL_USER || 'admin';
+    const password = process.env.DNS_PASSWORD || process.env.ENROLL_SECRET || 'adminpw';
     // const skip = !process.env.MULTIHOST;
     const period = process.env.DNS_PERIOD || 60000;
     const orgDomain = `${process.env.ORG}.${process.env.DOMAIN}`;
