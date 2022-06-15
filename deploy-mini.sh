@@ -11,7 +11,7 @@ export COMPOSE_PROJECT_NAME=${first_org}
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=${FABRIC_VERSION:-1.4.4}
-export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-stable}
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-snapshot-0.12-1.4.9}
 export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
@@ -30,8 +30,8 @@ if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
 fi
 
 if [ -z "${DEV_MODE}" ]; then
-    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
-    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-snapshot-0.12-1.4.9}
+    docker pull ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-snapshot-0.12-1.4.9}
 fi;
 
 info "Cleaning up"
