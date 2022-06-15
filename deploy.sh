@@ -4,7 +4,7 @@ function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
 
-envOrgName=${1:-org1}
+configPathOrOrgName=${1:-org1}
 
 DEV_MODE=${DEV_MODE}
 AGENT_MODE=${AGENT_MODE}
@@ -17,13 +17,14 @@ fi
 
 export ORG=''
 if [ -z "${AGENT_MODE}" ]; then
-    if [ -f "${envOrgName}" ]; then
-        source "${envOrgName}"
+    if [ -f "${configPathOrOrgName}" ]; then
+        source "${configPathOrOrgName}"
     else
         if [ -f "org_env" ]; then
           source "org_env"
         else
-          source "${envOrgName}_env"
+          source "${configPathOrOrgName}_env"
+          export ORG=${ORG:-${configPathOrOrgName}}
         fi
    fi
    export ORG=${ORG:-org1}
