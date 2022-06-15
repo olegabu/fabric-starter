@@ -12,7 +12,7 @@ first_org=${1:-org1}
 channel=${CHANNEL:-common}
 chaincode_install_args=${CHAINCODE_INSTALL_ARGS-reference}
 chaincode_instantiate_args=${CHAINCODE_INSTANTIATE_ARGS:-common reference}
-docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:- -f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-dev.yaml -f docker-compose-preload-images.yaml}
 
 # Clean up. Remove all containers, delete local crypto material
 
@@ -23,11 +23,15 @@ unset ORG COMPOSE_PROJECT_NAME
 # Create orderer organization
 
 info "Creating orderer organization for $DOMAIN"
-docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
+export ORDERER_WWW_PORT=79
+WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-ports.yaml up -d
 
 # Create member organizations
 
 api_port=${API_PORT:-4000}
+export BOOTSTRAP_API_PORT=${BOOTSTRAP_API_PORT:-${API_PORT:-4000}}
+export BOOTSTRAP_SERVICE_URL=http
+
 #dev:
 www_port=${WWW_PORT:-81}
 ca_port=${CA_PORT:-7054}
@@ -46,8 +50,11 @@ do
     export COMPOSE_PROJECT_NAME=${ORG}
     info "Creating member organization $ORG with api $API_PORT"
     echo "docker-compose ${docker_compose_args} up -d"
-
     docker-compose ${docker_compose_args} up -d
+    info "Wait for post-install.${ORG}.${DOMAIN} completed"
+    docker logs -f post-install.${ORG}.${DOMAIN}
+
+    export BOOTSTRAP_ORG_DOMAIN="${org}.${DOMAIN}" BOOTSTRAP_API_PORT=3000
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))
@@ -66,46 +73,3 @@ do
     ./consortium-add-org.sh ${org}
 done
 
-# First organization creates the channel
-
-export ORG=${first_org}
-export COMPOSE_PROJECT_NAME=${ORG}
-
-# Wait for container scripts completed
-info "Wait for post-install.${ORG}.${DOMAIN} completed"
-docker wait post-install.${ORG}.${DOMAIN}
-
-# First organization adds other organizations to the channel
-
-peer0_port=$((${PEER0_PORT:-7051}+1000))
-
-for org in "${@:2}"
-do
-    info "Adding $org to channel ${channel}"
-    ./channel-add-org.sh ${channel} ${org} ${peer0_port}
-    peer0_port=$((peer0_port + 1000))
-done
-
-# First organization creates the chaincode
-if [ -n "${chaincode_install_args}" ]; then
-   info "Creating chaincode by $ORG: ${chaincode_install_args} ${chaincode_instantiate_args}"
-   ./chaincode-install.sh ${chaincode_install_args}
-   ./chaincode-instantiate.sh ${chaincode_instantiate_args}
-fi
-
-# Other organizations join the channel
-
-peer0_port=${PEER0_PORT:-7051}
-
-for org in "${@:2}"
-do
-    export ORG=${org}
-    export COMPOSE_PROJECT_NAME=${ORG}
-    peer0_port=$((peer0_port + 1000))
-    info "Joining $org to channel ${channel}"
-    PEER0_PORT=$peer0_port ./channel-join.sh ${channel}
-    if [ -n "${chaincode_install_args}" ]; then
-        PEER0_PORT=$peer0_port ./chaincode-install.sh ${chaincode_install_args}
-    fi
-    unset ORG COMPOSE_PROJECT_NAME
-done

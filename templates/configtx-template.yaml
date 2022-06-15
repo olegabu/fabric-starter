@@ -6,6 +6,46 @@ Organizations:
         ID: orderer.${ORDERER_DOMAIN}
         MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
 
+    - &OrdererOrg1
+        Name: Orderer1
+        ID: raft1.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg2
+        Name: Orderer2
+        ID: raft2.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg3
+        Name: Orderer3
+        ID: raft3.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg4
+        Name: Orderer4
+        ID: raft4.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg5
+        Name: Orderer5
+        ID: raft5.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg6
+        Name: Orderer6
+        ID: raft6.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg7
+        Name: Orderer7
+        ID: raft7.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
+    - &OrdererOrg8
+        Name: Orderer8
+        ID: raft8.${ORDERER_DOMAIN}
+        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}
@@ -241,6 +281,8 @@ Profiles:
                   ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}/tls/server.crt
             Organizations:
                 - *OrdererOrg
+                - *OrdererOrg1
+                - *OrdererOrg2
             Capabilities:
                 <<: *OrdererCapabilities
             Policies:
@@ -263,6 +305,7 @@ Profiles:
             SampleConsortium:
                 Organizations:
 #                    - *OrdererOrg
+
 
 
     CHANNEL:

@@ -13,4 +13,4 @@ endorsementPolicy=${6}
 
 : ${PEER0_PORT:=7051}
 
-ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME} runCLI "container-scripts/network/chaincode-upgrade.sh $channelName $chaincodeName '$initArguments' $chaincodeVersion $privateCollectionPath $endorsementPolicy"
+ORDERER_DOMAIN=${ORDERER_DOMAIN:-$DOMAIN} ORDERER_NAME=${ORDERER_NAME} runCLI "container-scripts/network/chaincode-upgrade.sh $channelName $chaincodeName '$initArguments' $chaincodeVersion \"$privateCollectionPath\" $endorsementPolicy"

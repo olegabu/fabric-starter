@@ -32,6 +32,18 @@ function printUsage() {
     printRedYellow "\nExample:" "$exampleMsg"
 }
 
+function printYellowRed() {
+    printInColor "1;33" "$1" "1;31" "$2"
+}
+function printCyan() {
+    printInColor "1;36" "$1"
+}
+function printBlue() {
+    printInColor "1;34" "$1"
+}
+function printWhite() {
+    printInColor "1;37" "$1"
+}
 
 function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
@@ -111,22 +123,33 @@ function getDockerMachineNameFromColonDelimitedpair {
     echo "$org"
 }
 
+function createDirInMachine() {
+    local machine=`getDockerMachineName $1`
+    local dir=${2:?Specify directory to create}
+    info "Create directory $dir on $machine"
+    docker-machine ssh ${machine} mkdir -p "$dir"
+}
 
 function copyDirToMachine() {
-    local machine=`getDockerMachineName $1`
+    local org=${1:?Org is required}
+    local machine=`getDockerMachineName $org`
     local src=$2
     local dest=$3
 
     info "Copying ${src} to remote machine ${machine}:${dest}"
-    docker-machine ssh ${machine} sudo rm -rf ${dest}
-#    docker-machine ssh ${machine} sudo mkdir -p ${dest}
+    docker-machine ssh ${machine} "mkdir -p ${dest}"
     docker-machine scp -r ${src} ${machine}:${dest}
 }
 
 function copyFileToMachine() {
-    local machine=`getDockerMachineName $1`
+    local org=${1:?Org is required}
+    local machine=`getDockerMachineName $org`
     local src=$2
     local dest=$3
+
+    local destDir=$(dirname "${dest}")
+    docker-machine ssh ${machine} "mkdir -p ${destDir}"
+
     info "Copying ${src} to remote machine ${machine}:${dest}"
     docker-machine scp ${src} ${machine}:${dest}
 }
@@ -156,13 +179,8 @@ function getMachineIp() {
 function setMachineWorkDir() {
     local machine=`getDockerMachineName $1`
     export WORK_DIR=`(docker-machine ssh ${machine} pwd)`
-}
-
-function createDirInMachine() {
-    local machine=`getDockerMachineName $1`
-    local dir=${2:?Specify directory to create}
-    info "Create directory $dir on $machine"
-    docker-machine ssh ${machine} mkdir -p "$dir"
+    export FABRIC_STARTER_HOME=${WORK_DIR}
+    echo "Set work dir for $1: $WORK_DIR"
 }
 
 
@@ -214,7 +232,8 @@ function createHostsFileInOrg() {
     done
 
     createDirInMachine $org crypto-config
-    copyFileToMachine ${org} org_hosts crypto-config/hosts_${node}
+#    copyFileToMachine ${org} org_hosts crypto-config/hosts_${node}
+    copyFileToMachine ${org} org_hosts crypto-config/hosts
     rm org_hosts.bak org_hosts
 
     # you may want to keep this hosts file to append to your own local /etc/hosts to simplify name resolution
@@ -251,7 +270,7 @@ function addOrgsToChannel() {
         info "Adding $org to channel $channel"
         [ "$org" != "$first_org" ] && ORG=$first_org ./channel-add-org.sh ${channel} ${org}
     done
-    sleep 4
+
     # All organizations join the channel
     for org in ${orgsToAdd}
     do

@@ -33,6 +33,11 @@ build
 /crypto-config
 
 /client-node/hfc-*
-
+    
 hosts
 data
+/test/.vscode/
+*.log
+
+https/certs
+backup
