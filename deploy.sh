@@ -18,10 +18,10 @@ fi
 export ORG=''
 if [ -z "${AGENT_MODE}" ]; then
     if [ -f "${envOrgName}" ]; then
-        source "${envOrgName}" 2>/dev/null
+        source "${envOrgName}"
     else
         if [ -f "org_env" ]; then
-          source "org_env" 2>/dev/null
+          source "org_env"
         else
           source "${envOrgName}_env"
         fi
