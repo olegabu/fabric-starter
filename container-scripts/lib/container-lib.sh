@@ -12,6 +12,8 @@ source ${LIBDIR}/${FABRIC_MAJOR_VERSION}x/version-specifics.sh
 export VERSIONED_CHAINCODE_PATH='/opt/chaincode'
 if [ ${FABRIC_MAJOR_VERSION} -ne 1 ]; then # temporary skip v1, while 1.x chaincodes are located in root
     export VERSIONED_CHAINCODE_PATH="/opt/chaincode/${FABRIC_MAJOR_VERSION}x"
+    export WGET_CMD="wget -P"
+    export BASE64_UNWRAP_CODE="| tr -d '\n'"
 fi
 
 : ${DOMAIN:="example.com"}
@@ -62,8 +64,8 @@ function downloadOrdererMSP() {
     local serverDNSName=${remoteOrdererDOMAIN}:${wwwPort}
     downloadMSP "ordererOrganizations" "${serverDNSName}" "${remoteOrdererDOMAIN}" "${remoteOrdererName}.${remoteOrdererDOMAIN}"
 #    wget ${WGET_OPTS} --directory-prefix crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
-    mkdir -p crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls
-    ${WGET_CMD} crypto-config/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
+    mkdir -p ${GENERATE_DIR}/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls
+    ${WGET_CMD} ${GENERATE_DIR}/ordererOrganizations/${mspSubPath}/msp/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls http://www.${serverDNSName}/node-certs/${remoteOrdererName}.${remoteOrdererDOMAIN}/tls/server.crt
 }
 
 function downloadOrgMSP() {
@@ -80,13 +82,14 @@ function downloadMSP() {
     local urlSubPath=${4:-$mspSubPath}
 
     local serverDNSName=www.${wwwServerAddress:-${mspSubPath}}
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts
-    mkdir -p crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts
+
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/admincerts
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/cacerts
+    mkdir -p ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/tlscacerts
     set -x
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
-    ${WGET_CMD} crypto-config/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/admincerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/admincerts/Admin@${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/cacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/cacerts/ca.${mspSubPath}-cert.pem
+    ${WGET_CMD} ${GENERATE_DIR}/${typeSubPath}/${mspSubPath}/msp/tlscacerts http://${serverDNSName}/node-certs/${urlSubPath}/msp/tlscacerts/tlsca.${mspSubPath}-cert.pem
     set +x
 }
 

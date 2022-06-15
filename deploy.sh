@@ -4,8 +4,7 @@ function info() {
     echo -e "************************************************************\n\033[1;33m${1}\033[m\n************************************************************"
 }
 
-orgs=$@
-first_org=${1:-org1}
+configPathOrOrgName=${1:-org1}
 
 DEV_MODE=${DEV_MODE}
 AGENT_MODE=${AGENT_MODE}
@@ -18,9 +17,17 @@ fi
 
 export ORG=''
 if [ -z "${AGENT_MODE}" ]; then
-   source org_env 2>/dev/null
-   [ $? -ne 0 ] && source ${first_org}_env;
-   export ORG=${ORG:-${first_org:-org1}}
+    if [ -f "${configPathOrOrgName}" ]; then
+        source "${configPathOrOrgName}"
+    else
+        if [ -f "org_env" ]; then
+          source "org_env"
+        else
+          source "${configPathOrOrgName}_env"
+        fi
+        export ORG=${ORG:-${configPathOrOrgName}}
+   fi
+   export ORG=${ORG:-org1}
    export DOMAIN=${DOMAIN:-example.com}
 fi
 
@@ -86,7 +93,7 @@ fi
 
 if [ -z "$NO_PEER" ]; then
     info "Create first organization ${ORG}"
-    if [ "ORDERER_TYPE" != "RAFT" ]; then
+    if [ "${ORDERER_TYPE}" != "RAFT" ]; then
        export ORDERER_DOMAIN=${ORDERER_DOMAIN:-${DOMAIN}}
     fi
     set -x
