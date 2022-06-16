@@ -32,7 +32,7 @@ docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-com
 unset ORG COMPOSE_PROJECT_NAME
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
-export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-snapshot-0.12-1.4.9}
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-stable}
 
 source ${first_org}_env
 #export ENROLL_SECRET=`echo ${ENROLL_SECRET/!/\\\\!}`

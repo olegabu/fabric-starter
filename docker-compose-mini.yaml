@@ -13,7 +13,7 @@ services:
 
   pre-install:
     container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-snapshot-0.12-1.4.9}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -72,7 +72,7 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-snapshot-0.12-1.4.9}
+    image: ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
