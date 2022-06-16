@@ -8,7 +8,7 @@ fi
 source lib/util/util.sh
 source lib.sh
 
-all=${1}
+scope=${1}
 localRegistryStarted=`runningDockerContainer docker-registry`
 minikubeContainerId=`runningDockerContainer minikube`
 
@@ -43,10 +43,10 @@ fi
 
 docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -f crypto-config/hosts; rm -rf crypto-config/hfc-*; exit 0"
 
-if [[ "$all" == "certs" || "$all" == "all" ]]; then
+if [[ "$all" == "certs" || -z "$scope"  ]]; then
     docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf crypto-config/* /certs/*; exit 0"
 fi
-if [[ "$all" == "data" || "$all" == "all" ]]; then
+if [[ "$all" == "data" || -z "$scope" ]]; then
     docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf data/* appstore/*; exit 0;"
 fi
 
