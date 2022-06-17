@@ -33,10 +33,6 @@ function getOrgIp() {
 }
 
 
-# function getOrgContainerPort () {
-#     getContainerPort $@
-# }
-
 function getFabricStarterHome {
   echo "."
 }
@@ -52,7 +48,7 @@ function setCurrentActiveOrg() {
 }
 
 function connectOrgMachine() {
-  :
+    :
 }
 
 function unsetActiveOrg {
