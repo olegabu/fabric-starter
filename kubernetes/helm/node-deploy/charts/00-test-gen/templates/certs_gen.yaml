@@ -49,6 +49,8 @@ spec:
               value: {{ .Values.peerName | default "peer0" }}
             - name: ORG
               value: {{ .Values.org }}
+            - name: PEER0_PORT
+              value: "{{ .Values.peerPort }}"
             - name: DOMAIN
               value: {{ .Values.domain }}
             - name: INTERNAL_DOMAIN
