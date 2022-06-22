@@ -10,7 +10,7 @@ echo -e "\n ---------------------- GENERATE CRYPTO, GENESIS FOR: $ORG.$DOMAIN --
 FABRIC_STARTER_HOME=${FABRIC_STARTER_HOME:-../../../../..}
 
 pushd $FABRIC_STARTER_HOME
-    ./clean.sh
+    ./clean.sh certs
     ./raft/0_raft-start-1-node.sh '' pre-install
     #docker-compose up pre-install
     USER_ID=${UID}  docker-compose -f docker-compose-orderer.yaml run --rm -e USER_ID=${UID} --no-deps cli.orderer bash -c "set -x; chown -R \${USER_ID} /etc/hyperledger/crypto-config; set +x"
