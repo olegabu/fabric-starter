@@ -12,7 +12,7 @@ volumes:
 
 x-peer:
   &peer-defaults
-  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-latest}
+  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-peer:${FABRIC_VERSION:-1.4.9}
   working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
   command: peer node start
   volumes:

@@ -499,22 +499,41 @@ function createChannelAPI() {
 }
 
 
+function getConsortiumMembers() {
+    #TODO: now returns noting
+    local org=${1}
+    local jwt=${2}
+
+    restQuery ${org} "consortium/members" "{\"waitForTransactionEvent\":true}" "${jwt}"
+}
+
+function inviteOrgToDefaultConsortiumAPI() {
+    local org=${1}
+    local orgToInvite=${2}
+    local jwt=${3}
+
+    restAPIWrapper ${org} "consortium/members" "{\"orgId\":\"${orgToInvite}\",\"orgIp\":\"\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
+}
+
 function addOrgToChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     local orgToAdd=${4}
 
-    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"${orgIP}\",\"waitForTransactionEvent\":true}" "${jwt}"
+    local orgIP=$(getOrgIp "${orgToAdd}")
+    setCurrentActiveOrg ${orgToAdd}
+        local peerPort=$(getContainerPort ${orgToAdd} ${PEER_NAME} ${DOMAIN})
+    unsetActiveOrg
+    restAPIWrapper "${org}" "channels/${channel}/orgs" "{\"orgId\":\"${orgToAdd}\",\"orgIp\":\"\",\"peerPort\":\"${peerPort}\",\"wwwPort\":\"\",\"waitForTransactionEvent\":true}" "${jwt}"
 }
-
 
 function joinChannelAPI() {
     local channel=${1}
     local org=${2}
     local jwt=${3}
     
-    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}"
+    restAPIWrapper ${org} "channels/${channel}" "{\"waitForTransactionEvent\":true}" "${jwt}" 300
 }
 
 
@@ -626,6 +645,9 @@ function getCurrentChaincodeName() {
     echo ${CHAINCODE_PREFIX:-reference}
 }
 
+function getDockerGatewayAddress() {
+    echo $(docker network inspect bridge | jq -r '.[].IPAM.Config | .[].Gateway')
+}
 
 function getTestChaincodeName() {
     local channel=${1}
@@ -688,7 +710,7 @@ function verifyOrgIsInChannel() {
 
     local result
     
-    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.'${org2_}'.values.MSP.value' '.config.name')
+    result=$(queryPeer ${channel} ${ORG} ${DOMAIN} '.data.data[0].payload.data.config.channel_group.groups.Application.groups.\"'${org2_}'\".values.MSP.value' '.config.name')
     printDbg "${result}"
     
     setExitCode [ "${result}" = "${org2_}" ]

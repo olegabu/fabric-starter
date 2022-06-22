@@ -35,7 +35,7 @@ fabric-rest-api.iws
 !**/crypto-config/.keep
 
 /client-node/hfc-*
-
+    
 hosts
 data
 /test/.vscode/
