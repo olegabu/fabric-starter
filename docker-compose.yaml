@@ -23,7 +23,7 @@ x-peer:
 
 x-ca:
   &ca-defaults
-  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_CA_VERSION:-1.5}
+  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_CA_VERSION:-1.5.2}
   restart: always
   command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name=default'
   depends_on:
@@ -421,7 +421,7 @@ services:
   # simple http server to disseminate certificates
   www.local: #TODO: script can try download certs from localhost, if we avoid that this service can be removed
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/nginx
+    image: ${DOCKER_REGISTRY:-docker.io}/nginx:1.23.0
     restart: always
     environment:
       - ORG=${ORG:-org1}
@@ -440,8 +440,8 @@ services:
       - admin_app:/usr/src/app/admin
 
   www.peer:
-    container_name: www.peer.${ORG}.${DOMAIN}
-    image: ${DOCKER_REGISTRY:-docker.io}/nginx
+    container_name: www.peer.${ORG}.${  DOMAIN}
+    image: ${DOCKER_REGISTRY:-docker.io}/nginx:1.23.0
     restart: always
     environment:
       - ORG=${ORG:-org1}
