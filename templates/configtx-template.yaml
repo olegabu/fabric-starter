@@ -4,66 +4,44 @@ Organizations:
     - &OrdererOrg
         Name: Orderer
         ID: orderer.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg1
-        Name: Orderer1
-        ID: raft1.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg2
-        Name: Orderer2
-        ID: raft2.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg3
-        Name: Orderer3
-        ID: raft3.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg4
-        Name: Orderer4
-        ID: raft4.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg5
-        Name: Orderer5
-        ID: raft5.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg6
-        Name: Orderer6
-        ID: raft6.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg7
-        Name: Orderer7
-        ID: raft7.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
-
-    - &OrdererOrg8
-        Name: Orderer8
-        ID: raft8.${ORDERER_DOMAIN}
-        MSPDir: ordererOrganizations/${ORDERER_DOMAIN}/msp
+        MSPDir: /etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp
 
     - &firstOrg
         Name: ${ORG}
         ID: ${ORG}
-        MSPDir: peerOrganizations/${ORG}.${DOMAIN}/msp
+        MSPDir: /etc/hyperledger/crypto-config/peerOrganizations/${ORG}.${DOMAIN}/msp
         AnchorPeers:
         # AnchorPeers defines the location of peers which can be used
         # for cross org gossip communication.  Note, this value is only
         # encoded in the genesis block in the Application section context
-        - Host: peer0.${ORG}.${DOMAIN}
+        - Host: ${PEER_ADDRESS_PREFIX}${ORG}.${DOMAIN}
           Port: ${PEER0_PORT}
+        Policies: &OrgPolicies
+          Readers:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
+          Writers:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
+          Admins:
+            Type: Signature
+            Rule: "OR('${ORG}.admin')"
+          Endorsement:
+            Type: Signature
+            Rule: "OR('${ORG}.member')"
 
 Capabilities:
-  Global: &ChannelCapabilities
-    V1_1: true
+  #  Global: &ChannelCapabilities
+  #    V1_1: true
   Orderer: &OrdererCapabilities
-    V1_1: true
+    #    V1_1: true
+    V2_0: true
   Application: &ApplicationCapabilities
-    V1_2: true
+    #    V1_2: true
+    V2_0: true
+  Channel: &ChannelCapabilities
+    #    V1_3: true
+    V2_0: true
 
 Application: &ApplicationDefaults
   ACLs: &ACLsDefault
@@ -75,6 +53,25 @@ Application: &ApplicationDefaults
     #
     # User's can override these defaults with their own policy mapping by defining the
     # mapping under ACLs in their channel definition
+
+    #---New Lifecycle System Chaincode (_lifecycle) function to policy mapping for access control--#
+
+    # ACL policy for _lifecycle's "CheckCommitReadiness" function
+    _lifecycle/CheckCommitReadiness: /Channel/Application/Writers
+
+    # ACL policy for _lifecycle's "CommitChaincodeDefinition" function
+    _lifecycle/CommitChaincodeDefinition: /Channel/Application/Writers
+
+    # ACL policy for _lifecycle's "QueryChaincodeDefinition" function
+    _lifecycle/QueryChaincodeDefinition: /Channel/Application/Writers
+
+    # ACL policy for _lifecycle's "QueryChaincodeDefinitions" function
+    _lifecycle/QueryChaincodeDefinitions: /Channel/Application/Writers
+
+
+    # 2.x ACL policy for cscc's "GetChannelConfig" function
+    cscc/GetChannelConfig: /Channel/Application/Readers
+
 
     #---Lifecycle System Chaincode (lscc) function to policy mapping for access control---#
 
@@ -141,16 +138,22 @@ Application: &ApplicationDefaults
   # Policies defines the set of policies at this level of the config tree
   # For Application policies, their canonical path is
   #   /Channel/Application/<PolicyName>
-  Policies: &ApplicationDefaultPolicies
-    Readers:
-      Type: ImplicitMeta
-      Rule: "ANY Readers"
-    Writers:
-      Type: ImplicitMeta
-      Rule: "ANY Writers"
-    Admins:
-      Type: ImplicitMeta
-      Rule: "MAJORITY Admins"
+#  Policies: &ApplicationDefaultPolicies
+#    LifecycleEndorsement:
+#      Type: ImplicitMeta
+#      Rule: "MAJORITY Endorsement"
+#    Endorsement:
+#      Type: ImplicitMeta
+#      Rule: "MAJORITY Endorsement"
+#    Readers:
+#      Type: ImplicitMeta
+#      Rule: "ANY Readers"
+#    Writers:
+#      Type: ImplicitMeta
+#      Rule: "ANY Writers"
+#    Admins:
+#      Type: ImplicitMeta
+#      Rule: "MAJORITY Admins"
 
   # Capabilities describes the application level capabilities, see the
   # dedicated Capabilities section elsewhere in this file for a full
@@ -191,45 +194,39 @@ Orderer: &OrdererDefaults
 
 Profiles:
 
-    SoloOrdererGenesis:
-        Capabilities:
-            <<: *ChannelCapabilities
+    CHANNEL:
         Orderer:
-            <<: *OrdererDefaults
-            OrdererType: solo
-            Addresses:
-              - orderer.${DOMAIN}:${ORDERER_GENERAL_LISTENPORT}
-            Organizations:
-                - *OrdererOrg
-            Capabilities:
-                <<: *OrdererCapabilities
-
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-#                    - *OrdererOrg
-
-    RaftOrdererGenesis:
-      Capabilities:
-        <<: *ChannelCapabilities
-      Orderer:
-        <<: *OrdererDefaults
-        OrdererType: etcdraft
-        Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${ORDERER_GENERAL_LISTENPORT}]
-        EtcdRaft:
-          # The set of Raft replicas for this network. For the etcd/raft-based
-          # implementation, we expect every replica to also be an OSN. Therefore,
-          # a subset of the host:port items enumerated in this list should be
-          # replicated under the Orderer.Addresses key above.
-          Consenters:
-            - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
-              Port: ${RAFT0_PORT}
-              ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
-              ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
-        Organizations:
-          - *OrdererOrg
-        Capabilities:
-          <<: *OrdererCapabilities
+          Policies:
+            Readers:
+              Type: ImplicitMeta
+              Rule: ANY Readers
+            Writers:
+              Type: ImplicitMeta
+              Rule: ANY Writers
+            Admins:
+              Type: ImplicitMeta
+              #          Rule: MAJORITY Admins
+              Rule: ANY Admins
+            BlockValidation:
+              Type: ImplicitMeta
+              Rule: ANY Writers
+          Organizations:
+          - <<: *OrdererOrg
+            Policies:
+              Readers:
+                Type: ImplicitMeta
+                Rule: ANY Readers
+              Writers:
+                Type: ImplicitMeta
+                Rule: ANY Writers
+              Admins:
+                Type: ImplicitMeta
+                #          Rule: MAJORITY Admins
+                Rule: ANY Admins
+              BlockValidation:
+                Type: ImplicitMeta
+                Rule: ANY Writers
+        Consortium: SampleConsortium
         Policies:
           Readers:
             Type: ImplicitMeta
@@ -238,87 +235,31 @@ Profiles:
             Type: ImplicitMeta
             Rule: "ANY Writers"
           Admins:
-            Type: ImplicitMeta
-            Rule: "ANY Admins"
-          # BlockValidation specifies what signatures must be included in the block
-          # from the orderer for the peer to validate it.
-          BlockValidation:
-            Type: ImplicitMeta
-            Rule: "ANY Writers"
-
-
-      Consortiums:
-        SampleConsortium:
-          Organizations:
-#            - *OrdererOrg
-
-
-
-    Raft3OrdererGenesis:
-        Capabilities:
-            <<: *ChannelCapabilities
-        Orderer:
-            <<: *OrdererDefaults
-            OrdererType: etcdraft
-            Addresses: [${ORDERER_NAME}.${ORDERER_DOMAIN}:${RAFT0_PORT}, ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}:${RAFT1_PORT},${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}:${RAFT2_PORT}]
-            EtcdRaft:
-              # The set of Raft replicas for this network. For the etcd/raft-based
-              # implementation, we expect every replica to also be an OSN. Therefore,
-              # a subset of the host:port items enumerated in this list should be
-              # replicated under the Orderer.Addresses key above.
-              Consenters:
-                - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
-                  Port: ${RAFT0_PORT}
-                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
-                - Host: ${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}
-                  Port: ${RAFT1_PORT}
-                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}1.${ORDERER_DOMAIN}/tls/server.crt
-                - Host: ${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}
-                  Port: ${RAFT2_PORT}
-                  ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}/tls/server.crt
-                  ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME_PREFIX}2.${ORDERER_DOMAIN}/tls/server.crt
-            Organizations:
-                - *OrdererOrg
-                - *OrdererOrg1
-                - *OrdererOrg2
-            Capabilities:
-                <<: *OrdererCapabilities
-            Policies:
-              Readers:
-                Type: ImplicitMeta
-                Rule: "ANY Readers"
-              Writers:
-                Type: ImplicitMeta
-                Rule: "ANY Writers"
-              Admins:
-                Type: ImplicitMeta
-                Rule: "ANY Admins"
-              # BlockValidation specifies what signatures must be included in the block
-              # from the orderer for the peer to validate it.
-              BlockValidation:
-                Type: ImplicitMeta
-                Rule: "ANY Writers"
-
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-#                    - *OrdererOrg
-
-
-
-    CHANNEL:
-        Orderer:
-            Organizations:
-            - *OrdererOrg
-        Consortium: SampleConsortium
+            #                Type: ImplicitMeta
+            #                Rule: "ANY Admins"
+            Type: Signature
+            Rule: "OutOf('1','${ORG}.admin')"
         Application:
+            <<: *ApplicationDefaults
             Organizations:
-            - *firstOrg
+                - <<: *firstOrg
+                  Policies:
+                    <<: *OrgPolicies
             Capabilities:
                 <<: *ApplicationCapabilities
             Policies:
+              LifecycleEndorsement:
+#                Type: ImplicitMeta
+#                Rule: ANY MEMBER
+                Type: Signature
+                Rule: "OutOf('1','${ORG}.member')"
+              Endorsement:
+#                Type: ImplicitMeta
+#                Rule: "MAJORITY Writers"
+#                Type: Signature
+#                Rule: "OutOf('1','${ORG}.member')"
+                 Type: ImplicitMeta
+                 Rule: "ANY Writers"
               Readers:
                 Type: ImplicitMeta
                 Rule: "ANY Readers"

@@ -12,6 +12,8 @@ services:
 
   pre-install:
     container_name: pre-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/.well-known:/etc/hyperledger/crypto-config/ordererOrganizations/${ORDERER_DOMAIN}/msp/.well-known
 
   post-install:
     container_name:  post-install.${ORDERER_NAME:-orderer}.${ORDERER_DOMAIN:-example.com}
@@ -50,4 +52,4 @@ services:
     container_name: www.${ORDERER_DOMAIN:-example.com}
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${ORDERER_DOMAIN:-example.com}/msp/.well-known:/usr/share/nginx/html/.well-known:ro

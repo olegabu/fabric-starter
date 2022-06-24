@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: "{{ .Values.peer.newOrgPeerName }}-{{ .Values.peer.newOrg }}"
+spec:
+  clusterIP: None
+  ports:
+    - name: peerport
+      protocol: TCP
+      port: {{ .Values.peer.newPeerPort }}
+      targetPort: {{ .Values.peer.newPeerPort }}

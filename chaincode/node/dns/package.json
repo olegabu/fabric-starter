@@ -1,5 +1,5 @@
 {
-  "name": "chaincode",
+  "name": "dns",
   "version": "1.0.0",
   "description": "chaincode implemented in node.js",
   "engines": {

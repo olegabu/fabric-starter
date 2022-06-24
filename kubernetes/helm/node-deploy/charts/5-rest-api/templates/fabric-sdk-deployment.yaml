@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fabric-sdk-deployment
+  labels:
+    app: fabric-sdk
+    name: fabric-sdk
+spec:
+  selector:
+    matchLabels:
+      app: fabric-sdk
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      labels:
+        app: fabric-sdk
+    spec:
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
+
+      containers:
+        - name: fabric-sdk
+          ports:
+            - name: sdk-port
+              containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config
+
+          image: >-
+            {{ tpl .Values.images.fabric_sdk . }}
+
+          envFrom:
+            - configMapRef:
+                name: common-{{ .Values.org }}
+          env:
+            - name: TRACE
+              value: "false"
+            - name: DEBUG
+              value: "false"
+
+          {{- include "resources" (merge (deepCopy .) .Values.resources.sdk) | nindent 4 }}
+
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 30
+            timeoutSeconds: 5

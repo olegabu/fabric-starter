@@ -1,0 +1,4 @@
+org: org1
+domain: example.com
+ordererName: orderer
+

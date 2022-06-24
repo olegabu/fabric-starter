@@ -5,10 +5,12 @@
 version: '3.7'
 
 volumes:
-  peer0:
+  peer:
 #  peer1:
   webapps:
   routes:
+  nginx_templates:
+  admin_app:
 
 x-peer:
   &peer-defaults
@@ -19,17 +21,34 @@ x-peer:
     - pre-install
     - ca
 
+x-ca:
+  &ca-defaults
+  image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_CA_VERSION:-1.5}
+  restart: always
+  command: sh -c 'sleep 2; fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name=default'
+  depends_on:
+    - pre-install
+  logging:
+    options:
+      max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+      max-file: "1"
+
+
 services:
 
   pre-install:
-    container_name: pre-install.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: pre-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - PEER_NAME=${PEER_NAME:-peer0}
+      - PEER_ADDRESS_PREFIX=${PEER_ADDRESS_PREFIX:-peer0.}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
+      - BOOTSTRAP_DOMAIN
+      - BOOTSTRAP_ORDERER_DOMAIN
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-80}
       - PEER0_PORT=${PEER0_PORT:-7051}
@@ -43,34 +62,42 @@ services:
       - LDAP_BASE_DN
       - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - CRYPTO_ALGORITHM=${CRYPTO_ALGORITHM:-SW}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - AGENT_MODE
+      - TMP_DIR
     working_dir: /etc/hyperledger
     command: container-scripts/container-peer.sh
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - nginx_templates:/etc/hyperledger/templates/nginx/conf.d
 #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
 
   post-install:
-    container_name: post-install.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: post-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - PEER_NAME=${PEER_NAME:-peer0}
+      - PEER_ADDRESS_PREFIX=${PEER_ADDRESS_PREFIX:-peer0.}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
       - DNS_CHANNEL
+      - ENROLL_ID
+      - ENROLL_SECRET
       - API_PORT=${API_PORT:-4000}
       - BOOTSTRAP_IP
       - BOOTSTRAP_ORG_DOMAIN
-      - BOOTSTRAP_API_PORT
+      - BOOTSTRAP_EXTERNAL_PORT
       - BOOTSTRAP_SERVICE_URL=${BOOTSTRAP_SERVICE_URL:-https} #${BOOTSTRAP_IP}:${API_PORT}}
+      - MASTER_IP
       - MY_IP
       - PEER0_PORT=${PEER0_PORT:-7051}
       - WWW_PORT=${WWW_PORT:-80}
@@ -78,20 +105,26 @@ services:
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
-      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+      # TODO: use       - PEER_ADDRESS_TEMPLATE for peer address
+      - CORE_PEER_ADDRESS=${PEER_ADDRESS_PREFIX:-peer0.}${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - CHANNEL_AUTO_JOIN
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - WGET_CMD
+      - BASE64_UNWRAP_CODE
+      - FABRIC_VERSION
+      - ORDERER_STARTING_PERIOD
+      - TMP_DIR
     working_dir: /etc/hyperledger
     command: sh -c "container-scripts/wait-port.sh ${MY_IP} ${WWW_PORT:-80} && container-scripts/wait-port.sh ${MY_IP} ${PEER0_PORT:-7051} && container-scripts/install-default-chaincodes.sh"
     depends_on:
       - api
-      - peer0
+      - peer
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
@@ -105,37 +138,53 @@ services:
 
 
   ca:
+    << : *ca-defaults
     container_name: ca.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-ca:${FABRIC_VERSION:-1.4.9}
-    restart: always
     environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server/ca
       - FABRIC_CA_SERVER_LDAP_USERFILTER=(cn=%s)
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/ca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/sk.pem
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
-    command: sh -c 'fabric-ca-server start -b ${ENROLL_ID}:${ENROLL_SECRET} -d --ca.name default'
-    depends_on:
-      - pre-install
-    logging:
-      options:
-        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
-        max-file: "1"
+
+      - FABRIC_CA_SERVER_LDAP_ENABLED=${LDAP_ENABLED:-false}
+      - FABRIC_CA_SERVER_BCCSP_DEFAULT=${CRYPTO_ALGORITHM:-SW}
+      - FABRIC_CA_SERVER_LDAP_URL=ldap://cn=admin,${LDAP_BASE_DN:-dc=example,dc=com}:${ENROLL_SECRET:-adminpw}@ldap.${ORG:-org1}.${DOMAIN:-example.com}:389/${LDAP_BASE_DN:-dc=example,dc=com}
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
-#      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ca/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/ca/fabric-ca-server-config.yaml
 
-  peer0:
+  tlsca:
+    << : *ca-defaults
+    container_name: tlsca.${ORG:-org1}.${DOMAIN:-example.com}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server/tls
+      - FABRIC_CA_SERVER_PORT=${FABRIC_TLS_CA_PORT:-7055}
+      - FABRIC_CA_SERVER_CSR_NAME=tlsca
+      - FABRIC_CA_SERVER_LDAP_USERFILTER=(cn=%s)
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/tlsca.${ORG:-org1}.${DOMAIN:-example.com}-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/tlsca/sk.pem
+
+      - FABRIC_CA_SERVER_LDAP_ENABLED=${LDAP_ENABLED:-false}
+      - FABRIC_CA_SERVER_BCCSP_DEFAULT=${CRYPTO_ALGORITHM:-SW}
+      - FABRIC_CA_SERVER_LDAP_URL=ldap://cn=admin,${LDAP_BASE_DN:-dc=example,dc=com}:${ENROLL_SECRET:-adminpw}@ldap.${ORG:-org1}.${DOMAIN:-example.com}:389/${LDAP_BASE_DN:-dc=example,dc=com}
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/tls/fabric-ca-server-config-${ORG:-org1}.yaml:/etc/hyperledger/fabric-ca-server/tls/fabric-ca-server-config.yaml
+
+  peer:
     << : *peer-defaults
-    container_name: peer0.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: ${PEER_ADDRESS_PREFIX:-peer0.}${ORG}.${DOMAIN:-example.com}
     restart: always
     environment:
-    - CORE_PEER_ID=peer0.${ORG:-org1}.${DOMAIN:-example.com}
+    - CORE_PEER_ID=${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     - CORE_PEER_LOCALMSPID=${ORG:-org1}
-    - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_ADDRESS=${PEER_ADDRESS_PREFIX:-peer0.}${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
     - CORE_PEER_LISTENADDRESS=0.0.0.0:${PEER0_PORT:-7051}
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     # the following setting starts chaincode containers on the same
@@ -151,8 +200,9 @@ services:
     - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
-    - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_ENDPOINT=${PEER_ADDRESS_PREFIX:-peer0.}${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=${PEER_ADDRESS_PREFIX:-peer0.}${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    - CORE_PEER_GOSSIP_BOOTSTRAP=${BOOTSTRAP_PEER_PREFIX:-peer0}${ORG}.${DOMAIN:-example.com}:${BOOTSTRAP_PEER_PORT:-7051}
     # The following setting skips the gossip handshake since we are
     # are not doing mutual TLS
     - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
@@ -161,15 +211,22 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto/peer/tls/server.key
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto/peer/tls/server.crt
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto/peer/tls/ca.crt
+    - CORE_PEER_FILESYSTEMPATH=/var/hyperledger/production/${PEER_NAME:-peer0}
+    - CORE_PEER_KEEPALIVE_INTERVAL=${KEEPALIVE_INTERVAL:-7200s}
+    - ORG=${ORG:-org1}
+    - DOMAIN=${DOMAIN:-example.com}
+    - SDK_API_URL
     logging:
       options:
         max-size: "${LOG_FILES_MAX_SIZE:-10m}"
         max-file: "1"
+    command: sh -c "sed  -i 's/\(\s*\)externalBuilders.*/\1externalBuilders:\ \[{\"path\":\"\/external-builders\",\"name\":\"remote\",\"propagateEnvironment\":[\"CORE_PEER_ADDRESS\",\"ORG\",\"DOMAIN\",\"SDK_API_URL\"]}\]/' /etc/hyperledger/fabric/core.yaml; peer node start"
     volumes:
-    - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
-    - peer0:/var/hyperledger/production
+    - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/:/etc/hyperledger/crypto/peer
+    - peer:/var/hyperledger/production/${PEER_NAME:-peer0}
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
     - /var/run/docker.sock:/host/var/run/docker.sock
+    - ./external-builders:/external-builders
 
 #  peer1:
 #    << : *peer-defaults
@@ -206,12 +263,12 @@ services:
 #    - /var/run/:/host/var/run/
 
   cli.peer:
-    container_name: cli.${ORG:-org1}.${DOMAIN:-example.com}
+    container_name: cli.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-latest}
     restart: always
     tty: true
-    env_file:
-      - ${ENV_FILE:-.env}
+#    env_file:
+#      - ${ENV_FILE:-.env}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -220,32 +277,36 @@ services:
       - ENROLL_ID
       - ENROLL_SECRET
       - LDAP_ENABLED
+      - FABRIC_VERSION
+      - DNS_CHANNEL
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_LOCALMSPID=${ORG:-org1}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/users/Admin@${ORG:-org1}.${DOMAIN:-example.com}/msp
-      - CORE_PEER_ADDRESS=peer0.${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+      - CORE_PEER_ADDRESS=${PEER_ADDRESS_PREFIX:-peer0.}${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
       - PEER0_PORT=${PEER0_PORT:-7051}
       - FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.key
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.crt
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/peer0.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.key
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/server.crt
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/peers/${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}/tls/ca.crt
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - TMP_DIR
     working_dir: /etc/hyperledger
     depends_on:
-      - peer0
+      - peer
     volumes:
     - /var/run/:/host/var/run/
     - ${CHAINCODE_HOME:-./chaincode}:/opt/chaincode
     - ${CHAINCODE_HOME:-./chaincode}/go:/opt/gopath/src
     - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
     - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
+    - ./external-builders:/external
 #    - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
 #    - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -257,12 +318,13 @@ services:
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
-      - ORG=${ORG:-org1}
+      - ORG=${ORG-org1}
+      - PEER_NAME=${PEER_NAME:-peer0}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAMES
       - ORDERER_DOMAIN
-      - ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-80}
+      - ORDERER_WWW_PORT=${ORDERER_WWW_PORT:-79}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - CRYPTO_CONFIG_DIR=/etc/hyperledger/crypto-config
       - TEMPLATES_DIR=/etc/hyperledger/templates
@@ -278,22 +340,32 @@ services:
       - ENROLL_ID
       - ENROLL_SECRET
       - BOOTSTRAP_IP
+      - BOOTSTRAP_EXTERNAL_PORT
       - MY_IP
       - WWW_PORT=${WWW_PORT:-80}
       - MULTIHOST
       - UI_LISTEN_BLOCK_OPTS
-      - FABRIC_STARTER_HOME=${PWD}
+      - FABRIC_STARTER_HOME
+      - FABRIC_STARTER_PWD=${PWD}
+      - FABRIC_STARTER_VERSION
+      - FABRIC_VERSION
 #      - HFC_LOGGING={"debug":"console","info":"console"}
       - HFC_LOGGING={"debug":"/dev/null","info":"/dev/null"}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - DOCKER_REGISTRY
-      - BOOTSTRAP_PORT
+      - API_PORT
       - CRYPTO_ALGORITHM
       - AUTH_MODE
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
       - CUSTOM_APP_PORTS=${CUSTOM_APP_PORTS:-8001-8999}
       - ACCEPT_ALL_ORGS
       - AUTH_JWT_EXPIRES_IN
+      - DOCKER_COMPOSE_EXTRA_ARGS
+      - SDK_API_URL
+      - TMP_DIR
+      - SKIP_CHECK_PORTS_TIMEOUT_SECONDS
+      - PEER_ADDRESS_TEMPLATE=${PEER_ADDRESS_TEMPLATE} #TODO: deprecated
+      - PEER_ADDRESS_PREFIX_TEMPLATE
 # to troubleshoot grpc issues https://github.com/grpc/grpc/blob/master/doc/environment_variables.md
 #      - GRPC_VERBOSITY=DEBUG
 #      - GRPC_TRACE=connectivity_state,health_check_client,timer,timer_check,tcp,api
@@ -315,16 +387,47 @@ services:
       - ${FABRIC_STARTER_HOME:-.}/appstore:/usr/src/app/appstore
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
       - /var/run/docker.sock:/var/run/docker.sock
+      - admin_app:/usr/src/app/admin
     #      - ${MIDDLEWARE_HOME:-./middleware}:/usr/src/app/routes #for debug
     #      - ${FABRIC_STARTER_HOME:-.}/templates:/etc/hyperledger/templates # for local debug
     #      - ${FABRIC_STARTER_HOME:-.}/container-scripts:/etc/hyperledger/container-scripts # for local debug
-    command: sh -c 'sleep 2 && npm start'
+    command: sh -c '/etc/hyperledger/container-scripts/wait-port.sh $${MY_IP} ${PEER0_PORT:-7051} && sleep 5 && npm start'
+
+  sdk:
+    container_name: sdk.${ORG:-org1}.${DOMAIN:-example.com}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-2x}
+    restart: always
+    ports:
+      - ${SDK_PORT:-8080}:8080
+    environment:
+      - ORG=${ORG-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - ORDERER_NAME
+      - ORDERER_DOMAIN
+      - PEER0_PORT=${PEER0_PORT:-7051}
+      - ORDERER_GENERAL_LISTENPORT
+      - CRYPTO_CONFIG_DIR=${CRYPTO_CONFIG_DIR:-/etc/hyperledger/crypto-config}
+      - TMP_DIR
+      - CORE_PEER_ADDRESS=${PEER_ADDRESS_PREFIX:-peer0.}${ORG:-org1}.${DOMAIN:-example.com}:${PEER0_PORT:-7051}
+    depends_on:
+      - pre-install
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-20m}"
+        max-file: "1"
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/hosts:/etc/hosts
 
   # simple http server to disseminate certificates
-  www.peer:
+  www.local: #TODO: script can try download certs from localhost, if we avoid that this service can be removed
     container_name: www.${ORG:-org1}.${DOMAIN:-example.com}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx
     restart: always
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates/http
     depends_on:
       - pre-install
     logging:
@@ -334,7 +437,30 @@ services:
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
+      - nginx_templates:/etc/nginx/templates
+      - admin_app:/usr/src/app/admin
 
+  www.peer:
+    container_name: www.peer.${ORG}.${DOMAIN}
+    image: ${DOCKER_REGISTRY:-docker.io}/nginx
+    restart: always
+    environment:
+      - ORG=${ORG:-org1}
+      - DOMAIN=${DOMAIN:-example.com}
+      - NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates/http
+    depends_on:
+      - pre-install
+      - post-install
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-10m}"
+        max-file: "1"
+    volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/node-certs:/usr/share/nginx/html/node-certs:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/peerOrganizations/${ORG:-org1}.${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp:ro
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/node-certs/${ORG:-org1}.${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known:ro
+      - nginx_templates:/etc/nginx/templates
+      - admin_app:/usr/src/app/admin
 networks:
   default:
     external: false

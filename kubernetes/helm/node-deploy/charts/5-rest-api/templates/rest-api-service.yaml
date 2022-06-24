@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rest-api
+spec:
+  ports:
+    - name: rest-api-port
+      protocol: TCP
+      port: 4000
+      targetPort: 3000
+  selector:
+    app: rest-api

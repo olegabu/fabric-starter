@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns
+  labels:
+    app: dns-chaincode
+    name: dns-chaincode
+spec:
+  selector:
+    matchLabels:
+      app: dns-chaincode
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      #          annotations:
+      #            sidecar.istio.io/inject: "true"
+      creationTimestamp: null
+      labels:
+        app: dns-chaincode
+    spec:
+      volumes:
+        - name: shared-vol
+          emptyDir: {}
+            #medium: Memory
+
+        - name: dns-meta
+          configMap:
+            name: dns-meta-cm
+
+        - name: tool-scripts
+          configMap:
+            name: tool-scripts-cm
+            defaultMode: 0777
+
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
+
+      {{ $sharedDir := "/tmp/sharedVol" }}
+      {{ $dnsEnvFile := print $sharedDir "/dns.env" }}
+      initContainers:
+        - name: init
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+
+          workingDir: /etc/hyperledger
+          command: ["./container-scripts/k-scripts/init-dns.sh", "/tmp/dns-external" ]
+{{/*          command: ["sh", "-c", "./container-scripts/k-scripts/init-dns.sh /tmp/dns-external; sleep 200000" ]*/}}
+{{/*          command: ["sleep", "200000" ]*/}}
+          volumeMounts:
+            - name: shared-vol
+              mountPath: {{ $sharedDir }}
+              readOnly: false
+            - name: dns-meta
+              mountPath: /tmp/dns-external
+            - name: tool-scripts
+              mountPath: /etc/hyperledger/container-scripts/k-scripts
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+          envFrom:
+            - configMapRef:
+                name: common-{{ .Values.org }}
+          env:
+            - name: CHAINCODE_ENV_FILE
+              value: "{{ $dnsEnvFile }}"
+
+          {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode) | nindent 4 }}
+
+      containers:
+        - name: dns
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          ports:
+            - name: chaincode-port
+              containerPort: {{ .Values.dnsChaincodePort }}
+              protocol: TCP
+          image: >-
+            {{ tpl .Values.images.dns_chaincode . }}
+          #  ${IMAGE_PATH}@sha256:${IMAGE_TAG}
+
+          volumeMounts:
+            - name: shared-vol
+              mountPath: {{ $sharedDir }}
+              readOnly: false
+          env:
+            - name: EXTERNAL
+              value: "true"
+            - name: CHAINCODE_ENV_FILE
+              value: "{{ $dnsEnvFile }}"
+            - name: CHAINCODE_BIND_ADDRESS
+              value: "0.0.0.0:{{ .Values.dnsChaincodePort }}"
+
+          {{- include "resources" (merge (deepCopy .) .Values.resources.dnsChaincode)  | nindent 4 }}
+
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.dnsChaincodePort }}
+            initialDelaySeconds: 40
+            periodSeconds: 10

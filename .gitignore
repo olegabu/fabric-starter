@@ -1,4 +1,5 @@
-node_modules
+**/.DS_Store
+**/node_modules
 npm-debug.log
 .idea
 artifacts/channel/mychannel.block
@@ -6,7 +7,7 @@ fabric-rest-api.iml
 fabric-rest-api.ipr
 fabric-rest-api.iws
 .gradle
-build
+/build
 
 /artifacts/crypto-config/
 /artifacts/channel/
@@ -30,7 +31,8 @@ build
 /dockercompose/*.yaml
 /artifacts/
 
-/crypto-config
+**/crypto-config/
+!**/crypto-config/.keep
 
 /client-node/hfc-*
     

@@ -12,4 +12,4 @@ services:
 
   www.orderer:
     ports:
-      - ${WWW_PORT:-79}:80
+      - ${ORDERER_WWW_PORT:-79}:80

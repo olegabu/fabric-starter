@@ -1,0 +1,25 @@
+
+
+integrateOrderer: true
+createClusterInternalService: true
+createExternalRoutes: false
+
+
+orderer:
+  newOrdererName: orderer
+  newOrdererDomain:
+  newOrdererIp:
+  newOrdererPort: 7050
+  newOrdererWwwPort:
+
+peer:
+  newOrgPeerName: peer0
+  newOrg: null
+  newOrgDomain: null
+  newOrgIp: null
+  newPeerPort: 7051
+  newOrgWwwPort: 80
+
+channel:
+    name:
+

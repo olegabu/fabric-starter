@@ -1,0 +1,30 @@
+#! /usr/bin/env sh
+
+CHAINCODE_SOURCE_DIR=${1}
+CHAINCODE_METADATA_DIR=${2}
+
+main () {
+  local logDir=/tmp/external-builders
+  mkdir -p ${logDir}
+  local logFile="${logDir}/detect_`date`.log"
+  echo "DETECT: $CHAINCODE_SOURCE_DIR, $CHAINCODE_METADATA_DIR" > "${logFile}"
+  echo -e "\nENV:"
+  env >> "${logFile}"
+
+  echo -e "\n\n"
+  cat "$CHAINCODE_METADATA_DIR/metadata.json" >> "${logFile}"
+
+  # sample metadata.json: {"path":"/opt/chaincode/2x/node/dns/","type":"external","label":"test_1.0"}
+  local type=`cat $CHAINCODE_METADATA_DIR/metadata.json | tr -d '\n' | grep -o  '"type"\s*:\s*"\w*"' | sed -E 's/.*:\s*"(\w*)"/\1/'`
+  echo -e "\nChaincode Type: ${type}" >> "${logFile}"
+
+  if [ "${type}" = 'external' ]; then
+    echo -e "\nEXTERNAL: " >> "${logFile}"
+    exit 0
+  fi
+
+  echo -e "\nPEER" >> "${logFile}"
+  exit 1
+}
+
+main

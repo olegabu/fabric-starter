@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    {{ include "orderer-generate.labels" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ include "orderer-generate.labels" . }}
+  template:
+    metadata:
+      labels:
+        {{ include "orderer-generate.labels" . }}
+    spec:
+      initContainers:
+        - name: orderer-pre-install
+          image: {{ .Values.images.fabric_tools_extended}}
+          env:
+          {{- include "common.env" . | nindent 12 }}
+                      {{- $a :=.Files.Get .Values.env_file }}
+            {{ range $k, $v := regexSplit "\n" $a -1 }}
+             {{ replace "=" ": " $v }}
+            {{ end }}
+                        {{- toYaml .Values.common.env | indent 6 }}
+
+{{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
+          workingDir: /etc/hyperledger
+          command: [ls, sleeep 200000, ./container-scripts/container-orderer.sh, sleep 20000]
+      containers:
+        - name: nginx
+          image: nginx
+{{/*          imagePullPolicy: {{ .Values.imagePullPolicy }}*/}}
+

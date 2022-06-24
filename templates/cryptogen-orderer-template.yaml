@@ -1,4 +1,27 @@
 
+PeerOrgs:
+  - Name: ${ORG}
+    Domain: ${ORG}.${DOMAIN}
+
+    CA:
+      Hostname: ca # implicitly ca.ORG.example.com
+
+    Template:
+      Count: 1
+      # Start: 5
+      # Hostname: {{.Prefix}}{{.Index}} # default
+      SANS:
+        - "${PEER_ADDRESS_PREFIX}${ORG}.${DOMAIN}"
+        - "${PEER_ADDRESS_PREFIX}${ORG}.${INTERNAL_DOMAIN}"
+
+    # ---------------------------------------------------------------------------
+    # "Users"
+    # ---------------------------------------------------------------------------
+    # Count: The number of user accounts _in addition_ to Admin
+    # ---------------------------------------------------------------------------
+    Users:
+      Count: 1
+
 # ---------------------------------------------------------------------------
 # "OrdererOrgs" - Definition of organizations managing orderer nodes
 # ---------------------------------------------------------------------------

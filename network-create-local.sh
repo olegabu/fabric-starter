@@ -29,7 +29,7 @@ WWW_PORT=${ORDERER_WWW_PORT} docker-compose -f docker-compose-orderer.yaml -f do
 # Create member organizations
 
 api_port=${API_PORT:-4000}
-export BOOTSTRAP_API_PORT=${BOOTSTRAP_API_PORT:-${API_PORT:-4000}}
+export BOOTSTRAP_EXTERNAL_PORT=${BOOTSTRAP_EXTERNAL_PORT:-${API_PORT:-4000}}
 export BOOTSTRAP_SERVICE_URL=http
 
 #dev:
@@ -54,7 +54,7 @@ do
     info "Wait for post-install.${ORG}.${DOMAIN} completed"
     docker logs -f post-install.${ORG}.${DOMAIN}
 
-    export BOOTSTRAP_ORG_DOMAIN="${org}.${DOMAIN}" BOOTSTRAP_API_PORT=3000
+    export BOOTSTRAP_ORG_DOMAIN="${org}.${DOMAIN}" BOOTSTRAP_EXTERNAL_PORT=3000
     api_port=$((api_port + 1))
     www_port=$((www_port + 1))
     ca_port=$((ca_port + 1))

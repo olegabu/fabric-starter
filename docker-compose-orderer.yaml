@@ -18,24 +18,33 @@ services:
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_NAME_PREFIX=${ORDERER_NAME_PREFIX:-raft}
       - ORDERER_NAMES
+      - CONSENTER_ID
+      - PEER_NAME=${PEER_NAME:-peer0}
+      - PEER_ADDRESS_PREFIX=${PEER_ADDRESS_PREFIX:-peer0.}
       - ORG=${ORG:-org1}
+      - PEER0_PORT=${PEER0_PORT}
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_DOMAIN
+      - INTERNAL_DOMAIN
       - ORDERER_PROFILE=${ORDERER_PROFILE:-Solo}
       - ORDERER_GENERAL_LISTENPORT=${ORDERER_GENERAL_LISTENPORT:-7050}
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - MY_IP
       - WWW_PORT=${WWW_PORT:-80}
-      - RAFT0_PORT=${RAFT0_PORT:-7050}
-      - RAFT1_PORT=${RAFT1_PORT:-7150}
-      - RAFT2_PORT=${RAFT2_PORT:-7250}
+      - RAFT0_CONSENTER_PORT=${RAFT0_CONSENTER_PORT:-7050}
+      - RAFT1_CONSENTER_PORT=${RAFT1_CONSENTER_PORT:-7150}
+      - RAFT2_CONSENTER_PORT=${RAFT2_CONSENTER_PORT:-7250}
       - RAFT_NODES_COUNT=${RAFT_NODES_COUNT:-1}
       - RAFT_NODES_NUMBERING_START=${RAFT_NODES_NUMBERING_START:-0}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - USER_ID
+      - TMP_DIR
+      - CERTS_DIR
     working_dir: /etc/hyperledger
-    command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; "
+    command: sh -c "touch crypto-config/hosts; container-scripts/container-orderer.sh; set -x; chown -R \${USER_ID} crypto-config; set +x"
     volumes:
       - ${FABRIC_STARTER_HOME:-.}/crypto-config:/etc/hyperledger/crypto-config
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN}/msp/.well-known:/etc/hyperledger/crypto-config/ordererOrganizations/${DOMAIN}/msp/.well-known
 #      - ./templates:/etc/hyperledger/templates # for local debug
 #      - ./container-scripts:/etc/hyperledger/container-scripts # for local debug
 
@@ -59,7 +68,7 @@ services:
     restart: always
     image: ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-orderer:${FABRIC_VERSION:-1.4.9}
     environment:
-      - FABRIC_LOGGING_SPEC=orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+      - FABRIC_LOGGING_SPEC=${FABRIC_LOGGING_SPEC:-orderer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/${DOMAIN:-example.com}/genesis.pb
@@ -77,8 +86,9 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/etc/hyperledger/crypto/orderer/${ORDERER_NAME:-orderer}.${DOMAIN:-example.com}/tls/ca.crt]
+      - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=${KEEPALIVE_INTERVAL:-7200s}
     working_dir: /etc/hyperledger
-    command: orderer
+    command: sh -c "sleep 3 && orderer"
     depends_on:
       - pre-install
     logging:
@@ -120,6 +130,8 @@ services:
       - DNS_CHANNEL
       - ORDERER_BATCH_TIMEOUT=${ORDERER_BATCH_TIMEOUT:-2}
       - SIGNATURE_HASH_FAMILY=${SIGNATURE_HASH_FAMILY:-SHA2}
+      - WGET_CMD
+      - FABRIC_VERSION
     working_dir: /etc/hyperledger
     depends_on:
       - pre-install
@@ -194,8 +206,9 @@ services:
     #    ports:
     #      - ${WWW_PORT:-8080}:80
     volumes:
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/node-certs:/usr/share/nginx/html/node-certs:ro
       - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp:/usr/share/nginx/html/msp
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/well-known:/usr/share/nginx/html/.well-known
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ordererOrganizations/${DOMAIN:-example.com}/msp/.well-known:/usr/share/nginx/html/.well-known
     depends_on:
     - pre-install
 

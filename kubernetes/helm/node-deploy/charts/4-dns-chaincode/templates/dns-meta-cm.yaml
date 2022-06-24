@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dns-meta-cm
+data:
+  metadata.json: >
+    {"path":"","type":"external","label":"dns_1.0"}
+  connection.json: >
+    {"address":"dns-chaincode:{{ .Values.dnsChaincodePort }}","tls_required":false}

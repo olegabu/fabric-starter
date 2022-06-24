@@ -9,49 +9,55 @@ main() {
     VBOX_HOST_IP=${VBOX_HOST_IP:-$(VBoxManage list hostonlyifs | grep 'IPAddress' | cut -d':' -f2 | sed -e 's/^[[:space:]]*//')}
     setDocker_LocalRegistryEnv
     export DEPLOYMENT_TARGET='vbox'
+    export NETCONFPATH="$(absDirPath "${1}")"
+
     
     if [ $# -lt 1 ]; then
-        printYellow "source ./vbox-test-env <DOMAIN>"
+        printUsage " vbox-test-env <Config Dir Path>" " source ./vbox-test-env.sh /path/to/config/dir"
         return 1
     fi
     
-    source ${BASEDIR}/common-test-env.sh $@
+    source ${BASEDIR}/libs/common-test-env.sh ${1}
     export -f setCurrentActiveOrg
     export -f unsetActiveOrg
     export -f getOrgIp
     export -f getOrgContainerPort
     export -f getFabricStarterHome
     export -f connectOrgMachine
-    export -f getApiPortDelta
-    export -f getWwwPortDelta
-
-    source ${BASEDIR}/common-test-env.sh $@
+    export -f copyDirToContainer
+    export -f makeDirInContainer
+    export -f getFabricStarterHome
+    export -f setSpecificEnvVars
 }
 
-function getApiPortDelta() {
-  echo 0
-}
-
-function getWwwPortDelta() {
-  echo 0
+function connectOrgMachine() {
+    local org=${1}
+    local domain=${2:-${DOMAIN}}
+    eval $(docker-machine env ${org}.${domain})
 }
 
 function setCurrentActiveOrg() {
 
     local org="${1:?Org name is required}"
+    export DOMAIN=$(getOrgDomain ${org})
+#    local domain=${2:-${DOMAIN}}
     connectMachine ${org} 1>&2 2>/dev/null 1>/dev/null
-    
+
     export ORG=${org}
-    export PEER0_PORT=$(getContainerPort ${ORG} ${PEER_NAME} ${DOMAIN})
+    export ORDERER_DOMAIN=$(getOrgOrdererDomain ${org})
+    export PEER0_PORT=$(getContainerPort ${org} ${PEER_NAME} ${DOMAIN})
+    export PEEER_ORG_NAME=$(getPeerOrgName ${org})
+    printDbg "${BRIGHT}${MAGENTA}setCurrentActiveOrg: Org: ${ORG}, Domain: ${DOMAIN}, ORDERER_DOMAIN: ${ORDERER_DOMAIN}${NORMAL}"
+
+
 }
 
-function connectOrgMachine() {
-  local org=${1}
-  echo $(docker-machine env ${org}.${DOMAIN})
-}
+
 
 function getFabricStarterHome {
-  echo $(docker-machine ssh ${org}.${DOMAIN} pwd)
+    local org=${1}
+    local domain=${2:-$(getOrgDomain ${org})}
+    echo $(docker-machine ssh ${org}.${domain} pwd)
 }
 
 
@@ -61,16 +67,46 @@ function unsetActiveOrg {
 
 
 function getOrgIp() {
-    getMachineIp "${1}"
+    getOrgIPAddress "${1}"
 }
 
 
 function getOrgContainerPort () {
     local org="${1:?Org name is required}"
-    
+
     setCurrentActiveOrg "${org}"
     getContainerPort $@
     unsetActiveOrg
+}
+
+function makeDirInContainer () {
+    local container="${1:?Container name is required}"
+    local path="${2:?Directory path is required}"
+
+    dockerMakeDirInContainer ${container} "${path}"
+}
+
+function copyDirToContainer () {
+    local service="${1}"
+    local org=${2}
+    local domain=${3}
+    local sourcePath="${4:?Source path is required}"
+    local destinationPath="${5:?Destination path is required}"
+
+    dockerCopyDirToContainer ${service} ${org} ${domain} "${sourcePath}" "${destinationPath}"
+}
+
+
+function getFabricStarterHome() {
+    echo '/home/docker'
+}
+
+function setSpecificEnvVars() {
+    local org=${1}
+    local domain=${2}
+
+    export FABRIC_STARTER_HOME=$(getFabricStarterHome)
+    export MY_IP=$(getOrgIPAddress $org)
 }
 
 main $@

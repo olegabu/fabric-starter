@@ -1,9 +1,11 @@
 .docker
 .idea
 backup
-crypto-config
+**/crypto-config
 docs
 extra
 data
 **/node_modules
 https/certs
+ledger
+kubernetes/

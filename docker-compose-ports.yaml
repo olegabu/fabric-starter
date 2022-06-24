@@ -6,11 +6,19 @@ version: '3.7'
 
 services:
 
+  ca:
+    ports:
+      - ${CA_PORT:-7054}:7054
+
+  tlsca:
+    ports:
+      - ${TLS_CA_PORT:-7055}:7055
+
   api:
     ports:
       - ${API_PORT:-4000}:3000
 
-  peer0:
+  peer:
     ports:
       - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 #      - ${PEER0_EVENT_PORT:-7053}:7053

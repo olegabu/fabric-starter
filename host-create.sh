@@ -4,7 +4,7 @@ source lib.sh
 
 setDocker_LocalRegistryEnv
 
-: ${DOCKER_MACHINE_FLAGS:=" --virtualbox-no-share "}
+: ${DOCKER_MACHINE_FLAGS:=" --driver virtualbox --virtualbox-no-share  "}
 if [ -n "$DOCKER_REGISTRY" ]; then
     DOCKER_MACHINE_FLAGS="${DOCKER_MACHINE_FLAGS} --engine-insecure-registry $DOCKER_REGISTRY  "
 fi
@@ -34,8 +34,10 @@ do
     orgMachineName=`getDockerMachineName $org`
     info "Creating member organization $org on machine: $orgMachineName with flags: $DOCKER_MACHINE_FLAGS"
     [[ -z `getHostOrgForOrg $org` ]] && docker-machine rm ${orgMachineName} --force
-    docker-machine create ${DOCKER_MACHINE_FLAGS} ${orgMachineName} 
+    set -x
+    docker-machine create ${DOCKER_MACHINE_FLAGS} ${orgMachineName}
     procId=$!
+    set +x
 done
 
 [[ -n "${procId}" ]] && wait ${procId}
