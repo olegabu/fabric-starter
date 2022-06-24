@@ -6,8 +6,8 @@ export TEST_LAUNCH_DIR=$(pwd)
 
 pushd ${BASEDIR}/../../ >/dev/null
 BASEDIR=.
-source libs/libs.sh 
-echo > ${FSTEST_LOG_FILE}    
+source libs/libs.sh
+echo > ${FSTEST_LOG_FILE}
 
 ARGS_REQUIRED="[Fabric test interface (cli|api|...), First organization, Second organization]"
 
@@ -97,7 +97,8 @@ SCENARIO() {
 #14 
         runStep "Test 'Can not join ORG1 to the first chanel created by ORG1'" \
             RUNTEST: join-channel.sh ${TEST_CHANNEL_NAME} ${org1} \
-            VERIFY_NON_ZERO_EXIT_CODE:
+            VERIFY:  test-join-channel.sh ${TEST_CHANNEL_NAME} ${org1}
+
 
 #15
         runStep "Test 'Join ORG2 to the first chanel created by ORG1'" \
@@ -112,32 +113,43 @@ SCENARIO() {
 #17
         runStep "Test 'Can not join ORG2 to the second chanel created by ORG2'" \
             RUNTEST: join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2} \
-            VERIFY_NON_ZERO_EXIT_CODE:
+            VERIFY:  test-join-channel.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
+
 
 # Chaincode install
 #18
         runStep "Test 'Install test chaincode by ORG1 to the first channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org1} \
+            RUN: sleep 10 \
             VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org1}
 
 #19
         runStep "Test 'Install test chaincode by ORG2 to the first channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_CHANNEL_NAME} ${org2} \
+            RUN: sleep 10 \
             VERIFY: test-chaincode-installed.sh ${TEST_CHANNEL_NAME} ${org2}
 
 #20
         runStep "Test 'Install 2nd test chaincode by ORG2 to the second channel'" \
             RUNTEST: chaincode-install.sh  ${TEST_SECOND_CHANNEL_NAME} ${org2} \
+            RUN: sleep 10 \
             VERIFY: test-chaincode-installed.sh ${TEST_SECOND_CHANNEL_NAME} ${org2}
 
 # Chaincode instantiate
 #21
-        runStep "Test 'Instantiate test chaincode by ORG1 in the first channel'" \
+        runStep "Test 'Instantiate test chaincode by ORG1 in the first channel by ORG1'" \
             RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org1} \
+            RUN: sleep 3 \
             VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org1}
 
-# Chaincode verify
 #22
+        runStep "Test 'Instantiate test chaincode by ORG1 in the first channel by ORG2'" \
+            RUNTEST: chaincode-instantiate.sh ${TEST_CHANNEL_NAME} ${org2} \
+            RUN: sleep 3 \
+            VERIFY: test-chaincode-instantiated.sh ${TEST_CHANNEL_NAME} ${org2}
+
+# Chaincode verify
+#23
         runStep "Test 'Test chaincode invocation in ORG1 and query in ORG2'" \
             RUN: sleep 15 \
             RUNTEST: chaincode-invoke.sh ${TEST_CHANNEL_NAME} ${org1} ${TEST_CHAINCODE_NAME} \

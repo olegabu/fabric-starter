@@ -1,0 +1,47 @@
+export ORG=org2
+export DOMAIN=vtb.ru
+#--------------------------------------------
+export MY_IP=172.19.0.1
+#--------------------------------------------
+export BOOTSTRAP_IP=172.19.0.1
+#export BOOTSTRAP_API_PORT=4000
+#export BOOTSTRAP_ORG_DOMAIN=
+#--------------------------------------------
+export PEER_NAME=peer0
+#export PEEER_ORG_NAME=${PEER_NAME}-${ORG}
+#export PEER_ADDRESS_TEMPLATE=\${PEER_NAME}-\${ORG}.\${DOMAIN} #TODO: Use PEER_ORG_NAME after rest fix
+
+export PEER_ADDRESS_PREFIX_TEMPLATE=\${PEER_NAME}.
+export PEER_ADDRESS_PREFIX=${PEER_NAME:-peer0}.
+export BOOTSTRAP_PEER_PREFIX=peer0.
+
+#--------------------------------------------
+export BOOTSTRAP_EXTERNAL_PORT=4000
+export BOOTSTRAP_ORG_DOMAIN=example.com
+export BOOTSTRAP_ORDERER_DOMAIN=example.com
+export BOOTSTRAP_PEER_ORG_NAME=org1.${BOOTSTRAP_ORG_DOMAIN}
+#--------------------------------------------
+export ORDERER_TYPE=SOLO
+export ORDERER_PORT=7050
+export ORDERER_WWW_PORT=79
+#export ORDERER_DOMAIN=osn-org2.example.com
+export ORDERER_DOMAIN=example.com
+export ORDERER_ADDRESS=orderer.example.com
+export ORDERER_GENERAL_LISTENPORT=7050
+export ORDERER_NAME=orderer
+#--------------------------------------------
+export ENROLL_SECRET=adminpw
+#--------------------------------------------
+export API_PORT=4001
+export WWW_PORT=81
+export SDK_PORT=9080
+export TLS_CA_PORT=8055
+export CA_PORT=7154
+export PEER0_PORT=8051
+export EXTERNAL_COMMUNICATION_PORT=1443
+export LDAP_PORT_HTTP=6180
+export LDAP_PORT_HTTPS=6533
+#--------------------------------------------
+#export CORE_CHAINCODE_JAVA_RUNTIME=skilpio/fabric-javaenv
+export ORDERER_STARTING_PERIOD=120
+###########################################################################export FABRIC_STARTER_HOME=/home/docker

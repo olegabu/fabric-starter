@@ -1,4 +1,4 @@
-const StorageChaincode = require('chaincode-node-storage');
+const StorageChaincode = require('./chaincode-storage');
 
 module.exports = class ReferenceChaincode extends StorageChaincode {
 

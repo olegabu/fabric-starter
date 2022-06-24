@@ -6,9 +6,9 @@ source "${BASEDIR}"/../libs/libs.sh
 channelName=${1}
 org=${2}
 
-printToLogAndToScreenBlue "\nVerifing if the [${channelName}] channel exists in [${org}.${DOMAIN}]"
+printToLogAndToScreenBlue "\nVerifing if the [${channelName}] channel exists in [${org}]"
 
 setCurrentActiveOrg ${org}
-verifyChannelExists "${channelName}" "${org}" "${DOMAIN}"
+result=$(runCLIPeer ${org} findChannelNameInConfig ${channelName})
 
 printResultAndSetExitCode "The channel [${channelName}] exists and visible to [${org}]"

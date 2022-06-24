@@ -26,7 +26,7 @@ case "${DEPLOYMENT_TARGET}" in
     vbox)   #dmachine
         pushd ../../ >/dev/null
 #       ./network-docker-machine-create.sh  ${@}
-        ./network-create.sh  ${@}
+        ./network-create.sh ${@}
 
         popd >/dev/null
     ;;
