@@ -440,7 +440,7 @@ services:
       - admin_app:/usr/src/app/admin
 
   www.peer:
-    container_name: www.peer.${ORG}.${  DOMAIN}
+    container_name: www.peer.${ORG}.${DOMAIN}
     image: ${DOCKER_REGISTRY:-docker.io}/nginx:1.23.0
     restart: always
     environment:
