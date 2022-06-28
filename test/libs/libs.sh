@@ -282,6 +282,12 @@ function getOrgIPAddress() {
     echo ${orgIPAddress}
 }
 
+function getPeerAddressPrefix() {
+    local org=${1}
+
+    local orgIPAddress=$(getVarFromTestEnvCfg PEER_ADDRESS_PREFIX ${org})
+    echo ${orgIPAddress}
+}
 
 function printDbg() {
     local exitCode=$?
@@ -772,7 +778,7 @@ function runCLIPeer() {
 
     printDbg "Run '${command}' in cli.peer0.${compose_org}.${domain}"
 
-    result=$("${scriptDir}/${scriptName}" ${compose_org} "${command}")
+    result=$(PEER_ADDRESS_PREFIX=$(getPeerAddressPrefix ${org}) "${scriptDir}/${scriptName}" ${compose_org} "${command}")
     exitCode=${?}
 
     IFS= printDbg  "runCLIPeer result: ${result}"
