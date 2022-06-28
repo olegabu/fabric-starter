@@ -272,6 +272,8 @@ services:
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
+      - PEER_NAME=${PEER_NAME:-peer0}
+      - PEER_ADDRESS_PREFIX=${PEER_ADDRESS_PREFIX:-peer0.}
       - ORDERER_NAME=${ORDERER_NAME:-orderer}
       - ORDERER_DOMAIN
       - ENROLL_ID
