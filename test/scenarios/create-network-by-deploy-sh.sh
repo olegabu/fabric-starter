@@ -8,6 +8,7 @@ export RENEW_IMAGES=${RENEW_IMAGES:-true}
 main() {
 
     local configDirPath="$(absDirPath "${ARGS_PASSED}")"
+    configDirPath=${configDirPath:-${NETCONFPATH}}
 
     checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
