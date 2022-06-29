@@ -406,6 +406,7 @@ services:
       - DOMAIN=${DOMAIN:-example.com}
       - ORDERER_NAME
       - ORDERER_DOMAIN
+      - PEER_NAME
       - PEER0_PORT=${PEER0_PORT:-7051}
       - ORDERER_GENERAL_LISTENPORT
       - CRYPTO_CONFIG_DIR=${CRYPTO_CONFIG_DIR:-/etc/hyperledger/crypto-config}
