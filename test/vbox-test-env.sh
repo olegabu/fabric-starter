@@ -45,6 +45,7 @@ function setCurrentActiveOrg() {
 
     export ORG=${org}
     export ORDERER_DOMAIN=$(getOrgOrdererDomain ${org})
+    export PEER_NAME=$(getPeerName ${org})
     export PEER0_PORT=$(getContainerPort ${org} ${PEER_NAME} ${DOMAIN})
     export PEEER_ORG_NAME=$(getPeerOrgName ${org})
     export PEER_ADDRESS_PREFIX=$(getPeerAddressPrefix ${org})

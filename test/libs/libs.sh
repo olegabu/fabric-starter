@@ -8,7 +8,7 @@ main() {
     export TEST_LAUNCH_DIR=${TEST_LAUNCH_DIR:-${TEST_ROOT_DIR}}
     export TIMEOUT_CHAINCODE_INSTANTIATE=${TIMEOUT_CHAINCODE_INSTANTIATE:-150}
 
-    export PEER_NAME=${PEER_NAME:-peer0}
+#    export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
@@ -776,7 +776,7 @@ function runCLIPeer() {
     local scriptName="run-cli-peer.sh"
     local exitCode
 
-    printDbg "Run '${command}' in cli.peer0.${compose_org}.${domain}"
+    printDbg "Run '${command}' in cli.${PEER_NAME}.${compose_org}.${domain}"
 
     result=$(PEER_ADDRESS_PREFIX=$(getPeerAddressPrefix ${org}) "${scriptDir}/${scriptName}" ${compose_org} "${command}")
     exitCode=${?}
@@ -869,7 +869,8 @@ function prepareChaincode() {
     if [ "${FABRIC_MAJOR_VERSION}" == "2" ]; then
             printDbg "${BIRHT}${CYAN}Create v.2 chaincode package...${NORMAL}"
 
-            copyDirToContainer cli.peer0  ${org} $(getOrgDomain ${org}) "${path}" "${chaincodeSourcePathInContainer}"
+            local peerName=$(getPeerName ${org})
+            copyDirToContainer cli.${peerName}  ${org} $(getOrgDomain ${org}) "${path}" "${chaincodeSourcePathInContainer}"
 
             local CC_LABEL=${chaincodeName}_${chaincodeVersion}
 
@@ -878,7 +879,8 @@ function prepareChaincode() {
             local exitCode=$?
             printDbg "Result: ${result}"
 
-            dockerCopyFileFromContainer cli.peer0 ${org} $(getOrgDomain ${org}) ${chaincodeSourcePathInContainer}/../${chaincodeName}.tar.gz ${tmpDir}
+            local peer0Name=$(getPeerName ${orgAdd})
+            dockerCopyFileFromContainer cli.${peerName} ${org} $(getOrgDomain ${org}) ${chaincodeSourcePathInContainer}/../${chaincodeName}.tar.gz ${tmpDir}
             chaincodeArchiveFilePath=${tmpDir}/${chaincodeName}.tar.gz
     else
        printColoredText "${BIRHT}${CYAN}" "Create v.1 chaincode package..." | printDbg

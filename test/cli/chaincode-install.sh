@@ -15,8 +15,10 @@ path=${6:-"${BASEDIR}/../resources/chaincode/${FABRIC_MAJOR_VERSION}x/${lang}/${
 printToLogAndToScreenCyan "\nInstalling chaincode in [${org}] from $path"
 setCurrentActiveOrg ${org}
 
+peer0Name=$(getPeerName ${orgAdd})
+
 printToLogAndToScreenCyan "\nCopying test chaincode to [${org}]"
-copyDirToContainer cli.peer0  ${org} ${DOMAIN:-example.com} "${path}" "${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}"
+copyDirToContainer cli.${peer0Name}  ${org} ${DOMAIN:-example.com} "${path}" "${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}"
 
 printToLogAndToScreenCyan "\nInstalling [${chaincodeName}] chaincode in [${org}]"
 result=$(runCLIPeer ${org} \
