@@ -261,10 +261,10 @@ function getAPIPort() {
     echo ${APIPort}
 }
 
-function getPeerOrgName() {
+function getPeerName() {
     local org=${1}
 
-    local peerOrgName=$(getVarFromTestEnvCfg PEEER_ORG_NAME ${org})
+    local peerOrgName=$(getVarFromTestEnvCfg PEER_NAME ${org})
     echo ${peerOrgName}
 }
 
@@ -968,7 +968,9 @@ function containerNameString() {
         orgComponent=""
     fi
 
-    if [ "${service}" == 'peer0' ]; then
+    local peerName=$(getPeerName ${org})
+
+    if [ "${service}" == "${peerName}" ]; then
         local confFilePath=$(getOrgConfigFilePath ${org} ${NETCONFPATH})
         local peerAddrPrefix=$(getVarFromEnvFile PEER_ADDRESS_PREFIX "${confFilePath}")
         if [ ! -z "${peerAddrPrefix}" ]; then
