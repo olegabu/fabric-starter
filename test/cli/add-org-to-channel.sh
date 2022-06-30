@@ -8,7 +8,8 @@ channelName=${1}
 org=${2}
 orgAdd=${3}
 
-peer0Port=$(getOrgContainerPort ${orgAdd} peer0)
+peer0Name=$(getPeerName ${orgAdd})
+peer0Port=$(getOrgContainerPort ${orgAdd} ${peer0Name})
 wwwPort=$(getWwwPort ${orgAdd})
 orgDomain=$(getOrgDomain ${orgAdd})
 wwwInternalPeerPort=$(getContainerTCPReversePortMapping ${wwwPort} www.peer ${orgAdd} ${orgDomain})
