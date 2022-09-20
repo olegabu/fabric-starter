@@ -7,9 +7,11 @@ source "${BASEDIR}"/../libs/libs.sh
 org=${1}
 orgInvite=${2}
 
+orgInviteDomain=$(getOrgDomain ${orgInvite})
+
 printToLogAndToScreenCyan "\nInvite [${orgInvite}] to the default consortium..."
 
 setCurrentActiveOrg ${org}
-runInFabricDir ./consortium-add-org.sh ${orgInvite}
+runInFabricDir ./consortium-add-org.sh ${orgInvite} ${orgInviteDomain}
 
 printResultAndSetExitCode "Organization [${orgInvite}] added to the default consortium"

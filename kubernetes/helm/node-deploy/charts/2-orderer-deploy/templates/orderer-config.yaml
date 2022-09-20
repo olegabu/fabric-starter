@@ -1,0 +1,30 @@
+{{ range $ordererName := split "," .Values.ordererNames }}
+  {{- $ordererValues := dict "ordererName" $ordererName "domain" $.Values.domain "ordererDomain" $.Values.ordererDomain "certificatePathes" $.Values.orderer.certificatePathes "Values" (dict "ordererName" $ordererName) -}}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+data:
+  FABRIC_LOGGING_SPEC: {{ default "INFO" $.Values.logLevel }}
+
+  ORDERER_GENERAL_LISTENADDRESS: '0.0.0.0'
+  ORDERER_GENERAL_GENESISMETHOD: 'file'
+  ORDERER_GENERAL_BOOTSTRAPFILE: '/etc/hyperledger/channel-artifacts/genesis.block'
+
+  ORDERER_GENERAL_LOCALMSPID: {{ include "orderer.nameDomain" $ordererValues }}
+  ORDERER_GENERAL_LOCALMSPDIR: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/msp
+  ORDERER_GENERAL_LISTENPORT: "7050" # start lways on internal port
+
+  ORDERER_GENERAL_TLS_PRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
+  ORDERER_GENERAL_TLS_CERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
+  ORDERER_GENERAL_TLS_ROOTCAS: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/ca.crt
+  ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.crt
+  ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY: /etc/hyperledger/crypto-config/ordererOrganizations/{{ $.Values.domain }}/orderers/{{ include "orderer.nameDomain" $ordererValues }}/tls/server.key
+
+  ORDERER_OPERATIONS_LISTENADDRESS: "0.0.0.0:9090"
+{{/*  ORDERER_METRICS_PROVIDER: prometheus*/}}
+{{/*  ORDERER_OPERATIONS_TLS_ENABLED: "false"*/}}
+
+{{ end }}

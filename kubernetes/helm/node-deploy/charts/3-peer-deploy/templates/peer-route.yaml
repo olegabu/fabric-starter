@@ -1,0 +1,19 @@
+{{ if .Values.deploy.routes }}
+
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name:   {{ tpl .Values.peerOrgName . }}
+spec:
+  host: "{{ tpl .Values.peerOrgName . }}.{{ .Values.domain }}"
+  to:
+    kind: Service
+    name: {{ tpl .Values.peerOrgName . }}
+    weight: 100
+  port:
+    targetPort: peerport
+  tls:
+    termination: passthrough
+  wildcardPolicy: None
+
+{{ end }}

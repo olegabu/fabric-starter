@@ -1,0 +1,82 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: integrate-{{ .Values.peer.newOrg }}-{{ .Values.peer.newOrgPeerName }}-job
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+
+      volumes:
+        - name: new-org-msp
+          configMap:
+            name: msp-files-cm-{{ .Values.peer.newOrg }}
+
+      containers:
+        - name: integrate-job
+          image: >-
+            {{ tpl .Values.images.fabric_tools_extended . }}
+          env:
+            - name: REST_API_URL
+              value: "{{ .Values.REST_API_URL }}"
+
+            - name: INTEGRATE_ORDERER
+              value: "{{ .Values.orderer.integrateOrderer }}"
+            - name: NEW_ORDERER_NAME
+              value: {{ .Values.orderer.newOrdererName }}
+            - name: NEW_ORDERER_DOMAIN
+              value: {{ default "" .Values.orderer.newOrdererDomain }}
+            - name: NEW_ORDERER_IP
+              value: "{{ .Values.orderer.newOrdererIp }}"
+            - name: NEW_ORDERER_PORT
+              value: "{{ default 7050 .Values.orderer.newOrdererPort }}"
+            - name: NEW_ORDERER_WWWPORT
+              value: "{{ default 80 .Values.orderer.newOrdererWwwPort }}"
+            - name: NEW_ORDERER_MSP
+              value: {{ .Values.OrdererMsp }}
+
+            - name: NEW_ORG_PEER_NAME
+              value: {{ .Values.peer.newOrgPeerName }}
+            - name: NEW_ORG
+              value: {{ required "New Org name is required" .Values.peer.newOrg }}
+            - name: NEW_ORG_DOMAIN
+              value: {{ required "New Org domain is requried" .Values.peer.newOrgDomain }}
+            - name: NEW_ORG_IP
+              value: "{{ required "New Org Ip is required" .Values.peer.newOrgIp }}"
+            - name: NEW_PEER_PORT
+              value: "{{ .Values.peer.newPeerPort }}"
+            - name: NEW_ORG_WWWPORT
+              value: "{{ .Values.peer.newOrgWwwPort }}"
+
+            - name: MSP_ORDERER_FILE_NAME
+              value: "{{ .Values.orderer.mspFileName | default "msp-orderer.tgz" }}"
+            - name: MSP_ORG_FILE_NAME
+              value: "{{ .Values.peer.mspFileName | default "msp-org.tgz" }}"
+          workingDir: /tmp
+          volumeMounts:
+            - name: new-org-msp
+              mountPath: /msp
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -x;
+
+              curl -i --connect-timeout 30 --max-time 180 --retry 1 -k ${REST_API_URL}/integration/service/orgs \
+              -F peerName="${NEW_ORG_PEER_NAME}"  -F orgId="${NEW_ORG}" -F domain="${NEW_ORG_DOMAIN}" -F orgIp="${NEW_ORG_IP}" -F peerPort="${NEW_PEER_PORT}" -F wwwPort="${NEW_ORG_WWWPORT}" \
+              -F certFiles=@/msp/${MSP_ORG_FILE_NAME} \
+              \
+              && [[ ${INTEGRATE_ORDERER} ]] && sleep 10 && \
+              \
+              curl -k -0 --connect-timeout 30 --max-time 240 --retry 0 \
+              ${REST_API_URL}/integration/service/raft  \
+              -F ordererName=${NEW_ORDERER_NAME} -F domain=${NEW_ORDERER_DOMAIN} -F ordererPort=${NEW_ORDERER_PORT} -F wwwPort=${NEW_ORDERER_WWWPORT} -F ordererIp=${NEW_ORDERER_IP} \
+              -F orgId=${NEW_ORG} -F certFiles=@/msp/${MSP_ORDERER_FILE_NAME} \
+              --output genesis.pb;
+
+              set +x;
+              sleep 300
+

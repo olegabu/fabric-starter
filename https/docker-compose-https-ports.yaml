@@ -7,24 +7,44 @@ version: '3.7'
 
 services:
 
-#
-  peer0:
+  ca:
+    ports:
+      - ${CA_PORT:-7054}:7054
+
+  tlsca:
+    ports:
+      - ${TLS_CA_PORT:-7055}:7055
+
+  pre-install:
+    environment:
+      - CERT_ORG=${ORG:-org1}.${DOMAIN:-example.com}
+      - CERT_DAYS=${CERT_DAYS:-365}
+      - CERT_COUNTRY=${CERT_COUNTRY:-US}
+      - CERT_STATE=${CERT_STATE:-N/A}
+      - CERT_ORGANIZATIONAL_UNIT=${CERT_ORGANIZATIONAL_UNIT:-Hyperledger Fabric Blockchain}
+      - CERT_COMMON_NAME=${CERT_COMMON_NAME:-Fabric-Starter-Rest-API}
+    command: sh -c "container-scripts/container-peer.sh; container-scripts/certificates/generate_tls_cert.sh /certs;"
+    volumes:
+      - ${SSL_CERTS_ROOT_PATH:-./https/certs}:/certs
+
+
+  peer:
     ports:
       - ${PEER0_PORT:-7051}:${PEER0_PORT:-7051}
 
-  # simple http server to disseminate certificates
+
   www.peer:
     environment:
-      - ORG=${ORG:-org1}
-      - DOMAIN=${DOMAIN:-example.com}
+      - NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates/https
     ports:
       - ${API_PORT:-4000}:4000
       - ${WWW_PORT:-80}:80
-    command: bash -c "while [[ ! ((-f /templates/nginx.conf) && (-f /certs/$${ORG}.$${DOMAIN}/public.crt)) ]];do echo 'Wait for nginx.conf, public.crt'; sleep 1;done; sleep 5; envsubst '$$ORG $$DOMAIN' < /templates/nginx.conf > /etc/nginx/conf.d/default.conf && cp /certs/$${ORG}.$${DOMAIN}/public.crt /etc/nginx/conf.d/; cp /certs/$${ORG}.$${DOMAIN}/private.key /etc/nginx/conf.d/ && nginx -g 'daemon off;'"
+      - ${EXTERNAL_COMMUNICATION_PORT:-443}:443
     volumes:
-      - ${SSL_CERTS_PATH:-./https/certs}:/certs
-      - ${FABRIC_STARTER_HOME:-.}/crypto-config/templates:/templates:ro
+      - ${SSL_CERTS_ROOT_PATH:-./https/certs/}:/certs
     depends_on:
-      - certs.generate
-      - api
-
+      - pre-install
+    logging:
+      options:
+        max-size: "${LOG_FILES_MAX_SIZE:-20m}"
+        max-file: "1"

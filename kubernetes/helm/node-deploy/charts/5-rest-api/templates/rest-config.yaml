@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rest-cm
+data:
+  AUTH_MODE: {{ .Values.authMode }}
+  PEER_ADDRESS_TEMPLATE: "${PEER_NAME}-${ORG}.${DOMAIN}"
+  SDK_API_URL: "http://fabric-sdk:8080"
+  ORGS: "\"{{ .Values.org }}\":\"{{ tpl .Values.peerOrgName . }}.{{ .Values.domain }}:{{ .Values.peerPort }}={{ tpl .Values.peerOrgName . }}.{{ default .Values.domain .Values.NAMESPACE }}:{{ .Values.peerPort }}\""

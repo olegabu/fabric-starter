@@ -279,6 +279,8 @@ function runAsOrderer() {
 
     setOrdererIdentity ${ORDERER_NAME} ${ORDERER_DOMAIN}
 
+    printYellow "Run as orderer"
+    env | sort | grep CORE_PEER
     ${command} ${params}
     local status=$?
 

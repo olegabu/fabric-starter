@@ -1,0 +1,28 @@
+logLevel: INFO # DEBUG
+
+org: &org org1
+domain: &domain default
+ordererDomain: *domain
+NAMESPACE: *domain
+
+#bootstrapIp: ''
+#myIp: ""cta
+
+
+images:
+  orderer: hyperledger/fabric-orderer:{{ .Values.FABRIC_VERSION }}
+  peer: hyperledger/fabric-peer:{{ .Values.FABRIC_VERSION }}
+  fabric_tools_extended: olegabu/fabric-tools-extended:2x
+  fabric_starter_rest: olegabu/fabric-starter-rest:2x
+  dns_chaincode: olegabu/dns-chaincode:2x
+  fabric_sdk: olegabu/fabric-sdk-api:2x
+
+
+CORE_LEDGER_STATE_STATEDATABASE: PostgreSQL
+DB_HOST: test
+DB_PORT: 5433
+DB_NAME: test
+DB_USERNAME: test
+CORE_PEER_POSTGRES_SCHEMANAME: test
+CORE_PEER_POSTGRES_TABLEPREFIX: test
+ORDERER_POSTGRES_TABLEPREFIX: test

@@ -15,15 +15,17 @@ SCENARIO() {
     
     org1=${1}
     org2=${2}
-    
+    peerNameOrg1=$(getPeerName ${org1})
+    peerNameOrg2=$(getPeerName ${org2})
+
     runStep "Test 'Orderer containers'" \
-        VERIFY:   ./test-containers-list.sh ${org1} ${DOMAIN} orderer www cli.orderer
+        VERIFY:   ./test-containers-list.sh "orderer" ${org1} orderer www cli.orderer
     
     runStep "Test '[${org1}] containers'" \
-        VERIFY:   ./test-containers-list.sh  ${org1} ${org1}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
+        VERIFY:   ./test-containers-list.sh  "org" ${org1} ${peerNameOrg1} api ca cli.${peerNameOrg1} couchdb.${peerNameOrg1} www
     
     runStep "Test '[${org2}] containers'" \
-        VERIFY:   ./test-containers-list.sh ${org2} ${org2}.${DOMAIN} api ca cli couchdb.peer0 peer0 www
+        VERIFY:   ./test-containers-list.sh "org" ${org2} ${peerNameOrg2} api ca cli.${peerNameOrg2} couchdb.${peerNameOrg2}  www
     
     runStep "Test 'Organization in channel [common]'" \
         VERIFY:     test-channel-accessible.sh 'common' ${org1}

@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  router:
+    container_name: router
+    image: nginx-grpc:latest
+    environment:
+      - CLUSTER_DOMAIN
+      - EDGE_ADDRESS
+      - EDGE_PORT
+      - EXTERNAL_PEER_PORT
+      - EXTERNAL_ORG_ADDRESS
+      - EDGE_ORDERER_PORT
+      - EDGE_PEER_PORT
+    ports:
+      - "${EDGE_PORT}:${EDGE_PORT}"
+      - "${EXTERNAL_PEER_PORT}:${EXTERNAL_PEER_PORT}"
+    volumes:
+      - ./nginx-grpcs-passthrough.conf.template:/etc/nginx/nginx-grpcs-passthrough.conf.template
+#      - ./nginx-grpcs-passthrough.conf.template:/etc/nginx/nginx.conf
+    command: /bin/bash -c "EDGE_ORDERER_PORT=${EDGE_ORDERER_PORT:-$EDGE_PORT} EDGE_PEER_PORT=${EDGE_PEER_PORT:-EDGE_PORT} envsubst '$${CLUSTER_DOMAIN} $${EDGE_ADDRESS} $${EDGE_PORT} $${EXTERNAL_PEER_PORT} $${EXTERNAL_ORG_ADDRESS} $${EDGE_ORDERER_PORT} $${EDGE_PEER_PORT} ' < /etc/nginx/nginx-grpcs-passthrough.conf.template > /etc/nginx/nginx.conf && cat /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+
+networks:
+  default:
+    external: false
+    name: fabric-starter_default

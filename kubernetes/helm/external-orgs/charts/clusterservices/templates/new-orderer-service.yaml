@@ -1,0 +1,13 @@
+{{ if .Values.integrateOrderer }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: "{{ .Values.orderer.newOrdererName }}"
+spec:
+  clusterIP: None
+  ports:
+    - name: ordererport
+      protocol: TCP
+      port: {{ .Values.orderer.newOrdererPort }}
+      targetPort: {{ .Values.orderer.newOrdererPort }}
+{{ end }}

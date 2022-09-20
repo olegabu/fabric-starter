@@ -1,0 +1,24 @@
+{
+  "name": "dns",
+  "version": "2.0.0",
+  "description": "dns service chaincode implemented in node.js",
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=5.3.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engine-strict": true,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "fabric-shim": "^2.2.2",
+    "lodash": "^4.17.13"
+  },
+  "bundledDependencies": [
+    "dotenv",
+    "fabric-shim",
+    "lodash"
+  ]
+}

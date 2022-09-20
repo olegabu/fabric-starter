@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-api
+  labels:
+    app: rest-api
+    name: rest-api
+spec:
+  selector:
+    matchLabels:
+      app: rest-api
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      labels:
+        app: rest-api
+    spec:
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.orderer) | nindent 12 }}
+                    {{- include "certificates.decode" (merge (deepCopy .) .Values.peer)    | nindent 12 }}
+
+      containers:
+        - name: rest
+          ports:
+            - name: rest-api-port
+              containerPort: 3000
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+
+          image: >-
+            {{ tpl .Values.images.fabric_starter_rest . }}
+
+          command: ["npm", "start"]
+
+          envFrom:
+            - configMapRef:
+                name: common-{{ .Values.org }}
+            - configMapRef:
+                name: rest-cm
+          env:
+            - name: ENROLL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: enroll-password-secret
+                  key: password
+
+          startupProbe:
+            httpGet:
+              path: /mspid
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 10
+
+          livenessProbe:
+            httpGet:
+              path: /mspid
+              port: 3000
+            periodSeconds: 60
+            timeoutSeconds: 60
+            failureThreshold: 5
+
+          {{- include "resources" (merge (deepCopy .) .Values.resources.rest) | nindent 4 }}
+      {{- include "external-hosts" (merge (deepCopy .) .Values.resources.rest) | nindent 0 }}

@@ -1,0 +1,13 @@
+{{ if .Values.integrateOrderer }}
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: "{{ .Values.orderer.newOrdererName }}"
+subsets:
+  - addresses:
+    - ip: {{ .Values.orderer.newOrdererIp }}
+    ports:
+      - name: ordererport
+        port: {{ .Values.orderer.newOrdererPort }}
+        protocol: TCP
+{{ end }}

@@ -1,0 +1,38 @@
+user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log debug;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+stream {
+
+    log_format grpc_json escape=json '{"timestamp":"$time_iso8601",'
+    '"client":"$remote_addr","http-status":$status,'
+    '"upstream":"$upstream_addr"'
+    ',"tx-bytes":$bytes_sent}';
+
+
+    map $ssl_preread_server_name $upstream {
+       hostnames;
+       orderer.${CLUSTER_DOMAIN} orderer.${EDGE_DOMAIN}:${EDGE_ORDERER_PORT};
+       peer0-org1.${CLUSTER_DOMAIN} peer0-org1.${EDGE_DOMAIN}:${EDGE_PEER_PORT};
+
+       peer0-org2.example.com ${EXTERNAL_ORG_ADDRESS}:${EXTERNAL_PEER_PORT};
+#        orderer.org2-example.com ${EXTERNAL_ORDERER_ADDRESS}:${EXTERNAL_ORDERER_PORT};
+    }
+
+    server {
+        listen ${EDGE_PORT};
+        listen ${EXTERNAL_PEER_PORT};
+        #        listen ${EXTERNAL_ORDERER_PORT};
+
+        ssl_preread on;
+        proxy_pass $upstream;
+    }
+
+}

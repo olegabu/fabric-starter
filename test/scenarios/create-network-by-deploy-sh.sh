@@ -1,111 +1,115 @@
 #!/usr/bin/env bash
-
 [ "${0#*-}" = "bash" ] && BASEDIR=$(dirname ${BASH_SOURCE[0]}) || BASEDIR=$(dirname $0) #extract script's dir
 
-export ARGS_PASSED=("$@")
-source ../libs/libs.sh
-export orgs=("$@")
-main() {
-    checkArgsPassed
+export ARGS_PASSED=("${@}")
+source "${BASEDIR}/../libs/libs.sh"
 
+export RENEW_IMAGES=${RENEW_IMAGES:-true}
+main() {
+
+    local configDirPath="$(absDirPath "${ARGS_PASSED}")"
+    configDirPath=${configDirPath:-${NETCONFPATH}}
+
+    checkArgsPassed
     DEPLOYMENT_TARGET=${DEPLOYMENT_TARGET:?"\${DEPLOYMENT_TARGET} (local,vbox) is not set."}
 
-    echo "Deploing network for [${DEPLOYMENT_TARGET}] target. Domain: $DOMAIN, Orgs: ${orgs[@]}"
-    echo "\${DOCKER_REGISTRY} is set to: [${DOCKER_REGISTRY}]"
-    echo "\${MULTIHOST} is set to: [${MULTIHOST}]"
+    tryNetworkCustomScript "${configDirPath}" "start.sh"
 
-    export DOCKER_COMPOSE_ARGS="-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "
+    local bootstrapOrgConfigFile=$(ls -1 "${configDirPath}" | grep -E "^bootstrap_.*_env|^org1_env")
+    local bootstrapOrgConfigPath="${configDirPath}/${bootstrapOrgConfigFile}"
 
-    pushd ../../ >/dev/null
-    createOrgEnvFiles ${@}
+    if [ -z "${bootstrapOrgConfigFile}" ] && [ -z "${MAIN_ORG_FILE}" ]; then
+        printInfo "${RED}No bootstrap_org_env or org1_env file found. Exiting...${NORMAL}" \
+                  "Or set MAIN_ORG_FILE=/path/to/the/main/org/config/file"
+        exit
+    fi
+    if [ -n "${MAIN_ORG_FILE}" ]; then
+        bootstrapOrgConfigPath="${MAIN_ORG_FILE}"
+        bootstrapOrgConfigFile=$(basename "${bootstrapOrgConfigPath}")
+    fi
 
-      for org in ${orgs[@]}; do
-           eval $(connectOrgMachine "${org}")
-           env | grep DOCKER
-          ./clean.sh all
-      done
-      echo "Cleaned up"
 
-      for org in ${orgs[@]}; do
-          eval $(connectOrgMachine "${org}")
-          env | grep DOCKER
-          NO_CLEAN=true ./deploy.sh ${org}
-      done
-    unsetActiveOrg
+    printInfo   "Deploing network for [${DEPLOYMENT_TARGET}] target." \
+                "\${DOCKER_REGISTRY}: [${DOCKER_REGISTRY}]" \
+                "\${MULTIHOST}: [${MULTIHOST}]" \
+                "Main org config: ${bootstrapOrgConfigPath}"
 
+    sleep 2
+
+    local restOrgsConfPathes=$(ls -1 "${configDirPath}"| grep -E "_env$" | grep -v "${bootstrapOrgConfigFile}"| xargs -I {} echo "${configDirPath}/{}")
+    pushd "$BASEDIR/../../" >/dev/null
+        cleanOrg "${bootstrapOrgConfigPath}"
+        cleanNetwork "${restOrgsConfPathes}"
+
+        deployOrg "${bootstrapOrgConfigPath}"
+        export BOOTSTRAP_IP=${MY_IP} #TODO: refactor to common-test-env
+        deployNetwork "${restOrgsConfPathes}"
+
+        unsetActiveOrg
     popd >/dev/null
 }
 
-function envSubstWithDefualts() {
-    local file
 
-    file="${1}"
-    xargs -a "${file}" -I{} -d'\n' bash -c 'echo "{}"'
+function cleanOrg() {
+    local confPath="${@}"
+    local org=$(getVarFromEnvFile ORG "${confPath}")
+    local domain=$(getVarFromEnvFile DOMAIN "${confPath}")
+
+    connectOrgMachine ${org} ${domain}
+    printInfo "Cleaning org ${confPath}"
+    ./clean.sh all
+}
+
+function deployOrg() {
+    local confPath="${@}"
+    local org=$(getVarFromEnvFile ORG "${confPath}")
+    local domain=$(getVarFromEnvFile DOMAIN "${confPath}")
+
+    connectOrgMachine ${org} ${domain}
+    setSpecificEnvVars ${org} ${domain}
+
+    printInfo "Deploy Fabric version: ${FABRIC_MAJOR_VERSION}" \
+                  "Using config file: ${confPath}" \
+                  "\${MY_IP}: ${MY_IP}" \
+                  "\${BOOTSTRAP_IP}: ${BOOTSTRAP_IP}" \
+                  "\${FABRIC_STARTER_HOME}: ${FABRIC_STARTER_HOME}"
+
+    printInfo "Deploing org ${confPath}"
+    NO_CLEAN=true ./deploy.sh "${confPath}"
+}
+
+function cleanNetwork() {
+    local restOrgsConfPathes=${@}
+    local confPath
+
+    for confPath in ${restOrgsConfPathes[@]}; do
+         cleanOrg "${confPath}"
+    done
+    printInfo "Cleaned up"
+}
+
+function deployNetwork() {
+    local restOrgsConfPathes=${@}
+    local confPath
+
+    for confPath in ${restOrgsConfPathes[@]}; do
+        deployOrg "${confPath}"
+    done
+    printInfo "Orgs deployed"
+}
+
+function tryNetworkCustomScript() {
+    local configDirPath="${1}"
+    local scriptName="${2}"
+
+    if [ -f "${configDirPath}/${scriptName}" ]; then
+        "${configDirPath}/${scriptName}"
+        if [ $? != 0 ]; then
+            printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${configDirPath}/${scriptName}${NORMAL} script returned non-zero exit code."
+            exit
+        fi
+    fi
 }
 
 
-function createOrgEnvFiles() {
-
-  local first_org=${1}
-  local bootstrap_ip_val=$(getOrgIp "${first_org}")
-  local bootstrap_api_port_val=4000
-  local bootstrap_service_url='http'
-  local orderer_type='SOLO'
-  local orderer_port=7050
-  local orderer_www_port=79
-  local orderer_name='orderer'
-  local api_port=4000
-  local www_port=80
-  local ca_port=7054
-  local peer0_port=7051
-  local ldap_port_http=6080
-  local ldap_port_https=6433
-  local orderer_general_listenport=7050
-
-  for org in ${@}; do
-    local result
-    local fabric_starter_home
-    local bootstrap_ip="${bootstrap_ip_val}"
-    local bootstrap_api_port="${bootstrap_api_port_val}"
-
-    fabric_starter_home=$(getFabricStarterHome "${org}")
-
-    if [[ "${org}" == "${first_org}" ]]; then
-        bootstrap_ip=''
-        bootstrap_api_port=''
-    fi
-
-    result=$(ORG=${org} \
-    DOMAIN=${DOMAIN} \
-    MY_IP=$(getOrgIp ${org}) \
-    API_PORT=${api_port} \
-    WWW_PORT=${www_port} \
-    BOOTSTRAP_IP=${bootstrap_ip} \
-    BOOTSTRAP_API_PORT=${bootstrap_api_port} \
-    BOOTSTRAP_SERVICE_URL=${bootstrap_service_url} \
-    ORDERER_TYPE=${orderer_type} \
-    ORDERER_PORT=${orderer_port} \
-    ORDERER_WWW_PORT=${orderer_www_port} \
-    ORDERER_NAME=${orderer_name} \
-    CA_PORT=${ca_port} \
-    PEER0_PORT=${peer0_port} \
-    LDAP_PORT_HTTP=${ldap_port_http} \
-    LDAP_PORT_HTTPS=${ldap_port_https} \
-    FABRIC_STARTER_HOME=${fabric_starter_home} \
-    ORDERER_GENERAL_LISTENPORT=${orderer_general_listenport} \
-    envSubstWithDefualts "org_env_sample"  > "${org}"_env)
-
-    if [ -n ${DONT_INCREASE_PORTS} ]; then
-        api_port=$((api_port + 1))
-        www_port=$((www_port + 1))
-        ca_port=$((ca_port + 1))
-        peer0_port=$((peer0_port + 1000))
-        ldap_port_http=$((ldap_port_http + 100))
-        ldap_port_https=$((ldap_port_https + 100))
-    fi
-
-
-  done
- }
-
- main ${@}
+main ${@}

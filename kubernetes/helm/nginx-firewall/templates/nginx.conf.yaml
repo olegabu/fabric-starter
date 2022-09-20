@@ -1,0 +1,5 @@
+
+nginx.conf:
+{{  tpl (.Files.Get "conf/nginx.conf") . | indent 4 }}
+
+

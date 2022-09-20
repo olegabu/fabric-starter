@@ -1,30 +1,26 @@
 #!/usr/bin/env bash
-env|sort
-echo ---
 
 function main() {
-    copyTemplatesToBeAvailableByNginxContainers
-    generateCertificates
+    local outputRootDir=${1:-/certs/}
+    local templatesDir=${2:-/etc/hyperledger/templates}
+    generateCertificates "$outputRootDir" "$templatesDir"
 }
 
 function generateCertificates() {
-    if [ ! -f '/certs/public.crt' ]; then
-        openssl req -new -newkey rsa:4096 -x509 -sha256 -days ${CERT_DAYS} -nodes -out /certs/public.crt -keyout /certs/private.key -config /crypto-config/templates/openssl-cert.conf;
+    local outputRootDir=${1:?Output dir is required}
+    local templatesDir=${2:?Templates dir is required}
+
+    if [ ! -f "${outputRootDir}/public.crt" ]; then
+        openssl req -new -newkey rsa:4096 -x509 -sha256 -days ${CERT_DAYS:-365} -nodes -out /certs/public.crt -keyout /certs/private.key -config "${templatesDir}/openssl-cert.conf";
     else
-        echo "using exisiting /certs/public.crt"
+        echo "Using existing certs in `ls ${outputRootDir}`"
     fi
     echo "public.crt:"
-    cat /certs/public.crt
-    echo "private.key:"
-    cat /certs/private.key
+    cat "${outputRootDir}/public.crt"
+
+    mkdir -p "${outputRootDir}/${ORG:-org1}.${DOMAIN:-example.com}"
+    cp "${outputRootDir}/public.crt" "${outputRootDir}/${ORG:-org1}.${DOMAIN:-example.com}"
+    cp "${outputRootDir}/private.key" "${outputRootDir}/${ORG:-org1}.${DOMAIN:-example.com}"
 }
 
-function copyTemplatesToBeAvailableByNginxContainers() {
-    echo "copy Templates To Be Available By Nginx Container"
-    set -x
-    cp -r /etc/hyperledger/templates /crypto-config/
-    ls /crypto-config/templates
-    set +x
-}
-
-main
+main $@

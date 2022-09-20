@@ -1,22 +1,34 @@
 ARG DOCKER_REGISTRY
 ARG FABRIC_VERSION
 ARG FABRIC_STARTER_VERSION
-FROM ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-tools:${FABRIC_VERSION:-1.4.9}
+FROM ${DOCKER_REGISTRY:-docker.io}/hyperledger/fabric-tools:${FABRIC_VERSION:-1.4.9} as fabrictools
 
-RUN apt-get update && apt-get install -y \
-    gettext-base \
-    iputils-ping \
+
+#FROM node:12-alpine as node_base
+RUN apk update \
+    && apk add \
+    bash \
+    busybox-extras \
+    curl \
     jq \
-    nano \
+    gettext \
+    openssl \
     tree \
-    telnet \
-    vim \
-  && rm -rf /var/lib/apt/lists/*
+    vim
+
+# copy fabic executables/configs
+#COPY --from=fabrictools /usr/local/bin/cryptogen /usr/local/bin
+#COPY --from=fabrictools /usr/local/bin/configtxgen /usr/local/bin
+#COPY --from=fabrictools /usr/local/bin/configtxlator /usr/local/bin
+#COPY --from=fabrictools /usr/local/bin/peer /usr/local/bin
+#COPY --from=fabrictools /etc/hyperledger/fabric /etc/hyperledger/fabric
+
 
 COPY templates /etc/hyperledger/templates
 COPY container-scripts /etc/hyperledger/container-scripts
 COPY docker-compose*.yaml /etc/hyperledger/
 COPY raft /etc/hyperledger/raft
+COPY https /etc/hyperledger/https
 COPY ordering-start.sh /etc/hyperledger/
 
 

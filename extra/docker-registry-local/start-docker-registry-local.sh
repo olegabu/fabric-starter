@@ -4,6 +4,7 @@
 source $BASEDIR/../../.env
 : ${FABRIC_VERSION:="1.4.9"}
 : ${FABRIC_STARTER_VERSION:="latest"}
+: ${FABRIC_CA_VERSION:=1.5}
 : ${JAVA_RUNTIME_VERSION:="latest"}
 
 : ${DOCKER_REGISTRY:=docker.io}
@@ -26,12 +27,13 @@ dockerImages=(\
     "hyperledger/fabric-ccenv:${FABRIC_VERSION}" \
     "hyperledger/fabric-orderer:${FABRIC_VERSION}" \
     "hyperledger/fabric-peer:${FABRIC_VERSION}" \
-    "hyperledger/fabric-ca:${FABRIC_VERSION}" \
+    "hyperledger/fabric-ca:${FABRIC_CA_VERSION}" \
     "hyperledger/fabric-couchdb" \
     "nginx" \
     "${FABRIC_STARTER_REPOSITORY}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}" \
     "${FABRIC_STARTER_REPOSITORY}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}"
 #    "apolubelov/fabric-scalaenv:${JAVA_RUNTIME_VERSION:-latest}"
+# "hyperledger/fabric-nodeenv:${FABRIC_VERSION}" \
     )
 
 function checkError() {
@@ -41,8 +43,8 @@ function checkError() {
 
 for image in "${dockerImages[@]}"
 do
-    docker pull ${DOCKER_REGISTRY}/${image}
-    checkError
+#    docker pull ${DOCKER_REGISTRY}/${image}
+    #checkError
     docker tag ${DOCKER_REGISTRY}/${image} "${DOCKER_REGISTRY_LOCAL}/${image}"
     checkError
     docker push ${DOCKER_REGISTRY_LOCAL}/${image}

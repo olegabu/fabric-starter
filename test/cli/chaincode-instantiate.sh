@@ -5,10 +5,11 @@ source "${BASEDIR}"/../libs/libs.sh
 
 channelName=${1}
 org=${2}
+chaincodeName=${3:-$(getTestChaincodeName ${channelName})}
 
 printToLogAndToScreenCyan "\nInstantiate test chaincode in [${channelName}] by [${org}]"
 
 setCurrentActiveOrg ${org}
-instantiateTestChaincodeCLI ${channelName} ${org}
+result=$(runCLIPeer ${org} "./container-scripts/network/chaincode-instantiate.sh ${channelName} ${chaincodeName}" )
 
-printResultAndSetExitCode "Test chaincode instantiated in [${channelName}] by [${org}]"
+printResultAndSetExitCode "[${chaincodeName}] chaincode instantiated in [${channelName}] by [${org}]"

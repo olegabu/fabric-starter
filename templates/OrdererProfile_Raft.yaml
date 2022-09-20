@@ -1,6 +1,7 @@
     Raft:
-      Capabilities:
-        <<: *ChannelCapabilities
+#      Capabilities:
+#        <<: *ChannelCapabilities
+      <<: *ChannelDefaults
       Orderer:
         <<: *OrdererDefaults
         OrdererType: etcdraft
@@ -14,7 +15,7 @@
           # replicated under the Orderer.Addresses key above.
           Consenters:
     #        - Host: ${ORDERER_NAME}.${ORDERER_DOMAIN}
-    #          Port: ${RAFT0_PORT}
+    #          Port: ${RAFT0_CONSENTER_PORT}
     #          ClientTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
     #          ServerTLSCert: ordererOrganizations/${ORDERER_DOMAIN}/orderers/${ORDERER_NAME}.${ORDERER_DOMAIN}/tls/server.crt
            %RAFT_CONSENTERS%
@@ -39,8 +40,14 @@
             Type: ImplicitMeta
             Rule: "ANY Writers"
 
-
+      Application:
+        <<: *ApplicationDefaults
+        Organizations:
+          - <<: *firstOrg
+            Policies:
+              <<: *OrgPolicies
       Consortiums:
         SampleConsortium:
           Organizations:
+             - <<: *firstOrg
     #            - *OrdererOrg

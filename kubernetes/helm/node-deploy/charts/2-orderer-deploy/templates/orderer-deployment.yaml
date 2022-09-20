@@ -1,0 +1,90 @@
+{{ range $ordererName := split "," .Values.ordererNames }}
+  {{- $ordererValues := dict "ordererName" $ordererName "domain" $.Values.domain "ordererDomain" $.Values.ordererDomain "certificatePathes" $.Values.orderer.certificatePathes "Values" (dict "ordererName" $ordererName) -}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+  labels:
+    app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+spec:
+  selector:
+    matchLabels:
+      app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      labels:
+        app: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+    spec:
+      volumes:
+        - name: genesis-block
+          secret:
+            secretName: genesis-block-{{ $.Values.org }}
+
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: orderer-certs-{{ include "orderer.nameDomain" $ordererValues }}
+                  items:
+                    {{- include "certificates.decode" (mergeOverwrite (deepCopy $) $ordererValues) | nindent 12 }}
+
+      containers:
+        - name: orderer
+          ports:
+            - name: ord-start-port
+              containerPort: 7050
+              protocol: TCP
+            - name: health-port
+              containerPort: 9090
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+            - name: genesis-block
+              mountPath: /etc/hyperledger/channel-artifacts
+
+          image: >-
+            {{ tpl $.Values.images.orderer $ }}
+          envFrom:
+            - configMapRef:
+                name: common-{{ $.Values.org }}
+            - configMapRef:
+                name: orderer-{{ include "orderer.nameDomain" $ordererValues }}
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default "db-password" $.Values.dbPasswordSecret }}
+                  optional: true
+                  key: password
+
+            - name: ORDERER_POSTGRESLEDGER_DATASOURCENAME
+              value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
+            - name: ORDERER_CONSENSUS_POSTGRES_DATASOURCENAME
+              value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
+
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 3
+            failureThreshold: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 1
+            periodSeconds: 20
+
+          {{- include "resources" (merge (deepCopy $) $.Values.resources.orderer)  | nindent 4 }}
+      {{- include "external-hosts" $ | nindent 0 }}
+
+
+{{ end }}

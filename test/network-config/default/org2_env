@@ -1,0 +1,29 @@
+export ORG=org2
+export DOMAIN=example.com
+#--------------------------------------------
+export MY_IP=${MY_IP}
+#--------------------------------------------
+export BOOTSTRAP_IP=${BOOTSTRAP_IP}
+export BOOTSTRAP_EXTERNAL_PORT=4000
+export BOOTSTRAP_ORG_DOMAIN=
+#--------------------------------------------
+export ORDERER_TYPE=SOLO
+export ORDERER_PORT=7050
+export ORDERER_WWW_PORT=79
+#export ORDERER_DOMAIN=osn-org2.example.com
+#export ORDERER_GENERAL_LISTENPORT=7050
+export ORDERER_NAME=orderer
+#--------------------------------------------
+export ENROLL_SECRET=adminpw
+#--------------------------------------------
+export API_PORT=4001
+export WWW_PORT=81
+export SDK_PORT=9080
+export TLS_CA_PORT=8055
+export CA_PORT=7154
+export PEER0_PORT=8051
+export EXTERNAL_COMMUNICATION_PORT=1443
+export LDAP_PORT_HTTP=6180
+export LDAP_PORT_HTTPS=6533
+#--------------------------------------------
+#export CORE_CHAINCODE_JAVA_RUNTIME=skilpio/fabric-javaenv

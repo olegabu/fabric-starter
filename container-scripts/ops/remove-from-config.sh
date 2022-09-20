@@ -9,7 +9,7 @@ channel=${2:-${SYSTEM_CHANNEL_ID}}
 
 txTranslateChannelConfigBlock ${channel}
 
-removeObjectFromChannelConfig ${channel} 'crypto-config/configtx/config.json' "$jsonPath"
+removeObjectFromChannelConfig ${channel} "${GENERATE_DIR}/configtx/config.json" "$jsonPath"
 
 createConfigUpdateEnvelope ${channel}
 

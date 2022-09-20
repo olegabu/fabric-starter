@@ -6,16 +6,22 @@ source "${BASEDIR}"/../libs/libs.sh
 channelName=${1}
 org=${2}
 
-printToLogAndToScreenCyan "\nInstalling test chaincode in [${org}]"
+chaincodeInitName=${CHAINCODE_PREFIX:-reference}
+chaincodeName=${3:-"$(getTestChaincodeName ${channelName})"}
+version=${4:-'1.0'}
+lang=${5:-node}
+path=${6:-"${BASEDIR}/../resources/chaincode/${FABRIC_MAJOR_VERSION}x/${lang}/${chaincodeInitName}/."}
 
+printToLogAndToScreenCyan "\nInstalling chaincode in [${org}] from $path"
 setCurrentActiveOrg ${org}
 
+peer0Name=$(getPeerName ${orgAdd})
+
 printToLogAndToScreenCyan "\nCopying test chaincode to [${org}]"
+copyDirToContainer cli.${peer0Name}  ${org} ${DOMAIN:-example.com} "${path}" "${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName}"
 
-copyTestChiancodeCLI ${channelName} ${org}
-
-printToLogAndToScreenCyan "\nInstalling [$(getTestChaincodeName ${channelName})] chaincode in [${org}]"
-
-installTestChiancodeCLI ${channelName} ${org}
+printToLogAndToScreenCyan "\nInstalling [${chaincodeName}] chaincode in [${org}]"
+result=$(runCLIPeer ${org} \
+  "./container-scripts/network/chaincode-install.sh '${chaincodeName}' 1.0 ${VERSIONED_CHAINCODE_PATH}/${lang}/${chaincodeName} ${lang}")
 
 printResultAndSetExitCode "Test chaincode installed in [${org}]"

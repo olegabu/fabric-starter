@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ tpl .Values.peerOrgName . }}
+spec:
+  ports:
+    - name: peerport
+      protocol: TCP
+      port: {{ .Values.peerPort }}
+      targetPort: "peer-start-port"
+    - name: chaincodeserverport
+      protocol: TCP
+      port: 7052
+      targetPort: 7052
+  selector:
+    app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"

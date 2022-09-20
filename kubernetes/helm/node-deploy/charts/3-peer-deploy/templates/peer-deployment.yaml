@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+  labels:
+    app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+    name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+spec:
+  selector:
+    matchLabels:
+      app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+  replicas: 1 {{/* ${{REPLICAS}} */}}
+  template:
+    metadata:
+      labels:
+        app: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+    spec:
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: certs-{{ .Values.org }}
+                  items:
+                  {{- include "certificates.decode" (merge (deepCopy .) .Values.peer) | nindent 12 }}
+
+        - name: fabric-core-yaml
+          configMap:
+            name: fabric-core-yaml-cm
+
+        - name: external-builders
+          configMap:
+            name: external-builers-cm
+            defaultMode: 0777
+
+      containers:
+        - name: peer
+          ports:
+            - name: peer-start-port
+              containerPort: 7051
+              protocol: TCP
+            - name: health-port
+              containerPort: 9443
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/hyperledger/crypto-config #/ordererOrganizations/${DOMAIN}
+            - name: fabric-core-yaml
+              mountPath: /etc/hyperledger/fabric
+            - name: external-builders
+              mountPath: /external-builders/bin
+
+          image: >-
+            {{ tpl .Values.images.peer . }}
+          envFrom:
+            - configMapRef:
+                name: common-{{ .Values.org }}
+            - configMapRef:
+                name: "peer-{{ .Values.peerName }}-{{ .Values.org }}"
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default "db-password" .Values.dbPasswordSecret }}
+                  optional: true
+                  key: password
+            - name: CORE_PEER_POSTGRES_DATASOURCENAME
+              value: user=$(DB_USERNAME) dbname=$(DB_NAME) password=$(DB_PASSWORD) host=$(DB_HOST) port=$(DB_PORT) sslmode=disable
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 9443
+            initialDelaySeconds: 3
+            failureThreshold: 10
+            periodSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9443
+            periodSeconds: 20
+
+          {{- include "resources" (merge (deepCopy .) .Values.resources.peer) | nindent 4 }}
+      {{- include "external-hosts" (merge (deepCopy .) .Values.resources.rest) | nindent 0 }}

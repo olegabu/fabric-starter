@@ -86,7 +86,7 @@ function virtualboxHostIpAddr() {
 
 function runningDockerContainer() {
     local containerName=${1:?Container name expected}
-    echo `docker ps -q -f name=${containerName}`
+    echo `docker ps -q -a -f name=${containerName}`
 }
 
 function localHostRunningDockerContainer() {

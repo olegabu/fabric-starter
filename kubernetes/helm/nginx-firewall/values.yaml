@@ -1,0 +1,22 @@
+# from root values.yaml:
+#peerOrgName:
+#peerPort:
+#ordererPort:
+
+cluster:
+  domain: default
+
+edge:
+  ip:
+  resolver:
+  domain: edge
+  ordererPort: 443
+  peerPort: 443
+
+externalOrgs:
+  peerPort: 7051
+  ordererPort: 7050
+
+nginx:
+  logPath: #"/opt/nginx/logs/error.log debug"
+  pidPath: #"/opt/nginx/logs/nginx.pid"

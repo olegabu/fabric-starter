@@ -11,11 +11,8 @@ JWT=$(APIAuthorize ${org})
 
 
 if [ $? -eq 0 ]; then
-    #setCurrentActiveOrg ${org}
-#    addOrgToChannelAPI ${channelName} ${org} ${JWT} ${orgAdd}
     inviteOrgToDefaultConsortiumAPI ${org} ${orgInvite} ${JWT}
     printResultAndSetExitCode "Organization [${orgInvite}] invited to default consortium by [${org}]"
-    #unsetActiveOrg
 else
     exit 1
 fi
