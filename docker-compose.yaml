@@ -398,7 +398,7 @@ services:
 
   sdk:
     container_name: sdk.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-2x}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-latest}
     restart: always
     ports:
       - ${SDK_PORT:-8080}:8080
