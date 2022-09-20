@@ -38,7 +38,7 @@ services:
 
   pre-install:
     container_name: pre-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-snapshot-0.13-2.3}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -80,7 +80,7 @@ services:
 
   post-install:
     container_name: post-install.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-snapshot-0.13-2.3}
     environment:
       - ORG=${ORG:-org1}
       - DOMAIN=${DOMAIN:-example.com}
@@ -265,7 +265,7 @@ services:
 
   cli.peer:
     container_name: cli.${PEER_NAME:-peer0}.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-tools-extended:${FABRIC_STARTER_VERSION:-snapshot-0.13-2.3}
     restart: always
     tty: true
 #    env_file:
@@ -317,7 +317,7 @@ services:
   # fabric-rest api server
   api:
 #    build: ../fabric-starter-rest
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-starter-rest:${FABRIC_STARTER_VERSION:-snapshot-0.13-2.3}
     restart: always
     container_name: api.${ORG:-org1}.${DOMAIN:-example.com}
     environment:
@@ -398,7 +398,7 @@ services:
 
   sdk:
     container_name: sdk.${ORG:-org1}.${DOMAIN:-example.com}
-    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-stable}
+    image: ${DOCKER_REGISTRY:-docker.io}/${FABRIC_STARTER_REPOSITORY:-olegabu}/fabric-sdk-api:${FABRIC_STARTER_VERSION:-snapshot-0.13-2.3}
     restart: always
     ports:
       - ${SDK_PORT:-8080}:8080

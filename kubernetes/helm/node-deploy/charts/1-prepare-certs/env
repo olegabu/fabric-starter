@@ -2,7 +2,7 @@ export ORG=org1
 export DOMAIN=default
 export ORDERER_DOMAIN=${DOMAIN}
 
-export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-stable}
+export FABRIC_STARTER_VERSION=${FABRIC_STARTER_VERSION:-snapshot-0.13-2.3}
 
 export ORDERER_NAMES=orderer
 #:7050,raft1:7050,raft2:7050
