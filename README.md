@@ -1,5 +1,7 @@
 # Starter Application for Hyperledger Fabric
 
+*(!) The project has switched to Hyperledger Fabric v2.3. For using previous versions see **snapshot-xxx** branches*
+
 Create a network to jump start development of your decentralized application on 
 [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) platform.
 
