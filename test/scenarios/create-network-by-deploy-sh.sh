@@ -105,7 +105,7 @@ function tryNetworkCustomScript() {
     if [ -f "${configDirPath}/${scriptName}" ]; then
         "${configDirPath}/${scriptName}"
         if [ $? != 0 ]; then
-            printError "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${configDirPath}/${scriptName}${NORMAL} script returned non-zero exit code."
+            printERR "ERROR:${NORMAL} The ${BRIGHT}${GREEN}${configDirPath}/${scriptName}${NORMAL} script returned non-zero exit code."
             exit
         fi
     fi
