@@ -8,7 +8,6 @@ main() {
     export TEST_LAUNCH_DIR=${TEST_LAUNCH_DIR:-${TEST_ROOT_DIR}}
     export TIMEOUT_CHAINCODE_INSTANTIATE=${TIMEOUT_CHAINCODE_INSTANTIATE:-150}
 
-#    export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
@@ -23,11 +22,7 @@ main() {
         export BASE64_UNWRAP_CODE="| tr -d '\n'"
     fi
 
-#     pushd ${FABRIC_DIR} > /dev/null
-#     source ./lib/util/util.sh
-#     source ./lib.sh
-#     popd > /dev/null
-    
+
     export FSTEST_LOG_FILE="${TEST_LAUNCH_DIR}/fs_network_test.log"
     
     DEBUG=${DEBUG:-false}
