@@ -8,7 +8,6 @@ main() {
     export TEST_LAUNCH_DIR=${TEST_LAUNCH_DIR:-${TEST_ROOT_DIR}}
     export TIMEOUT_CHAINCODE_INSTANTIATE=${TIMEOUT_CHAINCODE_INSTANTIATE:-150}
 
-#    export PEER_NAME=${PEER_NAME:-peer0}
     export API_NAME=${API_NAME:-api}
     export CLI_NAME=${CLI_NAME:-cli}
 
@@ -23,11 +22,7 @@ main() {
         export BASE64_UNWRAP_CODE="| tr -d '\n'"
     fi
 
-    pushd ${FABRIC_DIR} > /dev/null
-    source ./lib/util/util.sh
-    source ./lib.sh
-    popd > /dev/null
-    
+
     export FSTEST_LOG_FILE="${TEST_LAUNCH_DIR}/fs_network_test.log"
     
     DEBUG=${DEBUG:-false}
@@ -64,7 +59,7 @@ function checkArgsPassed() {
     
       if [ ${numArgsRequired} -gt ${numArgsPassed} ];
       then
-           printError "\nRequired arguments: ${WHITE}${BRIGHT}${argsReq}"
+           printERR "\nRequired arguments: ${WHITE}${BRIGHT}${argsReq}"
            exit 1
       fi
 }
@@ -397,7 +392,7 @@ function printYellowBox() {
 
 function printExitCode() {
     local message=${2:-"Exit code:"}
-    if [ "$1" = "0" ]; then printColoredText "${BRIGHT}${GREEN}" "${message} $1"; else printError "${message} $1"; fi
+    if [ "$1" = "0" ]; then printColoredText "${BRIGHT}${GREEN}" "${message} $1"; else printERR "${message} $1"; fi
 }
 
 
@@ -417,7 +412,7 @@ function printResultAndSetExitCode() {
         if [ "${NO_RED_OUTPUT}" = true ]; then
             printOK "Exit code: ${exitCode}" | printToLogAndToScreen
         else
-            printError "ERROR! Exit code: ${exitCode}" | printToLogAndToScreen
+            printERR "ERROR! Exit code: ${exitCode}" | printToLogAndToScreen
         fi
         setExitCode false
     fi
@@ -879,7 +874,7 @@ function prepareChaincode() {
             local exitCode=$?
             printDbg "Result: ${result}"
 
-            local peer0Name=$(getPeerName ${orgAdd})
+            local peerName=$(getPeerName ${org})
             dockerCopyFileFromContainer cli.${peerName} ${org} $(getOrgDomain ${org}) ${chaincodeSourcePathInContainer}/../${chaincodeName}.tar.gz ${tmpDir}
             chaincodeArchiveFilePath=${tmpDir}/${chaincodeName}.tar.gz
     else
