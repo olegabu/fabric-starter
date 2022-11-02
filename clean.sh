@@ -43,10 +43,10 @@ fi
 
 docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -f crypto-config/hosts; rm -rf crypto-config/hfc-*; exit 0"
 
-if [[ "$all" == "certs" || -z "$scope"  ]]; then
+if [[ "$scope" == "certs" || -z "$scope"  ]]; then
     docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf crypto-config/* /certs/*; exit 0"
 fi
-if [[ "$all" == "data" || -z "$scope" ]]; then
+if [[ "$scope" == "data" || -z "$scope" ]]; then
     docker-compose -f docker-compose-clean.yaml run --rm cli.clean sh -c "rm -rf data/* appstore/*; exit 0;"
 fi
 
