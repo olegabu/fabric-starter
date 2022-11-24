@@ -28,12 +28,12 @@ The following sections describe Fabric Starter possibilites in more details:
 
 - [Prerequisites](#install)
 - [Network with 1 organization (and orderer) for development](#example1org)
-- [Several organizations on one (local) host in multiple docker containers.](#example3org)
-- [REST API to query and invoke chaincodes.](#restapi)
-- [Getting closer to production. Multiple hosts deployment with `docker-machine`. Deployment to clouds.](#multihost)
+- [Adding other organizations to the Network](#example3org)
+- [REST API to query and invoke chaincodes](#restapi)
 - [Join to an External Network](#joinexternal)
 - [Network Governance. Invite-based and Majority-based Governance](#network-governance)
 - [Consensus Types. RAFT consensus algorithm](#consensus-types)
+- [Prepare and install chaincode packages ](#chaincode-packages)
 - [Development\Release cycle](#releasecycle)
 
 
@@ -46,7 +46,7 @@ See [Prerequisites](docs/install.md)
 
 <a name="setversion"></a>
 ## Using a particular version of Hyperledger Fabric
-By default Fabric starter uses the 1.4.9 version of HL Fabric. If you want to deploy network with another version of HL Fabric then export it in the 
+By default Fabric starter uses the 2.3 version of HL Fabric. If you want to deploy network with another version of HL Fabric then export it in the 
 FABRIC_VERSION environment variable, e.g.:
 ```bash
 export FABRIC_VERSION=1.4.8
@@ -61,16 +61,12 @@ See [One Org Network](docs/network-one-org.md)
 
 <a name="example3org"></a>
 ## Create a local network of 3 organizations
-See [Three local Orgs Network](docs/network-three-org.md)
+See [Three local Orgs Network](docs/network-add-orgs.md)
 
 
 <a name="restapi"></a>
 ## Use REST API to query and invoke chaincodes
 See [Use REST Api](docs/rest-api.md)
-
-<a name="multihost"></a>
-## Multi host deployment
-See [Multi host deployment](docs/multihost.md)
 
 
 <a name="joinexternal"></a>
@@ -113,15 +109,38 @@ Consensus Types. RAFT consensus algorithm.
 By default Fabric Starter uses Solo type of consensus.
 To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
 
+<a name="chaincode-packages"></a>
+## Prepare and install chaincode packages
+
+- Fabric 1.x:
+
+Archive the chaincode directory:
+
+```zip -r ${zipArchive} ./${chaincodeFolder}/*```
+
+- Fabric 2.x:
+
+  At first it's necessary to prepare install package in the `cli.peer` container:
+  - copy source code  folder to `./chaincode` folder (as it's shared with the `cli` container)
+  - prepare package:
+      ```bash
+    docker exec -t cli.peer0.${ORG}.${DOMAIN} peer lifecycle chaincode \
+      package /opt/chaincode/${chaincodeName}.tar.gz --path /opt/chaincode/${chaincodeFolder} \
+      --lang node --label ${chaincodeName}_1.0
+      ```
+
+In UI install the prepared package and instantiate the chaincode
 
 <a name="releasecycle"></a>
 ## Releases\Snapshots cycle
 
-As this project doesn't have a defined release cycle yet we create 
-`snapshot-{version}-{fabric-version}` branches  
-when we see code is stable enough or before introducing major changes\new features.  
+As this project doesn't have a defined release cycle yet we create `stable`, 
+`hlf-{fabric-version}-snapshot-{version}` and `hlf-{fabric-version}-stable`
+branches when we see code is stable enough or before introducing major changes\new features.  
+Before the snapshot version 14 we used the `snapshot-{version}-{fabric-version}` template for branch names. 
 
-`Note`, the Hyperledger Fabric version which the snapshot depends on is defined in the `.env` file.  
+`Note`, the Hyperledger Fabric version and the Fabric Starter version which the snapshot 
+depends on are defined in the `.env` file.  
 Also this project uses _olegabu/fabric-starter-rest_ docker image which has 
 the same versioning approach but even updated docker image with the same label (e.g. latest)
 won't be pulled automatically if it exists in the local docker registry.   
@@ -129,7 +148,7 @@ You have to remove the old image manually (by `docker rmi -f olegabu/fabric-star
 
 
 The _`master`_ branch as well as potentially _`feature branches`_ are used for development.  
-`Master` is assigned to the _`latest`_ version of Fabric.
+`Master` is assigned to the _`latest`_ version of Fabric. (discuss)
 
 
 #### Currently issued branches are:
