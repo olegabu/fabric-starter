@@ -1,4 +1,4 @@
-# Create a network with one organization
+# Create a Network with one organization
 
 #### Environment vraiables
 

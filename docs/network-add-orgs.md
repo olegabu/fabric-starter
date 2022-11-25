@@ -1,6 +1,6 @@
-#Add other organization to Network
+# Add other organization to Network
 
-####Create a new organization
+#### Create a new organization
 
 For the new organization specify the environment in the org_env file: 
 ```bash
@@ -16,7 +16,7 @@ provide the BOOTSRAP_IP -- currently it's the IP address of the Network  _ordere
 See [Network with 1 organization (and orderer) for development](docs/network-one-org.md) for detailed environment
 description.
 
-####Join the Network
+#### Join the Network
 
 The new organization can be added to the consortium by a member of this network.
 Then the new organization passes the ip address of the newly deployed node to the network's member 

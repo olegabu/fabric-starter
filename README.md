@@ -118,7 +118,7 @@ You have to remove the old image manually (by `docker rmi -f olegabu/fabric-star
 
 
 The _`master`_ branch as well as potentially _`feature branches`_ are used for development.  
-`Master` is assigned to the _`latest`_ version of Fabric. (discuss)
+`Master` is assigned to the _`latest`_ version of Fabric.
 
 
 #### Currently issued branches are:
