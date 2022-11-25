@@ -75,7 +75,7 @@ To use LDAP directory services see [Use LDAP](docs/ldap.md)
 
 
 <a name="consensus-types"></a>
-##Consensus Types. RAFT consensus algorithm.
+## Consensus Types. RAFT consensus algorithm.
 By default Fabric Starter uses Solo type of consensus.
 To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
 
