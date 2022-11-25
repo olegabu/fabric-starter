@@ -22,7 +22,7 @@ export PEER_ADDRESS_PREFIX=peer0-
 export BOOTSTRAP_PEER_PREFIX=peer0-
 ```
 
-Also see [Use LDAP](docs/ldap.md) for LDAP-specific environment variables.
+Also see [Use LDAP](ldap.md) for LDAP-specific environment variables.
 
 
 #### Organization start script
