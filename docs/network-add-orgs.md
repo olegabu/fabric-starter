@@ -1,4 +1,4 @@
-# Add other organization to Network
+# Add organizations to Network
 
 #### Create a new organization
 

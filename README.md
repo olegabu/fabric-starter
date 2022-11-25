@@ -28,7 +28,7 @@ The following sections describe Fabric Starter possibilites in more details:
 
 - [Prerequisites](#install)
 - [Network with one organization (and orderer) for development](#example1org)
-- [Adding other organizations to the Network](#example3org)
+- [Adding other organizations to the Network](#addorgs)
 - [REST API to query and invoke chaincodes](#restapi)
 - [Using LDAP for user authentication and management](#restapi)
 - [Consensus Types. RAFT consensus algorithm](#consensus-types)
@@ -58,9 +58,9 @@ See [One Org Network](docs/network-one-org.md)
 
 
 
-<a name="example3org"></a>
-## Create a local network of 3 organizations
-See [Three local Orgs Network](docs/network-add-orgs.md)
+<a name="addorgs"></a>
+## Add other organizations to the Network
+See [Add organizations to Network](docs/network-add-orgs.md)
 
 
 <a name="restapi"></a>
