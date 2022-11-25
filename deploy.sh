@@ -11,7 +11,7 @@ AGENT_MODE=${AGENT_MODE}
 
 if [ -z "${DEV_MODE}" ]; then
     HTTPS_MODE=${HTTPS_MODE-1}
-    LDAP_ENABLED=${LDAP_ENABLED:-1}
+    export LDAP_ENABLED=${LDAP_ENABLED:-true}
     RENEW_IMAGES=${RENEW_IMAGES-1}
 fi
 
@@ -85,6 +85,8 @@ if [ -z "$NO_PEER" ]; then
     docker-compose -f docker-compose-preload-images.yaml up -d
     BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
         up -d --force-recreate ${AGENT_MODE:+ api www.peer }
+
+    docker exec -t ldap.${ORG:-org1}.${DOMAIN:-example.com} bash -c 'set -x; creatorsName=`slapcat|grep "creatorsName:"`; adminDN=${creatorsName:14}; ldapadd -x -D "${adminDN}" -w "${LDAP_ADMIN_PASSWORD}" -f /etc/hyperledger/crypto-config/ldap/admin.ldif'
     set +x
 
     if [ -z "${AGENT_MODE}" ]; then

@@ -25,6 +25,7 @@ services:
       - ./data/ldap/${ORG:-org1}.${DOMAIN:-example.com}/database:/var/lib/ldap
       - ./data/ldap/${ORG:-org1}.${DOMAIN:-example.com}/config:/etc/ldap/slapd.d
       - ./data/ldap/${ORG:-org1}.${DOMAIN:-example.com}/certs:/container/service/slapd/assets/certs
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ldap:/etc/hyperledger/crypto-config/ldap
     command: --loglevel trace
 
   ldapadmin:

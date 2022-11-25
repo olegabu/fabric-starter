@@ -1,0 +1,5 @@
+dn: cn=${ENROLL_ID},${LDAP_BASE_DN}
+objectclass: inetOrgPerson
+cn: ${ENROLL_ID}
+sn: ${ENROLL_ID}
+userPassword: ${ENROLL_SECRET}

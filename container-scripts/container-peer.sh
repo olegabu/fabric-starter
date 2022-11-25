@@ -26,8 +26,11 @@ function main() {
     echo "AGENT_MODE: ${AGENT_MODE}"
     if [ -z "${AGENT_MODE}" ]; then
         prepareLDAPBaseDN
+        truncate -s 0 "crypto-config/ca/fabric-ca-server-config-$ORG.yaml"
         envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/ca/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
+        truncate -s 0 "crypto-config/tls/fabric-ca-server-config-$ORG.yaml"
         envsubst < "templates/fabric-ca-server-template.yaml" >> "crypto-config/tls/fabric-ca-server-config-$ORG.yaml" #TODO:remove?
+        envsubst < "templates/ldap/admin-template.ldif" > "crypto-config/ldap/admin.ldif"
         generateCryptoMaterialIfNotExists
         renameSecretKey #TODO: ?
         copyMspToNginxSharedFolder
