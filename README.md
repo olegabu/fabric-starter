@@ -27,11 +27,10 @@ See also
 The following sections describe Fabric Starter possibilites in more details:
 
 - [Prerequisites](#install)
-- [Network with 1 organization (and orderer) for development](#example1org)
+- [Network with one organization (and orderer) for development](#example1org)
 - [Adding other organizations to the Network](#example3org)
 - [REST API to query and invoke chaincodes](#restapi)
-- [Join to an External Network](#joinexternal)
-- [Network Governance. Invite-based and Majority-based Governance](#network-governance)
+- [Using LDAP for user authentication and management](#restapi)
 - [Consensus Types. RAFT consensus algorithm](#consensus-types)
 - [Prepare and install chaincode packages ](#chaincode-packages)
 - [Development\Release cycle](#releasecycle)
@@ -69,43 +68,14 @@ See [Three local Orgs Network](docs/network-add-orgs.md)
 See [Use REST Api](docs/rest-api.md)
 
 
-<a name="joinexternal"></a>
-## Join to an External Network
-For `invite-based` blockchain-networks (see next chapter) new organization can be added to the consortium by a member of this network.
-The new organization need to obtain the BOOTSRAP_IP (currently it's the IP of the _orderer_ node) and deploy its own node with this IP.  
-```bash
-export BOOTSTRAP_IP=192.168.0.1
-#ORG=... DOMAIN=... docker-compose up
-```
-Then the new organization passes the ip address of the newly deployed node to the network's member and this member adds the organization to Consortium by it's administration dashboard.
-After that the new organization can create own channels, add other organizations to the own channels and even invite more organizations to the network itself.     
-
-<a name="network-governance"></a>
-## Network Governance. Invite-based and Majority-based Governance
-
-So now our network can be governed by itself (or to say it right by the network's members). 
-The first type of network-governance is `Invite-based`. With this type of deployment 
-any organization ((and not a central system administrator)) - member of the blockchain network can add new organization to consortium.
-
-To deploy such type of network export environment variable
-```bash
-export CONSORTIUM_CONFIG=InviteConsortiumPolicy
-```
-Start orderer:
-```bash
-WWW_PORT=81 WORK_DIR=./ docker-compose -f docker-compose-orderer.yaml -f docker-compose-orderer-multihost.yaml up -d
-```
-
-Then start an organization
-```bash
-MY_IP=192.168.99.yy BOOTSTRAP_IP=192.168.99.xx ORG=org1 MULTIHOST=true WORK_DIR=./ docker-compose -f docker-compose.yaml -f docker-compose-multihost.yaml -f docker-compose-api-port.yaml up -d 
-```
-
-`Majority` type of governance is coming.       
+<a name="ldapauth"></a>
+## Use LDAP for user authentication and management 
+By default Hyperledger Fabric Certification Authority center is used to manage user management and membership. 
+To use LDAP directory services see [Use LDAP](docs/ldap.md)
 
 
 <a name="consensus-types"></a>
-Consensus Types. RAFT consensus algorithm.
+##Consensus Types. RAFT consensus algorithm.
 By default Fabric Starter uses Solo type of consensus.
 To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
 

@@ -8,7 +8,7 @@ At first adjust the environment in the `org_env` file. Most of the environment v
 ```bash
 export ORG='Name of your organization'
 export DOMAIN='Domain of your organization'
-export MY_IP='External IP of the organization server'
+export MY_IP='External IP of the organization node server'
 ```    
 Some other variables:
 ORDERER_TYPE -- sets the consensus algorithm: SOLO, RAFT1, RAFT3
@@ -22,6 +22,9 @@ export PEER_ADDRESS_PREFIX_TEMPLATE=peer0-
 export PEER_ADDRESS_PREFIX=peer0-
 export BOOTSTRAP_PEER_PREFIX=peer0-
 ```
+
+Also see [Use LDAP](docs/ldap.md) for LDAP-specific environment variables.
+
 
 #### Organization start script
 To start the organization Network run
