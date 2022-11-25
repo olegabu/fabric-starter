@@ -104,8 +104,8 @@ In UI install the prepared package and instantiate the chaincode
 <a name="releasecycle"></a>
 ## Releases\Snapshots cycle
 
-As this project doesn't have a defined release cycle yet we create `stable`, 
-`hlf-{fabric-version}-snapshot-{version}` and `hlf-{fabric-version}-stable`
+As this project doesn't have a defined release cycle yet we create `stable`,
+`hlf-{fabric-version}-stable` and `hlf-{fabric-version}-snapshot-{version}` 
 branches when we see code is stable enough or before introducing major changes\new features.  
 Before the snapshot version 14 we used the `snapshot-{version}-{fabric-version}` template for branch names. 
 
