@@ -13,7 +13,7 @@ export BOOTSTRAP_IP='External IP of the first organization orderer node'
 Run the `./deploy-2x.sh` command to deploy and start the new organization. To become a member of the existing Network 
 provide the BOOTSRAP_IP -- currently it's the IP address of the Network  _orderer_ node.
 
-See  [Start an organization node](docs/network-node-start.md) for detailed environment
+See  [Start an organization node](network-node-start.md) for detailed environment
 description.
 
 #### Join the Network

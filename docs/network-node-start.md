@@ -33,7 +33,7 @@ To start the organization Network run
 ```
 
 One organization node is the smallest network itself that could be used for development purposes. 
-To add other organization nodes see [Add organizations to Network](docs/network-add-orgs.md).
+To add other organization nodes see [Add organizations to Network](network-add-orgs.md).
 
 To delete the organization run
 
