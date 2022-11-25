@@ -11,11 +11,11 @@ export DOMAIN='Domain of your organization'
 export MY_IP='External IP of the organization node server'
 ```    
 Some other variables:
-ORDERER_TYPE -- sets the consensus algorithm: SOLO, RAFT1, RAFT3
-ORDERER_DOMAIN -- choose ${DOMAIN} for SOLO or osn-${ORG}.${DOMAIN} for RAFT
+ORDERER_TYPE -- sets the consensus algorithm: `SOLO`, `RAFT1`, `RAFT3`
+ORDERER_DOMAIN -- choose `${DOMAIN}` for SOLO or `osn-${ORG}.${DOMAIN}` for RAFT
 
 Once it is required to separate peer0 name and org parts of the peer container name with some other symbol than dot,
-set all of these variables to peer0{separationSymbol} (e.g. 'peer0-')
+set all of these variables to `peer0{separationSymbol}` (e.g. 'peer0-')
 
 ```bash
 export PEER_ADDRESS_PREFIX_TEMPLATE=peer0-
