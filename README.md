@@ -117,24 +117,4 @@ won't be pulled automatically if it exists in the local docker registry.
 You have to remove the old image manually (by `docker rmi -f olegabu/fabric-starter-rest`).    
 
 
-The _`master`_ branch as well as potentially _`feature branches`_ are used for development.  
-`Master` is assigned to the _`latest`_ version of Fabric.
-
-
-#### Currently issued branches are:
-
-- master(development)
-- snapshot-0.5-1.4
-    - new org auto connect for invite type consortium
-    - new orgs dns register functionality
-    - use _fabric-starter-rest:snapshot-0.4-1.4_
-- snapshot-0.4-1.4
-    - auto-generate crypto configuration
-    - Invite type consortium
-    - BOOTSTRAP_IP for new node joining
-- snapshot-0.3-1.4
-    - use _fabric-starter-rest:snapshot-0.3-1.4_
-- snapshot-0.2-1.4
-    - use _fabric-starter-rest:snapshot-0.2-1.4_
-- snapshot-0.1-1.4
-    - start snapshot branching
+The _`master`_ branch as well as potentially _`feature branches`_ are used for development.
