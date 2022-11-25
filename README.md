@@ -54,7 +54,7 @@ export FABRIC_VERSION=1.4.8
 
 <a name="example1org"></a>
 ## Create a network with 1 organization for development
-See [One Org Network](docs/network-one-org.md)
+See [One Org Network](docs/network-initial-node.md)
 
 
 
