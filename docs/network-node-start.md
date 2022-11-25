@@ -1,4 +1,4 @@
-# Create a Network with one organization
+# Start an organization node 
 
 #### Environment vraiables
 
@@ -12,7 +12,6 @@ export MY_IP='External IP of the organization node server'
 ```    
 Some other variables:
 ORDERER_TYPE -- sets the consensus algorithm: `SOLO`, `RAFT1`, `RAFT3`
-ORDERER_DOMAIN -- choose `${DOMAIN}` for SOLO or `osn-${ORG}.${DOMAIN}` for RAFT
 
 Once it is required to separate peer0 name and org parts of the peer container name with some other symbol than dot,
 set all of these variables to `peer0{separationSymbol}` (e.g. 'peer0-')
@@ -33,7 +32,10 @@ To start the organization Network run
 ./deploy-2x.sh 
 ```
 
-To delete the Network run
+One organization node is the smallest network itself that could be used for development purposes. 
+To add another organization nodes see [Add organizations to Network](docs/network-add-orgs.md).
+
+To delete the organization run
 
 ```bash
 ./clean.sh 
