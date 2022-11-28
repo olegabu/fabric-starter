@@ -17,25 +17,13 @@ So after start the new organization will  become a member of the existing Networ
 See [Start an organization node](network-node-start.md) for detailed environment
 description.
 
-#### Join the Network 
+#### Add new organization to consortium
 
-By now the deployed Network is governed by itself (or to say it right by the network's members).
-This type of network-governance is called `Invite-based`. With this type of deployment
-any organization (and not a central system administrator), which is the member of the blockchain network can add new
-organizations to consortium. The new organization can be added to the consortium in the administration dashboard
-by providing it's node IP address.
+Members of the Network communicate with each other inside channels. The owner of the channel first creates a channel and
+then adds member organizations to it. To create a channel the owner organization must be a part of the consortium. 
+Only the network member with corresponding permissions can add organization to a consortium. In the network deployed by 
+Fabric Starter it is only the administrator of the first organization node. 
 
-
-After that the new organization can create own channels, add other organizations to the own channels and even invite
-more organizations to the network itself. 
-
-
-The network governance policy is defined by the CONSORTIUM_CONFIG environment variable. For the invite-based networks
-it should be set to `InviteConsortiumPolicy`:
-
-```bash
-export CONSORTIUM_CONFIG=InviteConsortiumPolicy
-```
-
-The `Majority` governance type is coming.
+To add a new organization to the consortium the administrator provides the IP address of the organization node and 
+the organization name in the administration dashboard.
 
