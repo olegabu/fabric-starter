@@ -13,16 +13,17 @@ export BOOTSTRAP_IP='External IP of the first organization orderer node'
 ...
 ```    
 
-So after start the new organization will  become a member of the existing Network. 
 See [Start an organization node](network-node-start.md) for detailed environment
 description.
 
+After the node starts, the new organization becomes a member of the existing Network, that is, 
+it participates in the `common` channel and the service chaincode along with the established connectivity. 
+Owners of other channels (i.e. those who created them) can add organization to their channels. 
+
 #### Add new organization to consortium
 
-Members of the Network communicate with each other inside channels. The owner of the channel first creates a channel and
-then adds member organizations to it. To create a channel the owner organization must be a part of the consortium. 
-Only the network member with corresponding permissions can add organization to a consortium. In the network deployed by 
-Fabric Starter it is only the administrator of the first organization node. 
+To allow organization to create a channel or install the chaincodes the organization has to be added 
+to the consortium. Currently, only the administrator of the first organization node can manage a consortium. 
 
 To add a new organization to the consortium the administrator provides the IP address of the organization node and 
 the organization name in the administration dashboard.
