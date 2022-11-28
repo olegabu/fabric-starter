@@ -17,10 +17,25 @@ So after start the new organization will  become a member of the existing Networ
 See [Start an organization node](network-node-start.md) for detailed environment
 description.
 
-#### Add new organization to consortium
+#### Join the Network 
 
-Consortium defines a set of organizations in the Network that can make transactions with each other. The main communication 
-mechanism in consortium is a channel. The new organization can be added to the consortium by the administrator 
-of existing organization in the administration dashboard providing the name of the new organization, and it's 
-node IP address. After that the new organization admin can create own channels, add other organizations to them and  
-even invite other organizations to the Network itself.
+By now the deployed Network is governed by itself (or to say it right by the network's members).
+This type of network-governance is called `Invite-based`. With this type of deployment
+any organization (and not a central system administrator), which is the member of the blockchain network can add new
+organizations to consortium. The new organization can be added to the consortium in the administration dashboard
+by providing it's node IP address.
+
+
+After that the new organization can create own channels, add other organizations to the own channels and even invite
+more organizations to the network itself. 
+
+
+The network governance policy is defined by the CONSORTIUM_CONFIG environment variable. For the invite-based networks
+it should be set to `InviteConsortiumPolicy`:
+
+```bash
+export CONSORTIUM_CONFIG=InviteConsortiumPolicy
+```
+
+The `Majority` governance type is coming.
+
