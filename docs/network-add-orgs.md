@@ -2,20 +2,18 @@
 
 #### Adding an organization
 
-After the first organization node has been deployed (see [Start an organization node](network-node-start.md))
-other organization nodes can be created and connected to the Network.
+After the first organization node has been deployed other organization nodes can be created and connected to the Network.
+Deployment for the new organization is the same as described in (see [Start an organization node](network-node-start.md))
+Though the IP of the first organization node should be provided in the `org_env` file 
+along with the other environment variables:
 
-For the new organization specify the environment in the org_env file: 
 ```bash
-export ORG='Name the new organization'
-export DOMAIN='Domain of the new organization'
-export MY_IP='External IP of the new organization node'
+...
 export BOOTSTRAP_IP='External IP of the first organization orderer node'
+...
 ```    
 
-Run the `./deploy-2x.sh` command to deploy and start the new organization. To become a member of the existing Network 
-provide the BOOTSRAP_IP -- currently it's the IP address of the Network  _orderer_ node.
-
+So after start the new organization will  become a member of the existing Network. 
 See [Start an organization node](network-node-start.md) for detailed environment
 description.
 
