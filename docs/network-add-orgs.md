@@ -5,11 +5,9 @@
 To add a new organization to the Network provide the following environment variables along with the minimum ones:
 
 ```bash
-...
 export BOOTSTRAP_IP='External IP of the first organization orderer node'
 export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN} #For Raft consensus
-
-```    
+```
 
 Then node start the node as the first one (See [Start an organization node](network-node-start.md)). 
 The node establishes connection with the Network and is added to the `common` service channel, 
