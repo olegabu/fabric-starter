@@ -68,52 +68,34 @@ See [Use REST Api](docs/rest-api.md)
 
 
 <a name="ldapauth"></a>
-## Use LDAP for user authentication and management 
-By default Hyperledger Fabric Certification Authority center is used to manage user management and membership. 
-To use LDAP directory services see [Use LDAP](docs/ldap.md)
+## Use LDAP for user authentication and management
+
+
+LDAP and Hyperledger Fabric Certification Authority are the two options for user management and membership. 
+See [Use LDAP](docs/ldap.md) for LDAP details.
 
 
 <a name="consensus-types"></a>
 ## Consensus Types. RAFT consensus algorithm.
-By default Fabric Starter uses Solo type of consensus.
-To use RAFT consensus see instructions in [Start Raft Ordering Service](docs/raft.md)
+
+
+Two types of consensus are used for ordering: Raft and Solo. For using Raft consensus see
+instructions in [Start Raft Ordering Service](docs/raft.md)
 
 <a name="chaincode-packages"></a>
-## Prepare and install chaincode packages
+## Prepare and install chaincodes
 
-- Fabric 1.x:
+See [Install Chaincodes](docs/chaincodes.md)
 
-Archive the chaincode directory:
-
-```zip -r ${zipArchive} ./${chaincodeFolder}/*```
-
-- Fabric 2.x:
-
-  At first it's necessary to prepare install package in the `cli.peer` container:
-  - copy source code  folder to `./chaincode` folder (as it's shared with the `cli` container)
-  - prepare package:
-      ```bash
-    docker exec -t cli.peer0.${ORG}.${DOMAIN} peer lifecycle chaincode \
-      package /opt/chaincode/${chaincodeName}.tar.gz --path /opt/chaincode/${chaincodeFolder} \
-      --lang node --label ${chaincodeName}_1.0
-      ```
-
-In UI install the prepared package and instantiate the chaincode
 
 <a name="releasecycle"></a>
-## Releases\Snapshots cycle
+## Releases\Snapshots cycle 
 
-As this project doesn't have a defined release cycle yet we create `stable`,
-`hlf-{fabric-version}-stable` and `hlf-{fabric-version}-snapshot-{version}` 
-branches when we see code is stable enough or before introducing major changes\new features.  
-Before the snapshot version 14 we used the `snapshot-{version}-{fabric-version}` template for branch names. 
+When the code is stable for release or before introducing major changes\new features the branches 
+`stable`, `hlf-{fabric-version}-stable` and `hlf-{fabric-version}-snapshot-{version}` are created.
+
+Up to the snapshot-0.13-2.3 the `snapshot-{version}-{fabric-version}` tempate was used. 
+
 
 `Note`, the Hyperledger Fabric version and the Fabric Starter version which the snapshot 
 depends on are defined in the `.env` file.  
-Also this project uses _olegabu/fabric-starter-rest_ docker image which has 
-the same versioning approach but even updated docker image with the same label (e.g. latest)
-won't be pulled automatically if it exists in the local docker registry.   
-You have to remove the old image manually (by `docker rmi -f olegabu/fabric-starter-rest`).    
-
-
-The _`master`_ branch as well as potentially _`feature branches`_ are used for development.

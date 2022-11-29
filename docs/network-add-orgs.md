@@ -1,30 +1,27 @@
 # Add organizations to Network
 
-#### Adding an organization
+#### Adding an organization to Network
 
-After the first organization node has been deployed other organization nodes can be created and connected to the Network.
-Deployment for the new organization is the same as described in (see [Start an organization node](network-node-start.md))
-Though the IP of the first organization node should be provided in the `org_env` file 
-along with the other environment variables:
+To add a new organization to the Network provide the following environment variables along with the minimum ones:
 
 ```bash
 ...
 export BOOTSTRAP_IP='External IP of the first organization orderer node'
-...
+export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN} #For Raft consensus
+
 ```    
 
-See [Start an organization node](network-node-start.md) for detailed environment
-description.
+Then node start the node as the first one (See [Start an organization node](network-node-start.md)). 
+The node establishes connection with the Network and is added to the `common` service channel, 
+the service chaincode is instantiated.
 
-After the node starts, the new organization becomes a member of the existing Network, that is, 
-it participates in the `common` channel and the service chaincode along with the established connectivity. 
-Owners of other channels (i.e. those who created them) can add organization to their channels. 
+Owners of other channels (creators) can add organization to their channels. 
 
-#### Add new organization to consortium
+#### Add organization to Consortium
 
-To allow organization to create a channel or install the chaincodes the organization has to be added 
-to the consortium. Currently, only the administrator of the first organization node can manage a consortium. 
+To allow organization to create channels the organization has to be added 
+to the consortium. Currently, only the administrator of the first organization can manage a consortium. 
 
-To add a new organization to the consortium the administrator provides the IP address of the organization node and 
-the organization name in the administration dashboard.
+To add a new organization to the consortium the administrator uses the administration dashboard providing 
+the name and the IP address of the new organization.
 
