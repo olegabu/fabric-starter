@@ -6,7 +6,7 @@ packaged before installation.
 
 - For Fabric 1.x archive the chaincode directory:
 
-```zip -r ${zipArchiveName} ./${chaincodeFolder}/*```
+  ```zip -r ${zipArchiveName} ./${chaincodeFolder}/*```
 
 - For Fabric 2.x the chaincode should be packaged for example by the fabic cli:
 
