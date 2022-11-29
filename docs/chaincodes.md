@@ -8,7 +8,7 @@ packaged before installation.
 
   ```zip -r ${zipArchiveName} ./${chaincodeFolder}/*```
 
-- For Fabric 2.x the chaincode should be packaged for example by the fabic cli:
+- For Fabric 2.x the chaincode should be packaged for example by the fabic CLI:
 
 
   ```bash
