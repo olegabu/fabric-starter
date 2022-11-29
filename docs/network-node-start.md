@@ -2,7 +2,7 @@
 
 #### Environment variables
 
-Configuration of an organization is set by variables defined in environment or in the org_env file.
+Configuration of an organization is set by variables defined in the environment or in the org_env file.
 
 Possible environment variables are listed in the`org_env_sample` file. 
 
