@@ -1,33 +1,27 @@
-# Add organizations to the network
+# Add organization to network
 
-#### Adding an organization to the network
+#### Adding an organization to a network
 
-To add another organization to the network deploy it according to the
-[Start an organization node](network-node-start.md) chapter providing some additional
-configuration parameters.
+Starting new organization node is performed the same way as described in [Start an organization node](network-node-start.md).
+ 
+To have an organization participate in an existing network some connectivity parameters should be specified:
 
-Obtain the IP address of the bootstrap node (usually it is the first node in the network). 
-Provide the adrress in the BOOTSTRAP_IP variable: 
-
-
+- IP address of the bootstrap node: 
 ```bash
-export BOOTSTRAP_IP='External IP of the first organization orderer node'
+export BOOTSTRAP_IP='IP address of the bootstrap node'
 ```
 
-When using the Raft consensus (see [Start Raft Ordering Service](docs/raft.md)) also obtain and provide 
-the value for the ORDERER_DOMAIN:
-
+- if custom orderer domain is used on the network's bootstrap node specify it:  
 ```bash
-export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN} 
+export ORDERER_DOMAIN=osn-example.com 
 ```
 
-When started, the new node is added to the `common` channel and establishes connection with 
-other network nodes using information from the service chaincode in the `common` channel.  
+When started, the new node establishes connection with the bootstrap node, joins to the `common` channel 
+and exchanges connectivity information with other network nodes.
 
-New organizations then can be invited to other channels used by applications or organization groups. 
+New organizations can then be invited to other channels created by other organizations. 
 
 #### Add organization to consortium
 
-To allow organization to create own channels the organization has to be added 
-to the consortium. This can be done in the Administration dashboard. Currently, 
-only the administrator of the first organization can manage a consortium.  
+To get permissions to create own channels the organization has to be added to the consortium. 
+This can be done in the Administration dashboard by the administrator of the bootstrap organization.  

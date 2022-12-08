@@ -8,7 +8,10 @@ Create a Hyperledger Fabric network to jump start development of your decentrali
 The network is run by docker containers and can be deployed to one host for development or to multiple hosts for testing 
 or production.
 
-Scripts of this starter generate crypto material and config files, start the network and deploy your chaincodes. 
+Scripts of this starter generate crypto material and config files, start the Hyperledger Fabric node and deploy your chaincodes.
+Additional nodes can be started and automatically connected to a Blockchain network.
+
+
 Developers can use [REST API](https://github.com/olegabu/fabric-starter-rest) to invoke and query chaincodes, 
 explore blocks and transactions.
 
