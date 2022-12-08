@@ -2,7 +2,7 @@
 
 *(!) The project has switched to Hyperledger Fabric v2.3. For using previous versions see **snapshot-xxx** branches*
 
-Create a network to jump start development of your decentralized application on 
+Create a Hyperledger Fabric network to jump start development of your decentralized application on 
 [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) platform.
 
 The network is run by docker containers and can be deployed to one host for development or to multiple hosts for testing 
@@ -24,7 +24,7 @@ See also
 
 ## Blockchain network deployment
 
-The following sections describe Fabric Starter possibilites in more details:
+The following sections describe Fabric Starter possibilities in more details:
 
 - [Prerequisites](#install)
 - [Network with one organization (and orderer) for development](#example1org)

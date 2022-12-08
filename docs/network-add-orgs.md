@@ -1,25 +1,33 @@
-# Add organizations to Network
+# Add organizations to the network
 
-#### Adding an organization to Network
+#### Adding an organization to the network
 
-To add a new organization to the Network provide the following environment variables along with the minimum ones:
+To add another organization to the network deploy it according to the
+[Start an organization node](network-node-start.md) chapter providing some additional
+configuration parameters.
+
+Obtain the IP address of the bootstrap node (usually it is the first node in the network). 
+Provide the adrress in the BOOTSTRAP_IP variable: 
+
 
 ```bash
 export BOOTSTRAP_IP='External IP of the first organization orderer node'
-export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN} #For Raft consensus
 ```
 
-Then node start the node as the first one (See [Start an organization node](network-node-start.md)). 
-The node establishes connection with the Network and is added to the `common` service channel, 
-the service chaincode is instantiated.
+When using the Raft consensus (see [Start Raft Ordering Service](docs/raft.md)) also obtain and provide 
+the value for the ORDERER_DOMAIN:
 
-Owners of other channels (creators) can add organization to their channels. 
+```bash
+export ORDERER_DOMAIN=osn-${ORG}.${DOMAIN} 
+```
 
-#### Add organization to Consortium
+When started, the new node is added to the `common` channel and establishes connection with 
+other network nodes using information from the service chaincode in the `common` channel.  
 
-To allow organization to create channels the organization has to be added 
-to the consortium. Currently, only the administrator of the first organization can manage a consortium. 
+New organizations then can be invited to other channels used by applications or organization groups. 
 
-To add a new organization to the consortium the administrator uses the administration dashboard providing 
-the name and the IP address of the new organization.
+#### Add organization to consortium
 
+To allow organization to create own channels the organization has to be added 
+to the consortium. This can be done in the Administration dashboard. Currently, 
+only the administrator of the first organization can manage a consortium.  

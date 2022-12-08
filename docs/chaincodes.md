@@ -2,13 +2,13 @@
 
 
 User can create custom chaincodes, install them and instantiate in channels. The chaincode should be 
-packaged before installation.
+packaged before installation according to Fabric specification.
 
 - For Fabric 1.x archive the chaincode directory:
 
   ```zip -r ${zipArchiveName} ./${chaincodeFolder}/*```
 
-- For Fabric 2.x the chaincode should be packaged for example by the Fabic CLI:
+- For Fabric 2.x the chaincode should be packaged for example by the Fabric CLI:
 
 
   ```bash
@@ -17,7 +17,7 @@ packaged before installation.
   ```
 
 
-It is possible to package the chaincode in `cli.peer` container:
+The `cli.peer` container can be used to package the chaincode:
  
 - copy source code  folder to `./chaincode` folder (as it's shared with the `cli` container)
 - prepare package:
@@ -29,4 +29,4 @@ It is possible to package the chaincode in `cli.peer` container:
   --lang node --label ${chaincodeName}_1.0
   ```
 
-In admin dashboard (or using REST API) install the prepared package and instantiate the chaincode in the channel.
+Install the prepared package and instantiate the chaincode in the channel using Admin dashboard or REST API.
