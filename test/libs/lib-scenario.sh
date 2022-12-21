@@ -112,7 +112,7 @@ function printTestResultTable() {
     done
     echo ${separator//|/ }
 
-    printYellow "Start time: ${WHITE}${START_TIME}${YELLOW}, End time: ${WHITE}${END_TIME}${YELLOW}"
+    printColoredText "${BRIGHT}${YELLOW}" "Start time: ${WHITE}${START_TIME}${YELLOW}, End time: ${WHITE}${END_TIME}${YELLOW}"
 
     if [ "${total_errors}" = 0 ]; then
         echo -e "${BRIGHT}${YELLOW}Total tests run: ${WHITE}${tests_run} ${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds \nTotal errors: ${WHITE}${total_errors}${NORMAL}"
@@ -120,7 +120,7 @@ function printTestResultTable() {
         echo -e "${BRIGHT}${YELLOW}Total tests run: ${WHITE}${tests_run}${YELLOW} \nTotal tests duration: ${WHITE}${total_time}${YELLOW} seconds \n${BRIGHT}${RED}Total errors: ${total_errors}${NORMAL}"
     fi
 
-    printYellow "See debug log ${WHITE}${BRIHT}${FSTEST_LOG_FILE}${NORMAL}"
+    printColoredText "${BRIGHT}${YELLOW}" "See debug log ${WHITE}${BRIHT}${FSTEST_LOG_FILE}${NORMAL}"
     echo
     IFS=
 }

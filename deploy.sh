@@ -11,7 +11,7 @@ AGENT_MODE=${AGENT_MODE}
 
 if [ -z "${DEV_MODE}" ]; then
     HTTPS_MODE=${HTTPS_MODE-1}
-    LDAP_ENABLED=${LDAP_ENABLED:-1}
+    export LDAP_ENABLED=${LDAP_ENABLED:-true}
     RENEW_IMAGES=${RENEW_IMAGES-1}
 fi
 
@@ -42,7 +42,7 @@ export FABRIC_STARTER_REPOSITORY=${FABRIC_STARTER_REPOSITORY:-olegabu}
 
 : ${DOCKER_COMPOSE_ORDERER_ARGS:="-f docker-compose-orderer.yaml -f docker-compose-orderer-domain.yaml -f docker-compose-orderer-ports.yaml"}
 
-docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml "}
+docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ldap.yaml"}
 if [ -n "${HTTPS_MODE}" ]; then # https mode
     export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
     export DOCKER_COMPOSE_EXTRA_ARGS=${DOCKER_COMPOSE_EXTRA_ARGS:-"-f https/docker-compose-https-ports.yaml"}
@@ -85,6 +85,8 @@ if [ -z "$NO_PEER" ]; then
     docker-compose -f docker-compose-preload-images.yaml up -d
     BOOTSTRAP_IP=${BOOTSTRAP_IP} ENROLL_SECRET="${ENROLL_SECRET:-adminpw}"  docker-compose ${docker_compose_args} ${DOCKER_COMPOSE_EXTRA_ARGS} \
         up -d --force-recreate ${AGENT_MODE:+ api www.peer }
+
+    docker exec -t ldap.${ORG:-org1}.${DOMAIN:-example.com} bash -c 'set -x; creatorsName=`slapcat|grep "creatorsName:"`; adminDN=${creatorsName:14}; ldapadd -x -D "${adminDN}" -w "${LDAP_ADMIN_PASSWORD}" -f /etc/hyperledger/crypto-config/ldap/admin.ldif'
     set +x
 
     if [ -z "${AGENT_MODE}" ]; then

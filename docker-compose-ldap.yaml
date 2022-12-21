@@ -16,6 +16,7 @@ services:
   ldap-service:
     container_name: ldap.${ORG:-org1}.${DOMAIN:-example.com}
     image: osixia/openldap
+    restart: always
     environment:
       - LDAP_ORGANISATION=${ORG:-org1}
       - LDAP_DOMAIN=${DOMAIN:-example.com}
@@ -24,10 +25,12 @@ services:
       - ./data/ldap/${ORG:-org1}.${DOMAIN:-example.com}/database:/var/lib/ldap
       - ./data/ldap/${ORG:-org1}.${DOMAIN:-example.com}/config:/etc/ldap/slapd.d
       - ./data/ldap/${ORG:-org1}.${DOMAIN:-example.com}/certs:/container/service/slapd/assets/certs
+      - ${FABRIC_STARTER_HOME:-.}/crypto-config/ldap:/etc/hyperledger/crypto-config/ldap
     command: --loglevel trace
 
   ldapadmin:
     container_name: ldapadmin.${ORG:-org1}.${DOMAIN:-example.com}
+    restart: always
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=ldap.${ORG:-org1}.${DOMAIN:-example.com}
       - PHPLDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-false}
