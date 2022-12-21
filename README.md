@@ -1,12 +1,3 @@
-## Note: new approach for node deployment:
-Copy `org_env_sample` to `<org_name>_env` (e.g. `org1_env`) and adjust properties.
-Run 
-```bash
-./deploy.sh org1
-```  
-
-
-
 # Starter Application for Hyperledger Fabric
 
 *(!) The project has switched to Hyperledger Fabric v2.3. For using previous versions see **snapshot-xxx** branches*
